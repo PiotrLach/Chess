@@ -16,24 +16,26 @@ import javax.swing.JPanel;
  * @author bruce
  */
 public class ChessBoard extends JPanel{    
-
-    private ArrayList<ChessField> chessFields;    
+    
     private ChessField[][] chessMatrix;
     private boolean changeColor;
     public ChessBoard() {
-        chessMatrix=new ChessField[64][64];        
-        chessFields=new ArrayList<>();
+        chessMatrix=new ChessField[64][64];                
         createBoardElements();
     }
     public void highlightBoardFields(Point p){
         int index;
         for (int i=0; i<8;i++) {
             for (int j=0;j<8; j++) {                
-                if (chessMatrix[i][j].contains(p) && chessMatrix[i][j].getHighlighted()==0) {                    
+                if (chessMatrix[i][j].contains(p) && 
+                    chessMatrix[i][j].getHighlighted()==0)
+                {                    
                     chessMatrix[i][j].setHighlighted(1);
     //                System.out.println("Highlight enabled!");
                 }
-                else if (chessMatrix[i][j].contains(p) && chessMatrix[i][j].getHighlighted()==1) {                    
+                else if (chessMatrix[i][j].contains(p) 
+                        && chessMatrix[i][j].getHighlighted()==1) 
+                {                    
                     chessMatrix[i][j].setHighlighted(0);
     //                System.out.println("Highlight disabled!");
                 }            
@@ -80,10 +82,6 @@ public class ChessBoard extends JPanel{
 
     public void setChangeColor(boolean changeColor) {
         this.changeColor = changeColor;
-    }
-
-    public ArrayList<ChessField> getChessFields() {
-        return chessFields;
     }
 
     public ChessField[][] getChessMatrix() {
