@@ -73,20 +73,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void chessBoardAction(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chessBoardAction
         Point p = evt.getPoint();
-        int index;
-        for (ChessField c : mainChessBoard.getChessFields()) {            
-            if (c.contains(p) && c.getHighlighted()==0) {
-                index=mainChessBoard.getChessFields().indexOf(c);                                
-                mainChessBoard.getChessFields().get(index).setHighlighted(1);
-//                System.out.println("Highlight enabled!");
-            }
-            else if (c.contains(p) && c.getHighlighted()==1) {
-                index=mainChessBoard.getChessFields().indexOf(c);                                                
-                mainChessBoard.getChessFields().get(index).setHighlighted(0);
-//                System.out.println("Highlight disabled!");
-            }            
-            mainChessBoard.repaint();
-        }
+        mainChessBoard.highlightBoardFields(p);
     }//GEN-LAST:event_chessBoardAction
 
     /**

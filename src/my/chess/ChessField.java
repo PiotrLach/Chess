@@ -19,6 +19,7 @@ public class ChessField extends Rectangle {
     private int highlighted;
     public ChessField(int x, int y, int width, int height) {
         super(x, y, width, height);       
+//        highlighted=0;
     }
     public void drawChessField(Graphics g)
     {
@@ -28,13 +29,7 @@ public class ChessField extends Rectangle {
     public void highlightChessField(Graphics g){
         g.setColor(Color.GRAY);        
         g.fillRect(x, y, width, height);
-    }    
-    
-//        g.setColor(c);        
-//        g.fillRect(this.x,this.y,this.width,this.height);
-//        if (squareFlag==true) {
-//            
-//        }
+    }       
     
     public void setHighlighted(int highlighted) {
         this.highlighted = highlighted;
