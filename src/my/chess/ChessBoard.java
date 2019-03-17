@@ -25,6 +25,7 @@ public class ChessBoard extends JPanel{
         drawChessFields();
     }    
 //    public void uselessFunction(){}
+//    public void anotherUselessFunction(){}
     @Override                 
     public void paint(Graphics g) {
         super.paint(g); 
