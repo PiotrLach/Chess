@@ -15,11 +15,14 @@ import java.awt.Rectangle;
  */
 public class ChessField extends Rectangle {
 
-    private String index;
+    private int matrixCoordinateX;
+    private int matrixCoordinateY;
     private int highlighted;
-    public ChessField(int x, int y, int width, int height) {
+    public ChessField(int x, int y, int width, int height, int matrixCoordinateX,
+                      int matrixCoordinateY) {
         super(x, y, width, height);       
-//        highlighted=0;
+        this.matrixCoordinateX=matrixCoordinateX;
+        this.matrixCoordinateY=matrixCoordinateY;
     }
     public void drawChessField(Graphics g)
     {
@@ -40,7 +43,8 @@ public class ChessField extends Rectangle {
     }
     @Override
     public String toString(){
-        return "x: "+x+" y: "+y;
+        return "x: "+x+", y: "+y + ", matrixCoordinateX: " +matrixCoordinateX+
+                ", matrixCoordinateY: " +matrixCoordinateY;
     }        
     
 }

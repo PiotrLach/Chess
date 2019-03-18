@@ -11,10 +11,13 @@ import javax.swing.JLabel;
  *
  * @author bruce
  */
-abstract class ChessPiece {
-    private ChessField chessField;
-    private String chessPieceName;
+abstract class ChessPiece {    
+    private ChessField chessField;    
     private JLabel chessPieceLabel;
-    abstract void move(ChessField[][] cf);
-    abstract void highlightOptions();    
+    public ChessPiece(ChessField chessField, JLabel chessPieceLabel){
+        this.chessField=chessField;
+        this.chessPieceLabel=chessPieceLabel;
+    }    
+    abstract public void move(ChessField[][] chessMatrix);
+    abstract public void highlightOptions();    
 }

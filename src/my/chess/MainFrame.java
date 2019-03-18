@@ -73,7 +73,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void chessBoardAction(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chessBoardAction
         Point p = evt.getPoint();
-        mainChessBoard.highlightBoardFields(p);
+        mainChessBoard.highlightBoardField(p);
     }//GEN-LAST:event_chessBoardAction
 
     /**

@@ -20,23 +20,29 @@ public class ChessBoard extends JPanel{
     private ChessField[][] chessMatrix;
     private boolean changeColor;
     public ChessBoard() {
-        chessMatrix=new ChessField[64][64];                
+        chessMatrix=new ChessField[8][8];                
         createBoardElements();
     }
-    public void highlightBoardFields(Point p){
-        int index;
+    public void highlightBoardField(Point p){
+//        boolean isHighlighted = false;
         for (int i=0; i<8;i++) {
             for (int j=0;j<8; j++) {                
                 if (chessMatrix[i][j].contains(p) && 
-                    chessMatrix[i][j].getHighlighted()==0)
+                    chessMatrix[i][j].getHighlighted()==0
+//                        && isHighlighted==false
+                    )
                 {                    
                     chessMatrix[i][j].setHighlighted(1);
+//                    isHighlighted=true;
     //                System.out.println("Highlight enabled!");
                 }
-                else if (chessMatrix[i][j].contains(p) 
-                        && chessMatrix[i][j].getHighlighted()==1) 
+                else if (chessMatrix[i][j].contains(p) && 
+                        chessMatrix[i][j].getHighlighted()==1
+ //                         && isHighlighted==true
+                        )
                 {                    
                     chessMatrix[i][j].setHighlighted(0);
+//                    isHighlighted=false;
     //                System.out.println("Highlight disabled!");
                 }            
                 repaint();
@@ -66,13 +72,16 @@ public class ChessBoard extends JPanel{
         {            
             for (int j=80; j<720; j+=80)
             {                
-                ChessField c = new ChessField(i,j,80,80);
+                ChessField c = new ChessField(i,j,80,80,x,y);
                 chessMatrix[x][y] = c;
-                y++;
+//                System.out.println(chessMatrix[x][y].toString());
+                y++;                
 //                System.out.println(c+" "+this.getWidth()+" "+this.getHeight());
             }
-            y=0;
+            y=0;            
             x++;
+            if (x==8) 
+                x=0;
         }
     }
     
