@@ -17,9 +17,8 @@ import javax.swing.JPanel;
  */
 public class ChessBoard extends JPanel{    
     
-    private ChessField[][] chessMatrix;
-    private boolean changeColor;
-    public ChessBoard() {
+    private ChessField[][] chessMatrix;    
+    public ChessBoard() {        
         chessMatrix=new ChessField[8][8];                
         createBoardElements();
     }
@@ -34,20 +33,21 @@ public class ChessBoard extends JPanel{
                 {                    
                     chessMatrix[i][j].setHighlighted(1);
 //                    isHighlighted=true;
-    //                System.out.println("Highlight enabled!");
+//                  System.out.println("Highlight enabled!");
                 }
-                else if (chessMatrix[i][j].contains(p) && 
-                        chessMatrix[i][j].getHighlighted()==1
+//                else if (chessMatrix[i][j].contains(p) && 
+//                        chessMatrix[i][j].getHighlighted()==1
  //                         && isHighlighted==true
-                        )
+//                        )
+                else
                 {                    
                     chessMatrix[i][j].setHighlighted(0);
 //                    isHighlighted=false;
-    //                System.out.println("Highlight disabled!");
+//                    System.out.println("Highlight disabled!");
                 }            
-                repaint();
             }
         }
+        repaint();
     }
     @Override                 
     public void paint(Graphics g) {
@@ -68,30 +68,22 @@ public class ChessBoard extends JPanel{
     }
     public void createBoardElements(){
         int x=0,y=0;
-        for (int i=120; i<840; i+=80)
+        for (int i=0; i<720; i+=80)
         {            
             for (int j=80; j<720; j+=80)
             {                
                 ChessField c = new ChessField(i,j,80,80,x,y);
-                chessMatrix[x][y] = c;
-//                System.out.println(chessMatrix[x][y].toString());
-                y++;                
+                chessMatrix[x][y] = c;                                
+//                System.out.println(chessMatrix[x][y].toString());                
 //                System.out.println(c+" "+this.getWidth()+" "+this.getHeight());
+                y++;                
             }
             y=0;            
             x++;
             if (x==8) 
                 x=0;
         }
-    }
-    
-    public boolean isChangeColor() {
-        return changeColor;
-    }
-
-    public void setChangeColor(boolean changeColor) {
-        this.changeColor = changeColor;
-    }
+    }       
 
     public ChessField[][] getChessMatrix() {
         return chessMatrix;

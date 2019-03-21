@@ -5,6 +5,7 @@
  */
 package my.chess;
 
+import my.chess.pieces.ChessPiece;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -14,7 +15,8 @@ import java.awt.Rectangle;
  * @author bruce
  */
 public class ChessField extends Rectangle {
-
+    
+    private ChessPiece c;
     private int matrixCoordinateX;
     private int matrixCoordinateY;
     private int highlighted;
@@ -41,6 +43,23 @@ public class ChessField extends Rectangle {
     public int getHighlighted() {
         return highlighted;
     }
+
+    public int getMatrixCoordinateX() {
+        return matrixCoordinateX;
+    }
+
+    public void setMatrixCoordinateX(int matrixCoordinateX) {
+        this.matrixCoordinateX = matrixCoordinateX;
+    }
+
+    public int getMatrixCoordinateY() {
+        return matrixCoordinateY;
+    }
+
+    public void setMatrixCoordinateY(int matrixCoordinateY) {
+        this.matrixCoordinateY = matrixCoordinateY;
+    }
+    
     @Override
     public String toString(){
         return "x: "+x+", y: "+y + ", matrixCoordinateX: " +matrixCoordinateX+
