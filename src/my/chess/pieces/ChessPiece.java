@@ -5,46 +5,44 @@
  */
 package my.chess.pieces;
 
-import javax.swing.JLabel;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 
 /**
  *
  * @author bruce
  */
 abstract public class ChessPiece {    
-    private String chessPieceName;
-    private JLabel chessPieceLabel;
-    public ChessPiece(String chessPieceName) {
-        this.chessPieceName = chessPieceName;
-        if (this.chessPieceName!=null){ 
-            this.chessPieceLabel = new JLabel(chessPieceName);
-        }
-    }
-    abstract public int moveX();
-    abstract public int moveY();
-    abstract public void highlightOptions();    
+    protected String chessPieceName;  
+    protected Color figureColor;
 
+    public ChessPiece(String chessPieceName, Color figureColor) {
+        this.chessPieceName = chessPieceName;
+        this.figureColor = figureColor;
+    }
+    
+    public void drawPieceSymbol(Graphics g, int x, int y) {
+        chessPieceName="P";
+        g.setColor(figureColor);
+        Font myFont = new Font("Times New Roman", Font.BOLD, 40);
+        g.setFont(myFont);
+        g.drawString(chessPieceName, x+30, y+50);
+    }
     public String getChessPieceName() {
         return chessPieceName;
     }
-
     public void setChessPieceName(String chessPieceName) {
         this.chessPieceName = chessPieceName;
     }
+
+    public Color getFigureColor() {
+        return figureColor;
+    }
+
+    public void setFigureColor(Color figureColor) {
+        this.figureColor = figureColor;
+    }
+    
     
 }
-//    private int matrixCoordinateX, matrixCoordinateY;
-//    private ChessField chessField;    
-//    private JLabel chessPieceLabel;
-//    public ChessPiece(ChessField chessField, JLabel chessPieceLabel ){ 
-//                    ,int matrixCoordinateX, int matrixCoordinateY){
-//        this.chessField=chessField;
-//        this.chessPieceLabel=chessPieceLabel;
-//    }        
-//    abstract public void highlightOptions();    
-//    public int moveX(){                
-//        return matrixCoordinateX+2;
-//    }
-//    public int moveY(){                
-//        return matrixCoordinateY+1;
-//    }

@@ -5,29 +5,18 @@
  */
 package my.chess.pieces;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+
 /**
  *
  * @author bruce
  */
 public class ChessPawn extends ChessPiece{
-
-    public ChessPawn() {
-        super("P");
-    }
-
-    @Override
-    public int moveX() {
-        return 1;
-    }
-
-    @Override
-    public int moveY() {
-        return 2;
-    }
-
-    @Override
-    public void highlightOptions() {
-        
-    }
+          
+    public ChessPawn(String chessPieceName, Color figureColor) {
+        super(chessPieceName, figureColor);
+    }          
 
 }

@@ -9,7 +9,10 @@ import java.util.ArrayList;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import my.chess.pieces.ChessPawn;
+import my.chess.pieces.ChessPiece;
 
 /**
  *
@@ -17,33 +20,26 @@ import javax.swing.JPanel;
  */
 public class ChessBoard extends JPanel{    
     
-    private ChessField[][] chessMatrix;    
+    private ChessField[][] chessMatrix;  
+    private ChessPiece selectedChessPiece;
     public ChessBoard() {        
         chessMatrix=new ChessField[8][8];                
         createBoardElements();
     }
-    public void highlightBoardField(Point p){
+    public void chooseBoardFieldFigure(Point p){
 //        boolean isHighlighted = false;
         for (int i=0; i<8;i++) {
             for (int j=0;j<8; j++) {                
-                if (chessMatrix[i][j].contains(p) && 
-                    chessMatrix[i][j].getHighlighted()==0
-//                        && isHighlighted==false
-                    )
+                if (chessMatrix[i][j].contains(p) 
+                    && chessMatrix[i][j].isHighlighted()==false
+                    && chessMatrix[i][j].getCurrentChessPiece()!=null)
                 {                    
-                    chessMatrix[i][j].setHighlighted(1);
-//                    isHighlighted=true;
-//                  System.out.println("Highlight enabled!");
+                    chessMatrix[i][j].setHighlighted(true);
+                    selectedChessPiece=chessMatrix[i][j].getCurrentChessPiece();
                 }
-//                else if (chessMatrix[i][j].contains(p) && 
-//                        chessMatrix[i][j].getHighlighted()==1
- //                         && isHighlighted==true
-//                        )
                 else
                 {                    
-                    chessMatrix[i][j].setHighlighted(0);
-//                    isHighlighted=false;
-//                    System.out.println("Highlight disabled!");
+                    chessMatrix[i][j].setHighlighted(false);
                 }            
             }
         }
@@ -54,17 +50,37 @@ public class ChessBoard extends JPanel{
         super.paint(g);         
         for (int i=0; i<8;i++) {
             for (int j=0;j<8; j++) {
-//                System.out.println(chessMatrix[i][j]);
-                switch (chessMatrix[i][j].getHighlighted()) {
-                    default:
-                        chessMatrix[i][j].drawChessField(g);
-                        break;
-                    case 1:
-                        chessMatrix[i][j].highlightChessField(g);
-                        break;
-                } 
+                if (chessMatrix[i][j].isHighlighted()) {                    
+                    chessMatrix[i][j].highlightChessField(g);                                            
+                }    
+                else {
+                    chessMatrix[i][j].drawChessField(g);
+                }    
+                if (chessMatrix[i][j].getCurrentChessPiece()!=null) {
+                    Double x = chessMatrix[i][j].getX();
+                    Double y = chessMatrix[i][j].getY();
+                    chessMatrix[i][j].getCurrentChessPiece().drawPieceSymbol(g, x.intValue(),y.intValue());
+                }
             }
-        }      
+        }
+//        for (int i=0; i<8;i++) {
+//            for (int j=0;j<8; j++) {
+////                System.out.println(chessMatrix[i][j]);
+//                switch (chessMatrix[i][j].getHighlighted()) {
+//                    default:
+//                        chessMatrix[i][j].drawChessField(g);                        
+//                        break;
+//                    case 1:
+//                        chessMatrix[i][j].highlightChessField(g);
+//                        if (chessMatrix[i][j].getCurrentChessPiece()!=null){
+//                            Double x = chessMatrix[i][j].getX();
+//                            Double y = chessMatrix[i][j].getY();
+//                            chessMatrix[i][j].getCurrentChessPiece().drawPieceSymbol(g, x.intValue(),y.intValue());
+//                        }
+//                        break;
+//                } 
+//            }
+//        }      
     }
     public void createBoardElements(){
         int x=0,y=0;
@@ -83,6 +99,11 @@ public class ChessBoard extends JPanel{
             if (x==8) 
                 x=0;
         }
+        for (int i=0; i<8; i++) {
+            chessMatrix[i][1].setCurrentChessPiece(new ChessPawn("P", Color.WHITE));
+            chessMatrix[i][6].setCurrentChessPiece(new ChessPawn("P", Color.BLACK));
+        }
+//        chessMatrix[1][1].setCurrentChessPiece(null);
     }       
 
     public ChessField[][] getChessMatrix() {
@@ -91,6 +112,14 @@ public class ChessBoard extends JPanel{
 
     public void setChessMatrix(ChessField[][] chessMatrix) {
         this.chessMatrix = chessMatrix;
+    }
+
+    public ChessPiece getSelectedChessPiece() {
+        return selectedChessPiece;
+    }
+
+    public void setSelectedChessPiece(ChessPiece selectedChessPiece) {
+        this.selectedChessPiece = selectedChessPiece;
     }
     
 }

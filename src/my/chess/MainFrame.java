@@ -6,6 +6,7 @@
 package my.chess;
 
 import java.awt.Point;
+import java.awt.event.MouseEvent;
 
 /**
  *
@@ -72,8 +73,10 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void chessBoardAction(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chessBoardAction
-        Point p = evt.getPoint();
-        mainChessBoard.highlightBoardField(p);
+        if (evt.getButton()==MouseEvent.BUTTON3){
+            Point p = evt.getPoint();
+            mainChessBoard.chooseBoardFieldFigure(p);
+        }
     }//GEN-LAST:event_chessBoardAction
 
     /**
