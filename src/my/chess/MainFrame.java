@@ -77,6 +77,10 @@ public class MainFrame extends javax.swing.JFrame {
             Point p = evt.getPoint();
             mainChessBoard.chooseBoardFieldFigure(p);
         }
+        else if (evt.getButton()==MouseEvent.BUTTON1){
+            Point p = evt.getPoint();
+            mainChessBoard.moveBoardFieldFigure(p);
+        }
     }//GEN-LAST:event_chessBoardAction
 
     /**
