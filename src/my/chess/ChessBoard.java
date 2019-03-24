@@ -26,7 +26,7 @@ public class ChessBoard extends JPanel{
         chessMatrix=new ChessField[8][8];                
         createBoardElements();
     }
-    public void chooseBoardFieldFigure(Point p){        
+    public void chooseBoardPiece(Point p){        
         for (int i=0; i<8;i++) {
             for (int j=0;j<8; j++) {                
                 if (chessMatrix[i][j].contains(p) 
@@ -45,27 +45,35 @@ public class ChessBoard extends JPanel{
         }
         repaint();        
     }
-    public void moveBoardFieldFigure(Point p){
-        if (tempI >= 0 && tempJ >= 0) {
-            chessMatrix[tempI][tempJ].setCurrentChessPiece(null);
-            tempI=-1; tempJ=-1;
-        }
+    public void moveBoardPiece(Point p){
+        boolean flag=false;
         for (int i=0; i<8;i++) {
             for (int j=0;j<8; j++) {                
                 if (chessMatrix[i][j].contains(p) 
                     && chessMatrix[i][j].isHighlighted()==false
                     && chessMatrix[i][j].getCurrentChessPiece()==null
                     && selectedChessPiece!=null
-                    && tempI!=i && tempJ!=j)
+                    && calculatePositionDifference(i, tempI) 
+                        == chessMatrix[tempI][tempJ].getCurrentChessPiece().possibleVerticalMovements()
+                    && calculatePositionDifference(j, tempJ)
+                        == chessMatrix[tempI][tempJ].getCurrentChessPiece().possibleHorizontalMovements()
+                    )
                 {   
                     chessMatrix[i][j].setCurrentChessPiece(selectedChessPiece);
                     selectedChessPiece=null;                    
+                    flag=true;                    
+//                    System.out.print("Horizontal difference:"+calculatePositionDifference(i, tempI)+" Vertical difference:");
+//                    System.out.println(calculatePositionDifference(j, tempJ));
                 }
                 else
                 {                    
                     chessMatrix[i][j].setHighlighted(false);
                 }            
             }
+        }
+        if (tempI >= 0 && tempJ >= 0 && flag==true) {
+            chessMatrix[tempI][tempJ].setCurrentChessPiece(null);
+            tempI=-1; tempJ=-1;
         }
         repaint();
     }
@@ -86,25 +94,7 @@ public class ChessBoard extends JPanel{
                     chessMatrix[i][j].getCurrentChessPiece().drawPieceSymbol(g, x.intValue(),y.intValue());
                 }
             }
-        }
-//        for (int i=0; i<8;i++) {
-//            for (int j=0;j<8; j++) {
-////                System.out.println(chessMatrix[i][j]);
-//                switch (chessMatrix[i][j].getHighlighted()) {
-//                    default:
-//                        chessMatrix[i][j].drawChessField(g);                        
-//                        break;
-//                    case 1:
-//                        chessMatrix[i][j].highlightChessField(g);
-//                        if (chessMatrix[i][j].getCurrentChessPiece()!=null){
-//                            Double x = chessMatrix[i][j].getX();
-//                            Double y = chessMatrix[i][j].getY();
-//                            chessMatrix[i][j].getCurrentChessPiece().drawPieceSymbol(g, x.intValue(),y.intValue());
-//                        }
-//                        break;
-//                } 
-//            }
-//        }      
+        }   
     }
     public void createBoardElements(){
         int x=0,y=0;
@@ -124,11 +114,15 @@ public class ChessBoard extends JPanel{
                 x=0;
         }
         for (int i=0; i<8; i++) {
-//            chessMatrix[i][1].setCurrentChessPiece(new ChessPawn("P", Color.WHITE));
+//            chessMatrix[1][i].setCurrentChessPiece(new ChessPawn("P", Color.WHITE));
             chessMatrix[6][i].setCurrentChessPiece(new ChessPawn("P", Color.BLACK));
         }
 //        chessMatrix[1][1].setCurrentChessPiece(null);
-    }       
+    }
+    private int calculatePositionDifference(int c1, int c2){
+        
+        return Math.abs(c1-c2);        
+    }
 
     public ChessField[][] getChessMatrix() {
         return chessMatrix;

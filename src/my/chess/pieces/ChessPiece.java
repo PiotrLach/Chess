@@ -21,7 +21,9 @@ abstract public class ChessPiece {
         this.chessPieceName = chessPieceName;
         this.figureColor = figureColor;
     }
-    
+    abstract public int possibleVerticalMovements();
+    abstract public int possibleHorizontalMovements();
+//    abstract void moveChessPiece();
     public void drawPieceSymbol(Graphics g, int x, int y) {
         chessPieceName="P";
         g.setColor(figureColor);

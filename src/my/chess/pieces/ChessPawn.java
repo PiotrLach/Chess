@@ -17,6 +17,16 @@ public class ChessPawn extends ChessPiece{
           
     public ChessPawn(String chessPieceName, Color figureColor) {
         super(chessPieceName, figureColor);
-    }          
+    } 
+
+    @Override
+    public int possibleVerticalMovements() {
+        return 1;
+    }
+    @Override
+    public int possibleHorizontalMovements() {
+        return 0;
+    }
+    
 
 }

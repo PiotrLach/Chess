@@ -75,11 +75,11 @@ public class MainFrame extends javax.swing.JFrame {
     private void chessBoardAction(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chessBoardAction
         if (evt.getButton()==MouseEvent.BUTTON3){
             Point p = evt.getPoint();
-            mainChessBoard.chooseBoardFieldFigure(p);
+            mainChessBoard.chooseBoardPiece(p);
         }
         else if (evt.getButton()==MouseEvent.BUTTON1){
             Point p = evt.getPoint();
-            mainChessBoard.moveBoardFieldFigure(p);
+            mainChessBoard.moveBoardPiece(p);
         }
     }//GEN-LAST:event_chessBoardAction
 
