@@ -23,7 +23,7 @@ abstract public class ChessPiece {
     }
     abstract public int possibleVerticalMovements();
     abstract public int possibleHorizontalMovements();
-//    abstract void moveChessPiece();
+//    abstract public boolean movementConditionFullfilled();
     public void drawPieceSymbol(Graphics g, int x, int y) {        
         g.setColor(figureColor);
         Font myFont = new Font("Times New Roman", Font.BOLD, 40);
