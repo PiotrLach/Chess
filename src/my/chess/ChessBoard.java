@@ -54,10 +54,11 @@ public class ChessBoard extends JPanel{
                     && chessMatrix[i][j].isHighlighted()==false
                     && chessMatrix[i][j].getCurrentChessPiece()==null
                     && selectedChessPiece!=null
-                    && calculatePositionDifference(i, sourceI) 
-                        <= chessMatrix[sourceI][sourceJ].getCurrentChessPiece().possibleVerticalMovements()
-                    && calculatePositionDifference(j, sourceJ)
-                        <= chessMatrix[sourceI][sourceJ].getCurrentChessPiece().possibleHorizontalMovements()
+                    && chessMatrix[sourceI][sourceJ].getCurrentChessPiece().movementConditionFullfilled(sourceI, sourceJ, i, j)
+//                    && calculatePositionDifference(i, sourceI) 
+//                        <= chessMatrix[sourceI][sourceJ].getCurrentChessPiece().possibleVerticalMovements()
+//                    && calculatePositionDifference(j, sourceJ)
+//                        <= chessMatrix[sourceI][sourceJ].getCurrentChessPiece().possibleHorizontalMovements()
 //                    && pathIsFree(sourceI, sourceJ, i,j)==false
                     )
                 {   
@@ -98,6 +99,7 @@ public class ChessBoard extends JPanel{
             }
         }   
     }
+    //zrealizować w klasie
     private boolean pathIsFree(int x1, int y1, int x2, int y2){
         System.out.println("X1: "+x1+
                            " Y1: "+y1+

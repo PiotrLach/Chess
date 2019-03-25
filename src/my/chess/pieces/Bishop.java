@@ -26,5 +26,19 @@ public class Bishop extends ChessPiece {
     public int possibleHorizontalMovements() {
         return 7;
     }
+
+    @Override
+    public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
+        System.out.println("X1: "+x1+
+                   " Y1: "+y1+
+                   " X2: "+x2+
+                   " Y2: "+y2);
+        if (calculatePositionDifference(x1, x2) == calculatePositionDifference(y1, y2)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     
 }
