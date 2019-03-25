@@ -6,27 +6,25 @@
 package my.chess.pieces;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
 
 /**
  *
  * @author bruce
  */
-public class ChessPawn extends ChessPiece{
-          
-    public ChessPawn(String chessPieceName, Color figureColor) {
+public class Bishop extends ChessPiece {
+
+    public Bishop(String chessPieceName, Color figureColor) {
         super(chessPieceName, figureColor);
-    } 
+    }    
 
     @Override
     public int possibleVerticalMovements() {
-        return 1;
+        return 7;
     }
+
     @Override
     public int possibleHorizontalMovements() {
-        return 0;
+        return 7;
     }
     
-
 }

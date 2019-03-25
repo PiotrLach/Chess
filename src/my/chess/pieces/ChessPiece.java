@@ -24,8 +24,7 @@ abstract public class ChessPiece {
     abstract public int possibleVerticalMovements();
     abstract public int possibleHorizontalMovements();
 //    abstract void moveChessPiece();
-    public void drawPieceSymbol(Graphics g, int x, int y) {
-        chessPieceName="P";
+    public void drawPieceSymbol(Graphics g, int x, int y) {        
         g.setColor(figureColor);
         Font myFont = new Font("Times New Roman", Font.BOLD, 40);
         g.setFont(myFont);
