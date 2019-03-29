@@ -59,7 +59,7 @@ public class ChessBoard extends JPanel{
 //                        <= chessMatrix[sourceI][sourceJ].getCurrentChessPiece().possibleVerticalMovements()
 //                    && calculatePositionDifference(j, sourceJ)
 //                        <= chessMatrix[sourceI][sourceJ].getCurrentChessPiece().possibleHorizontalMovements()
-//                    && pathIsFree(sourceI, sourceJ, i,j)==false
+                    && pathIsFree(sourceI, sourceJ, i,j)
                     )
                 {   
                     chessMatrix[i][j].setCurrentChessPiece(selectedChessPiece);
@@ -101,22 +101,62 @@ public class ChessBoard extends JPanel{
     }
     //zrealizować w klasie
     private boolean pathIsFree(int x1, int y1, int x2, int y2){
-        System.out.println("X1: "+x1+
-                           " Y1: "+y1+
-                           " X2: "+x2+
-                           " Y2: "+y2);
-        boolean result=false;
-        for (int i=x1; i<x2; i++) {
-            for (int j=y1; j<y2; j++) {
-                System.out.println(i+" "+j);
-                if (chessMatrix[i][j].getCurrentChessPiece()==null){
-                    System.out.println("true");
-                    result=true;
-//                    break;
-                }                
+//        System.out.println("X1: "+x1+
+//                           " Y1: "+y1+
+//                           " X2: "+x2+
+//                           " Y2: "+y2);
+        int nullCount=0;
+        boolean result;
+        if (x1<x2) {
+            for (int i = x1; i <= x2; i++) {                       
+                if (y1>y2) {
+                    for (int j = y1; j>= y2; j--) {
+                        if (Math.abs(x1-i)==Math.abs(y1-j)&&
+                            i!=x1 && j!=y1)  {
+                            result=chessMatrix[i][j].getCurrentChessPiece()!=null;
+                            System.out.println(result+" "+i+" "+j);
+                            if (result) nullCount++;
+
+                        }
+                    }
+                }
+                else {
+                    for (int j = y1; j<=y2; j++) {           
+                        if (Math.abs(x1-i)==Math.abs(y1-j)&&
+                            i!=x1 && j!=y1) {
+                            result=chessMatrix[i][j].getCurrentChessPiece()!=null;
+                            System.out.println(result+" "+i+" "+j);
+                            if (result) nullCount++;
+                        }
+                    }
+                }
             }
         }
-        return result;
+        else {
+        for (int i = x1; i >= x2; i--) {           
+                if (y1>y2) {
+                    for (int j = y1; j>= y2; j--) {           
+                        if (Math.abs(x1-i)==Math.abs(y1-j)&&
+                            i!=x1 && j!=y1) {
+                            result=chessMatrix[i][j].getCurrentChessPiece()!=null;
+                            System.out.println(result+" "+i+" "+j);
+                            if (result) nullCount++;
+                        }
+                    }
+                }
+                else {
+                    for (int j = y1; j<=y2; j++) {           
+                        if (Math.abs(x1-i)==Math.abs(y1-j)&&
+                            i!=x1 && j!=y1) {
+                            result=chessMatrix[i][j].getCurrentChessPiece()!=null;
+                            System.out.println(result+" "+i+" "+j);
+                            if (result) nullCount++;
+                        }
+                    }
+                }
+            }            
+        }
+        return nullCount <= 0;
     }
     private void createBoardElements(){
         int x=0,y=0;
@@ -137,10 +177,10 @@ public class ChessBoard extends JPanel{
         }
         for (int i=0; i<8; i++) {
 //            chessMatrix[1][i].setCurrentChessPiece(new Pawn("P", Color.WHITE));
-            chessMatrix[1][i].setCurrentChessPiece(new Pawn("P", Color.BLACK));
+            chessMatrix[1][i].setCurrentChessPiece(new Pawn(Color.BLACK));
         }
-        chessMatrix[0][2].setCurrentChessPiece(new Bishop("B", Color.BLACK));
-        chessMatrix[0][5].setCurrentChessPiece(new Bishop("B", Color.BLACK));
+        chessMatrix[0][2].setCurrentChessPiece(new Bishop(Color.BLACK));
+        chessMatrix[0][5].setCurrentChessPiece(new Bishop(Color.BLACK));
     }
     private int calculatePositionDifference(int c1, int c2){
         

@@ -13,8 +13,8 @@ import java.awt.Color;
  */
 public class Pawn extends ChessPiece{
           
-    public Pawn(String chessPieceName, Color figureColor) {
-        super(chessPieceName, figureColor);
+    public Pawn(Color figureColor) {
+        super("P", figureColor);
     } 
 
     @Override
@@ -32,13 +32,19 @@ public class Pawn extends ChessPiece{
                    " Y1: "+y1+
                    " X2: "+x2+
                    " Y2: "+y2);
-        if (calculatePositionDifference(x1, x2) <= possibleVerticalMovements()
+        if (//calculatePositionDifference(x1, x2) <= possibleVerticalMovements()
+                x2-x1==1
             && calculatePositionDifference(y1, y2)==possibleHorizontalMovements()){
             return true;
         }
         else {
             return false;
         }
+    }
+
+    @Override
+    public boolean pathIsFree(int x1, int y1, int x2, int y2) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 
