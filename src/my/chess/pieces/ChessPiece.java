@@ -22,20 +22,13 @@ abstract public class ChessPiece {
         this.figureColor = figureColor;
     }
 //    abstract public boolean captureConditionFullfilled();
-    abstract public int possibleVerticalMovements();
-    abstract public int possibleHorizontalMovements();
     abstract public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2);
-    abstract public boolean pathIsFree(int x1, int y1, int x2, int y2);
     public void drawPieceSymbol(Graphics g, int x, int y) {        
         g.setColor(figureColor);
         Font myFont = new Font("Times New Roman", Font.BOLD, 40);
         g.setFont(myFont);
         g.drawString(chessPieceName, x+30, y+50);
     }    
-    protected int calculatePositionDifference(int c1, int c2){
-        
-        return Math.abs(c1-c2);        
-    }
     
     
 }
