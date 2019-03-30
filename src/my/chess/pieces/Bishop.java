@@ -16,7 +16,7 @@ public class Bishop extends ChessPiece {
 //    @Override
 
     public Bishop(Color figureColor) {
-        super("B", figureColor);
+        super("G", figureColor);
     }    
 
     @Override

@@ -14,6 +14,9 @@ import javax.swing.JPanel;
 import my.chess.pieces.Bishop;
 import my.chess.pieces.Pawn;
 import my.chess.pieces.ChessPiece;
+import my.chess.pieces.King;
+import my.chess.pieces.Knight;
+import my.chess.pieces.Queen;
 import my.chess.pieces.Rook;
 
 /**
@@ -56,10 +59,6 @@ public class ChessBoard extends JPanel{
                     && chessMatrix[i][j].getCurrentChessPiece()==null
                     && selectedChessPiece!=null
                     && selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)
-//                    && calculatePositionDifference(i, sourceI) 
-//                        <= chessMatrix[sourceI][sourceJ].getCurrentChessPiece().possibleVerticalMovements()
-//                    && calculatePositionDifference(j, sourceJ)
-//                        <= chessMatrix[sourceI][sourceJ].getCurrentChessPiece().possibleHorizontalMovements()
                     && pathIsFree(sourceI, sourceJ, i,j)
                     )
                 {   
@@ -113,8 +112,8 @@ public class ChessBoard extends JPanel{
             for (int i = x1; i <= x2; i++) {                       
                 if (y1>y2) {
                     for (int j = y1; j>= y2; j--) {
-                        if (//selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)&&
-                            i!=x1 && j!=y1)  {
+                        if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)                            
+                            && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
                             result=chessMatrix[i][j].getCurrentChessPiece()!=null;                           
                             if (result) nullCount++;
                             System.out.println(result+" "+i+" "+j);
@@ -123,8 +122,8 @@ public class ChessBoard extends JPanel{
                 }
                 else {
                     for (int j = y1; j<=y2; j++) {           
-                        if (//selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)&&
-                            i!=x1 && j!=y1) {
+                        if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)//){
+                            && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
                             result=chessMatrix[i][j].getCurrentChessPiece()!=null;                            
                             if (result) nullCount++;
                             System.out.println(result+" "+i+" "+j);
@@ -137,8 +136,8 @@ public class ChessBoard extends JPanel{
             for (int i = x1; i >= x2; i--) {           
                 if (y1>y2) {
                     for (int j = y1; j>= y2; j--) {           
-                        if (//selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)&&
-                            i!=x1 && j!=y1) {
+                        if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)//){
+                            && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
                             result=chessMatrix[i][j].getCurrentChessPiece()!=null;                            
                             if (result) nullCount++;
                             System.out.println(result+" "+i+" "+j);
@@ -147,8 +146,8 @@ public class ChessBoard extends JPanel{
                 }
                 else {
                     for (int j = y1; j<=y2; j++) {           
-                        if (//selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)&&
-                            i!=x1 && j!=y1) {
+                        if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)//){
+                            && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
                             result=chessMatrix[i][j].getCurrentChessPiece()!=null;                            
                             if (result) nullCount++;
                             System.out.println(result+" "+i+" "+j);
@@ -157,6 +156,7 @@ public class ChessBoard extends JPanel{
                 }
             }            
         }
+        System.out.println("/////////////////////");
         return nullCount == 0;
     }
     private void createBoardElements(){
@@ -176,14 +176,30 @@ public class ChessBoard extends JPanel{
             if (x==8) 
                 x=0;
         }
-        for (int i=0; i<8; i++) {
-//            chessMatrix[1][i].setCurrentChessPiece(new Pawn("P", Color.WHITE));
+        Color c = null;
+        for (int i=0; i<8; i++) {            
             chessMatrix[1][i].setCurrentChessPiece(new Pawn(Color.BLACK));
+            chessMatrix[6][i].setCurrentChessPiece(new Pawn(Color.WHITE));
+        }        
+        for (int i=0; i<8; i+=7) {
+            switch(i) {
+                case 0:
+                    c=Color.BLACK;
+                    break;
+                case 7:
+                    c=Color.WHITE;
+                    break;
+            }
+            chessMatrix[i][0].setCurrentChessPiece(new Rook(c));
+            chessMatrix[i][1].setCurrentChessPiece(new Knight(c));
+            chessMatrix[i][2].setCurrentChessPiece(new Bishop(c));
+            chessMatrix[i][3].setCurrentChessPiece(new Queen(c));
+            chessMatrix[i][4].setCurrentChessPiece(new King(c));
+            chessMatrix[i][5].setCurrentChessPiece(new Bishop(c));                
+            chessMatrix[i][6].setCurrentChessPiece(new Knight(c));
+            chessMatrix[i][7].setCurrentChessPiece(new Rook(c));   
         }
-        chessMatrix[0][2].setCurrentChessPiece(new Bishop(Color.BLACK));
-        chessMatrix[0][5].setCurrentChessPiece(new Bishop(Color.BLACK));
-        chessMatrix[0][0].setCurrentChessPiece(new Rook(Color.BLACK));
-        chessMatrix[0][7].setCurrentChessPiece(new Rook(Color.BLACK));
+        
     }
     private int calculatePositionDifference(int c1, int c2){
         

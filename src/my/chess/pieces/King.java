@@ -11,20 +11,17 @@ import java.awt.Color;
  *
  * @author bruce
  */
-public class Rook extends ChessPiece {
+public class King extends ChessPiece {
 
-    public Rook(Color figureColor) {
-        super("W", figureColor);
+    public King(Color figureColor) {
+        super("K", figureColor);
     }
 
     @Override
     public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
-//        System.out.println("X1: "+x1+
-//           " Y1: "+y1+
-//           " X2: "+x2+
-//           " Y2: "+y2);
-        return (Math.abs(x1-x2)>0 && Math.abs(y1-y2)==0) 
-                || (Math.abs(x1-x2)==0 && Math.abs(y1-y2)>0);
+        return (Math.abs(x1-x2) == 1 && Math.abs(y1-y2) == 1 ) 
+                || (Math.abs(x1-x2)==1 && Math.abs(y1-y2)==0) 
+                || (Math.abs(x1-x2)==0 && Math.abs(y1-y2)==1);
     }
     
 }
