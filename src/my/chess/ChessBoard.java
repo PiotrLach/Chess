@@ -56,8 +56,12 @@ public class ChessBoard extends JPanel{
             for (int j=0;j<8; j++) {                
                 if (chessMatrix[i][j].contains(p) 
                     && chessMatrix[i][j].isHighlighted()==false
-                    && chessMatrix[i][j].getCurrentChessPiece()==null
                     && selectedChessPiece!=null
+                    && (chessMatrix[i][j].getCurrentChessPiece()==null || 
+                                (chessMatrix[i][j].getCurrentChessPiece()!=null
+                                    && selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece() ) 
+                                )
+                        )                    
                     && selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)
                     && pathIsFree(sourceI, sourceJ, i,j)
                     )
@@ -108,53 +112,55 @@ public class ChessBoard extends JPanel{
 //        System.out.println("Yes");
         int nullCount=0;
         boolean result;//=false;
-        if (x1<x2) {
-            for (int i = x1; i <= x2; i++) {                       
-                if (y1>y2) {
-                    for (int j = y1; j>= y2; j--) {
-                        if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)                            
-                            && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
-                            result=chessMatrix[i][j].getCurrentChessPiece()!=null;                           
-                            if (result) nullCount++;
-                            System.out.println(result+" "+i+" "+j);
-                        }                        
+        if (!(selectedChessPiece instanceof Knight)) {                    
+            if (x1<x2) {
+                for (int i = x1; i <= x2; i++) {                       
+                    if (y1>y2) {
+                        for (int j = y1; j>= y2; j--) {
+                            if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)                            
+                                && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
+                                result=chessMatrix[i][j].getCurrentChessPiece()!=null && !(selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece()));                                                          
+                                if (result) nullCount++;
+                                System.out.println(result+" "+i+" "+j);
+                            }                        
+                        }
                     }
-                }
-                else {
-                    for (int j = y1; j<=y2; j++) {           
-                        if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)//){
-                            && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
-                            result=chessMatrix[i][j].getCurrentChessPiece()!=null;                            
-                            if (result) nullCount++;
-                            System.out.println(result+" "+i+" "+j);
-                        }                        
+                    else {
+                        for (int j = y1; j<=y2; j++) {           
+                            if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)//){
+                                && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
+                                result=chessMatrix[i][j].getCurrentChessPiece()!=null && !(selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece()));                           
+                                if (result) nullCount++;
+                                System.out.println(result+" "+i+" "+j);
+                            }                        
+                        }
                     }
                 }
             }
-        }
-        else {
-            for (int i = x1; i >= x2; i--) {           
-                if (y1>y2) {
-                    for (int j = y1; j>= y2; j--) {           
-                        if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)//){
-                            && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
-                            result=chessMatrix[i][j].getCurrentChessPiece()!=null;                            
-                            if (result) nullCount++;
-                            System.out.println(result+" "+i+" "+j);
-                        }                        
+            else {
+                for (int i = x1; i >= x2; i--) {           
+                    if (y1>y2) {
+                        for (int j = y1; j>= y2; j--) {           
+                            if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)//){
+                                && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
+                                result=chessMatrix[i][j].getCurrentChessPiece()!=null && !(selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece()));                           
+                                if (result) nullCount++;
+                                System.out.println(result+" "+i+" "+j);
+                            }                        
+                        }
                     }
-                }
-                else {
-                    for (int j = y1; j<=y2; j++) {           
-                        if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)//){
-                            && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
-                            result=chessMatrix[i][j].getCurrentChessPiece()!=null;                            
-                            if (result) nullCount++;
-                            System.out.println(result+" "+i+" "+j);
-                        }                        
+                    else {
+                        for (int j = y1; j<=y2; j++) {           
+                            if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)//){
+                                && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
+                                result=chessMatrix[i][j].getCurrentChessPiece()!=null && !(selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece()));                           
+                                if (result) nullCount++;
+                                System.out.println(result+" "+i+" "+j);
+                            }                        
+                        }
                     }
-                }
-            }            
+                }            
+            }
         }
         System.out.println("/////////////////////");
         return nullCount == 0;

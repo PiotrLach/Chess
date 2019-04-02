@@ -21,14 +21,19 @@ abstract public class ChessPiece {
         this.chessPieceName = chessPieceName;
         this.figureColor = figureColor;
     }
-//    abstract public boolean captureConditionFullfilled();
-    abstract public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2);
     public void drawPieceSymbol(Graphics g, int x, int y) {        
         g.setColor(figureColor);
         Font myFont = new Font("Times New Roman", Font.BOLD, 40);
         g.setFont(myFont);
         g.drawString(chessPieceName, x+30, y+50);
-    }    
-    
+    }        
+    protected Color getFigureColor() {
+        return figureColor;
+    }
+    public boolean isFoe(ChessPiece cp) {        
+        return cp.getFigureColor()!=figureColor;
+    }
+    abstract public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2);
+//    abstract public boolean captureConditionFullfilled();    
     
 }
