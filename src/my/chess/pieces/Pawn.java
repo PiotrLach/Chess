@@ -19,11 +19,18 @@ public class Pawn extends ChessPiece{
 
     @Override
     public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
-        System.out.println("X1: "+x1+
-                   " Y1: "+y1+
-                   " X2: "+x2+
-                   " Y2: "+y2);
-        return Math.abs(x1-x2)==1 && Math.abs(y1-y2)==0;
+//        System.out.println("X1: "+x1+
+//                   " Y1: "+y1+
+//                   " X2: "+x2+
+//                   " Y2: "+y2);
+        if (x1==1 || x1==6) {
+            return (Math.abs(x1-x2)==1 && Math.abs(y1-y2)==0)
+                    ||
+                    (Math.abs(x1-x2)==2 && Math.abs(y1-y2)==0);
+        }
+        else {
+            return Math.abs(x1-x2)==1 && Math.abs(y1-y2)==0;
+        }
     }   
 
 }
