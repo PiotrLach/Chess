@@ -76,6 +76,8 @@ public class ChessBoard extends JPanel{
                             castPawn.checkDiagonalLeft(chessMatrix[sourceI+1][sourceJ-1]);
                         if(sourceJ!=7)
                             castPawn.checkDiagonalRight(chessMatrix[sourceI+1][sourceJ+1]);
+                        if (sourceI!=0 && sourceI!=7)
+                            castPawn.checkStraightAhead(chessMatrix[sourceI+1][sourceJ]);
                         if (castPawn.movementConditionFullfilled(sourceI, sourceJ, i, j)) {
                             chessMatrix[i][j].setCurrentChessPiece(castPawn);
                             selectedChessPiece=null;                    
@@ -212,9 +214,16 @@ public class ChessBoard extends JPanel{
         }
         Color c = null;
         for (int i=0; i<8; i++) {            
-            chessMatrix[1][i].setCurrentChessPiece(new Pawn(Color.BLACK,1));
-            chessMatrix[6][i].setCurrentChessPiece(new Pawn(Color.WHITE,6));
+            chessMatrix[1][i].setCurrentChessPiece(new Pawn(Color.BLACK,1));            
         }        
+        chessMatrix[6][0].setCurrentChessPiece(new Pawn(Color.WHITE,6));
+        chessMatrix[6][1].setCurrentChessPiece(new Pawn(Color.WHITE,6));
+        chessMatrix[6][2].setCurrentChessPiece(new Pawn(Color.WHITE,6));
+        chessMatrix[6][3].setCurrentChessPiece(new Pawn(Color.WHITE,6));
+        chessMatrix[2][4].setCurrentChessPiece(new Pawn(Color.WHITE,6));
+        chessMatrix[6][5].setCurrentChessPiece(new Pawn(Color.WHITE,6));
+        chessMatrix[2][6].setCurrentChessPiece(new Pawn(Color.WHITE,6));
+        chessMatrix[6][7].setCurrentChessPiece(new Pawn(Color.WHITE,6));
         for (int i=0; i<=7; i+=7) {
             switch(i) {
                 case 0:

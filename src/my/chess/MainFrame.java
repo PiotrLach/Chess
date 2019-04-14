@@ -35,11 +35,9 @@ public class MainFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 640));
 
-        mainChessBoard.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        mainChessBoard.setMinimumSize(new java.awt.Dimension(640, 640));
         mainChessBoard.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                chessBoardAction(evt);
+                mainChessBoardMouseClicked(evt);
             }
         });
 
@@ -47,11 +45,11 @@ public class MainFrame extends javax.swing.JFrame {
         mainChessBoard.setLayout(mainChessBoardLayout);
         mainChessBoardLayout.setHorizontalGroup(
             mainChessBoardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 821, Short.MAX_VALUE)
+            .addGap(0, 993, Short.MAX_VALUE)
         );
         mainChessBoardLayout.setVerticalGroup(
             mainChessBoardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 792, Short.MAX_VALUE)
+            .addGap(0, 794, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -60,12 +58,12 @@ public class MainFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(mainChessBoard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(182, Short.MAX_VALUE))
+                .addComponent(mainChessBoard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(mainChessBoard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -74,7 +72,7 @@ public class MainFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void chessBoardAction(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chessBoardAction
+    private void mainChessBoardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mainChessBoardMouseClicked
         if (evt.getButton()==MouseEvent.BUTTON3){
             Point p = evt.getPoint();
             mainChessBoard.chooseBoardPiece(p);
@@ -83,7 +81,7 @@ public class MainFrame extends javax.swing.JFrame {
             Point p = evt.getPoint();
             mainChessBoard.moveBoardPiece(p);
         }
-    }//GEN-LAST:event_chessBoardAction
+    }//GEN-LAST:event_mainChessBoardMouseClicked
 
     /**
      * @param args the command line arguments
