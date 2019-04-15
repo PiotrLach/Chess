@@ -93,7 +93,7 @@ public class Pawn extends ChessPiece{
             right*=-1;
         }
         return      ( (x2-x1==oneMovement && Math.abs(y1-y2)==0) && straightAheadIsNotOccupied )
-                ||  ( (x1==startingX && x2-x1==twoMovements && Math.abs(y1-y2)==0) && twoMovementsAvailable )
+                ||  ( (x1==startingX && x2-x1==twoMovements && Math.abs(y1-y2)==0) && twoMovementsAvailable & straightAheadIsNotOccupied)
                 ||  ( (x2-x1==oneMovement && y2-y1==left ) && diagonalLeftIsOccupied)
                 ||  ( (x2-x1==oneMovement && y2-y1==right ) && diagonalRightIsOccupied )                
                 ;
