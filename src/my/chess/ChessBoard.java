@@ -71,15 +71,10 @@ public class ChessBoard extends JPanel{
                     )
                 {   
                     if (selectedChessPiece instanceof Pawn) {
-                        Pawn castPawn = (Pawn) selectedChessPiece;
-                        if(sourceJ!=0)
-                            castPawn.checkDiagonalLeft(chessMatrix[sourceI+1][sourceJ-1]);
-                        if(sourceJ!=7)
-                            castPawn.checkDiagonalRight(chessMatrix[sourceI+1][sourceJ+1]);
-                        if (sourceI!=0 && sourceI!=7)
-                            castPawn.checkStraightAhead(chessMatrix[sourceI+1][sourceJ]);
-                        if (castPawn.movementConditionFullfilled(sourceI, sourceJ, i, j)) {
-                            chessMatrix[i][j].setCurrentChessPiece(castPawn);
+                        Pawn selectedPawn = (Pawn) selectedChessPiece;
+                        selectedPawn.checkBoardConditions(chessMatrix, sourceI, sourceJ);
+                        if (selectedPawn.movementConditionFullfilled(sourceI, sourceJ, i, j)) {
+                            chessMatrix[i][j].setCurrentChessPiece(selectedPawn);
                             selectedChessPiece=null;                    
                             flag=true;                    
                         }

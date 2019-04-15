@@ -18,8 +18,7 @@ public class Pawn extends ChessPiece{
         STRAIGHT_AHEAD,
         DIAGONAL_LEFT,
         DIAGONAL_RIGHT;
-    }
-    private boolean[] conditions;
+    }    
     private boolean diagonalLeftIsOccupied, diagonalRightIsOccupied, straightAheadIsNotOccupied;
     private boolean twoMovementsAvailable;
     private int startingX;
@@ -27,11 +26,10 @@ public class Pawn extends ChessPiece{
     public Pawn(Color figureColor, int startingX) {
         super("P", figureColor);
         twoMovementsAvailable=true;
-        this.startingX=startingX;
-        conditions = new boolean[3];
+        this.startingX=startingX;        
     }
-    public void checkAvailableMovement(Movement m, ChessField c){ 
-        switch(m){
+    private void checkAvailableMovement(Movement m, ChessField c){ 
+        switch(m) {
             case STRAIGHT_AHEAD:
                 straightAheadIsNotOccupied=c.getCurrentChessPiece()==null;
                 break;
@@ -43,13 +41,42 @@ public class Pawn extends ChessPiece{
                 break;
         }
     }
-    public void checkDiagonalLeft(ChessField c){
+    public void checkBoardConditions(ChessField[][] chessMatrix, int x, int y) {
+        int leftBoundary, rightBoundary, topBoundary;
+        int forwardMovement, diagonalLeftMovement, diagonalRightMovement;
+        if (startingX==1) {
+            leftBoundary=0;
+            rightBoundary=7;
+            topBoundary=7;
+            forwardMovement=1;
+            diagonalLeftMovement=-1;
+            diagonalRightMovement=1;
+        }
+        else {
+            leftBoundary=7;
+            rightBoundary=0;
+            topBoundary=0;                        
+            forwardMovement=-1;
+            diagonalLeftMovement=1;
+            diagonalRightMovement=-1;
+        }            
+        if (y!=leftBoundary)
+            checkDiagonalLeft(chessMatrix[x+forwardMovement][y+diagonalLeftMovement]);
+        if (y!=rightBoundary)
+            checkDiagonalRight(chessMatrix[x+forwardMovement][y+diagonalRightMovement]);
+        if (x!=topBoundary)
+            checkStraightAhead(chessMatrix[x+forwardMovement][y]);
+//        System.out.println(x+forwardMovement+" "+(y+diagonalRightMovement));
+    }
+    private void checkDiagonalLeft(ChessField c){
         diagonalLeftIsOccupied=c.getCurrentChessPiece()!=null && this.isFoe(c.getCurrentChessPiece());
+//        System.out.println("checkDiagonalLeft "+diagonalLeftIsOccupied);
     }
-    public void checkDiagonalRight(ChessField c){
+    private void checkDiagonalRight(ChessField c){
         diagonalRightIsOccupied=c.getCurrentChessPiece()!=null && this.isFoe(c.getCurrentChessPiece());
+//        System.out.println("checkDiagonalRight "+diagonalRightIsOccupied);
     }
-    public void checkStraightAhead(ChessField c){
+    private void checkStraightAhead(ChessField c){
         straightAheadIsNotOccupied=c.getCurrentChessPiece()==null;
     }
     @Override
@@ -58,37 +85,18 @@ public class Pawn extends ChessPiece{
 //                   " Y1: "+y1+
 //                   " X2: "+x2+
 //                   " Y2: "+y2);
-        if (startingX==1) {
-            
+        int twoMovements=2, oneMovement=1, left=-1, right=1;
+        if (startingX==6) {
+            twoMovements*=-1;
+            oneMovement*=-1;
+            left*=-1;
+            right*=-1;
         }
-        else {
-            
-        }
-        return ( (x2-x1==1 && Math.abs(y1-y2)==0) && straightAheadIsNotOccupied)
-                || ((x1==1 || x1==6) && (x2-x1==2 && Math.abs(y1-y2)==0) && twoMovementsAvailable)
-                || ( (Math.abs(x1-x2)==1 && Math.abs(y1-y2)==1 ) && (diagonalLeftIsOccupied || diagonalRightIsOccupied ))
+        return      ( (x2-x1==oneMovement && Math.abs(y1-y2)==0) && straightAheadIsNotOccupied )
+                ||  ( (x1==startingX && x2-x1==twoMovements && Math.abs(y1-y2)==0) && twoMovementsAvailable )
+                ||  ( (x2-x1==oneMovement && y2-y1==left ) && diagonalLeftIsOccupied)
+                ||  ( (x2-x1==oneMovement && y2-y1==right ) && diagonalRightIsOccupied )                
                 ;
-//        if (straightAheadIsNotOccupied) {
-//            if (startingX==1) 
-//                return x2-x1==1 && Math.abs(y1-y2)==0;
-//            else
-//                return x2-x1==-1 && Math.abs(y1-y2)==0;
-//        }
-//        else if ((x1==1 || x1==6) && twoMovementsAvailable) {
-//            twoMovementsAvailable=false;
-//            return (Math.abs(x1-x2)==1 && Math.abs(y1-y2)==0)
-//                    ||
-//                    (Math.abs(x1-x2)==2 && Math.abs(y1-y2)==0);
-//        }
-//        else if (diagonalLeftIsOccupied || diagonalRightIsOccupied ) {
-//            return Math.abs(x1-x2)==1 && Math.abs(y1-y2)==1;
-////            if (diagonalLeftIsOccupied)
-////                return Math.abs(x1-x2)==1 && y2-y1==-1;
-////            else 
-////                return Math.abs(x1-x2)==1 && y2-y1==1;
-//        }                
-//        else 
-//            return Math.abs(x1-x2)==0 && Math.abs(y1-y2)==0;
     }   
 
 }
