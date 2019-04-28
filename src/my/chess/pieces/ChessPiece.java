@@ -27,7 +27,7 @@ abstract public class ChessPiece {
         g.setFont(myFont);
         g.drawString(chessPieceName, x+30, y+50);
     }        
-    protected Color getFigureColor() {
+    public Color getFigureColor() {
         return figureColor;
     }
     public boolean isFoe(ChessPiece cp) {        

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import my.chess.pieces.Bishop;
@@ -25,18 +26,35 @@ import my.chess.pieces.Rook;
  */
 public class ChessBoard extends JPanel{    
     private int sourceI=-1, sourceJ=-1;
-    private ChessField[][] chessMatrix;  
+    private final ChessField[][] chessMatrix;  
     private ChessPiece selectedChessPiece;
+    private Player playerBlack;
+    private Player playerWhite;
+    private Color currentColor;
     public ChessBoard() {        
         chessMatrix=new ChessField[8][8];                
-        createBoardElements();
+        currentColor=Color.WHITE;
+        createFields();
+        setPieces();
+    }
+    public void selectAndMove(MouseEvent evt){
+        if (evt.getButton()==MouseEvent.BUTTON3){
+            Point p = evt.getPoint();
+            chooseBoardPiece(p);
+        }
+        else if (evt.getButton()==MouseEvent.BUTTON1){
+            Point p = evt.getPoint();
+            moveBoardPiece(p);
+        }
     }
     public void chooseBoardPiece(Point p){        
         for (int i=0; i<8;i++) {
             for (int j=0;j<8; j++) {                
                 if (chessMatrix[i][j].contains(p) 
                     && chessMatrix[i][j].isHighlighted()==false
-                    && chessMatrix[i][j].getCurrentChessPiece()!=null)
+                    && chessMatrix[i][j].getCurrentChessPiece()!=null
+                    && currentColor == chessMatrix[i][j].getCurrentChessPiece().getFigureColor()
+                        )
                 {                    
                     chessMatrix[i][j].setHighlighted(true);
                     selectedChessPiece=chessMatrix[i][j].getCurrentChessPiece();
@@ -54,9 +72,9 @@ public class ChessBoard extends JPanel{
         boolean flag=false;
         for (int i=0; i<8;i++) {
             for (int j=0;j<8; j++) {                
-                if (chessMatrix[i][j].contains(p) 
-                    && chessMatrix[i][j].isHighlighted()==false
-                    && selectedChessPiece!=null
+                if (selectedChessPiece!=null
+                    && chessMatrix[i][j].contains(p) 
+                    && chessMatrix[i][j].isHighlighted()==false                    
                     && 
                       (
                         chessMatrix[i][j].getCurrentChessPiece()==null 
@@ -76,15 +94,15 @@ public class ChessBoard extends JPanel{
                         if (selectedPawn.movementConditionFullfilled(sourceI, sourceJ, i, j)) {
                             chessMatrix[i][j].setCurrentChessPiece(selectedPawn);
                             selectedChessPiece=null;                    
-                            flag=true;                    
-                        }
+                            flag=true;
+                        }                        
                     }
                     else {
                         if (selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)) {
                             chessMatrix[i][j].setCurrentChessPiece(selectedChessPiece);
                             selectedChessPiece=null;                    
                             flag=true;                    
-                        }
+                        }                        
                     }
 //                    System.out.print("Horizontal difference:"+calculatePositionDifference(i, sourceI)+" Vertical difference:");
 //                    System.out.println(calculatePositionDifference(j, sourceJ));
@@ -95,9 +113,16 @@ public class ChessBoard extends JPanel{
                 }            
             }
         }
-        if (sourceI >= 0 && sourceJ >= 0 && flag==true) {
+        //if (sourceI >= 0 && sourceJ >= 0 && flag==true) {
+        if (flag==true) {
+            if (currentColor==Color.WHITE) {
+                currentColor=Color.BLACK;                        
+            }
+            else {
+                currentColor=Color.WHITE;                    
+            }
             chessMatrix[sourceI][sourceJ].setCurrentChessPiece(null);
-            sourceI=-1; sourceJ=-1;
+            //sourceI=-1; sourceJ=-1;
         }
         repaint();
     }
@@ -190,7 +215,7 @@ public class ChessBoard extends JPanel{
         System.out.println("/////////////////////");
         return nullCount == 0;
     }
-    private void createBoardElements(){
+    private void createFields(){
         int x=0,y=0;
         for (int i=640; i>0; i-=80)
         {            
@@ -206,7 +231,12 @@ public class ChessBoard extends JPanel{
             x++;
             if (x==8) 
                 x=0;
-        }
+        }                
+    }
+    private void setPlayerPieces() {
+        
+    }
+    private void setPieces() {
         Color c = null;
         for (int i=0; i<8; i++) {            
             chessMatrix[1][i].setCurrentChessPiece(new Pawn(Color.BLACK,1));            
@@ -230,27 +260,6 @@ public class ChessBoard extends JPanel{
             chessMatrix[i][6].setCurrentChessPiece(new Knight(c));
             chessMatrix[i][7].setCurrentChessPiece(new Rook(c));   
         }
-        
-    }
-    private int calculatePositionDifference(int c1, int c2){
-        
-        return Math.abs(c1-c2);        
-    }
-
-    public ChessField[][] getChessMatrix() {
-        return chessMatrix;
-    }
-
-    public void setChessMatrix(ChessField[][] chessMatrix) {
-        this.chessMatrix = chessMatrix;
-    }
-
-    public ChessPiece getSelectedChessPiece() {
-        return selectedChessPiece;
-    }
-
-    public void setSelectedChessPiece(ChessPiece selectedChessPiece) {
-        this.selectedChessPiece = selectedChessPiece;
     }
     
 }

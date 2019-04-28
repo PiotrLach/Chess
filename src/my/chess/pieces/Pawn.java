@@ -17,15 +17,17 @@ public class Pawn extends ChessPiece{
     public enum Movement{
         STRAIGHT_AHEAD,
         DIAGONAL_LEFT,
-        DIAGONAL_RIGHT;
+        DIAGONAL_RIGHT,
+        TWO_FIELDS_AHEAD;
     }    
-    private boolean diagonalLeftIsOccupied, diagonalRightIsOccupied, straightAheadIsNotOccupied;
-    private boolean twoMovementsAvailable;
-    private int startingX;
+    private boolean diagonalLeftIsOccupied, diagonalRightIsOccupied, straightAheadIsNotOccupied,
+            twoFieldsAheadIsNotOccupied;
+//    private boolean twoMovementsAvailable;
+    private final int startingX;
     
     public Pawn(Color figureColor, int startingX) {
         super("P", figureColor);
-        twoMovementsAvailable=true;
+//        twoMovementsAvailable=true;
         this.startingX=startingX;        
     }
     private void checkAvailableMovement(Movement m, ChessField c){ 
@@ -33,17 +35,21 @@ public class Pawn extends ChessPiece{
             case STRAIGHT_AHEAD:
                 straightAheadIsNotOccupied=c.getCurrentChessPiece()==null;
                 break;
+            case TWO_FIELDS_AHEAD:
+                twoFieldsAheadIsNotOccupied=c.getCurrentChessPiece()==null;
+                break;
             case DIAGONAL_LEFT:
                 diagonalRightIsOccupied=c.getCurrentChessPiece()!=null && this.isFoe(c.getCurrentChessPiece());
                 break;
             case DIAGONAL_RIGHT:
                 diagonalRightIsOccupied=c.getCurrentChessPiece()!=null && this.isFoe(c.getCurrentChessPiece());
-                break;
+                break;            
         }
     }
     public void checkBoardConditions(ChessField[][] chessMatrix, int x, int y) {
         int leftBoundary, rightBoundary, topBoundary;
         int forwardMovement, diagonalLeftMovement, diagonalRightMovement;
+        int twoFieldsForwardMovement;
         if (startingX==1) {
             leftBoundary=0;
             rightBoundary=7;
@@ -51,6 +57,7 @@ public class Pawn extends ChessPiece{
             forwardMovement=1;
             diagonalLeftMovement=-1;
             diagonalRightMovement=1;
+            twoFieldsForwardMovement=2;
         }
         else {
             leftBoundary=7;
@@ -59,13 +66,16 @@ public class Pawn extends ChessPiece{
             forwardMovement=-1;
             diagonalLeftMovement=1;
             diagonalRightMovement=-1;
+            twoFieldsForwardMovement=-2;
         }            
-        if (y!=leftBoundary)
+        if (y!=leftBoundary && x!=topBoundary)
             checkDiagonalLeft(chessMatrix[x+forwardMovement][y+diagonalLeftMovement]);
-        if (y!=rightBoundary)
+        if (y!=rightBoundary && x!=topBoundary)
             checkDiagonalRight(chessMatrix[x+forwardMovement][y+diagonalRightMovement]);
         if (x!=topBoundary)
             checkStraightAhead(chessMatrix[x+forwardMovement][y]);
+        if (x==startingX) 
+            checkTwoFieldsAhead(chessMatrix[x+twoFieldsForwardMovement][y]);        
 //        System.out.println(x+forwardMovement+" "+(y+diagonalRightMovement));
     }
     private void checkDiagonalLeft(ChessField c){
@@ -78,6 +88,9 @@ public class Pawn extends ChessPiece{
     }
     private void checkStraightAhead(ChessField c){
         straightAheadIsNotOccupied=c.getCurrentChessPiece()==null;
+    }
+    private void checkTwoFieldsAhead(ChessField c){
+        twoFieldsAheadIsNotOccupied=c.getCurrentChessPiece()==null;
     }
     @Override
     public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
@@ -93,7 +106,7 @@ public class Pawn extends ChessPiece{
             right*=-1;
         }
         return      ( (x2-x1==oneMovement && Math.abs(y1-y2)==0) && straightAheadIsNotOccupied )
-                ||  ( (x1==startingX && x2-x1==twoMovements && Math.abs(y1-y2)==0) && twoMovementsAvailable & straightAheadIsNotOccupied)
+                ||  ( (x1==startingX && x2-x1==twoMovements && Math.abs(y1-y2)==0) && twoFieldsAheadIsNotOccupied & straightAheadIsNotOccupied)
                 ||  ( (x2-x1==oneMovement && y2-y1==left ) && diagonalLeftIsOccupied)
                 ||  ( (x2-x1==oneMovement && y2-y1==right ) && diagonalRightIsOccupied )                
                 ;

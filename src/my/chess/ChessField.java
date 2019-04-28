@@ -44,21 +44,6 @@ public class ChessField extends Rectangle {
         this.highlighted = highlighted;
     }        
 
-    public int getMatrixCoordinateX() {
-        return matrixCoordinateX;
-    }
-
-    public void setMatrixCoordinateX(int matrixCoordinateX) {
-        this.matrixCoordinateX = matrixCoordinateX;
-    }
-
-    public int getMatrixCoordinateY() {
-        return matrixCoordinateY;
-    }
-
-    public void setMatrixCoordinateY(int matrixCoordinateY) {
-        this.matrixCoordinateY = matrixCoordinateY;
-    }
 
     public ChessPiece getCurrentChessPiece() {
         return currentChessPiece;
@@ -67,42 +52,6 @@ public class ChessField extends Rectangle {
     public void setCurrentChessPiece(ChessPiece currentChessPiece) {
         this.currentChessPiece = currentChessPiece;
     }    
-
-    @Override
-    public double getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    @Override
-    public double getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    @Override
-    public double getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    @Override
-    public double getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
     
     @Override
     public String toString(){
