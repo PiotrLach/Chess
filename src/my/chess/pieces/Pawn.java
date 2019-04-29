@@ -7,7 +7,6 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import my.chess.ChessField;
-
 /**
  *
  * @author bruce
@@ -28,7 +27,7 @@ public class Pawn extends ChessPiece{
     public Pawn(Color figureColor, int startingX) {
         super("P", figureColor);
 //        twoMovementsAvailable=true;
-        this.startingX=startingX;        
+        this.startingX=startingX;           
     }
     private void checkAvailableMovement(Movement m, ChessField c){ 
         switch(m) {
@@ -46,7 +45,7 @@ public class Pawn extends ChessPiece{
                 break;            
         }
     }
-    public void checkBoardConditions(ChessField[][] chessMatrix, int x, int y) {
+    private void checkBoardConditions(/*ChessField[][] chessMatrix,*/ int x, int y) {
         int leftBoundary, rightBoundary, topBoundary;
         int forwardMovement, diagonalLeftMovement, diagonalRightMovement;
         int twoFieldsForwardMovement;
@@ -69,13 +68,13 @@ public class Pawn extends ChessPiece{
             twoFieldsForwardMovement=-2;
         }            
         if (y!=leftBoundary && x!=topBoundary)
-            checkDiagonalLeft(chessMatrix[x+forwardMovement][y+diagonalLeftMovement]);
+            checkDiagonalLeft(my.chess.ChessBoard.chessMatrix[x+forwardMovement][y+diagonalLeftMovement]);
         if (y!=rightBoundary && x!=topBoundary)
-            checkDiagonalRight(chessMatrix[x+forwardMovement][y+diagonalRightMovement]);
+            checkDiagonalRight(my.chess.ChessBoard.chessMatrix[x+forwardMovement][y+diagonalRightMovement]);
         if (x!=topBoundary)
-            checkStraightAhead(chessMatrix[x+forwardMovement][y]);
+            checkStraightAhead(my.chess.ChessBoard.chessMatrix[x+forwardMovement][y]);
         if (x==startingX) 
-            checkTwoFieldsAhead(chessMatrix[x+twoFieldsForwardMovement][y]);        
+            checkTwoFieldsAhead(my.chess.ChessBoard.chessMatrix[x+twoFieldsForwardMovement][y]);        
 //        System.out.println(x+forwardMovement+" "+(y+diagonalRightMovement));
     }
     private void checkDiagonalLeft(ChessField c){
@@ -98,6 +97,7 @@ public class Pawn extends ChessPiece{
 //                   " Y1: "+y1+
 //                   " X2: "+x2+
 //                   " Y2: "+y2);
+        checkBoardConditions(x1,y1);
         int twoMovements=2, oneMovement=1, left=-1, right=1;
         if (startingX==6) {
             twoMovements*=-1;
