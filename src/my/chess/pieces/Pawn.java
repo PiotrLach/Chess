@@ -21,12 +21,10 @@ public class Pawn extends ChessPiece{
     }    
     private boolean diagonalLeftIsOccupied, diagonalRightIsOccupied, straightAheadIsNotOccupied,
             twoFieldsAheadIsNotOccupied;
-//    private boolean twoMovementsAvailable;
     private final int startingX;
     
     public Pawn(Color figureColor, int startingX) {
         super("P", figureColor);
-//        twoMovementsAvailable=true;
         this.startingX=startingX;           
     }
     private void checkAvailableMovement(Movement m, ChessField c){ 
@@ -45,7 +43,7 @@ public class Pawn extends ChessPiece{
                 break;            
         }
     }
-    private void checkBoardConditions(/*ChessField[][] chessMatrix,*/ int x, int y) {
+    private void checkBoardConditions(int x, int y) {
         int leftBoundary, rightBoundary, topBoundary;
         int forwardMovement, diagonalLeftMovement, diagonalRightMovement;
         int twoFieldsForwardMovement;

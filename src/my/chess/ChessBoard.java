@@ -24,13 +24,8 @@ import my.chess.pieces.Rook;
  *
  * @author bruce
  */
-public class ChessBoard extends JPanel{    
-    private int sourceI, sourceJ;
-    public static ChessField[][] chessMatrix;  
-    private ChessPiece selectedChessPiece;
-    private Player playerBlack;
-    private Player playerWhite;
-    private Color currentColor;
+public class ChessBoard extends JPanel{
+    
     public ChessBoard() {        
         chessMatrix=new ChessField[8][8];                
         currentColor=Color.WHITE;
@@ -47,7 +42,7 @@ public class ChessBoard extends JPanel{
             moveBoardPiece(p);
         }
     }
-    public void chooseBoardPiece(Point p){        
+    private void chooseBoardPiece(Point p){        
         for (int i=0; i<8;i++) {
             for (int j=0;j<8; j++) {                
                 if (chessMatrix[i][j].contains(p) 
@@ -68,7 +63,7 @@ public class ChessBoard extends JPanel{
         }
         repaint();        
     }
-    public void moveBoardPiece(Point p){
+    private void moveBoardPiece(Point p){
         boolean flag=false;
         for (int i=0; i<8;i++) {
             for (int j=0;j<8; j++) {                
@@ -83,37 +78,20 @@ public class ChessBoard extends JPanel{
                                     && selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece() ) 
                                 )
                       )                    
-//                    && selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)
+                    && selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)
                     && pathIsFree(sourceI, sourceJ, i,j)
-//                    && !(selectedChessPiece instanceof Pawn)
                     )
                 {   
-//                    if (selectedChessPiece instanceof Pawn) {
-//                        Pawn selectedPawn = (Pawn) selectedChessPiece;
-//                        selectedPawn.checkBoardConditions(/*chessMatrix,*/ sourceI, sourceJ);
-//                        if (selectedPawn.movementConditionFullfilled(sourceI, sourceJ, i, j)) {
-//                            chessMatrix[i][j].setCurrentChessPiece(selectedPawn);
-//                            selectedChessPiece=null;                    
-//                            flag=true;
-//                        }                        
-//                    }
-//                    else {
-                        if (selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)) {
-                            chessMatrix[i][j].setCurrentChessPiece(selectedChessPiece);
-                            selectedChessPiece=null;                    
-                            flag=true;                    
-                        }                        
-//                    }
-//                    System.out.print("Horizontal difference:"+calculatePositionDifference(i, sourceI)+" Vertical difference:");
-//                    System.out.println(calculatePositionDifference(j, sourceJ));
+                    chessMatrix[i][j].setCurrentChessPiece(selectedChessPiece);
+                    selectedChessPiece=null;                    
+                    flag=true;                    
                 }
                 else
                 {                    
                     chessMatrix[i][j].setHighlighted(false);
                 }            
             }
-        }
-        //if (sourceI >= 0 && sourceJ >= 0 && flag==true) {
+        }        
         if (flag==true) {
             if (currentColor==Color.WHITE) {
                 currentColor=Color.BLACK;                        
@@ -121,8 +99,7 @@ public class ChessBoard extends JPanel{
             else {
                 currentColor=Color.WHITE;                    
             }
-            chessMatrix[sourceI][sourceJ].setCurrentChessPiece(null);
-            //sourceI=-1; sourceJ=-1;
+            chessMatrix[sourceI][sourceJ].setCurrentChessPiece(null);            
         }
         repaint();
     }
@@ -152,71 +129,28 @@ public class ChessBoard extends JPanel{
 //                           " X2: "+x2+
 //                           " Y2: "+y2);
 //        System.out.println("Yes");
-        int nullCount=0;
-        boolean result;//=false;
+        int nullCount=0;        
         if (!(selectedChessPiece instanceof Knight)) {                    
             if (x1<x2) {
-                for (int i = x1; i <= x2; i++) {                       
-                    if (y1>y2) {
-                        for (int j = y1; j>= y2; j--) {
-                            nullCount+=pathIsFreeSubroutine(x1,y1,x2,y2,i,j);
-//                            if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)                            
-//                                && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
-//                                result=chessMatrix[i][j].getCurrentChessPiece()!=null;                                                          
-//                                if (result && !(i==x2 && j==y2 && selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece())))
-//                                    nullCount++;
-//                                
-//                                System.out.println(result+" "+i+" "+j+" "+nullCount);
-//                            }                        
-                        }
-                    }
-                    else {
-                        for (int j = y1; j<=y2; j++) {           
-                            nullCount+=pathIsFreeSubroutine(x1,y1,x2,y2,i,j);
-//                            if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)
-//                                && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
-//                                result=chessMatrix[i][j].getCurrentChessPiece()!=null;                           
-//                                if (result && !(i==x2 && j==y2 && selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece())))
-//                                    nullCount++;
-//                                
-//                                System.out.println(result+" "+i+" "+j+" "+nullCount);
-//                            }                        
-                        }
-                    }
-                }
+                for (int i = x1; i <= x2; i++)                       
+                    if (y1>y2)
+                        for (int j = y1; j>= y2; j--)
+                            nullCount+=pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                                        
+                    else
+                        for (int j = y1; j<=y2; j++)            
+                            nullCount+=pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                        
             }
             else {
-                for (int i = x1; i >= x2; i--) {           
-                    if (y1>y2) {
-                        for (int j = y1; j>= y2; j--) {
-                            nullCount+=pathIsFreeSubroutine(x1,y1,x2,y2,i,j);
-//                            if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)
-//                                && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
-//                                result=chessMatrix[i][j].getCurrentChessPiece()!=null;                           
-//                                if (result && !(i==x2 && j==y2 && selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece())))
-//                                    nullCount++;
-//                                
-//                                System.out.println(result+" "+i+" "+j+" "+nullCount);
-//                            }                        
-                        }
-                    }
-                    else {
-                        for (int j = y1; j<=y2; j++) {           
-                            nullCount+=pathIsFreeSubroutine(x1,y1,x2,y2,i,j);
-//                            if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)
-//                                && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
-//                                result=chessMatrix[i][j].getCurrentChessPiece()!=null;                           
-//                                if (result && !(i==x2 && j==y2 && selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece())))
-//                                    nullCount++;
-//                                
-//                                System.out.println(result+" "+i+" "+j+" "+nullCount);
-//                            }                        
-                        }
-                    }
-                }            
+                for (int i = x1; i >= x2; i--)            
+                    if (y1>y2) 
+                        for (int j = y1; j>= y2; j--) 
+                            nullCount+=pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                
+                    else 
+                        for (int j = y1; j<=y2; j++)            
+                            nullCount+=pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                        
             }
         }
-        System.out.println("/////////////////////");
+//        System.out.println("/////////////////////");
         return nullCount == 0;
     }
     private void createFields(){
@@ -236,17 +170,6 @@ public class ChessBoard extends JPanel{
             if (x==8) 
                 x=0;
         }                
-    }
-    private int pathIsFreeSubroutine(int x1,int y1, int x2, int y2, int i, int j) {
-        int nullCount=0;
-        if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)
-            && (i!=x1 && y1==y2) || (j!=y1 && x1==x2) || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i)))  {
-            boolean result=chessMatrix[i][j].getCurrentChessPiece()!=null;                           
-            if (result && !(i==x2 && j==y2 && selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece())))
-                nullCount++;
-            System.out.println(result+" "+i+" "+j+" "+nullCount);
-        }
-        return nullCount;
     }
     private void setPieces() {
         Color c = null;
@@ -273,5 +196,24 @@ public class ChessBoard extends JPanel{
             chessMatrix[i][7].setCurrentChessPiece(new Rook(c));   
         }
     }
-    
+    private int pathIsFreeSubroutine(int x1,int y1, int x2, int y2, int i, int j) {
+        int nullCount=0;
+        if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)
+            && (i!=x1 && y1==y2) 
+                || (j!=y1 && x1==x2) 
+                || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i))
+            )  {
+            boolean result=chessMatrix[i][j].getCurrentChessPiece()!=null;                           
+            if (result && !(i==x2 && j==y2 && selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece())))
+                nullCount++;
+//            System.out.println(result+" "+i+" "+j+" "+nullCount);
+        }
+        return nullCount;
+    }
+    public static ChessField[][] chessMatrix;  
+    private int sourceI, sourceJ;    
+    private ChessPiece selectedChessPiece;
+    private Player playerBlack;
+    private Player playerWhite;
+    private Color currentColor;
 }
