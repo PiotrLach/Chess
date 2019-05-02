@@ -13,8 +13,8 @@ import java.awt.Color;
  */
 public class Rook extends ChessPiece {
 
-    public Rook(Color figureColor) {
-        super("W", figureColor);
+    public Rook(Color figureColor, int x, int y) {
+        super("W", figureColor, x, y);
     }
 
     @Override
@@ -23,8 +23,11 @@ public class Rook extends ChessPiece {
 //           " Y1: "+y1+
 //           " X2: "+x2+
 //           " Y2: "+y2);
-        return (Math.abs(x1-x2)>0 && Math.abs(y1-y2)==0) 
-                || (Math.abs(x1-x2)==0 && Math.abs(y1-y2)>0);
+        boolean movement = (Math.abs(x1-x2)>0 && Math.abs(y1-y2)==0) 
+                            || (Math.abs(x1-x2)==0 && Math.abs(y1-y2)>0);
+        
+        updateCoordinates(movement, x2, y2);
+        return movement;
     }
     
 }

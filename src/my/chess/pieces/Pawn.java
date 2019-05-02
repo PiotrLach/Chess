@@ -23,9 +23,9 @@ public class Pawn extends ChessPiece{
             twoFieldsAheadIsNotOccupied;
     private final int startingX;
     
-    public Pawn(Color figureColor, int startingX) {
-        super("P", figureColor);
-        this.startingX=startingX;           
+    public Pawn(Color figureColor, int startingX, int y) {
+        super("P", figureColor, startingX, y);
+        this.startingX=startingX;
     }
     private void checkAvailableMovement(Movement m, ChessField c){ 
         switch(m) {
@@ -103,11 +103,12 @@ public class Pawn extends ChessPiece{
             left*=-1;
             right*=-1;
         }
-        return      ( (x2-x1==oneMovement && Math.abs(y1-y2)==0) && straightAheadIsNotOccupied )
+        boolean movement = ( (x2-x1==oneMovement && Math.abs(y1-y2)==0) && straightAheadIsNotOccupied )
                 ||  ( (x1==startingX && x2-x1==twoMovements && Math.abs(y1-y2)==0) && twoFieldsAheadIsNotOccupied & straightAheadIsNotOccupied)
                 ||  ( (x2-x1==oneMovement && y2-y1==left ) && diagonalLeftIsOccupied)
-                ||  ( (x2-x1==oneMovement && y2-y1==right ) && diagonalRightIsOccupied )                
-                ;
+                ||  ( (x2-x1==oneMovement && y2-y1==right ) && diagonalRightIsOccupied );
+        updateCoordinates(movement, x2, y2);
+        return movement;
     }   
 
 }

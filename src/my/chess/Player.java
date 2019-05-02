@@ -7,13 +7,7 @@ package my.chess;
 
 import java.awt.Color;
 import java.util.HashMap;
-import my.chess.pieces.Bishop;
-import my.chess.pieces.ChessPiece;
-import my.chess.pieces.King;
-import my.chess.pieces.Knight;
-import my.chess.pieces.Pawn;
-import my.chess.pieces.Queen;
-import my.chess.pieces.Rook;
+import my.chess.pieces.*;
 
 /**
  *
@@ -25,38 +19,39 @@ public class Player {
         initPieces();        
     }
     private void initPieces(){
-        playerPieces=new HashMap<>();
-        for(Integer i=0; i<8; i++) { 
+//    /*        
+        playerPieces=new HashMap<>();        
+        for(int i=0; i<8; i++) { 
+            playerPieces.put( "Pawn"+i+playerColor, new Pawn(playerColor, startingRowPawns, i) );
             if(i < 1) {
-                playerPieces.put( "King", new King(playerColor) );
-                playerPieces.put( "Queen", new Queen(playerColor) );
-            }
-            if(i < 2) {
-                playerPieces.put( "Knight"+i.toString(), new Knight(playerColor) );
-                playerPieces.put( "Bishop"+i.toString(), new Bishop(playerColor) );
-                playerPieces.put( "Rook"+i.toString(), new Rook(playerColor) );
-            }
-            playerPieces.put( "Pawn"+i.toString(), new Pawn(playerColor,1) );            
+                playerPieces.put( "Rook"+i+playerColor, new Rook(playerColor, startingRowRest,0) );
+                playerPieces.put( "Knight"+i+playerColor, new Knight(playerColor, startingRowRest,1) );
+                playerPieces.put( "Bishop"+i+playerColor, new Bishop(playerColor, startingRowRest,2) );                
+                playerPieces.put( "Queen"+i+playerColor, new Queen(playerColor, startingRowRest, 3) );
+                playerPieces.put( "King"+i+playerColor, new King(playerColor, startingRowRest, 4) );                
+                playerPieces.put( "Bishop"+i+playerColor, new Bishop(playerColor, startingRowRest,5) );                
+                playerPieces.put( "Knight"+i+playerColor, new Knight(playerColor, startingRowRest,6) );
+                playerPieces.put( "Rook"+i+playerColor, new Rook(playerColor, startingRowRest,7) );                                
+            }                                    
         }
-        
+//    */    
     }
     public ChessPiece getPlayerPiece (String pieceName) {
         return playerPieces.get(pieceName);
-    }
-    public Color getPlayerColor() {
-        return playerColor;
-    }
-    private static Color chooseColor(){
-        int randomColor = (int)(Math.random() * 2 + 1);
-        switch (randomColor) {
-            default:
-                return Color.WHITE;                
-            case 2:
-                return Color.BLACK;                
+    }    
+    private void startingRowPawns() {
+        if (playerColor == Color.BLACK) {  
+            startingRowPawns = 1;            
+            startingRowRest = startingRowPawns - 1;
         }
+        else {
+            startingRowPawns = 6; 
+            startingRowRest = startingRowPawns + 1;            
+        }        
     }
-
     public boolean playerTurnAvailable;
+    private int startingRowPawns;
+    private int startingRowRest;
     private Color playerColor;        
     private HashMap<String, ChessPiece> playerPieces;    
     private HashMap<String, ChessPiece> removedPieces;

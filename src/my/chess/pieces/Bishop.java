@@ -6,7 +6,6 @@
 package my.chess.pieces;
 
 import java.awt.Color;
-import my.chess.ChessField;
 
 /**
  *
@@ -15,8 +14,8 @@ import my.chess.ChessField;
 public class Bishop extends ChessPiece {
 //    @Override
 
-    public Bishop(Color figureColor) {
-        super("G", figureColor);
+    public Bishop(Color figureColor, int x, int y) {
+        super("G", figureColor, x, y);
     }    
 
     @Override
@@ -25,7 +24,9 @@ public class Bishop extends ChessPiece {
 //                   " Y1: "+y1+
 //                   " X2: "+x2+
 //                   " Y2: "+y2);
-        return Math.abs(x1-x2) == Math.abs(y1-y2);
+        boolean movement = Math.abs(x1-x2) == Math.abs(y1-y2);
+        updateCoordinates(movement, x2, y2);
+        return movement;
     }
 
     

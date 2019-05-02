@@ -13,15 +13,17 @@ import java.awt.Color;
  */
 public class King extends ChessPiece {
 
-    public King(Color figureColor) {
-        super("K", figureColor);
+    public King(Color figureColor, int x, int y) {
+        super("K", figureColor, x, y);
     }
 
     @Override
     public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
-        return (Math.abs(x1-x2) == 1 && Math.abs(y1-y2) == 1 ) 
-                || (Math.abs(x1-x2)==1 && Math.abs(y1-y2)==0) 
-                || (Math.abs(x1-x2)==0 && Math.abs(y1-y2)==1);
+        boolean movement = (Math.abs(x1-x2) == 1 && Math.abs(y1-y2) == 1 ) 
+                            || (Math.abs(x1-x2)==1 && Math.abs(y1-y2)==0) 
+                            || (Math.abs(x1-x2)==0 && Math.abs(y1-y2)==1);
+        updateCoordinates(movement, x2, y2);
+        return movement;
     }
     
 }

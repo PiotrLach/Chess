@@ -12,13 +12,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import my.chess.pieces.Bishop;
-import my.chess.pieces.Pawn;
-import my.chess.pieces.ChessPiece;
-import my.chess.pieces.King;
-import my.chess.pieces.Knight;
-import my.chess.pieces.Queen;
-import my.chess.pieces.Rook;
+import my.chess.pieces.*;
 
 /**
  *
@@ -174,8 +168,8 @@ public class ChessBoard extends JPanel{
     private void setPieces() {
         Color c = null;
         for (int i=0; i<8; i++) {            
-            chessMatrix[1][i].setCurrentChessPiece(new Pawn(Color.BLACK,1));            
-            chessMatrix[6][i].setCurrentChessPiece(new Pawn(Color.WHITE,6));
+            chessMatrix[1][i].setCurrentChessPiece(new Pawn(Color.BLACK,1,i));            
+            chessMatrix[6][i].setCurrentChessPiece(new Pawn(Color.WHITE,6,i));
         }                
         for (int i=0; i<=7; i+=7) {
             switch(i) {
@@ -186,14 +180,14 @@ public class ChessBoard extends JPanel{
                     c=Color.WHITE;
                     break;
             }
-            chessMatrix[i][0].setCurrentChessPiece(new Rook(c));
-            chessMatrix[i][1].setCurrentChessPiece(new Knight(c));
-            chessMatrix[i][2].setCurrentChessPiece(new Bishop(c));
-            chessMatrix[i][3].setCurrentChessPiece(new Queen(c));
-            chessMatrix[i][4].setCurrentChessPiece(new King(c));
-            chessMatrix[i][5].setCurrentChessPiece(new Bishop(c));                
-            chessMatrix[i][6].setCurrentChessPiece(new Knight(c));
-            chessMatrix[i][7].setCurrentChessPiece(new Rook(c));   
+            chessMatrix[i][0].setCurrentChessPiece(new Rook(c, i, 0));
+            chessMatrix[i][1].setCurrentChessPiece(new Knight(c, i, 1));
+            chessMatrix[i][2].setCurrentChessPiece(new Bishop(c, i, 2));
+            chessMatrix[i][3].setCurrentChessPiece(new Queen(c, i, 3));
+            chessMatrix[i][4].setCurrentChessPiece(new King(c, i, 4));
+            chessMatrix[i][5].setCurrentChessPiece(new Bishop(c, i, 5));                
+            chessMatrix[i][6].setCurrentChessPiece(new Knight(c, i, 6));
+            chessMatrix[i][7].setCurrentChessPiece(new Rook(c, i, 7));   
         }
     }
     private int pathIsFreeSubroutine(int x1,int y1, int x2, int y2, int i, int j) {
