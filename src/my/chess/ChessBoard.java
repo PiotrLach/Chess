@@ -20,8 +20,7 @@ import my.chess.pieces.*;
  */
 public class ChessBoard extends JPanel{
     
-    public ChessBoard() {        
-        chessMatrix=new ChessField[8][8];                
+    public ChessBoard() {              
         currentColor=Color.WHITE;
         createFields();
         setPieces();
@@ -204,7 +203,7 @@ public class ChessBoard extends JPanel{
         }
         return nullCount;
     }
-    public static ChessField[][] chessMatrix;  
+    public static ChessField[][] chessMatrix = new ChessField[8][8];                ;  
     private int sourceI, sourceJ;    
     private ChessPiece selectedChessPiece;
     private Player playerBlack;

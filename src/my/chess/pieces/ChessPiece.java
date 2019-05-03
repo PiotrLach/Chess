@@ -38,6 +38,12 @@ abstract public class ChessPiece {
             updateY(y2);
         }
     }
+    public int getX(){
+        return x;
+    }
+    public int getY(){
+        return y;
+    }
     private void updateX(int x){
         this.x=x;
     }
