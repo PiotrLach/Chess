@@ -17,8 +17,8 @@ import java.awt.Rectangle;
 public class ChessField extends Rectangle {
     
     private ChessPiece currentChessPiece;
-    private int matrixCoordinateX;
-    private int matrixCoordinateY;
+    private final int matrixCoordinateX;
+    private final int matrixCoordinateY;
     private boolean  highlighted;
     public ChessField(int x, int y, int width, int height, int matrixCoordinateX,
                       int matrixCoordinateY) {
