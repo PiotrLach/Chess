@@ -43,7 +43,7 @@ public class ChessBoard extends JPanel{
     }
     private void sqlConnection(String myQuery, QueryType q) {
         Connection c = null;        
-
+        ResultSet rs = null;
         Connection connection = null;
         try
         {
@@ -56,32 +56,31 @@ public class ChessBoard extends JPanel{
                     statement.executeUpdate(myQuery);
                     break;
                 case SELECT:
-                    ResultSet rs = statement.executeQuery(myQuery);
+                    rs = statement.executeQuery(myQuery);
                     while(rs.next())
                     {
-                      // read the result set
-                        /*
-                        switch(r.getString()
-                        */
-                        if(rs.getString("piece") != null)
-                            chessMatrix[rs.getInt("x")][rs.getInt("y")].setCurrentChessPiece(choosePiece(rs.getInt("piece")));
+                        setLoadedGamePieces(rs.getString("piece"),rs.getInt("x"),rs.getInt("y"));
+//                        if(rs.getString("piece") != null)
+//                            chessMatrix[rs.getInt("x")][rs.getInt("y")].setCurrentChessPiece(choosePiece(rs.getInt("piece")));
+//                        read the result set                        
 //                        System.out.println("x = " + rs.getInt("x"));
 //                        System.out.println("y = " + rs.getInt("y"));
 //                        System.out.println("piece = " + rs.getString("piece"));
 //                        System.out.println("game = " + rs.getInt("game"));
                     }
                     break;
+                case SELECT_GAME_ID:
+//                    System.out.println(myQuery);
+                    rs = statement.executeQuery(myQuery);
+//                    ResultSetMetaData rsmd = rs.getMetaData();
+//                    String name = rsmd.getColumnName(1);
+//                    System.out.println(name);
+                    while(rs.next())
+                    {                        
+                        gameID = rs.getInt("MAX(gameID)");                        
+                    }                    
+                    break;
             }            
-//            statement.executeUpdate("create table person (id integer, name string)");
-//            statement.executeUpdate("insert into person values(1, 'leo')");
-//            statement.executeUpdate("insert into person values(2, 'yui')");
-//            ResultSet rs = statement.executeQuery("select * from person");
-//            while(rs.next())
-//            {
-//              // read the result set
-//                System.out.println("name = " + rs.getString("name"));
-//                System.out.println("id = " + rs.getInt("id"));
-//            }
         }
         catch(SQLException e)
         {
@@ -102,7 +101,6 @@ public class ChessBoard extends JPanel{
                 System.err.println(e);
             }
         }
-
     }
     public void selectAndMove(MouseEvent evt){
         if (evt.getButton()==MouseEvent.BUTTON3){
@@ -276,35 +274,50 @@ public class ChessBoard extends JPanel{
                     chessMatrix[i][7].setCurrentChessPiece(new Rook(c));   
                 }
                 break;
-            case SAVED:
-                break;
         }                
         repaint();
     }
-    private int parseColorValue(ChessPiece p) {
-        if (p.getFigureColor() == Color.BLACK) 
+    private int parseColorValue(Color c) {
+        if (c == Color.BLACK) 
             return 0;        
         else 
             return 1;
     }
+    private void parseIntValue(int i) {
+        if (i == 0) 
+            currentColor = Color.BLACK;
+        else 
+            currentColor = Color.WHITE;
+    }
+    private void setLoadedGamePieces(String pieceID, int x, int y) {        
+        if(pieceID != null) {
+//            System.out.println(x+" "+ y +" " +Integer.parseInt(pieceID));
+            chessMatrix[x][y].setCurrentChessPiece(choosePiece(Integer.parseInt(pieceID)));
+        }
+    }
     public void loadGame() {
         clearBoard();
-        String selectChessFields = "SELECT x, y, piece FROM chessFields";
-        sqlConnection(selectChessFields, QueryType.SELECT);
+        getGameIDfromDB();
+        String selectChessFields = "SELECT x, y, piece FROM chessFields WHERE game="+gameID+";";
+        sqlConnection(selectChessFields, QueryType.SELECT);        
+    }
+    private void getGameIDfromDB() {
+        String selectMaxGameID = "SELECT MAX(gameID) FROM games;"; 
+        sqlConnection(selectMaxGameID, QueryType.SELECT_GAME_ID);
     }
     public void saveGame() {        
         String selectPieceID; 
         String insertFields = "";
-        String insertNewGame = "INSERT INTO games VALUES((SELECT MAX(gameID) FROM games)+1,0);";
-//        String selectMaxGameID = "SELECT MAX (gameID) FROM games;";
-        int gameID = 1;
+        String insertNewGame = "INSERT INTO games VALUES((SELECT MAX(gameID) FROM games)+1,"+parseColorValue(currentColor)+");";        
+        getGameIDfromDB();
+        gameID++;
         for (int x=0; x<8; x++) {             
             for (int y=0; y<8; y++) {
                 if (chessMatrix[x][y].getCurrentChessPiece() != null) {
                     selectPieceID = "(SELECT pieceID FROM chessPieces WHERE pieceName = '" 
                                     + chessMatrix[x][y].getCurrentChessPiece().getChessPieceName() 
                                     + "' AND pieceColor = " 
-                                    + parseColorValue(chessMatrix[x][y].getCurrentChessPiece()) 
+                                    + parseColorValue(chessMatrix[x][y].getCurrentChessPiece().getFigureColor()) 
                                     + ")";
                     insertFields += "INSERT INTO chessFields VALUES ("
                                     + "(SELECT MAX(chessFieldID) FROM chessFields)+1,"
@@ -378,6 +391,7 @@ public class ChessBoard extends JPanel{
     private Player playerBlack;
     private Player playerWhite;
     private Color currentColor;
+    private int gameID = 1;
     public static enum GameState { NEW, SAVED };
-    public static enum QueryType { OTHER, SELECT };
+    public static enum QueryType { OTHER, SELECT, SELECT_GAME_ID };
 }
