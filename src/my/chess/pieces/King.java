@@ -13,8 +13,8 @@ import java.awt.Color;
  */
 public class King extends ChessPiece {
 
-    public King(Color figureColor, int x, int y) {
-        super("K", figureColor, x, y);
+    public King(Color figureColor/*, int x, int y*/) {
+        super("K", figureColor/*, x, y*/);
     }
 
     @Override
@@ -22,7 +22,7 @@ public class King extends ChessPiece {
         boolean movement = (Math.abs(x1-x2) == 1 && Math.abs(y1-y2) == 1 ) 
                             || (Math.abs(x1-x2)==1 && Math.abs(y1-y2)==0) 
                             || (Math.abs(x1-x2)==0 && Math.abs(y1-y2)==1);
-        updateCoordinates(movement, x2, y2);
+        //updateCoordinates(movement, x2, y2);
         return movement;
     }
     

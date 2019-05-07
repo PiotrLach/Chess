@@ -5,8 +5,6 @@
  */
 package my.chess;
 
-import java.awt.Point;
-import java.awt.event.MouseEvent;
 
 /**
  *
@@ -66,6 +64,11 @@ public class MainFrame extends javax.swing.JFrame {
         });
 
         gameSaveButton.setText("Save current game");
+        gameSaveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gameSaveButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout mainMenuPanelLayout = new javax.swing.GroupLayout(mainMenuPanel);
         mainMenuPanel.setLayout(mainMenuPanelLayout);
@@ -153,7 +156,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_mainChessBoardMouseClicked
 
     private void gameStartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameStartButtonActionPerformed
-        mainChessBoard.setPieces();
+        mainChessBoard.setPieces(ChessBoard.GameState.NEW);
         jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_gameStartButtonActionPerformed
 
@@ -162,8 +165,13 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_gameExitButtonActionPerformed
 
     private void gameLoadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameLoadButtonActionPerformed
-        // TODO add your handling code here:
+        mainChessBoard.loadGame();
+        jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_gameLoadButtonActionPerformed
+
+    private void gameSaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameSaveButtonActionPerformed
+        mainChessBoard.saveGame();
+    }//GEN-LAST:event_gameSaveButtonActionPerformed
 
     /**
      * @param args the command line arguments

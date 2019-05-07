@@ -24,17 +24,17 @@ public class Player {
         
     */
         for(int i=0; i<8; i++) { 
-            playerPieces.add(  new Pawn(playerColor, startingRowPawns, i) );
-            if(i < 1) {
-                playerPieces.add(  new Rook(playerColor, startingRowRest,0) );
-                playerPieces.add(  new Knight(playerColor, startingRowRest,1) );
-                playerPieces.add(  new Bishop(playerColor, startingRowRest,2) );                
-                playerPieces.add(  new Queen(playerColor, startingRowRest, 3) );
-                playerPieces.add(  new King(playerColor, startingRowRest, 4) );                
-                playerPieces.add(  new Bishop(playerColor, startingRowRest,5) );                
-                playerPieces.add(  new Knight(playerColor, startingRowRest,6) );
-                playerPieces.add(  new Rook(playerColor, startingRowRest,7) );                                
-            }                                    
+//            playerPieces.add(  new Pawn(playerColor, startingRowPawns, i) );
+//            if(i < 1) {
+//                playerPieces.add(  new Rook(playerColor, startingRowRest,0) );
+//                playerPieces.add(  new Knight(playerColor, startingRowRest,1) );
+//                playerPieces.add(  new Bishop(playerColor, startingRowRest,2) );                
+//                playerPieces.add(  new Queen(playerColor, startingRowRest, 3) );
+//                playerPieces.add(  new King(playerColor, startingRowRest, 4) );                
+//                playerPieces.add(  new Bishop(playerColor, startingRowRest,5) );                
+//                playerPieces.add(  new Knight(playerColor, startingRowRest,6) );
+//                playerPieces.add(  new Rook(playerColor, startingRowRest,7) );                                
+//            }                                    
         }
     
     }  

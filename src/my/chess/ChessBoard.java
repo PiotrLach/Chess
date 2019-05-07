@@ -21,8 +21,7 @@ import java.sql.*;
  */
 public class ChessBoard extends JPanel{
     
-    public ChessBoard() {              
-        currentColor=Color.WHITE;
+    public ChessBoard() {                      
         createFields();
 //        createNewDatabase("test.db");
 //        setPieces();
@@ -42,28 +41,47 @@ public class ChessBoard extends JPanel{
             System.out.println(e.getMessage());
         }
     }
-    public void sqlConnection() {
-        Connection c = null;
+    private void sqlConnection(String myQuery, QueryType q) {
+        Connection c = null;        
 
         Connection connection = null;
         try
         {
             // create a database connection
-            connection = DriverManager.getConnection("jdbc:sqlite:test.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:db/chess.db");
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);  // set timeout to 30 sec.
-
-            statement.executeUpdate("drop table if exists person");
-            statement.executeUpdate("create table person (id integer, name string)");
-            statement.executeUpdate("insert into person values(1, 'leo')");
-            statement.executeUpdate("insert into person values(2, 'yui')");
-            ResultSet rs = statement.executeQuery("select * from person");
-            while(rs.next())
-            {
-              // read the result set
-                System.out.println("name = " + rs.getString("name"));
-                System.out.println("id = " + rs.getInt("id"));
-            }
+            switch (q) {
+                case OTHER:
+                    statement.executeUpdate(myQuery);
+                    break;
+                case SELECT:
+                    ResultSet rs = statement.executeQuery(myQuery);
+                    while(rs.next())
+                    {
+                      // read the result set
+                        /*
+                        switch(r.getString()
+                        */
+                        if(rs.getString("piece") != null)
+                            chessMatrix[rs.getInt("x")][rs.getInt("y")].setCurrentChessPiece(choosePiece(rs.getInt("piece")));
+//                        System.out.println("x = " + rs.getInt("x"));
+//                        System.out.println("y = " + rs.getInt("y"));
+//                        System.out.println("piece = " + rs.getString("piece"));
+//                        System.out.println("game = " + rs.getInt("game"));
+                    }
+                    break;
+            }            
+//            statement.executeUpdate("create table person (id integer, name string)");
+//            statement.executeUpdate("insert into person values(1, 'leo')");
+//            statement.executeUpdate("insert into person values(2, 'yui')");
+//            ResultSet rs = statement.executeQuery("select * from person");
+//            while(rs.next())
+//            {
+//              // read the result set
+//                System.out.println("name = " + rs.getString("name"));
+//                System.out.println("id = " + rs.getInt("id"));
+//            }
         }
         catch(SQLException e)
         {
@@ -162,12 +180,10 @@ public class ChessBoard extends JPanel{
         super.paint(g);         
         for (int i=0; i<8;i++) {
             for (int j=0;j<8; j++) {
-                if (chessMatrix[i][j].isHighlighted()) {                    
-                    chessMatrix[i][j].highlightChessField(g);                                            
-                }    
-                else {
-                    chessMatrix[i][j].drawChessField(g);
-                }    
+                if (chessMatrix[i][j].isHighlighted())                     
+                    chessMatrix[i][j].highlightChessField(g);                                                                                
+                else                     
+                    chessMatrix[i][j].drawChessField(g);                
                 if (chessMatrix[i][j].getCurrentChessPiece()!=null) {
                     Double x = chessMatrix[i][j].getX();
                     Double y = chessMatrix[i][j].getY();
@@ -189,19 +205,19 @@ public class ChessBoard extends JPanel{
                 for (int i = x1; i <= x2; i++)                       
                     if (y1>y2)
                         for (int j = y1; j>= y2; j--)
-                            nullCount+=pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                                        
+                            nullCount += pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                                        
                     else
                         for (int j = y1; j<=y2; j++)            
-                            nullCount+=pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                        
+                            nullCount += pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                        
             }
             else {
                 for (int i = x1; i >= x2; i--)            
                     if (y1>y2) 
                         for (int j = y1; j>= y2; j--) 
-                            nullCount+=pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                
+                            nullCount += pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                
                     else 
                         for (int j = y1; j<=y2; j++)            
-                            nullCount+=pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                        
+                            nullCount += pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                        
             }
         }
 //        System.out.println("/////////////////////");
@@ -225,31 +241,92 @@ public class ChessBoard extends JPanel{
                 x=0;
         }                
     }
-    public void setPieces() {
+    private void clearBoard() {
+        currentColor=Color.WHITE;
+        for (int i=0; i<8; i++)             
+            for (int j=0; j<8; j++) 
+                chessMatrix[i][j].setCurrentChessPiece(null);
+    }
+    public void setPieces(GameState g) {
+        
         Color c = null;
-        for (int i=0; i<8; i++) {            
-            chessMatrix[1][i].setCurrentChessPiece(new Pawn(Color.BLACK,1,i));            
-            chessMatrix[6][i].setCurrentChessPiece(new Pawn(Color.WHITE,6,i));
+        clearBoard();
+        switch(g) {
+            case NEW:                
+                for (int i=0; i<8; i++) {            
+                    chessMatrix[1][i].setCurrentChessPiece(new Pawn(Color.BLACK));            
+                    chessMatrix[6][i].setCurrentChessPiece(new Pawn(Color.WHITE));
+                }                
+                for (int i=0; i<=7; i+=7) {
+                    switch(i) {
+                        case 0:
+                            c=Color.BLACK;
+                            break;
+                        case 7:
+                            c=Color.WHITE;
+                            break;
+                    }
+                    chessMatrix[i][0].setCurrentChessPiece(new Rook(c));
+                    chessMatrix[i][1].setCurrentChessPiece(new Knight(c));
+                    chessMatrix[i][2].setCurrentChessPiece(new Bishop(c));
+                    chessMatrix[i][3].setCurrentChessPiece(new Queen(c));
+                    chessMatrix[i][4].setCurrentChessPiece(new King(c));
+                    chessMatrix[i][5].setCurrentChessPiece(new Bishop(c));                
+                    chessMatrix[i][6].setCurrentChessPiece(new Knight(c));
+                    chessMatrix[i][7].setCurrentChessPiece(new Rook(c));   
+                }
+                break;
+            case SAVED:
+                break;
         }                
-        for (int i=0; i<=7; i+=7) {
-            switch(i) {
-                case 0:
-                    c=Color.BLACK;
-                    break;
-                case 7:
-                    c=Color.WHITE;
-                    break;
-            }
-            chessMatrix[i][0].setCurrentChessPiece(new Rook(c, i, 0));
-            chessMatrix[i][1].setCurrentChessPiece(new Knight(c, i, 1));
-            chessMatrix[i][2].setCurrentChessPiece(new Bishop(c, i, 2));
-            chessMatrix[i][3].setCurrentChessPiece(new Queen(c, i, 3));
-            chessMatrix[i][4].setCurrentChessPiece(new King(c, i, 4));
-            chessMatrix[i][5].setCurrentChessPiece(new Bishop(c, i, 5));                
-            chessMatrix[i][6].setCurrentChessPiece(new Knight(c, i, 6));
-            chessMatrix[i][7].setCurrentChessPiece(new Rook(c, i, 7));   
-        }
         repaint();
+    }
+    private int parseColorValue(ChessPiece p) {
+        if (p.getFigureColor() == Color.BLACK) 
+            return 0;        
+        else 
+            return 1;
+    }
+    public void loadGame() {
+        clearBoard();
+        String selectChessFields = "SELECT x, y, piece FROM chessFields";
+        sqlConnection(selectChessFields, QueryType.SELECT);
+    }
+    public void saveGame() {        
+        String selectPieceID; 
+        String insertFields = "";
+        String insertNewGame = "INSERT INTO games VALUES((SELECT MAX(gameID) FROM games)+1,0);";
+//        String selectMaxGameID = "SELECT MAX (gameID) FROM games;";
+        int gameID = 1;
+        for (int x=0; x<8; x++) {             
+            for (int y=0; y<8; y++) {
+                if (chessMatrix[x][y].getCurrentChessPiece() != null) {
+                    selectPieceID = "(SELECT pieceID FROM chessPieces WHERE pieceName = '" 
+                                    + chessMatrix[x][y].getCurrentChessPiece().getChessPieceName() 
+                                    + "' AND pieceColor = " 
+                                    + parseColorValue(chessMatrix[x][y].getCurrentChessPiece()) 
+                                    + ")";
+                    insertFields += "INSERT INTO chessFields VALUES ("
+                                    + "(SELECT MAX(chessFieldID) FROM chessFields)+1,"
+                                    + x + ","
+                                    + y + ","
+                                    + selectPieceID + ","
+                                    + gameID 
+                                    + ");\n";                    
+                }
+                else {
+                    insertFields += "INSERT INTO chessFields (x, y, game) VALUES ("
+                                    + x + ","
+                                    + y + ","
+                                    + gameID 
+                                    + ");\n";
+                }
+            }
+        }
+        insertNewGame += insertFields;
+        sqlConnection(insertNewGame, QueryType.OTHER);
+//        System.out.println(insertFields);
+//        System.out.println(ctr);
     }
     private int pathIsFreeSubroutine(int x1,int y1, int x2, int y2, int i, int j) {
         int nullCount=0;
@@ -265,11 +342,42 @@ public class ChessBoard extends JPanel{
         }
         return nullCount;
     }
+    private ChessPiece choosePiece(int num) {
+        switch (num) {
+            default:
+                return null;
+            case 0:
+                return new Pawn(Color.BLACK);
+            case 1:
+                return new Rook(Color.BLACK);
+            case 2:
+                return new Bishop(Color.BLACK);
+            case 3:
+                return new Knight(Color.BLACK);
+            case 4:
+                return new Queen(Color.BLACK);
+            case 5:
+                return new King(Color.BLACK);
+            case 6:
+                return new Pawn(Color.WHITE);
+            case 7:
+                return new Rook(Color.WHITE);
+            case 8:
+                return new Bishop(Color.WHITE);
+            case 9:
+                return new Knight(Color.WHITE);
+            case 10:
+                return new Queen(Color.WHITE);
+            case 11:
+                return new King(Color.WHITE);                
+        }
+    }
     public static ChessField[][] chessMatrix = new ChessField[8][8];                ;  
     private int sourceI, sourceJ;    
     private ChessPiece selectedChessPiece;
     private Player playerBlack;
     private Player playerWhite;
     private Color currentColor;
-    private enum Game { New, Saved };
+    public static enum GameState { NEW, SAVED };
+    public static enum QueryType { OTHER, SELECT };
 }

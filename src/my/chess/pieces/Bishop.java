@@ -14,8 +14,8 @@ import java.awt.Color;
 public class Bishop extends ChessPiece {
 //    @Override
 
-    public Bishop(Color figureColor, int x, int y) {
-        super("G", figureColor, x, y);
+    public Bishop(Color figureColor/*, int x, int y*/) {
+        super("G", figureColor/*, x, y*/);
     }    
 
     @Override
@@ -25,7 +25,7 @@ public class Bishop extends ChessPiece {
 //                   " X2: "+x2+
 //                   " Y2: "+y2);
         boolean movement = Math.abs(x1-x2) == Math.abs(y1-y2);
-        updateCoordinates(movement, x2, y2);
+        //updateCoordinates(movement, x2, y2);
         return movement;
     }
 
