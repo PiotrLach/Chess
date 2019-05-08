@@ -35,7 +35,13 @@ public class MainFrame extends javax.swing.JFrame {
         gameExitButton = new javax.swing.JButton();
         gameSaveButton = new javax.swing.JButton();
         mainChessBoard = new my.chess.ChessBoard();
-        savesPanel = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        savesPanel1 = new my.chess.SavesPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 640));
@@ -81,7 +87,7 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(gameStartButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(gameLoadButton, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
                     .addComponent(gameExitButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(406, Short.MAX_VALUE))
+                .addContainerGap(341, Short.MAX_VALUE))
         );
         mainMenuPanelLayout.setVerticalGroup(
             mainMenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -94,7 +100,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(gameLoadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(gameExitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(311, Short.MAX_VALUE))
+                .addContainerGap(225, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Main menu", mainMenuPanel);
@@ -110,27 +116,37 @@ public class MainFrame extends javax.swing.JFrame {
         mainChessBoard.setLayout(mainChessBoardLayout);
         mainChessBoardLayout.setHorizontalGroup(
             mainChessBoardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1055, Short.MAX_VALUE)
+            .addGap(0, 990, Short.MAX_VALUE)
         );
         mainChessBoardLayout.setVerticalGroup(
             mainChessBoardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 803, Short.MAX_VALUE)
+            .addGap(0, 717, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Game", mainChessBoard);
 
-        javax.swing.GroupLayout savesPanelLayout = new javax.swing.GroupLayout(savesPanel);
-        savesPanel.setLayout(savesPanelLayout);
-        savesPanelLayout.setHorizontalGroup(
-            savesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1057, Short.MAX_VALUE)
-        );
-        savesPanelLayout.setVerticalGroup(
-            savesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 805, Short.MAX_VALUE)
-        );
+        jPanel2.setLayout(new java.awt.GridLayout());
 
-        jTabbedPane1.addTab("Saves Panel", savesPanel);
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        jScrollPane1.setViewportView(savesPanel1);
+
+        jPanel2.add(jScrollPane1);
+
+        jPanel1.setLayout(new java.awt.GridLayout(3, 1, 20, 20));
+
+        jButton1.setText("Load");
+        jPanel1.add(jButton1);
+
+        jButton2.setText("Save");
+        jPanel1.add(jButton2);
+
+        jButton3.setText("Delete");
+        jPanel1.add(jButton3);
+
+        jPanel2.add(jPanel1);
+
+        jTabbedPane1.addTab("Saves", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -214,9 +230,15 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton gameLoadButton;
     private javax.swing.JButton gameSaveButton;
     private javax.swing.JButton gameStartButton;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private my.chess.ChessBoard mainChessBoard;
     private javax.swing.JPanel mainMenuPanel;
-    private javax.swing.JPanel savesPanel;
+    private my.chess.SavesPanel savesPanel1;
     // End of variables declaration//GEN-END:variables
 }
