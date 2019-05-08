@@ -26,9 +26,9 @@ public class ChessBoard extends JPanel{
 //        createNewDatabase("test.db");
 //        setPieces();
     }
-    public void createNewDatabase(String fileName) {
+    public void createNewDatabase() {
  
-        String url = "jdbc:sqlite:/home/bruce/Dokumenty/TestDatabase/" + fileName;
+        String url = "jdbc:sqlite:db/chess.db";
  
         try (Connection conn = DriverManager.getConnection(url)) {
             if (conn != null) {
@@ -55,7 +55,7 @@ public class ChessBoard extends JPanel{
                 case OTHER:
                     statement.executeUpdate(myQuery);
                     break;
-                case SELECT:
+                case SELECT_CHESS_FIELDS:
                     rs = statement.executeQuery(myQuery);
                     while(rs.next())
                     {
@@ -78,6 +78,17 @@ public class ChessBoard extends JPanel{
                     while(rs.next())
                     {                        
                         gameID = rs.getInt("MAX(gameID)");                        
+                    }                    
+                    break;
+                case SELECT_GAME_COLOR:
+//                    System.out.println(myQuery);
+                    rs = statement.executeQuery(myQuery);
+//                    ResultSetMetaData rsmd = rs.getMetaData();
+//                    String name = rsmd.getColumnName(1);
+//                    System.out.println(name);
+                    while(rs.next())
+                    {                        
+                        currentColor = parseIntValue(rs.getInt("currentColor"));                        
                     }                    
                     break;
             }            
@@ -283,11 +294,11 @@ public class ChessBoard extends JPanel{
         else 
             return 1;
     }
-    private void parseIntValue(int i) {
+    private Color parseIntValue(int i) {
         if (i == 0) 
-            currentColor = Color.BLACK;
+            return Color.BLACK;
         else 
-            currentColor = Color.WHITE;
+            return Color.WHITE;
     }
     private void setLoadedGamePieces(String pieceID, int x, int y) {        
         if(pieceID != null) {
@@ -298,12 +309,17 @@ public class ChessBoard extends JPanel{
     public void loadGame() {
         clearBoard();
         getGameIDfromDB();
+        getGameColorFromDB();
         String selectChessFields = "SELECT x, y, piece FROM chessFields WHERE game="+gameID+";";
-        sqlConnection(selectChessFields, QueryType.SELECT);        
+        sqlConnection(selectChessFields, QueryType.SELECT_CHESS_FIELDS);        
     }
     private void getGameIDfromDB() {
         String selectMaxGameID = "SELECT MAX(gameID) FROM games;"; 
         sqlConnection(selectMaxGameID, QueryType.SELECT_GAME_ID);
+    }
+    private void getGameColorFromDB() {
+        String selectMaxGameID = "SELECT currentColor FROM games WHERE gameID = "+gameID+";"; 
+        sqlConnection(selectMaxGameID, QueryType.SELECT_GAME_COLOR);
     }
     public void saveGame() {        
         String selectPieceID; 
@@ -393,5 +409,5 @@ public class ChessBoard extends JPanel{
     private Color currentColor;
     private int gameID = 1;
     public static enum GameState { NEW, SAVED };
-    public static enum QueryType { OTHER, SELECT, SELECT_GAME_ID };
+    public static enum QueryType { OTHER, SELECT_CHESS_FIELDS, SELECT_GAME_ID, SELECT_GAME_COLOR };
 }
