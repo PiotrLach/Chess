@@ -45,7 +45,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 640));
-        setPreferredSize(new java.awt.Dimension(1024, 768));
         setResizable(false);
 
         gameStartButton.setText("Start a new game");
@@ -125,7 +124,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Game", mainChessBoard);
 
-        jPanel2.setLayout(new java.awt.GridLayout());
+        jPanel2.setLayout(new java.awt.GridLayout(1, 0));
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -136,9 +135,14 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1.setLayout(new java.awt.GridLayout(3, 1, 20, 20));
 
         jButton1.setText("Load");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         jPanel1.add(jButton1);
 
-        jButton2.setText("Save");
+        jButton2.setText("Overwrite selected");
         jPanel1.add(jButton2);
 
         jButton3.setText("Delete");
@@ -181,13 +185,22 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_gameExitButtonActionPerformed
 
     private void gameLoadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameLoadButtonActionPerformed
-        mainChessBoard.loadGame();
-        jTabbedPane1.setSelectedIndex(1);
+//        mainChessBoard.loadGame();
+//        jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_gameLoadButtonActionPerformed
 
     private void gameSaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameSaveButtonActionPerformed
         mainChessBoard.saveGame();
+        savesPanel1.clearUI();       
+        savesPanel1.initUI();
+        jTabbedPane1.setSelectedIndex(2);
     }//GEN-LAST:event_gameSaveButtonActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Integer i = savesPanel1.getSelected();
+        mainChessBoard.loadGame(i);
+        jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
