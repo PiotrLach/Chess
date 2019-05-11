@@ -7,6 +7,8 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import my.chess.ChessField;
+import my.chess.ChessBoard;
+
 /**
  *
  * @author bruce
@@ -71,14 +73,14 @@ public class Pawn extends ChessPiece{
             diagonalRightMovement=-1;
             twoFieldsForwardMovement=-2;
         }            
-        if (y!=leftBoundary && x!=topBoundary)
-            checkDiagonalLeft(my.chess.ChessBoard.chessMatrix[x+forwardMovement][y+diagonalLeftMovement]);
+        if (y!=leftBoundary && x!=topBoundary)            
+            checkDiagonalLeft(ChessBoard.getChessMatrixField(x+forwardMovement,y+diagonalLeftMovement));
         if (y!=rightBoundary && x!=topBoundary)
-            checkDiagonalRight(my.chess.ChessBoard.chessMatrix[x+forwardMovement][y+diagonalRightMovement]);
+            checkDiagonalRight(ChessBoard.getChessMatrixField(x+forwardMovement,y+diagonalRightMovement));
         if (x!=topBoundary)
-            checkStraightAhead(my.chess.ChessBoard.chessMatrix[x+forwardMovement][y]);
+            checkStraightAhead(ChessBoard.getChessMatrixField(x+forwardMovement,y));
         if (x==startingX) 
-            checkTwoFieldsAhead(my.chess.ChessBoard.chessMatrix[x+twoFieldsForwardMovement][y]);        
+            checkTwoFieldsAhead(ChessBoard.getChessMatrixField(x+twoFieldsForwardMovement,y));        
 //        System.out.println(x+forwardMovement+" "+(y+diagonalRightMovement));
     }
     private void checkDiagonalLeft(ChessField c){

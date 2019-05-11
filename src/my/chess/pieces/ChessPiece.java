@@ -32,24 +32,6 @@ abstract public class ChessPiece {
     public boolean isFoe(ChessPiece cp) {        
         return cp.getFigureColor()!=figureColor;
     }
-//    protected void updateCoordinates(boolean mov, int x2, int y2) {
-//        if (mov) {
-//            updateX(x2);
-//            updateY(y2);
-//        }
-//    }
-//    public int getX(){
-//        return x;
-//    }
-//    public int getY(){
-//        return y;
-//    }
-//    private void updateX(int x){
-//        this.x=x;
-//    }
-//    private void updateY(int y){
-//        this.y=y;
-//    }
     public String getChessPieceName () {
         return chessPieceName;
     }

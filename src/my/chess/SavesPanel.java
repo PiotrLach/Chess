@@ -12,9 +12,8 @@ import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import my.chess.Database.QueryType;
-import static my.chess.ChessBoard.chessMatrix;
+import static my.chess.ChessBoard.setChessMatrixField;
 import my.chess.pieces.ChessPiece;
-import my.chess.ChessBoard;
 //import my.chess.Database.*;
 /**
  *
@@ -49,10 +48,10 @@ public class SavesPanel extends JPanel {
         updateUI();
     }
     private void clearBoard() {                
-        ChessBoard.currentColor = Color.WHITE;        
+        ChessBoard.setCurrentColor(Color.WHITE);;        
         for (int i=0; i<8; i++)             
-            for (int j=0; j<8; j++) 
-                chessMatrix[i][j].setCurrentChessPiece(null);
+            for (int j=0; j<8; j++)
+                setChessMatrixField(i, j, null);                
     }
     public void loadSavedGame() {
         Integer i = getSelected();
@@ -68,16 +67,16 @@ public class SavesPanel extends JPanel {
     public void saveNewGame() {        
         String selectPieceID; 
         String insertFields = "";
-        String insertNewGame = "INSERT INTO games VALUES((SELECT MAX(gameID) FROM games)+1,"+parseColorValue(ChessBoard.currentColor)+");";        
+        String insertNewGame = "INSERT INTO games VALUES((SELECT MAX(gameID) FROM games)+1,"+parseColorValue(ChessBoard.getCurrentColor())+");";        
         getGameIDfromDB();
         Database.gameID++;
         for (int x=0; x<8; x++) {             
             for (int y=0; y<8; y++) {
-                if (chessMatrix[x][y].getCurrentChessPiece() != null) {
+                if (ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece() != null) {
                     selectPieceID = "(SELECT pieceID FROM chessPieces WHERE pieceName = '" 
-                                    + chessMatrix[x][y].getCurrentChessPiece().getChessPieceName() 
+                                    + ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece().getChessPieceName() 
                                     + "' AND pieceColor = " 
-                                    + parseColorValue(chessMatrix[x][y].getCurrentChessPiece().getFigureColor()) 
+                                    + parseColorValue(ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece().getFigureColor()) 
                                     + ")";
                     insertFields += "INSERT INTO chessFields VALUES ("
                                     + "(SELECT MAX(chessFieldID) FROM chessFields)+1,"
@@ -115,12 +114,12 @@ public class SavesPanel extends JPanel {
     public void updateDatabaseRecord(){ 
         Integer gameID = getSelected();
         String s = "";
-        s += "UPDATE games SET currentColor ="+parseColorValue(ChessBoard.currentColor)+" WHERE gameID="+gameID.toString()+";";
+        s += "UPDATE games SET currentColor ="+parseColorValue(ChessBoard.getCurrentColor())+" WHERE gameID="+gameID.toString()+";";
         for (int i=0; i<8; i++) {             
             for (int j=0; j<8; j++) {
-                if (chessMatrix[i][j].getCurrentChessPiece() != null) {
+                if (ChessBoard.getChessMatrixField(i, j).getCurrentChessPiece() != null) {
                     s += "UPDATE chessFields "
-                        + "SET piece="+pieceIntValue(chessMatrix[i][j].getCurrentChessPiece()).toString()
+                        + "SET piece="+pieceIntValue(ChessBoard.getChessMatrixField(i, j).getCurrentChessPiece()).toString()
                         +" WHERE x="+i+" AND y="+j+" AND game ="+gameID+";";
                 }
                 else {

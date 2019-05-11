@@ -89,7 +89,7 @@ public class Database {
 //                    System.out.println(name);
                     while(rs.next())
                     {                                                
-                        ChessBoard.currentColor = parseIntValue(rs.getInt("currentColor"));
+                        ChessBoard.setCurrentColor(parseIntValue(rs.getInt("currentColor")));
 //                        System.out.println(rs.getInt("currentColor"));
                     }                    
                     break;
@@ -124,9 +124,9 @@ public class Database {
     private static void setLoadedGamePieces(String pieceID, int x, int y) {        
         if(pieceID != null) {
 //            System.out.println(x+" "+ y +" " +Integer.parseInt(pieceID));
-            ChessBoard.chessMatrix[x][y].setCurrentChessPiece(choosePiece(Integer.parseInt(pieceID)));            
+            ChessBoard.setChessMatrixField(x, y, choosePiece(Integer.parseInt(pieceID)));            
         }
-        ChessBoard.chessMatrix[x][y].setHighlighted(false);
+        ChessBoard.getChessMatrixField(x, y).setHighlighted(false);
     }
     private static ChessPiece choosePiece(int num) {
         switch (num) {

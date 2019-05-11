@@ -22,8 +22,7 @@ import my.chess.pieces.*;
 public class ChessBoard extends JPanel{
     
     public ChessBoard() {                      
-        createFields();
-        setCurrentColor(Color.RED);
+        createFields();        
 //        createNewDatabase("test.db");
 //        setPieces();
     }    
@@ -218,11 +217,24 @@ public class ChessBoard extends JPanel{
         else 
             throw new IllegalArgumentException("Current color can only be black or white");
     }
-    public static Color getCurrentColor(Color c)  {
+    public static Color getCurrentColor()  {
         return currentColor;
     }
-    public static ChessField[][] chessMatrix = new ChessField[8][8];                ;  
+    public static ChessField getChessMatrixField(int x, int y) throws IllegalArgumentException {
+        if (x < 8 && y < 8) 
+            return chessMatrix[x][y];
+        else 
+            throw new IllegalArgumentException("Columns and rows indices cannot exceed 7");
+    }
+    public static void setChessMatrixField(int x, int y, ChessPiece cp) throws IllegalArgumentException {
+        if (x < 8 && y < 8) 
+            chessMatrix[x][y].setCurrentChessPiece(cp);
+        else 
+            throw new IllegalArgumentException("Columns and rows indices cannot exceed 7");
+    }
+    private static ChessField[][] chessMatrix = new ChessField[8][8];
+    private static Color currentColor;            
     private int sourceI, sourceJ;    
     private ChessPiece selectedChessPiece;
-    public static Color currentColor;            
+    
 }
