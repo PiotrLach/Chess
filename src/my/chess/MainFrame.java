@@ -31,17 +31,17 @@ public class MainFrame extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         mainMenuPanel = new javax.swing.JPanel();
         gameStartButton = new javax.swing.JButton();
-        gameLoadButton = new javax.swing.JButton();
+        gameManageSavesButton = new javax.swing.JButton();
         gameExitButton = new javax.swing.JButton();
-        gameSaveButton = new javax.swing.JButton();
         mainChessBoard = new my.chess.ChessBoard();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         savesPanel1 = new my.chess.SavesPanel();
         jPanel1 = new javax.swing.JPanel();
-        manageSavesLOAD = new javax.swing.JButton();
-        manageSavesOVERWRITE = new javax.swing.JButton();
-        manageSavesDELETE = new javax.swing.JButton();
+        manageSavesLoad = new javax.swing.JButton();
+        manageSavesOverwrite = new javax.swing.JButton();
+        manageSavesDelete = new javax.swing.JButton();
+        manageSavesNewSave = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 640));
@@ -54,10 +54,10 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        gameLoadButton.setText("Load previous game");
-        gameLoadButton.addActionListener(new java.awt.event.ActionListener() {
+        gameManageSavesButton.setText("Manage saves");
+        gameManageSavesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                gameLoadButtonActionPerformed(evt);
+                gameManageSavesButtonActionPerformed(evt);
             }
         });
 
@@ -68,38 +68,29 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        gameSaveButton.setText("Save current game");
-        gameSaveButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                gameSaveButtonActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout mainMenuPanelLayout = new javax.swing.GroupLayout(mainMenuPanel);
         mainMenuPanel.setLayout(mainMenuPanelLayout);
         mainMenuPanelLayout.setHorizontalGroup(
             mainMenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainMenuPanelLayout.createSequentialGroup()
                 .addGap(428, 428, 428)
-                .addGroup(mainMenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(gameSaveButton, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
-                    .addComponent(gameStartButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(gameLoadButton, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
-                    .addComponent(gameExitButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(mainMenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(gameManageSavesButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(mainMenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(gameStartButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(gameExitButton, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)))
                 .addContainerGap(341, Short.MAX_VALUE))
         );
         mainMenuPanelLayout.setVerticalGroup(
             mainMenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainMenuPanelLayout.createSequentialGroup()
-                .addGap(109, 109, 109)
+                .addGap(121, 121, 121)
                 .addComponent(gameStartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gameSaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gameLoadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(gameManageSavesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(gameExitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(225, Short.MAX_VALUE))
+                .addContainerGap(312, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Main menu", mainMenuPanel);
@@ -132,31 +123,39 @@ public class MainFrame extends javax.swing.JFrame {
 
         jPanel2.add(jScrollPane1);
 
-        jPanel1.setLayout(new java.awt.GridLayout(3, 1, 20, 20));
+        jPanel1.setLayout(new java.awt.GridLayout(2, 2, 20, 20));
 
-        manageSavesLOAD.setText("Load");
-        manageSavesLOAD.addActionListener(new java.awt.event.ActionListener() {
+        manageSavesLoad.setText("Load");
+        manageSavesLoad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                manageSavesLOADActionPerformed(evt);
+                manageSavesLoadActionPerformed(evt);
             }
         });
-        jPanel1.add(manageSavesLOAD);
+        jPanel1.add(manageSavesLoad);
 
-        manageSavesOVERWRITE.setText("Overwrite selected");
-        manageSavesOVERWRITE.addActionListener(new java.awt.event.ActionListener() {
+        manageSavesOverwrite.setText("Overwrite selected");
+        manageSavesOverwrite.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                manageSavesOVERWRITEActionPerformed(evt);
+                manageSavesOverwriteActionPerformed(evt);
             }
         });
-        jPanel1.add(manageSavesOVERWRITE);
+        jPanel1.add(manageSavesOverwrite);
 
-        manageSavesDELETE.setText("Delete");
-        manageSavesDELETE.addActionListener(new java.awt.event.ActionListener() {
+        manageSavesDelete.setText("Delete");
+        manageSavesDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                manageSavesDELETEActionPerformed(evt);
+                manageSavesDeleteActionPerformed(evt);
             }
         });
-        jPanel1.add(manageSavesDELETE);
+        jPanel1.add(manageSavesDelete);
+
+        manageSavesNewSave.setText("New save");
+        manageSavesNewSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                manageSavesNewSaveActionPerformed(evt);
+            }
+        });
+        jPanel1.add(manageSavesNewSave);
 
         jPanel2.add(jPanel1);
 
@@ -194,30 +193,29 @@ public class MainFrame extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_gameExitButtonActionPerformed
 
-    private void gameLoadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameLoadButtonActionPerformed
-//        mainChessBoard.loadGame();
-//        jTabbedPane1.setSelectedIndex(1);
-    }//GEN-LAST:event_gameLoadButtonActionPerformed
+    private void gameManageSavesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameManageSavesButtonActionPerformed
+        jTabbedPane1.setSelectedIndex(2);       
+    }//GEN-LAST:event_gameManageSavesButtonActionPerformed
 
-    private void gameSaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameSaveButtonActionPerformed
-        mainChessBoard.saveNewGame();
+    private void manageSavesLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesLoadActionPerformed
+        Integer i = savesPanel1.getSelected();
+        savesPanel1.loadSavedGame(i);
+        jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_manageSavesLoadActionPerformed
+
+    private void manageSavesDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesDeleteActionPerformed
+        savesPanel1.deleteDatabaseRecord();
+    }//GEN-LAST:event_manageSavesDeleteActionPerformed
+
+    private void manageSavesOverwriteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesOverwriteActionPerformed
+        savesPanel1.updateDatabaseRecord();
+    }//GEN-LAST:event_manageSavesOverwriteActionPerformed
+
+    private void manageSavesNewSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesNewSaveActionPerformed
+        savesPanel1.saveNewGame();
         savesPanel1.restartUI();
         jTabbedPane1.setSelectedIndex(2);
-    }//GEN-LAST:event_gameSaveButtonActionPerformed
-
-    private void manageSavesLOADActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesLOADActionPerformed
-        Integer i = savesPanel1.getSelected();
-        mainChessBoard.loadGame(i);
-        jTabbedPane1.setSelectedIndex(1);
-    }//GEN-LAST:event_manageSavesLOADActionPerformed
-
-    private void manageSavesDELETEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesDELETEActionPerformed
-        savesPanel1.deleteDatabaseRecord();
-    }//GEN-LAST:event_manageSavesDELETEActionPerformed
-
-    private void manageSavesOVERWRITEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesOVERWRITEActionPerformed
-        savesPanel1.updateDatabaseRecord();
-    }//GEN-LAST:event_manageSavesOVERWRITEActionPerformed
+    }//GEN-LAST:event_manageSavesNewSaveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -257,8 +255,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton gameExitButton;
-    private javax.swing.JButton gameLoadButton;
-    private javax.swing.JButton gameSaveButton;
+    private javax.swing.JButton gameManageSavesButton;
     private javax.swing.JButton gameStartButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -266,9 +263,10 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private my.chess.ChessBoard mainChessBoard;
     private javax.swing.JPanel mainMenuPanel;
-    private javax.swing.JButton manageSavesDELETE;
-    private javax.swing.JButton manageSavesLOAD;
-    private javax.swing.JButton manageSavesOVERWRITE;
+    private javax.swing.JButton manageSavesDelete;
+    private javax.swing.JButton manageSavesLoad;
+    private javax.swing.JButton manageSavesNewSave;
+    private javax.swing.JButton manageSavesOverwrite;
     private my.chess.SavesPanel savesPanel1;
     // End of variables declaration//GEN-END:variables
 }

@@ -14,6 +14,7 @@ import javax.swing.JRadioButton;
 import my.chess.ChessBoard.QueryType;
 import static my.chess.ChessBoard.chessMatrix;
 import my.chess.pieces.ChessPiece;
+import my.chess.ChessBoard;
 //import my.chess.Database.*;
 /**
  *
@@ -45,6 +46,62 @@ public class SavesPanel extends JPanel {
         initUI();
         updateUI();
     }
+    private void clearBoard() {                
+        ChessBoard.currentColor = Color.WHITE;        
+        for (int i=0; i<8; i++)             
+            for (int j=0; j<8; j++) 
+                chessMatrix[i][j].setCurrentChessPiece(null);
+    }
+    public void loadSavedGame(Integer i) {
+        clearBoard();
+        getGameColorFromDB(i);
+        String selectChessFields = "SELECT x, y, piece FROM chessFields WHERE game="+i.toString()+";";
+        Database.sqlConnection(selectChessFields, QueryType.SELECT_CHESS_FIELDS); 
+    }
+    private void getGameColorFromDB(Integer i) {
+        String selectMaxGameID = "SELECT currentColor FROM games WHERE gameID = "+i.toString()+";"; 
+        Database.sqlConnection(selectMaxGameID, QueryType.SELECT_GAME_COLOR);
+    }
+    public void saveNewGame() {        
+        String selectPieceID; 
+        String insertFields = "";
+        String insertNewGame = "INSERT INTO games VALUES((SELECT MAX(gameID) FROM games)+1,"+parseColorValue(ChessBoard.currentColor)+");";        
+        getGameIDfromDB();
+        Database.gameID++;
+        for (int x=0; x<8; x++) {             
+            for (int y=0; y<8; y++) {
+                if (chessMatrix[x][y].getCurrentChessPiece() != null) {
+                    selectPieceID = "(SELECT pieceID FROM chessPieces WHERE pieceName = '" 
+                                    + chessMatrix[x][y].getCurrentChessPiece().getChessPieceName() 
+                                    + "' AND pieceColor = " 
+                                    + parseColorValue(chessMatrix[x][y].getCurrentChessPiece().getFigureColor()) 
+                                    + ")";
+                    insertFields += "INSERT INTO chessFields VALUES ("
+                                    + "(SELECT MAX(chessFieldID) FROM chessFields)+1,"
+                                    + x + ","
+                                    + y + ","
+                                    + selectPieceID + ","
+                                    + Database.gameID 
+                                    + ");\n";                    
+                }
+                else {
+                    insertFields += "INSERT INTO chessFields (x, y, game) VALUES ("
+                                    + x + ","
+                                    + y + ","
+                                    + Database.gameID 
+                                    + ");\n";
+                }
+            }
+        }
+        insertNewGame += insertFields;
+        Database.sqlConnection(insertNewGame, QueryType.OTHER);
+//        System.out.println(insertFields);
+//        System.out.println(ctr);
+    }
+    private void getGameIDfromDB() {
+        String selectMaxGameID = "SELECT MAX(gameID) FROM games;"; 
+        Database.sqlConnection(selectMaxGameID, QueryType.SELECT_MAX_GAME_ID);
+    }
     public void deleteDatabaseRecord(){
         Integer gameID = getSelected();
         String s = "DELETE FROM chessFields WHERE game ="+gameID+";\n";
@@ -55,6 +112,7 @@ public class SavesPanel extends JPanel {
     public void updateDatabaseRecord(){ 
         Integer gameID = getSelected();
         String s = "";
+        s += "UPDATE games SET currentColor ="+parseColorValue(ChessBoard.currentColor)+" WHERE gameID="+gameID.toString()+";";
         for (int i=0; i<8; i++) {             
             for (int j=0; j<8; j++) {
                 if (chessMatrix[i][j].getCurrentChessPiece() != null) {
@@ -84,6 +142,12 @@ public class SavesPanel extends JPanel {
     public SavesPanel() {
         setLayout(new GridLayout(0, 1, 5, 10));
         initUI();
+    }   
+    private int parseColorValue(Color c) {
+        if (c == Color.BLACK) 
+            return 0;        
+        else 
+            return 1;
     }
     private Integer pieceIntValue(ChessPiece cp) {
         Integer i;

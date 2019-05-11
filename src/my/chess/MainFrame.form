@@ -62,11 +62,12 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="428" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="gameSaveButton" pref="223" max="32767" attributes="0"/>
-                          <Component id="gameStartButton" max="32767" attributes="0"/>
-                          <Component id="gameLoadButton" pref="223" max="32767" attributes="0"/>
-                          <Component id="gameExitButton" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="gameManageSavesButton" alignment="1" min="-2" pref="223" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="gameStartButton" max="32767" attributes="0"/>
+                              <Component id="gameExitButton" pref="223" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace pref="341" max="32767" attributes="0"/>
                   </Group>
@@ -75,15 +76,13 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace min="-2" pref="109" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="121" max="-2" attributes="0"/>
                       <Component id="gameStartButton" min="-2" pref="93" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="gameSaveButton" min="-2" pref="93" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="gameLoadButton" min="-2" pref="86" max="-2" attributes="0"/>
+                      <Component id="gameManageSavesButton" min="-2" pref="86" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="gameExitButton" min="-2" pref="95" max="-2" attributes="0"/>
-                      <EmptySpace pref="225" max="32767" attributes="0"/>
+                      <EmptySpace pref="312" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -97,12 +96,12 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gameStartButtonActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="gameLoadButton">
+            <Component class="javax.swing.JButton" name="gameManageSavesButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Load previous game"/>
+                <Property name="text" type="java.lang.String" value="Manage saves"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gameLoadButtonActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gameManageSavesButtonActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="gameExitButton">
@@ -111,14 +110,6 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gameExitButtonActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="gameSaveButton">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Save current game"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gameSaveButtonActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
@@ -184,34 +175,42 @@
             <Container class="javax.swing.JPanel" name="jPanel1">
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                <Property name="columns" type="int" value="1"/>
+                <Property name="columns" type="int" value="2"/>
                 <Property name="horizontalGap" type="int" value="20"/>
-                <Property name="rows" type="int" value="3"/>
+                <Property name="rows" type="int" value="2"/>
                 <Property name="verticalGap" type="int" value="20"/>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JButton" name="manageSavesLOAD">
+                <Component class="javax.swing.JButton" name="manageSavesLoad">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Load"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="manageSavesLOADActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="manageSavesLoadActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="manageSavesOVERWRITE">
+                <Component class="javax.swing.JButton" name="manageSavesOverwrite">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Overwrite selected"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="manageSavesOVERWRITEActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="manageSavesOverwriteActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="manageSavesDELETE">
+                <Component class="javax.swing.JButton" name="manageSavesDelete">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Delete"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="manageSavesDELETEActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="manageSavesDeleteActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="manageSavesNewSave">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="New save"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="manageSavesNewSaveActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>
