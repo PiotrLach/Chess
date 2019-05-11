@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import my.chess.ChessBoard.QueryType;
+import my.chess.Database.QueryType;
 import static my.chess.ChessBoard.chessMatrix;
 import my.chess.pieces.ChessPiece;
 import my.chess.ChessBoard;
@@ -21,9 +21,11 @@ import my.chess.ChessBoard;
  * @author bruce
  */
 public class SavesPanel extends JPanel {
-//    private JRadioButton myRadio;
-    private ArrayList<JRadioButton> radioButtons;
-    private ButtonGroup buttonGroup;
+//    private JRadioButton myRadio;    
+    public SavesPanel() {
+        setLayout(new GridLayout(0, 1, 5, 10));
+        initUI();
+    }  
     private void initUI() {                
         radioButtons =  new ArrayList();
         buttonGroup = new ButtonGroup();
@@ -52,7 +54,8 @@ public class SavesPanel extends JPanel {
             for (int j=0; j<8; j++) 
                 chessMatrix[i][j].setCurrentChessPiece(null);
     }
-    public void loadSavedGame(Integer i) {
+    public void loadSavedGame() {
+        Integer i = getSelected();
         clearBoard();
         getGameColorFromDB(i);
         String selectChessFields = "SELECT x, y, piece FROM chessFields WHERE game="+i.toString()+";";
@@ -125,10 +128,9 @@ public class SavesPanel extends JPanel {
                 }
             }
         }
-//        String s = "UPDATE chessFields SET piece="+piece+"WHERE x="+x+"AND y="+y+" AND game ="+gameID+";";
         Database.sqlConnection(s, QueryType.OTHER);
     }
-    public Integer getSelected(){
+    private Integer getSelected(){
         Integer i = 0;
         for (JRadioButton rb : radioButtons) {            
             if (rb.isSelected()) {
@@ -138,11 +140,7 @@ public class SavesPanel extends JPanel {
             }
         }
         return i;
-    }
-    public SavesPanel() {
-        setLayout(new GridLayout(0, 1, 5, 10));
-        initUI();
-    }   
+    }     
     private int parseColorValue(Color c) {
         if (c == Color.BLACK) 
             return 0;        
@@ -172,5 +170,6 @@ public class SavesPanel extends JPanel {
                 return 5+i;
         }
     }
-
+    private ArrayList<JRadioButton> radioButtons;
+    private ButtonGroup buttonGroup;
 }

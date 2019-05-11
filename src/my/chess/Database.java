@@ -13,8 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import my.chess.ChessBoard.QueryType;
-//import my.chess.ChessBoard.C;
 import my.chess.pieces.Bishop;
 import my.chess.pieces.ChessPiece;
 import my.chess.pieces.King;
@@ -27,6 +25,7 @@ import my.chess.pieces.Rook;
  * @author bruce
  */
 public class Database {
+    public static enum QueryType { OTHER, SELECT_CHESS_FIELDS, SELECT_MAX_GAME_ID, SELECT_GAME_COLOR, SELECT_GAMES};
     public static ArrayList<Integer> games;
     public static ArrayList<ChessField> fields;
     public static int gameID = 1;    
@@ -49,7 +48,7 @@ public class Database {
         
         games = new ArrayList();    
         Connection c = null;        
-        ResultSet rs = null;
+        ResultSet rs;
         Connection connection = null;
         try
         {
@@ -91,7 +90,7 @@ public class Database {
                     while(rs.next())
                     {                                                
                         ChessBoard.currentColor = parseIntValue(rs.getInt("currentColor"));
-                        System.out.println(rs.getInt("currentColor"));
+//                        System.out.println(rs.getInt("currentColor"));
                     }                    
                     break;
             }            
@@ -125,9 +124,9 @@ public class Database {
     private static void setLoadedGamePieces(String pieceID, int x, int y) {        
         if(pieceID != null) {
 //            System.out.println(x+" "+ y +" " +Integer.parseInt(pieceID));
-            ChessBoard.chessMatrix[x][y].setCurrentChessPiece(choosePiece(Integer.parseInt(pieceID)));
-            ChessBoard.chessMatrix[x][y].setHighlighted(false);
+            ChessBoard.chessMatrix[x][y].setCurrentChessPiece(choosePiece(Integer.parseInt(pieceID)));            
         }
+        ChessBoard.chessMatrix[x][y].setHighlighted(false);
     }
     private static ChessPiece choosePiece(int num) {
         switch (num) {

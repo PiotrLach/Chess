@@ -28,7 +28,7 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        myTabbedPane = new javax.swing.JTabbedPane();
         mainMenuPanel = new javax.swing.JPanel();
         gameStartButton = new javax.swing.JButton();
         gameManageSavesButton = new javax.swing.JButton();
@@ -93,7 +93,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap(312, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Main menu", mainMenuPanel);
+        myTabbedPane.addTab("Main menu", mainMenuPanel);
 
         mainChessBoard.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         mainChessBoard.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -113,7 +113,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGap(0, 717, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Game", mainChessBoard);
+        myTabbedPane.addTab("Game", mainChessBoard);
 
         jPanel2.setLayout(new java.awt.GridLayout(1, 0));
 
@@ -159,7 +159,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jPanel2.add(jPanel1);
 
-        jTabbedPane1.addTab("Saves", jPanel2);
+        myTabbedPane.addTab("Saves", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -167,13 +167,13 @@ public class MainFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addComponent(myTabbedPane)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane1)
+                .addComponent(myTabbedPane)
                 .addContainerGap())
         );
 
@@ -185,8 +185,8 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_mainChessBoardMouseClicked
 
     private void gameStartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameStartButtonActionPerformed
-        mainChessBoard.setPieces(ChessBoard.GameState.NEW);
-        jTabbedPane1.setSelectedIndex(1);
+        mainChessBoard.setNewGame();
+        myTabbedPane.setSelectedIndex(1);
     }//GEN-LAST:event_gameStartButtonActionPerformed
 
     private void gameExitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameExitButtonActionPerformed
@@ -194,13 +194,12 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_gameExitButtonActionPerformed
 
     private void gameManageSavesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameManageSavesButtonActionPerformed
-        jTabbedPane1.setSelectedIndex(2);       
+        myTabbedPane.setSelectedIndex(2);       
     }//GEN-LAST:event_gameManageSavesButtonActionPerformed
 
     private void manageSavesLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesLoadActionPerformed
-        Integer i = savesPanel1.getSelected();
-        savesPanel1.loadSavedGame(i);
-        jTabbedPane1.setSelectedIndex(1);
+        savesPanel1.loadSavedGame();
+        myTabbedPane.setSelectedIndex(1);
     }//GEN-LAST:event_manageSavesLoadActionPerformed
 
     private void manageSavesDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesDeleteActionPerformed
@@ -214,7 +213,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void manageSavesNewSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesNewSaveActionPerformed
         savesPanel1.saveNewGame();
         savesPanel1.restartUI();
-        jTabbedPane1.setSelectedIndex(2);
+        myTabbedPane.setSelectedIndex(2);
     }//GEN-LAST:event_manageSavesNewSaveActionPerformed
 
     /**
@@ -260,13 +259,13 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private my.chess.ChessBoard mainChessBoard;
     private javax.swing.JPanel mainMenuPanel;
     private javax.swing.JButton manageSavesDelete;
     private javax.swing.JButton manageSavesLoad;
     private javax.swing.JButton manageSavesNewSave;
     private javax.swing.JButton manageSavesOverwrite;
+    private javax.swing.JTabbedPane myTabbedPane;
     private my.chess.SavesPanel savesPanel1;
     // End of variables declaration//GEN-END:variables
 }
