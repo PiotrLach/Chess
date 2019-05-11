@@ -201,6 +201,20 @@ public class ChessBoard extends JPanel{
         }                
         repaint();
     }
+    private int pathIsFreeSubroutine(int x1,int y1, int x2, int y2, int i, int j) {
+        int nullCount=0;
+        if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)
+            && (i!=x1 && y1==y2) 
+                || (j!=y1 && x1==x2) 
+                || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i))
+            )  {
+            boolean result=chessMatrix[i][j].getCurrentChessPiece()!=null;                           
+            if (result && !(i==x2 && j==y2 && selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece())))
+                nullCount++;
+//            System.out.println(result+" "+i+" "+j+" "+nullCount);
+        }
+        return nullCount;
+    }
     private int parseColorValue(Color c) {
         if (c == Color.BLACK) 
             return 0;        
@@ -218,20 +232,6 @@ public class ChessBoard extends JPanel{
 //            System.out.println(x+" "+ y +" " +Integer.parseInt(pieceID));
             chessMatrix[x][y].setCurrentChessPiece(choosePiece(Integer.parseInt(pieceID)));
         }
-    }
-    private int pathIsFreeSubroutine(int x1,int y1, int x2, int y2, int i, int j) {
-        int nullCount=0;
-        if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)
-            && (i!=x1 && y1==y2) 
-                || (j!=y1 && x1==x2) 
-                || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i))
-            )  {
-            boolean result=chessMatrix[i][j].getCurrentChessPiece()!=null;                           
-            if (result && !(i==x2 && j==y2 && selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece())))
-                nullCount++;
-//            System.out.println(result+" "+i+" "+j+" "+nullCount);
-        }
-        return nullCount;
     }
     private ChessPiece choosePiece(int num) {
         switch (num) {
@@ -354,7 +354,7 @@ public class ChessBoard extends JPanel{
         String selectMaxGameID = "SELECT currentColor FROM games WHERE gameID = "+gameID+";"; 
         sqlConnection(selectMaxGameID, QueryType.SELECT_GAME_COLOR);
     }
-    public void saveGame() {        
+    public void saveNewGame() {        
         String selectPieceID; 
         String insertFields = "";
         String insertNewGame = "INSERT INTO games VALUES((SELECT MAX(gameID) FROM games)+1,"+parseColorValue(currentColor)+");";        

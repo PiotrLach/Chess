@@ -39,9 +39,9 @@ public class MainFrame extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         savesPanel1 = new my.chess.SavesPanel();
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        manageSavesLOAD = new javax.swing.JButton();
+        manageSavesOVERWRITE = new javax.swing.JButton();
+        manageSavesDELETE = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 640));
@@ -134,19 +134,29 @@ public class MainFrame extends javax.swing.JFrame {
 
         jPanel1.setLayout(new java.awt.GridLayout(3, 1, 20, 20));
 
-        jButton1.setText("Load");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        manageSavesLOAD.setText("Load");
+        manageSavesLOAD.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                manageSavesLOADActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton1);
+        jPanel1.add(manageSavesLOAD);
 
-        jButton2.setText("Overwrite selected");
-        jPanel1.add(jButton2);
+        manageSavesOVERWRITE.setText("Overwrite selected");
+        manageSavesOVERWRITE.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                manageSavesOVERWRITEActionPerformed(evt);
+            }
+        });
+        jPanel1.add(manageSavesOVERWRITE);
 
-        jButton3.setText("Delete");
-        jPanel1.add(jButton3);
+        manageSavesDELETE.setText("Delete");
+        manageSavesDELETE.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                manageSavesDELETEActionPerformed(evt);
+            }
+        });
+        jPanel1.add(manageSavesDELETE);
 
         jPanel2.add(jPanel1);
 
@@ -190,17 +200,24 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_gameLoadButtonActionPerformed
 
     private void gameSaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameSaveButtonActionPerformed
-        mainChessBoard.saveGame();
-        savesPanel1.clearUI();       
-        savesPanel1.initUI();
+        mainChessBoard.saveNewGame();
+        savesPanel1.restartUI();
         jTabbedPane1.setSelectedIndex(2);
     }//GEN-LAST:event_gameSaveButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void manageSavesLOADActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesLOADActionPerformed
         Integer i = savesPanel1.getSelected();
         mainChessBoard.loadGame(i);
         jTabbedPane1.setSelectedIndex(1);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_manageSavesLOADActionPerformed
+
+    private void manageSavesDELETEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesDELETEActionPerformed
+        savesPanel1.deleteDatabaseRecord();
+    }//GEN-LAST:event_manageSavesDELETEActionPerformed
+
+    private void manageSavesOVERWRITEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesOVERWRITEActionPerformed
+        savesPanel1.updateDatabaseRecord();
+    }//GEN-LAST:event_manageSavesOVERWRITEActionPerformed
 
     /**
      * @param args the command line arguments
@@ -243,15 +260,15 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton gameLoadButton;
     private javax.swing.JButton gameSaveButton;
     private javax.swing.JButton gameStartButton;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private my.chess.ChessBoard mainChessBoard;
     private javax.swing.JPanel mainMenuPanel;
+    private javax.swing.JButton manageSavesDELETE;
+    private javax.swing.JButton manageSavesLOAD;
+    private javax.swing.JButton manageSavesOVERWRITE;
     private my.chess.SavesPanel savesPanel1;
     // End of variables declaration//GEN-END:variables
 }
