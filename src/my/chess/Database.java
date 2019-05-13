@@ -6,6 +6,8 @@
 package my.chess;
 
 import java.awt.Color;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -13,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Scanner;
 import my.chess.pieces.Bishop;
 import my.chess.pieces.ChessPiece;
 import my.chess.pieces.King;
@@ -26,8 +29,7 @@ import my.chess.pieces.Rook;
  */
 public class Database {
     public static enum QueryType { OTHER, SELECT_CHESS_FIELDS, SELECT_MAX_GAME_ID, SELECT_GAME_COLOR, SELECT_GAMES};
-    public static ArrayList<Integer> games;
-    public static ArrayList<ChessField> fields;
+    public static ArrayList<Integer> games;    
     public static int gameID = 1;    
     public static void createNewDatabase() {
  
@@ -43,6 +45,21 @@ public class Database {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+    private String readSqlFile( String filename ) {
+        String data = "";
+        try {
+            File f = new File(filename);
+            Scanner myReader = new Scanner(f);
+            while (myReader.hasNextLine()) {
+                data += myReader.nextLine() + "\n";
+    //            System.out.println(data);
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred: " + e.toString());            
+        } 
+        return data;
     }
     public static void sqlConnection(String myQuery, QueryType q) {
         
@@ -115,11 +132,16 @@ public class Database {
             }
         }
     }
-    private static Color parseIntValue(int i) {
-        if (i == 0) 
-            return Color.BLACK;
-        else 
-            return Color.WHITE;
+    private static Color parseIntValue(int i) throws IllegalArgumentException {
+        switch(i) {
+            default: 
+                throw new IllegalArgumentException("Color value can only be 0 or 1");
+            case 0:
+                return Color.BLACK;
+            case 1:
+                return Color.WHITE;
+                
+        }            
     }
     private static void setLoadedGamePieces(String pieceID, int x, int y) {        
         if(pieceID != null) {
@@ -128,10 +150,10 @@ public class Database {
         }
         ChessBoard.getChessMatrixField(x, y).setHighlighted(false);
     }
-    private static ChessPiece choosePiece(int num) {
+    private static ChessPiece choosePiece(int num) throws IllegalArgumentException {
         switch (num) {
             default:
-                return null;
+                throw new IllegalArgumentException("Piece ID value has to be between 0 and 11");
             case 0:
                 return new Pawn(Color.BLACK);
             case 1:

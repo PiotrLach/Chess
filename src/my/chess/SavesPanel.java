@@ -67,7 +67,9 @@ public class SavesPanel extends JPanel {
     public void saveNewGame() {        
         String selectPieceID; 
         String insertFields = "";
-        String insertNewGame = "INSERT INTO games VALUES((SELECT MAX(gameID) FROM games)+1,"+parseColorValue(ChessBoard.getCurrentColor())+");";        
+        String insertNewGame = "INSERT INTO games VALUES((SELECT MAX(gameID) FROM games)+1,"
+                            +parseColorValue(ChessBoard.getCurrentColor())
+                            +");";        
         getGameIDfromDB();
         Database.gameID++;
         for (int x=0; x<8; x++) {             
@@ -114,7 +116,9 @@ public class SavesPanel extends JPanel {
     public void updateDatabaseRecord(){ 
         Integer gameID = getSelected();
         String s = "";
-        s += "UPDATE games SET currentColor ="+parseColorValue(ChessBoard.getCurrentColor())+" WHERE gameID="+gameID.toString()+";";
+        s += "UPDATE games SET currentColor ="
+            +parseColorValue(ChessBoard.getCurrentColor())
+            +" WHERE gameID="+gameID.toString()+";";
         for (int i=0; i<8; i++) {             
             for (int j=0; j<8; j++) {
                 if (ChessBoard.getChessMatrixField(i, j).getCurrentChessPiece() != null) {
@@ -140,11 +144,14 @@ public class SavesPanel extends JPanel {
         }
         return i;
     }     
-    private int parseColorValue(Color c) {
+    private int parseColorValue(Color c) throws IllegalArgumentException {
         if (c == Color.BLACK) 
             return 0;        
-        else 
+        else if (c == Color.WHITE) 
             return 1;
+        else
+            throw new IllegalArgumentException("There can only be black and white colors");
+            
     }
     private Integer pieceIntValue(ChessPiece cp) {
         Integer i;

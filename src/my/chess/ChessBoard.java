@@ -9,8 +9,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import my.chess.pieces.*;
 
@@ -232,7 +230,7 @@ public class ChessBoard extends JPanel{
         else 
             throw new IllegalArgumentException("Columns and rows indices cannot exceed 7");
     }
-    private static ChessField[][] chessMatrix = new ChessField[8][8];
+    private static final ChessField[][] chessMatrix = new ChessField[8][8];
     private static Color currentColor;            
     private int sourceI, sourceJ;    
     private ChessPiece selectedChessPiece;
