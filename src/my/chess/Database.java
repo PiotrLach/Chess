@@ -33,7 +33,7 @@ public class Database {
     public static int gameID = 1;    
     public static void createNewDatabase() {
  
-        String url = "jdbc:sqlite:db/chess.db";
+        String url = "jdbc:sqlite:db"+File.separator+"chess.db";
  
         try (Connection conn = DriverManager.getConnection(url)) {
             if (conn != null) {
@@ -46,10 +46,10 @@ public class Database {
             System.out.println(e.getMessage());
         }
     }
-    private String readSqlFile( String filename ) {
+    private String readSqlFile() {
         String data = "";
         try {
-            File f = new File(filename);
+            File f = new File("db"+File.separator+"base.sql");
             Scanner myReader = new Scanner(f);
             while (myReader.hasNextLine()) {
                 data += myReader.nextLine() + "\n";
@@ -70,7 +70,7 @@ public class Database {
         try
         {
             // create a database connection
-            connection = DriverManager.getConnection("jdbc:sqlite:db/chess.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:db"+File.separator+"chess.db");
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);  // set timeout to 30 sec.
             switch (q) {
