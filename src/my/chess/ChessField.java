@@ -25,7 +25,7 @@ public class ChessField extends Rectangle {
         super(x, y, width, height);       
         this.matrixCoordinateX=matrixCoordinateX;
         this.matrixCoordinateY=matrixCoordinateY;        
-    }
+    }    
     public void drawChessField(Graphics g)
     {
         g.setColor(Color.GRAY);

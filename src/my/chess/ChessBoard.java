@@ -8,7 +8,10 @@ package my.chess;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
+import java.util.Random;
 import javax.swing.JPanel;
 import my.chess.pieces.*;
 
@@ -17,19 +20,64 @@ import my.chess.pieces.*;
  *
  * @author bruce
  */
-public class ChessBoard extends JPanel{
-    
-    public ChessBoard() {                      
-        createFields();        
+public class ChessBoard extends JPanel {
+    public boolean highlightOnResize;
+    public void highlightAll(Graphics g) {
+        chessMatrix[new Random().nextInt(8)][new Random().nextInt(8)].highlightChessField(g);
+        highlightOnResize = false;
+    }
+    public ChessBoard() { 
+        beginHeight = 640;
+        endHeight = 0;
+        beginWidth = 0;
+        endWidth = 640;
+        diffHorizontal = 80;
+        diffVertical = 80;
+        createFields();           
 //        createNewDatabase("test.db");
 //        setPieces();
-    }    
+    }
+    public void calculateSize() {        
+//        System.out.println(getWidth() + " " + getHeight()); 
+        double height = getHeight(),
+                width = getWidth();
+//        System.out.println(width + " " + height);
+        beginHeight = (int) (7d / 8d * height);
+        endHeight = (int) (1d / 1024d * height);
+        beginWidth =  (int) (1d / 8d * width);
+        endWidth = (int) (7d / 8d * width);                   
+        while ( (beginHeight - endHeight) % 8 != 0) {
+            System.out.println(beginHeight + " " + endHeight);
+            beginHeight--;            
+        }
+        while ( (endWidth - beginWidth) % 8 != 0) {
+//            System.out.println(endWidth + " " + beginWidth);
+            endWidth--;
+        }   
+        diffHorizontal = (endWidth - beginWidth) / 8;
+        diffVertical = (beginHeight - endHeight) / 8;
+//        System.out.println(beginHeight + " " + endHeight + " " + beginWidth + " " + endWidth);
+        int x=0,y=0;
+//        System.out.println(diffHorizontal + " " + diffVertical);
+        for (int i = beginHeight; i > endHeight; i -= diffVertical) {         
+            for (int j = beginWidth; j < endWidth; j += diffHorizontal)  {
+                chessMatrix[x][y].setLocation(j, i);
+                chessMatrix[x][y].setSize(diffHorizontal,diffVertical);
+                y++;                
+            }
+            y=0;            
+            x++;
+            if (x==8) 
+                x=0;               
+        }
+        repaint();
+    }
     private void createFields(){
         int x=0,y=0;
-        for (int i=610; i>-30; i-=80)
-        {            
-            for (int j=172; j<812; j+=80)
-            {                
+        for (int i = beginHeight; i > endHeight; i -= diffVertical) {         
+            for (int j = beginWidth; j < endWidth; j += diffHorizontal)  {
+//        for (int i = 640; i > 0; i -= 80) {         
+//            for (int j = 0; j < 640; j += 80)  {
                 ChessField c = new ChessField(j,i,80,80,x,y);
                 chessMatrix[x][y] = c;                                
 //                System.out.println(chessMatrix[x][y].toString());                
@@ -115,7 +163,7 @@ public class ChessBoard extends JPanel{
     }
     @Override                 
     public void paint(Graphics g) {
-        super.paint(g);         
+        super.paint(g);                 
         for (int i=0; i<8;i++) {
             for (int j=0;j<8; j++) {
                 if (chessMatrix[i][j].isHighlighted())                     
@@ -128,7 +176,10 @@ public class ChessBoard extends JPanel{
                     chessMatrix[i][j].getCurrentChessPiece().drawPieceSymbol(g, x.intValue(),y.intValue());
                 }
             }
-        }   
+        }
+//        if (highlightOnResize) {
+//            highlightAll(g);
+//        }
     }
     //zrealizować w klasie
     private boolean pathIsFree(int x1, int y1, int x2, int y2){
@@ -234,5 +285,11 @@ public class ChessBoard extends JPanel{
     private static Color currentColor;            
     private int sourceI, sourceJ;    
     private ChessPiece selectedChessPiece;
+    private int beginHeight,
+                endHeight,
+                beginWidth,
+                endWidth,
+                diffHorizontal,
+                diffVertical;
     
 }

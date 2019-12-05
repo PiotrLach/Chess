@@ -5,6 +5,9 @@
  */
 package my.chess;
 
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+
 
 /**
  *
@@ -45,7 +48,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 640));
-        setResizable(false);
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                formComponentResized(evt);
+            }
+        });
 
         gameStartButton.setText("Start a new game");
         gameStartButton.addActionListener(new java.awt.event.ActionListener() {
@@ -215,6 +222,10 @@ public class MainFrame extends javax.swing.JFrame {
         savesPanel1.restartUI();
         myTabbedPane.setSelectedIndex(2);
     }//GEN-LAST:event_manageSavesNewSaveActionPerformed
+
+    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
+        mainChessBoard.calculateSize();
+    }//GEN-LAST:event_formComponentResized
 
     /**
      * @param args the command line arguments
