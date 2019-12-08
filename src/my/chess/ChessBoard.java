@@ -26,7 +26,8 @@ public class ChessBoard extends JPanel {
         chessMatrix[new Random().nextInt(8)][new Random().nextInt(8)].highlightChessField(g);
         highlightOnResize = false;
     }
-    public ChessBoard() { 
+    public ChessBoard() {
+//        calculateSize();
         beginHeight = 640;
         endHeight = 0;
         beginWidth = 0;
@@ -39,23 +40,34 @@ public class ChessBoard extends JPanel {
     }
     public void calculateSize() {        
 //        System.out.println(getWidth() + " " + getHeight()); 
-        double height = getHeight(),
+        int height = getHeight(),
                 width = getWidth();
 //        System.out.println(width + " " + height);
-        beginHeight = (int) (7d / 8d * height);
-        endHeight = (int) (1d / 1024d * height);
-        beginWidth =  (int) (1d / 8d * width);
-        endWidth = (int) (7d / 8d * width);                   
-        while ( (beginHeight - endHeight) % 8 != 0) {
-            System.out.println(beginHeight + " " + endHeight);
-            beginHeight--;            
+        beginHeight = (int) height;
+        endHeight = (int) 0;
+//        beginHeight = height;        
+        while ( (beginHeight - endHeight) % 8 != 0) {            
+                beginHeight--;            
         }
+        diffVertical = (beginHeight - endHeight) / 8;
+        beginHeight -= diffVertical;
+        endHeight -= diffVertical;
+        beginWidth =  (int) (width - height) / 2;
+        endWidth = (int) beginWidth + height;      
+//        beginHeight = (int) (6d / 8d * height);
+//        endHeight = (int) (1d / 8d * height);
+//        beginWidth =  (int) (1d / 8d * width);
+//        endWidth = (int) (7d / 8d * width);                   
+//        while ( (beginHeight - endHeight) % 8 != 0) {
+//            System.out.println(beginHeight + " " + endHeight);
+//            beginHeight--;            
+//        }
         while ( (endWidth - beginWidth) % 8 != 0) {
 //            System.out.println(endWidth + " " + beginWidth);
             endWidth--;
         }   
         diffHorizontal = (endWidth - beginWidth) / 8;
-        diffVertical = (beginHeight - endHeight) / 8;
+//        diffVertical = (beginHeight - endHeight) / 8;
 //        System.out.println(beginHeight + " " + endHeight + " " + beginWidth + " " + endWidth);
         int x=0,y=0;
 //        System.out.println(diffHorizontal + " " + diffVertical);
