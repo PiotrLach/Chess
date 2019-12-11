@@ -6,6 +6,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
+import java.awt.Image;
 
 /**
  *
@@ -13,8 +14,8 @@ import java.awt.Color;
  */
 public class Rook extends ChessPiece {
 
-    public Rook(Color figureColor/*, int x, int y*/) {
-        super("W", figureColor/*, x, y*/);
+    public Rook(Color figureColor, Image img/*, int x, int y*/) {
+        super("W", figureColor,img/*, x, y*/);
     }
 
     @Override

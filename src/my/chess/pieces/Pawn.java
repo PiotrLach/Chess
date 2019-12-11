@@ -6,6 +6,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
+import java.awt.Image;
 import my.chess.ChessField;
 import my.chess.ChessBoard;
 
@@ -25,8 +26,8 @@ public class Pawn extends ChessPiece{
             twoFieldsAheadIsNotOccupied;
     private int startingX;
     
-    public Pawn(Color figureColor/*, int startingX, int y*/) {
-        super("P", figureColor/*, startingX, y*/);        
+    public Pawn(Color figureColor, Image img/*, int startingX, int y*/) {
+        super("P", figureColor,img/*, startingX, y*/);        
         chooseStartingX();
     }
     private void chooseStartingX() {

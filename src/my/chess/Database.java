@@ -8,6 +8,7 @@ package my.chess;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -16,6 +17,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javax.imageio.ImageIO;
 import my.chess.pieces.Bishop;
 import my.chess.pieces.ChessPiece;
 import my.chess.pieces.King;
@@ -87,8 +89,12 @@ public class Database {
                 case SELECT_CHESS_FIELDS:
                     rs = statement.executeQuery(myQuery);
                     while(rs.next())
-                    {                        
-                        setLoadedGamePieces(rs.getString("piece"),rs.getInt("x"),rs.getInt("y"));
+                    {
+                        try {
+                            setLoadedGamePieces(rs.getString("piece"),rs.getInt("x"),rs.getInt("y"));
+                        } catch (IOException e) {
+                            System.out.println(e.toString());
+                        }
                     }
                     break;
                 case SELECT_MAX_GAME_ID:
@@ -132,7 +138,7 @@ public class Database {
             }
         }
     }
-    private static Color parseIntValue(int i) throws IllegalArgumentException {
+    private static Color parseIntValue(int i) {
         switch(i) {
             default: 
                 throw new IllegalArgumentException("Color value can only be 0 or 1");
@@ -143,41 +149,41 @@ public class Database {
                 
         }            
     }
-    private static void setLoadedGamePieces(String pieceID, int x, int y) {        
+    private static void setLoadedGamePieces(String pieceID, int x, int y) throws IOException {        
         if(pieceID != null) {
 //            System.out.println(x+" "+ y +" " +Integer.parseInt(pieceID));
             ChessBoard.setChessMatrixField(x, y, choosePiece(Integer.parseInt(pieceID)));            
         }
         ChessBoard.getChessMatrixField(x, y).setHighlighted(false);
     }
-    private static ChessPiece choosePiece(int num) throws IllegalArgumentException {
+    private static ChessPiece choosePiece(int num) throws IllegalArgumentException, IOException {
         switch (num) {
             default:
                 throw new IllegalArgumentException("Piece ID value has to be between 0 and 11");
             case 0:
-                return new Pawn(Color.BLACK);
+                return new Pawn(Color.BLACK,ImageIO.read(new File("res/black/pawn.png")));
             case 1:
-                return new Rook(Color.BLACK);
+                return new Rook(Color.BLACK,ImageIO.read(new File("res/black/rook.png")));
             case 2:
-                return new Bishop(Color.BLACK);
+                return new Bishop(Color.BLACK,ImageIO.read(new File("res/black/bishop.png")));
             case 3:
-                return new Knight(Color.BLACK);
+                return new Knight(Color.BLACK,ImageIO.read(new File("res/black/knight.png")));
             case 4:
-                return new Queen(Color.BLACK);
+                return new Queen(Color.BLACK,ImageIO.read(new File("res/black/queen.png")));
             case 5:
-                return new King(Color.BLACK);
+                return new King(Color.BLACK,ImageIO.read(new File("res/black/king.png")));
             case 6:
-                return new Pawn(Color.WHITE);
+                return new Pawn(Color.WHITE,ImageIO.read(new File("res/white/pawn.png")));
             case 7:
-                return new Rook(Color.WHITE);
+                return new Rook(Color.WHITE,ImageIO.read(new File("res/white/rook.png")));
             case 8:
-                return new Bishop(Color.WHITE);
+                return new Bishop(Color.WHITE,ImageIO.read(new File("res/white/bishop.png")));
             case 9:
-                return new Knight(Color.WHITE);
+                return new Knight(Color.WHITE,ImageIO.read(new File("res/white/knight.png")));
             case 10:
-                return new Queen(Color.WHITE);
+                return new Queen(Color.WHITE,ImageIO.read(new File("res/white/queen.png")));
             case 11:
-                return new King(Color.WHITE);                
+                return new King(Color.WHITE,ImageIO.read(new File("res/white/king.png")));                
         }
     }
 }

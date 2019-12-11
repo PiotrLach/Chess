@@ -6,6 +6,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
+import java.awt.Image;
 
 /**
  *
@@ -14,8 +15,8 @@ import java.awt.Color;
 public class Bishop extends ChessPiece {
 //    @Override
 
-    public Bishop(Color figureColor/*, int x, int y*/) {
-        super("G", figureColor/*, x, y*/);
+    public Bishop(Color figureColor, Image img/*, int x, int y*/) {
+        super("G", figureColor,img/*, x, y*/);
     }    
 
     @Override

@@ -11,7 +11,10 @@ import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import my.chess.pieces.*;
 
@@ -21,11 +24,6 @@ import my.chess.pieces.*;
  * @author bruce
  */
 public class ChessBoard extends JPanel {
-    public boolean highlightOnResize;
-    public void highlightAll(Graphics g) {
-        chessMatrix[new Random().nextInt(8)][new Random().nextInt(8)].highlightChessField(g);
-        highlightOnResize = false;
-    }
     public ChessBoard() {
 //        calculateSize();
         beginHeight = 640;
@@ -54,20 +52,11 @@ public class ChessBoard extends JPanel {
         endHeight -= diffVertical;
         beginWidth =  (int) (width - height) / 2;
         endWidth = (int) beginWidth + height;      
-//        beginHeight = (int) (6d / 8d * height);
-//        endHeight = (int) (1d / 8d * height);
-//        beginWidth =  (int) (1d / 8d * width);
-//        endWidth = (int) (7d / 8d * width);                   
-//        while ( (beginHeight - endHeight) % 8 != 0) {
-//            System.out.println(beginHeight + " " + endHeight);
-//            beginHeight--;            
-//        }
         while ( (endWidth - beginWidth) % 8 != 0) {
 //            System.out.println(endWidth + " " + beginWidth);
             endWidth--;
         }   
         diffHorizontal = (endWidth - beginWidth) / 8;
-//        diffVertical = (beginHeight - endHeight) / 8;
 //        System.out.println(beginHeight + " " + endHeight + " " + beginWidth + " " + endWidth);
         int x=0,y=0;
 //        System.out.println(diffHorizontal + " " + diffVertical);
@@ -185,7 +174,10 @@ public class ChessBoard extends JPanel {
                 if (chessMatrix[i][j].getCurrentChessPiece()!=null) {
                     Double x = chessMatrix[i][j].getX();
                     Double y = chessMatrix[i][j].getY();
-                    chessMatrix[i][j].getCurrentChessPiece().drawPieceSymbol(g, x.intValue(),y.intValue());
+                    Double width = chessMatrix[i][j].getWidth(); 
+                    Double height = chessMatrix[i][j].getHeight();
+//                    chessMatrix[i][j].getCurrentChessPiece().drawPieceSymbol(g, x.intValue(),y.intValue());
+                    chessMatrix[i][j].getCurrentChessPiece().drawImage(g, x.intValue(), y.intValue(), width.intValue(), height.intValue());
                 }
             }
         }
@@ -238,32 +230,40 @@ public class ChessBoard extends JPanel {
         }
         return nullCount;
     } 
-    public void setNewGame() {
+    public void setNewGame() throws IOException {
         
         Color c = null;
         clearBoard();                               
         for (int i=0; i<8; i++) {            
-            chessMatrix[1][i].setCurrentChessPiece(new Pawn(Color.BLACK));            
-            chessMatrix[6][i].setCurrentChessPiece(new Pawn(Color.WHITE));
+            chessMatrix[1][i].setCurrentChessPiece(new Pawn(Color.BLACK,ImageIO.read(new File("res/black/pawn.png"))));            
+            chessMatrix[6][i].setCurrentChessPiece(new Pawn(Color.WHITE,ImageIO.read(new File("res/white/pawn.png"))));
         }                
-        for (int i=0; i<=7; i+=7) {
-            switch(i) {
-                case 0:
-                    c=Color.BLACK;
-                    break;
-                case 7:
-                    c=Color.WHITE;
-                    break;
-            }
-            chessMatrix[i][0].setCurrentChessPiece(new Rook(c));
-            chessMatrix[i][1].setCurrentChessPiece(new Knight(c));
-            chessMatrix[i][2].setCurrentChessPiece(new Bishop(c));
-            chessMatrix[i][3].setCurrentChessPiece(new Queen(c));
-            chessMatrix[i][4].setCurrentChessPiece(new King(c));
-            chessMatrix[i][5].setCurrentChessPiece(new Bishop(c));                
-            chessMatrix[i][6].setCurrentChessPiece(new Knight(c));
-            chessMatrix[i][7].setCurrentChessPiece(new Rook(c));   
-        }
+//        for (int i=0; i<=7; i+=7) {
+//            switch(i) {
+//                case 0:
+//                    c=Color.BLACK;
+//                    break;
+//                case 7:
+//                    c=Color.WHITE;
+//                    break;
+//            }
+        chessMatrix[0][0].setCurrentChessPiece(new Rook(Color.BLACK,ImageIO.read(new File("res/black/pawn.png"))));
+        chessMatrix[0][1].setCurrentChessPiece(new Knight(Color.BLACK,ImageIO.read(new File("res/black/knight.png"))));
+        chessMatrix[0][2].setCurrentChessPiece(new Bishop(Color.BLACK,ImageIO.read(new File("res/black/bishop.png"))));
+        chessMatrix[0][3].setCurrentChessPiece(new Queen(Color.BLACK,ImageIO.read(new File("res/black/queen.png"))));
+        chessMatrix[0][4].setCurrentChessPiece(new King(Color.BLACK,ImageIO.read(new File("res/black/king.png"))));
+        chessMatrix[0][5].setCurrentChessPiece(new Bishop(Color.BLACK,ImageIO.read(new File("res/black/bishop.png"))));                
+        chessMatrix[0][6].setCurrentChessPiece(new Knight(Color.BLACK,ImageIO.read(new File("res/black/knight.png"))));
+        chessMatrix[0][7].setCurrentChessPiece(new Rook(Color.BLACK,ImageIO.read(new File("res/black/rook.png"))));
+        chessMatrix[7][0].setCurrentChessPiece(new Rook(Color.WHITE,ImageIO.read(new File("res/white/rook.png"))));
+        chessMatrix[7][1].setCurrentChessPiece(new Knight(Color.WHITE,ImageIO.read(new File("res/white/knight.png"))));
+        chessMatrix[7][2].setCurrentChessPiece(new Bishop(Color.WHITE,ImageIO.read(new File("res/white/bishop.png"))));
+        chessMatrix[7][3].setCurrentChessPiece(new Queen(Color.WHITE,ImageIO.read(new File("res/white/queen.png"))));
+        chessMatrix[7][4].setCurrentChessPiece(new King(Color.WHITE,ImageIO.read(new File("res/white/king.png"))));
+        chessMatrix[7][5].setCurrentChessPiece(new Bishop(Color.WHITE,ImageIO.read(new File("res/white/bishop.png"))));                
+        chessMatrix[7][6].setCurrentChessPiece(new Knight(Color.WHITE,ImageIO.read(new File("res/white/knight.png"))));
+        chessMatrix[7][7].setCurrentChessPiece(new Rook(Color.WHITE,ImageIO.read(new File("res/white/rook.png"))));   
+//        }
         repaint();
     } 
     private void clearBoard() {

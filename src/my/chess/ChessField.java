@@ -32,7 +32,7 @@ public class ChessField extends Rectangle {
         g.drawRect(x,y,width,height);
     }
     public void highlightChessField(Graphics g){
-        g.setColor(Color.GRAY);        
+        g.setColor(Color.ORANGE);        
         g.fillRect(x, y, width, height);
     }       
 

@@ -7,6 +7,9 @@ package my.chess;
 
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -192,7 +195,11 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_mainChessBoardMouseClicked
 
     private void gameStartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameStartButtonActionPerformed
-        mainChessBoard.setNewGame();
+        try {
+            mainChessBoard.setNewGame();
+        } catch (IOException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         myTabbedPane.setSelectedIndex(1);
     }//GEN-LAST:event_gameStartButtonActionPerformed
 
@@ -205,16 +212,16 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_gameManageSavesButtonActionPerformed
 
     private void manageSavesLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesLoadActionPerformed
-        savesPanel1.loadSavedGame();
+            savesPanel1.loadSavedGame();
         myTabbedPane.setSelectedIndex(1);
     }//GEN-LAST:event_manageSavesLoadActionPerformed
 
     private void manageSavesDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesDeleteActionPerformed
-        savesPanel1.deleteDatabaseRecord();
+            savesPanel1.deleteDatabaseRecord();
     }//GEN-LAST:event_manageSavesDeleteActionPerformed
 
     private void manageSavesOverwriteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesOverwriteActionPerformed
-        savesPanel1.updateDatabaseRecord();
+            savesPanel1.updateDatabaseRecord();
     }//GEN-LAST:event_manageSavesOverwriteActionPerformed
 
     private void manageSavesNewSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesNewSaveActionPerformed

@@ -6,6 +6,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
+import java.awt.Image;
 
 /**
  *
@@ -13,8 +14,8 @@ import java.awt.Color;
  */
 public class Queen extends ChessPiece {
 
-    public Queen(Color figureColor/*, int x, int y*/) {
-        super("H", figureColor/*, x, y*/);
+    public Queen(Color figureColor, Image img/*, int x, int y*/) {
+        super("H", figureColor,img/*, x, y*/);
     }
 
     @Override

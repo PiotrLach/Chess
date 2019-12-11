@@ -7,6 +7,7 @@ package my.chess;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
