@@ -170,7 +170,7 @@ public class ChessBoard extends JPanel {
                 if (chessMatrix[i][j].isHighlighted())                     
                     chessMatrix[i][j].highlightChessField(g);                                                                                
                 else                     
-                    chessMatrix[i][j].drawChessField(g);                
+                    chessMatrix[i][j].drawChessField(g,i,j);                
                 if (chessMatrix[i][j].getCurrentChessPiece()!=null) {
                     Double x = chessMatrix[i][j].getX();
                     Double y = chessMatrix[i][j].getY();
@@ -235,8 +235,8 @@ public class ChessBoard extends JPanel {
         Color c = null;
         clearBoard();                               
         for (int i=0; i<8; i++) {            
-            chessMatrix[1][i].setCurrentChessPiece(new Pawn(Color.BLACK,ImageIO.read(new File("res/black/pawn.png"))));            
-            chessMatrix[6][i].setCurrentChessPiece(new Pawn(Color.WHITE,ImageIO.read(new File("res/white/pawn.png"))));
+            chessMatrix[1][i].setCurrentChessPiece(new Pawn(Color.BLACK,Images.getPAWN_BLACK()));            
+            chessMatrix[6][i].setCurrentChessPiece(new Pawn(Color.WHITE,Images.getPAWN_WHITE()));
         }                
 //        for (int i=0; i<=7; i+=7) {
 //            switch(i) {
@@ -247,22 +247,22 @@ public class ChessBoard extends JPanel {
 //                    c=Color.WHITE;
 //                    break;
 //            }
-        chessMatrix[0][0].setCurrentChessPiece(new Rook(Color.BLACK,ImageIO.read(new File("res/black/pawn.png"))));
-        chessMatrix[0][1].setCurrentChessPiece(new Knight(Color.BLACK,ImageIO.read(new File("res/black/knight.png"))));
-        chessMatrix[0][2].setCurrentChessPiece(new Bishop(Color.BLACK,ImageIO.read(new File("res/black/bishop.png"))));
-        chessMatrix[0][3].setCurrentChessPiece(new Queen(Color.BLACK,ImageIO.read(new File("res/black/queen.png"))));
-        chessMatrix[0][4].setCurrentChessPiece(new King(Color.BLACK,ImageIO.read(new File("res/black/king.png"))));
-        chessMatrix[0][5].setCurrentChessPiece(new Bishop(Color.BLACK,ImageIO.read(new File("res/black/bishop.png"))));                
-        chessMatrix[0][6].setCurrentChessPiece(new Knight(Color.BLACK,ImageIO.read(new File("res/black/knight.png"))));
-        chessMatrix[0][7].setCurrentChessPiece(new Rook(Color.BLACK,ImageIO.read(new File("res/black/rook.png"))));
-        chessMatrix[7][0].setCurrentChessPiece(new Rook(Color.WHITE,ImageIO.read(new File("res/white/rook.png"))));
-        chessMatrix[7][1].setCurrentChessPiece(new Knight(Color.WHITE,ImageIO.read(new File("res/white/knight.png"))));
-        chessMatrix[7][2].setCurrentChessPiece(new Bishop(Color.WHITE,ImageIO.read(new File("res/white/bishop.png"))));
-        chessMatrix[7][3].setCurrentChessPiece(new Queen(Color.WHITE,ImageIO.read(new File("res/white/queen.png"))));
-        chessMatrix[7][4].setCurrentChessPiece(new King(Color.WHITE,ImageIO.read(new File("res/white/king.png"))));
-        chessMatrix[7][5].setCurrentChessPiece(new Bishop(Color.WHITE,ImageIO.read(new File("res/white/bishop.png"))));                
-        chessMatrix[7][6].setCurrentChessPiece(new Knight(Color.WHITE,ImageIO.read(new File("res/white/knight.png"))));
-        chessMatrix[7][7].setCurrentChessPiece(new Rook(Color.WHITE,ImageIO.read(new File("res/white/rook.png"))));   
+        chessMatrix[0][0].setCurrentChessPiece(new Rook(Color.BLACK,Images.getROOK_BLACK()));
+        chessMatrix[0][1].setCurrentChessPiece(new Knight(Color.BLACK,Images.getKNIGHT_BLACK()));
+        chessMatrix[0][2].setCurrentChessPiece(new Bishop(Color.BLACK,Images.getBISHOP_BLACK()));
+        chessMatrix[0][3].setCurrentChessPiece(new Queen(Color.BLACK,Images.getQUEEN_BLACK()));
+        chessMatrix[0][4].setCurrentChessPiece(new King(Color.BLACK,Images.getKING_BLACK()));
+        chessMatrix[0][5].setCurrentChessPiece(new Bishop(Color.BLACK,Images.getBISHOP_BLACK()));                
+        chessMatrix[0][6].setCurrentChessPiece(new Knight(Color.BLACK,Images.getKING_BLACK()));
+        chessMatrix[0][7].setCurrentChessPiece(new Rook(Color.BLACK,Images.getROOK_BLACK()));
+        chessMatrix[7][0].setCurrentChessPiece(new Rook(Color.WHITE,Images.getROOK_WHITE()));
+        chessMatrix[7][1].setCurrentChessPiece(new Knight(Color.WHITE,Images.getKNIGHT_WHITE()));
+        chessMatrix[7][2].setCurrentChessPiece(new Bishop(Color.WHITE,Images.getBISHOP_WHITE()));
+        chessMatrix[7][3].setCurrentChessPiece(new Queen(Color.WHITE,Images.getQUEEN_WHITE()));
+        chessMatrix[7][4].setCurrentChessPiece(new King(Color.WHITE,Images.getKING_WHITE()));
+        chessMatrix[7][5].setCurrentChessPiece(new Bishop(Color.WHITE,Images.getBISHOP_WHITE()));                
+        chessMatrix[7][6].setCurrentChessPiece(new Knight(Color.WHITE,Images.getKNIGHT_WHITE()));
+        chessMatrix[7][7].setCurrentChessPiece(new Rook(Color.WHITE,Images.getROOK_WHITE()));   
 //        }
         repaint();
     } 

@@ -20,6 +20,7 @@ import java.util.Scanner;
 import javax.imageio.ImageIO;
 import my.chess.pieces.Bishop;
 import my.chess.pieces.ChessPiece;
+import my.chess.pieces.Images;
 import my.chess.pieces.King;
 import my.chess.pieces.Knight;
 import my.chess.pieces.Pawn;
@@ -92,7 +93,7 @@ public class Database {
                     {
                         try {
                             setLoadedGamePieces(rs.getString("piece"),rs.getInt("x"),rs.getInt("y"));
-                        } catch (IOException e) {
+                        } catch (Exception e) {
                             System.out.println(e.toString());
                         }
                     }
@@ -156,34 +157,34 @@ public class Database {
         }
         ChessBoard.getChessMatrixField(x, y).setHighlighted(false);
     }
-    private static ChessPiece choosePiece(int num) throws IllegalArgumentException, IOException {
+    private static ChessPiece choosePiece(int num) throws IllegalArgumentException {
         switch (num) {
             default:
                 throw new IllegalArgumentException("Piece ID value has to be between 0 and 11");
             case 0:
-                return new Pawn(Color.BLACK,ImageIO.read(new File("res/black/pawn.png")));
+                return new Pawn(Color.BLACK,Images.getPAWN_BLACK());
             case 1:
-                return new Rook(Color.BLACK,ImageIO.read(new File("res/black/rook.png")));
+                return new Rook(Color.BLACK,Images.getROOK_BLACK());
             case 2:
-                return new Bishop(Color.BLACK,ImageIO.read(new File("res/black/bishop.png")));
+                return new Bishop(Color.BLACK,Images.getBISHOP_BLACK());
             case 3:
-                return new Knight(Color.BLACK,ImageIO.read(new File("res/black/knight.png")));
+                return new Knight(Color.BLACK,Images.getKNIGHT_BLACK());
             case 4:
-                return new Queen(Color.BLACK,ImageIO.read(new File("res/black/queen.png")));
+                return new Queen(Color.BLACK,Images.getQUEEN_BLACK());
             case 5:
-                return new King(Color.BLACK,ImageIO.read(new File("res/black/king.png")));
+                return new King(Color.BLACK,Images.getKING_BLACK());
             case 6:
-                return new Pawn(Color.WHITE,ImageIO.read(new File("res/white/pawn.png")));
+                return new Pawn(Color.WHITE,Images.getPAWN_WHITE());
             case 7:
-                return new Rook(Color.WHITE,ImageIO.read(new File("res/white/rook.png")));
+                return new Rook(Color.WHITE,Images.getROOK_WHITE());
             case 8:
-                return new Bishop(Color.WHITE,ImageIO.read(new File("res/white/bishop.png")));
+                return new Bishop(Color.WHITE,Images.getBISHOP_WHITE());
             case 9:
-                return new Knight(Color.WHITE,ImageIO.read(new File("res/white/knight.png")));
+                return new Knight(Color.WHITE,Images.getKING_WHITE());
             case 10:
-                return new Queen(Color.WHITE,ImageIO.read(new File("res/white/queen.png")));
+                return new Queen(Color.WHITE,Images.getQUEEN_WHITE());
             case 11:
-                return new King(Color.WHITE,ImageIO.read(new File("res/white/king.png")));                
+                return new King(Color.WHITE,Images.getKING_WHITE());                
         }
     }
 }

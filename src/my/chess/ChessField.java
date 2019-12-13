@@ -26,13 +26,17 @@ public class ChessField extends Rectangle {
         this.matrixCoordinateX=matrixCoordinateX;
         this.matrixCoordinateY=matrixCoordinateY;        
     }    
-    public void drawChessField(Graphics g)
-    {
-        g.setColor(Color.GRAY);
-        g.drawRect(x,y,width,height);
+    public void drawChessField(Graphics g, int row, int column) {   
+        Color myWhite = new Color(255, 255, 204); 
+        Color myBrown = new Color(153, 102, 0); 
+        if ((row % 2 == 1 && column % 2 == 0) || (row % 2 == 0 && column % 2 == 1)) 
+            g.setColor(myBrown);
+        else 
+            g.setColor(myWhite);
+        g.fillRect(x,y,width,height);
     }
     public void highlightChessField(Graphics g){
-        g.setColor(Color.ORANGE);        
+        g.setColor(Color.RED);        
         g.fillRect(x, y, width, height);
     }       
 

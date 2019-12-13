@@ -10,6 +10,7 @@ import java.awt.event.ComponentListener;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import my.chess.pieces.Images;
 
 
 /**
@@ -261,7 +262,12 @@ public class MainFrame extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-
+        try {
+            Images.loadImages();
+        }
+        catch (IOException e) {
+            System.out.println(e.toString());
+        }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
