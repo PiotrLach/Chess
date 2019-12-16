@@ -122,6 +122,64 @@ public class ChessBoard extends JPanel {
         }
         repaint();        
     }
+    private Point findKing() throws Exception {
+        Point king = null;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {                
+                if (chessMatrix[i][j].getCurrentChessPiece() instanceof King
+                    && chessMatrix[i][j].getCurrentChessPiece().getFigureColor() == currentColor) {
+                    king = new Point(i,j);
+                    break;
+                }
+            }            
+        }
+        if (king != null)
+            return king;
+        else 
+            throw new Exception("King has not been found.");
+    }
+    private boolean check() {        
+        int checkCount = 0;        
+        checkCount += checkKnights(0,0);
+        /*
+        checkOthers();
+        checkPawns();
+        */
+        return checkCount != 0;
+    }  
+    private void checkBishops(int kingX, int kingY) {
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                
+            }
+        }
+    }
+    private void checkRooks(int kingX, int kingY) {
+        /*
+        for (int x = kingX; x < ; )
+            for(int y = kingY; y < ; )
+        */
+    }
+    private int checkKnights(int kingX, int kingY) {
+        Point[] points =  { new Point(1,2), new Point(-1,2),
+                          new Point(-2,1), new Point(-2,-1),
+                          new Point(1,-2), new Point(-1,-2),
+                          new Point(2,-1), new Point(2,1) };
+        int x, y, checkCount = 0;
+        for (Point p : points) {
+            x = kingX + (int) p.getX();
+            y = kingY + (int) p.getY();
+            if (x <= 7 && x >= 0 && y <= 7 && y >= 0)
+                if (chessMatrix[x][y].getCurrentChessPiece() instanceof Knight)
+                    checkCount++;            
+        }
+        return checkCount;
+    }
+    private boolean mate() {
+        int mateCount = 0;
+        return mateCount != 0;
+    }
+
     private void moveBoardPiece(Point p){
         boolean flag=false;
         for (int i=0; i<8;i++) {
@@ -238,22 +296,13 @@ public class ChessBoard extends JPanel {
             chessMatrix[1][i].setCurrentChessPiece(new Pawn(Color.BLACK,Images.getPAWN_BLACK()));            
             chessMatrix[6][i].setCurrentChessPiece(new Pawn(Color.WHITE,Images.getPAWN_WHITE()));
         }                
-//        for (int i=0; i<=7; i+=7) {
-//            switch(i) {
-//                case 0:
-//                    c=Color.BLACK;
-//                    break;
-//                case 7:
-//                    c=Color.WHITE;
-//                    break;
-//            }
         chessMatrix[0][0].setCurrentChessPiece(new Rook(Color.BLACK,Images.getROOK_BLACK()));
         chessMatrix[0][1].setCurrentChessPiece(new Knight(Color.BLACK,Images.getKNIGHT_BLACK()));
         chessMatrix[0][2].setCurrentChessPiece(new Bishop(Color.BLACK,Images.getBISHOP_BLACK()));
         chessMatrix[0][3].setCurrentChessPiece(new Queen(Color.BLACK,Images.getQUEEN_BLACK()));
         chessMatrix[0][4].setCurrentChessPiece(new King(Color.BLACK,Images.getKING_BLACK()));
         chessMatrix[0][5].setCurrentChessPiece(new Bishop(Color.BLACK,Images.getBISHOP_BLACK()));                
-        chessMatrix[0][6].setCurrentChessPiece(new Knight(Color.BLACK,Images.getKING_BLACK()));
+        chessMatrix[0][6].setCurrentChessPiece(new Knight(Color.BLACK,Images.getKNIGHT_BLACK()));
         chessMatrix[0][7].setCurrentChessPiece(new Rook(Color.BLACK,Images.getROOK_BLACK()));
         chessMatrix[7][0].setCurrentChessPiece(new Rook(Color.WHITE,Images.getROOK_WHITE()));
         chessMatrix[7][1].setCurrentChessPiece(new Knight(Color.WHITE,Images.getKNIGHT_WHITE()));
@@ -263,7 +312,6 @@ public class ChessBoard extends JPanel {
         chessMatrix[7][5].setCurrentChessPiece(new Bishop(Color.WHITE,Images.getBISHOP_WHITE()));                
         chessMatrix[7][6].setCurrentChessPiece(new Knight(Color.WHITE,Images.getKNIGHT_WHITE()));
         chessMatrix[7][7].setCurrentChessPiece(new Rook(Color.WHITE,Images.getROOK_WHITE()));   
-//        }
         repaint();
     } 
     private void clearBoard() {

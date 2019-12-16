@@ -14,11 +14,11 @@ import java.awt.Image;
  */
 public class Bishop extends ChessPiece {
 //    @Override
-
+    
     public Bishop(Color figureColor, Image img/*, int x, int y*/) {
         super("G", figureColor,img/*, x, y*/);
     }    
-
+    
     @Override
     public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
 //        System.out.println("X1: "+x1+
