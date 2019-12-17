@@ -13,6 +13,7 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -148,10 +149,29 @@ public class ChessBoard extends JPanel {
         return checkCount != 0;
     }  
     private void checkBishops(int kingX, int kingY) {
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
-                
-            }
+        ChessPiece king = chessMatrix[kingX][kingY].getCurrentChessPiece();
+//        ArrayList<ChessPiece> pieces = new ArrayList<>();
+        String direction = "TOP_LEFT";        
+        int limitX, diffX, limitY, diffY, x, y;
+        boolean isFoeOccupied;
+        switch (direction) {
+            case "TOP_LEFT":                
+                limitX = 8; diffX = 1; limitY = -1; diffY = -1; x = kingX + 1; y = kingY + 1;
+                for (int i = x; i != limitX; i += diffX) {
+                    for (int j = y; j != limitY; j += diffY) {                                                
+                        if (chessMatrix[i][j].getCurrentChessPiece() != null)                             
+                        {
+                            isFoeOccupied = chessMatrix[i][j].getCurrentChessPiece().isFoe(king) 
+                                        && (chessMatrix[i][j].getCurrentChessPiece() instanceof Bishop 
+                                            || chessMatrix[i][j].getCurrentChessPiece() instanceof Queen);
+                            break;
+                        }                        
+                    }
+//                    if (isFoeOccupied) break;
+                }   
+            case "TOP_RIGHT":                
+            case "BOTTOM_LEFT":                
+            case "BOTTOM_RIGHT":                
         }
     }
     private void checkRooks(int kingX, int kingY) {
