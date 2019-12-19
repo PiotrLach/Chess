@@ -96,6 +96,7 @@ public class ChessBoard extends JPanel {
         if (evt.getButton()==MouseEvent.BUTTON3){
             Point p = evt.getPoint();
             chooseBoardPiece(p);
+            check();
         }
         else if (evt.getButton()==MouseEvent.BUTTON1){
             Point p = evt.getPoint();
@@ -126,9 +127,9 @@ public class ChessBoard extends JPanel {
     private Point findKing() throws Exception {
         Point king = null;
         for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {                
-                if (chessMatrix[i][j].getCurrentChessPiece() instanceof King
-                    && chessMatrix[i][j].getCurrentChessPiece().getFigureColor() == currentColor) {
+            for (int j = 0; j < 8; j++) {  
+                ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
+                if (cp instanceof King && cp.getFigureColor() == currentColor) {
                     king = new Point(i,j);
                     break;
                 }
@@ -139,40 +140,63 @@ public class ChessBoard extends JPanel {
         else 
             throw new Exception("King has not been found.");
     }
-    private boolean check() {        
-        int checkCount = 0;        
-        checkCount += checkKnights(0,0);
+    private void check() {        
+        try { 
+            Point p = findKing();
+            System.out.println(p);
+            System.out.println(checkKnights( (int) p.getX(), (int) p.getY()));
+            checkBishops( (int) p.getX(), (int) p.getY());
+        } 
+        catch (Exception e) {System.out.println(e);};
+//        int checkCount = 0;        
+//        checkCount += checkKnights(0,0);
         /*
         checkOthers();
         checkPawns();
         */
-        return checkCount != 0;
+//        return checkCount != 0;
     }  
     private void checkBishops(int kingX, int kingY) {
-        ChessPiece king = chessMatrix[kingX][kingY].getCurrentChessPiece();
-//        ArrayList<ChessPiece> pieces = new ArrayList<>();
-        String direction = "TOP_LEFT";        
-        int limitX, diffX, limitY, diffY, x, y;
-        boolean isFoeOccupied;
-        switch (direction) {
-            case "TOP_LEFT":                
-                limitX = 8; diffX = 1; limitY = -1; diffY = -1; x = kingX + 1; y = kingY + 1;
-                for (int i = x; i != limitX; i += diffX) {
-                    for (int j = y; j != limitY; j += diffY) {                                                
-                        if (chessMatrix[i][j].getCurrentChessPiece() != null)                             
-                        {
-                            isFoeOccupied = chessMatrix[i][j].getCurrentChessPiece().isFoe(king) 
-                                        && (chessMatrix[i][j].getCurrentChessPiece() instanceof Bishop 
-                                            || chessMatrix[i][j].getCurrentChessPiece() instanceof Queen);
-                            break;
-                        }                        
-                    }
-//                    if (isFoeOccupied) break;
-                }   
-            case "TOP_RIGHT":                
-            case "BOTTOM_LEFT":                
-            case "BOTTOM_RIGHT":                
+        try {            
+            checkQuarter(Direction.TOP_LEFT, kingX, kingY);
+            checkQuarter(Direction.TOP_RIGHT, kingX, kingY);
+            checkQuarter(Direction.BOTTOM_LEFT, kingX, kingY);
+            checkQuarter(Direction.BOTTOM_RIGHT, kingX, kingY);
+        } catch (Exception e) {
+            System.out.println(e);
         }
+    }
+    private enum Direction {TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT};
+    private void checkQuarter(Direction d, int kingX, int kingY) throws Exception {
+        ChessPiece king = chessMatrix[kingX][kingY].getCurrentChessPiece();
+        int limitX, diffX, limitY, diffY, x, y;
+        switch (d) {            
+            case TOP_LEFT:
+                limitX = 8; diffX = 1; limitY = -1; diffY = -1; x = kingX + 1; y = kingY - 1;
+                break;
+            case TOP_RIGHT:                
+                limitX = 8; diffX = 1; limitY = 8; diffY = 1; x = kingX + 1; y = kingY + 1;
+                break;
+            case BOTTOM_LEFT:                
+                limitX = -1; diffX = -1; limitY = -1; diffY = -1; x = kingX - 1; y = kingY - 1;
+                break;
+            case BOTTOM_RIGHT:   
+                limitX = -1; diffX = -1; limitY = 8; diffY = 1; x = kingX - 1; y = kingY + 1;
+                break;
+            default:
+                throw new Exception("Incorrect direction specified!");
+        }
+        boolean isFoeOccupied = false;
+        for (int i = x, j = y; i != limitX && j != limitY; i += diffX, j += diffY) {
+            ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
+            System.out.println(i + "," + j);
+            if (cp != null)                             
+            {
+                isFoeOccupied = cp.isFoe(king) && (cp instanceof Bishop || cp instanceof Queen);
+                break;
+            }            
+        }
+        System.out.println(isFoeOccupied);
     }
     private void checkRooks(int kingX, int kingY) {
         /*
