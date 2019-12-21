@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import my.chess.pieces.*;
 
@@ -287,50 +288,28 @@ public class ChessBoard extends JPanel {
 //            highlightAll(g);
 //        }
     }
-    //zrealizować w klasie
-    private boolean pathIsFree(int x1, int y1, int x2, int y2){
-//        System.out.println("X1: "+x1+
-//                           " Y1: "+y1+
-//                           " X2: "+x2+
-//                           " Y2: "+y2);
-//        System.out.println("Yes");
-        int nullCount=0;        
-        if (!(selectedChessPiece instanceof Knight)) {                    
-            if (x1<x2) {
-                for (int i = x1; i <= x2; i++)                       
-                    if (y1>y2)
-                        for (int j = y1; j>= y2; j--)
-                            nullCount += pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                                        
-                    else
-                        for (int j = y1; j<=y2; j++)            
-                            nullCount += pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                        
+    private boolean pathIsFree(int x1, int y1, int x2, int y2) {
+        int verticalDifference, horizontalDifference, notNullCount = 0;
+        if (!(selectedChessPiece instanceof Knight)) {
+            verticalDifference = x1 == x2 ? 0 : (x1 < x2 ? 1 : -1);                        
+            horizontalDifference = y1 == y2 ? 0 : (y1 < y2 ? 1 : -1);
+            x1 += verticalDifference;
+            y1 += horizontalDifference;
+            for (int i = x1, j = y1; i != x2 || j != y2; i += verticalDifference, j+= horizontalDifference) {
+                ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
+                notNullCount += cp == null ? 0 : 1;
+            }
+            if (notNullCount == 0) {
+                return true;
             }
             else {
-                for (int i = x1; i >= x2; i--)            
-                    if (y1>y2) 
-                        for (int j = y1; j>= y2; j--) 
-                            nullCount += pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                
-                    else 
-                        for (int j = y1; j<=y2; j++)            
-                            nullCount += pathIsFreeSubroutine(x1,y1,x2,y2,i,j);                        
-            }
+                JOptionPane.showMessageDialog(this, "Ruch niedozwolony: po drodze są inne figury!");
+                return false;
+            }                        
         }
-//        System.out.println("/////////////////////");
-        return nullCount == 0;
-    }
-    private int pathIsFreeSubroutine(int x1,int y1, int x2, int y2, int i, int j) {
-        int nullCount=0;
-        if (selectedChessPiece.movementConditionFullfilled(x1,y1,i,j)
-            && (i!=x1 && y1==y2) 
-                || (j!=y1 && x1==x2) 
-                || (i!=x1 && j!=y1 && Math.abs(y1-j) == Math.abs(x1-i))
-            )  {
-            boolean result=chessMatrix[i][j].getCurrentChessPiece()!=null;                           
-            if (result && !(i==x2 && j==y2 && selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece())))
-                nullCount++;
-//            System.out.println(result+" "+i+" "+j+" "+nullCount);
+        else {
+            return true;
         }
-        return nullCount;
     } 
     public void setNewGame() throws IOException {
         
