@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
@@ -44,8 +45,7 @@ public class ChessBoard extends JPanel {
                 width = getWidth();
 //        System.out.println(width + " " + height);
         beginHeight = (int) height;
-        endHeight = (int) 0;
-//        beginHeight = height;        
+        endHeight = (int) 0;      
         while ( (beginHeight - endHeight) % 8 != 0) {            
                 beginHeight--;            
         }
@@ -97,14 +97,15 @@ public class ChessBoard extends JPanel {
         if (evt.getButton()==MouseEvent.BUTTON3){
             Point p = evt.getPoint();
             chooseBoardPiece(p);
-            check();
         }
         else if (evt.getButton()==MouseEvent.BUTTON1){
             Point p = evt.getPoint();
             moveBoardPiece(p);
+            check();
         }
     }
-    private void chooseBoardPiece(Point p){        
+    private void chooseBoardPiece(Point p){
+//        outerloop:
         for (int i=0; i<8;i++) {
             for (int j=0;j<8; j++) {                
                 if (chessMatrix[i][j].contains(p) 
@@ -113,9 +114,11 @@ public class ChessBoard extends JPanel {
                     && currentColor == chessMatrix[i][j].getCurrentChessPiece().getFigureColor()
                         )
                 {                    
+//                    chessMatrix[sourceI][sourceJ].setHighlighted(false);
                     chessMatrix[i][j].setHighlighted(true);
                     selectedChessPiece=chessMatrix[i][j].getCurrentChessPiece();
-                    sourceI=i; sourceJ=j;
+                    sourceI=i; sourceJ=j;   
+//                    break outerloop;
                 }
                 else
                 {                    
@@ -126,18 +129,18 @@ public class ChessBoard extends JPanel {
         repaint();        
     }
     private Point findKing() throws Exception {
-        Point king = null;
+        Point kingCoordinates = null;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {  
                 ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
                 if (cp instanceof King && cp.getFigureColor() == currentColor) {
-                    king = new Point(i,j);
+                    kingCoordinates = new Point(i,j);
                     break;
                 }
             }            
         }
-        if (king != null)
-            return king;
+        if (kingCoordinates != null)
+            return kingCoordinates;
         else 
             throw new Exception("King has not been found.");
     }
@@ -147,6 +150,7 @@ public class ChessBoard extends JPanel {
             System.out.println(p);
             System.out.println(checkKnights( (int) p.getX(), (int) p.getY()));
             checkBishops( (int) p.getX(), (int) p.getY());
+            checkRooks( (int) p.getX(), (int) p.getY());
         } 
         catch (Exception e) {System.out.println(e);};
 //        int checkCount = 0;        
@@ -159,51 +163,93 @@ public class ChessBoard extends JPanel {
     }  
     private void checkBishops(int kingX, int kingY) {
         try {            
-            checkQuarter(Direction.TOP_LEFT, kingX, kingY);
-            checkQuarter(Direction.TOP_RIGHT, kingX, kingY);
-            checkQuarter(Direction.BOTTOM_LEFT, kingX, kingY);
-            checkQuarter(Direction.BOTTOM_RIGHT, kingX, kingY);
+            checkDiagonal(Direction.TOP_LEFT, kingX, kingY);
+            checkDiagonal(Direction.TOP_RIGHT, kingX, kingY);
+            checkDiagonal(Direction.BOTTOM_LEFT, kingX, kingY);
+            checkDiagonal(Direction.BOTTOM_RIGHT, kingX, kingY);
         } catch (Exception e) {
             System.out.println(e);
         }
     }
-    private enum Direction {TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT};
-    private void checkQuarter(Direction d, int kingX, int kingY) throws Exception {
-        ChessPiece king = chessMatrix[kingX][kingY].getCurrentChessPiece();
-        int limitX, diffX, limitY, diffY, x, y;
+    private void checkRooks(int kingX, int kingY) {
+        try {            
+            checkCross(Direction.HORIZONTAL_LEFT, kingX, kingY);
+            checkCross(Direction.HORIZONTAL_RIGHT,kingX, kingY);
+            checkCross(Direction.VERTICAL_UP, kingX, kingY);
+            checkCross(Direction.VERTICAL_DOWN, kingX, kingY);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+    private enum Direction {
+        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT,
+        HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN
+    };
+    private void checkPawns(Direction d, int kingX, int kingY) throws Exception {
+        
+    }
+    private void checkDiagonal(Direction d, int kingX, int kingY) throws Exception {
+        int limitX, diffX, limitY, diffY, x = kingX, y = kingY;
         switch (d) {            
             case TOP_LEFT:
-                limitX = 8; diffX = 1; limitY = -1; diffY = -1; x = kingX + 1; y = kingY - 1;
+                limitX = 8; diffX = 1; limitY = -1; diffY = -1; 
                 break;
             case TOP_RIGHT:                
-                limitX = 8; diffX = 1; limitY = 8; diffY = 1; x = kingX + 1; y = kingY + 1;
+                limitX = 8; diffX = 1; limitY = 8; diffY = 1;
                 break;
             case BOTTOM_LEFT:                
-                limitX = -1; diffX = -1; limitY = -1; diffY = -1; x = kingX - 1; y = kingY - 1;
+                limitX = -1; diffX = -1; limitY = -1; diffY = -1;
                 break;
             case BOTTOM_RIGHT:   
-                limitX = -1; diffX = -1; limitY = 8; diffY = 1; x = kingX - 1; y = kingY + 1;
+                limitX = -1; diffX = -1; limitY = 8; diffY = 1; 
                 break;
             default:
                 throw new Exception("Incorrect direction specified!");
         }
+        x += diffX;
+        y += diffY;
         boolean isFoeOccupied = false;
         for (int i = x, j = y; i != limitX && j != limitY; i += diffX, j += diffY) {
             ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
             System.out.println(i + "," + j);
             if (cp != null)                             
             {
-                isFoeOccupied = cp.isFoe(king) && (cp instanceof Bishop || cp instanceof Queen);
+                isFoeOccupied = cp.getFigureColor() != currentColor && (cp instanceof Bishop || cp instanceof Queen);
                 break;
             }            
         }
         System.out.println(isFoeOccupied);
     }
-    private void checkRooks(int kingX, int kingY) {
-        /*
-        for (int x = kingX; x < ; )
-            for(int y = kingY; y < ; )
-        */
+    private void checkCross(Direction d, int kingX, int kingY) throws Exception {
+        int limitX, diffX, limitY, diffY, x = kingX, y = kingY;
+        switch (d) {            
+            case HORIZONTAL_LEFT:
+                limitX = x; diffX = 0; limitY = -1; diffY = -1;
+                break;
+            case HORIZONTAL_RIGHT:                
+                limitX = x; diffX = 0; limitY = 8; diffY = 1;
+                break;
+            case VERTICAL_DOWN:                
+                limitX = -1; diffX = -1; limitY = y; diffY = 0;
+                break;
+            case VERTICAL_UP:   
+                limitX = 8; diffX = 1; limitY = y; diffY = 0;
+                break;
+            default:
+                throw new Exception("Incorrect direction specified!");
+        }
+        x += diffX; y += diffY;
+        boolean isFoeOccupied = false;
+        for (int i = x, j = y; i != limitX || j != limitY; i += diffX, j += diffY) {
+            ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
+            System.out.println(i + "," + j);
+            if (cp != null)                             
+            {
+                isFoeOccupied = cp.getFigureColor() != currentColor && (cp instanceof Rook || cp instanceof Queen);
+                break;
+            }            
+        }
+        System.out.println(isFoeOccupied);
     }
     private int checkKnights(int kingX, int kingY) {
         Point[] points =  { new Point(1,2), new Point(-1,2),
@@ -226,7 +272,8 @@ public class ChessBoard extends JPanel {
     }
 
     private void moveBoardPiece(Point p){
-        boolean flag=false;
+//        boolean flag=false;
+        outerloop:
         for (int i=0; i<8;i++) {
             for (int j=0;j<8; j++) {                
                 if (selectedChessPiece!=null
@@ -243,31 +290,42 @@ public class ChessBoard extends JPanel {
                     && selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)
                     && pathIsFree(sourceI, sourceJ, i,j)
                     )
-                {   
+                {                    
                     chessMatrix[i][j].setCurrentChessPiece(selectedChessPiece);
                     selectedChessPiece=null;                    
-                    flag=true;                    
+//                    flag=true;
+                    if (currentColor==Color.WHITE) {
+                        currentColor=Color.BLACK;                        
+                    }
+                    else {
+                        currentColor=Color.WHITE;                    
+                    }
+                    chessMatrix[sourceI][sourceJ].setCurrentChessPiece(null);
+                    chessMatrix[sourceI][sourceJ].setHighlighted(false);
+                    repaint();
+                    break outerloop;                                        
                 }
-                else
-                {                    
-                    chessMatrix[i][j].setHighlighted(false);
-                }            
+//                else
+//                {                    
+//                    chessMatrix[i][j].setHighlighted(false);
+//                }            
             }
+//            if (flag) break;
         }        
-        if (flag==true) {
-            if (currentColor==Color.WHITE) {
-                currentColor=Color.BLACK;                        
-            }
-            else {
-                currentColor=Color.WHITE;                    
-            }
-            chessMatrix[sourceI][sourceJ].setCurrentChessPiece(null);            
-        }
-        repaint();
+//        if (flag) {
+//            if (currentColor==Color.WHITE) {
+//                currentColor=Color.BLACK;                        
+//            }
+//            else {
+//                currentColor=Color.WHITE;                    
+//            }
+//            chessMatrix[sourceI][sourceJ].setCurrentChessPiece(null);            
+//            repaint();
+//        }        
     }
     @Override                 
     public void paint(Graphics g) {
-        super.paint(g);                 
+        super.paint(g);
         for (int i=0; i<8;i++) {
             for (int j=0;j<8; j++) {
                 if (chessMatrix[i][j].isHighlighted())                     
@@ -277,10 +335,10 @@ public class ChessBoard extends JPanel {
                 if (chessMatrix[i][j].getCurrentChessPiece()!=null) {
                     Double x = chessMatrix[i][j].getX();
                     Double y = chessMatrix[i][j].getY();
-                    Double width = chessMatrix[i][j].getWidth(); 
-                    Double height = chessMatrix[i][j].getHeight();
-//                    chessMatrix[i][j].getCurrentChessPiece().drawPieceSymbol(g, x.intValue(),y.intValue());
-                    chessMatrix[i][j].getCurrentChessPiece().drawImage(g, x.intValue(), y.intValue(), width.intValue(), height.intValue());
+    //                    Double width = chessMatrix[i][j].getWidth(); 
+    //                    Double height = chessMatrix[i][j].getHeight();
+    //                    chessMatrix[i][j].getCurrentChessPiece().drawPieceSymbol(g, x.intValue(),y.intValue());
+                    chessMatrix[i][j].getCurrentChessPiece().drawImage(g, x.intValue(), y.intValue(), diffHorizontal,diffVertical);
                 }
             }
         }
@@ -365,8 +423,9 @@ public class ChessBoard extends JPanel {
             throw new IllegalArgumentException("Columns and rows indices cannot exceed 7");
     }
     private static final ChessField[][] chessMatrix = new ChessField[8][8];
+    private boolean paintAll = true;
     private static Color currentColor;            
-    private int sourceI, sourceJ;    
+    private int sourceI, sourceJ, destI, destJ;  
     private ChessPiece selectedChessPiece;
     private int beginHeight,
                 endHeight,
