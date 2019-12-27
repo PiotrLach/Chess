@@ -213,7 +213,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_gameManageSavesButtonActionPerformed
 
     private void manageSavesLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesLoadActionPerformed
-            savesPanel1.loadSavedGame();
+        savesPanel1.loadSavedGame();
         myTabbedPane.setSelectedIndex(1);
     }//GEN-LAST:event_manageSavesLoadActionPerformed
 

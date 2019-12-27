@@ -5,6 +5,7 @@
  */
 package my.chess.pieces;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -30,55 +31,42 @@ public class Images {
         KING_BLACK = ImageIO.read(new File("res/black/king.png"));
         KING_WHITE = ImageIO.read(new File("res/white/king.png"));
     }
-
-    public static Image getPAWN_BLACK() {
-        return PAWN_BLACK;
+    public static Image getPAWN(Color c) {
+        if (c == Color.BLACK)
+            return PAWN_BLACK;
+        else
+            return PAWN_WHITE;
     }
-
-    public static Image getPAWN_WHITE() {
-        return PAWN_WHITE;
+    public static Image getROOK(Color c) {
+        if (c == Color.BLACK)
+            return ROOK_BLACK;
+        else
+            return ROOK_WHITE;
     }
-
-    public static Image getROOK_BLACK() {
-        return ROOK_BLACK;
+    public static Image getBISHOP(Color c) {
+        if (c == Color.BLACK)
+            return BISHOP_BLACK;
+        else
+            return BISHOP_WHITE;
     }
-
-    public static Image getROOK_WHITE() {
-        return ROOK_WHITE;
+    public static Image getKNIGHT(Color c) {
+        if (c == Color.BLACK)
+            return KNIGHT_BLACK;
+        else
+            return KNIGHT_WHITE;
     }
-
-    public static Image getBISHOP_BLACK() {
-        return BISHOP_BLACK;
+    public static Image getQUEEN(Color c) {
+        if (c == Color.BLACK)
+            return QUEEN_BLACK;
+        else
+            return QUEEN_WHITE;
     }
-
-    public static Image getBISHOP_WHITE() {
-        return BISHOP_WHITE;
+    public static Image getKING(Color c) {
+        if (c == Color.BLACK)
+            return KING_BLACK;
+        else
+            return KING_WHITE;
     }
-
-    public static Image getKNIGHT_BLACK() {
-        return KNIGHT_BLACK;
-    }
-
-    public static Image getKNIGHT_WHITE() {
-        return KNIGHT_WHITE;
-    }
-
-    public static Image getQUEEN_BLACK() {
-        return QUEEN_BLACK;
-    }
-
-    public static Image getQUEEN_WHITE() {
-        return QUEEN_WHITE;
-    }
-
-    public static Image getKING_BLACK() {
-        return KING_BLACK;
-    }
-
-    public static Image getKING_WHITE() {
-        return KING_WHITE;
-    }
-    
     private static Image PAWN_BLACK;    
     private static Image PAWN_WHITE;
     private static Image ROOK_BLACK;

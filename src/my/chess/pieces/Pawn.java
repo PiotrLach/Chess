@@ -26,9 +26,10 @@ public class Pawn extends ChessPiece{
             twoFieldsAheadIsNotOccupied;
     private int startingX;
     
-    public Pawn(Color figureColor, Image img/*, int startingX, int y*/) {
-        super("P", figureColor,img/*, startingX, y*/);        
-        chooseStartingX();
+    public Pawn(Color figureColor, Image img, int startingX/*, int y*/) {
+        super("P", figureColor,img/*, startingX, y*/);       
+        this.startingX = startingX;
+//        chooseStartingX();
     }
     private void chooseStartingX() {
         if (figureColor == Color.BLACK) 

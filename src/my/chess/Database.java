@@ -162,29 +162,29 @@ public class Database {
             default:
                 throw new IllegalArgumentException("Piece ID value has to be between 0 and 11");
             case 0:
-                return new Pawn(Color.BLACK,Images.getPAWN_BLACK());
+                return new Pawn(Color.BLACK,Images.getPAWN(Color.BLACK),1);
             case 1:
-                return new Rook(Color.BLACK,Images.getROOK_BLACK());
+                return new Rook(Color.BLACK,Images.getROOK(Color.BLACK));
             case 2:
-                return new Bishop(Color.BLACK,Images.getBISHOP_BLACK());
+                return new Bishop(Color.BLACK,Images.getBISHOP(Color.BLACK));
             case 3:
-                return new Knight(Color.BLACK,Images.getKNIGHT_BLACK());
+                return new Knight(Color.BLACK,Images.getKNIGHT(Color.BLACK));
             case 4:
-                return new Queen(Color.BLACK,Images.getQUEEN_BLACK());
+                return new Queen(Color.BLACK,Images.getQUEEN(Color.BLACK));
             case 5:
-                return new King(Color.BLACK,Images.getKING_BLACK());
+                return new King(Color.BLACK,Images.getKING(Color.BLACK));
             case 6:
-                return new Pawn(Color.WHITE,Images.getPAWN_WHITE());
+                return new Pawn(Color.WHITE,Images.getPAWN(Color.WHITE),6);
             case 7:
-                return new Rook(Color.WHITE,Images.getROOK_WHITE());
+                return new Rook(Color.WHITE,Images.getROOK(Color.WHITE));
             case 8:
-                return new Bishop(Color.WHITE,Images.getBISHOP_WHITE());
+                return new Bishop(Color.WHITE,Images.getBISHOP(Color.WHITE));
             case 9:
-                return new Knight(Color.WHITE,Images.getKING_WHITE());
+                return new Knight(Color.WHITE,Images.getKING(Color.WHITE));
             case 10:
-                return new Queen(Color.WHITE,Images.getQUEEN_WHITE());
+                return new Queen(Color.WHITE,Images.getQUEEN(Color.WHITE));
             case 11:
-                return new King(Color.WHITE,Images.getKING_WHITE());                
+                return new King(Color.WHITE,Images.getKING(Color.WHITE));                
         }
     }
 }
