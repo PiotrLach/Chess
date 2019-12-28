@@ -145,10 +145,16 @@ public class ChessBoard extends JPanel {
             Point p = findKing();
             System.out.println(p);
             int x = (int) p.getX(), y = (int) p.getY();
-            System.out.println(checkKnights(x,y));
-            checkBishops(x,y);
-            checkRooks(x,y);
-            System.out.println(checkPawns(x,y));
+//            System.out.println(checkKnights(x, y));
+//            System.out.println(checkRooks(x, y));
+//            System.out.println(checkPawns(x, y));
+//            System.out.println(checkBishops(x, y));
+            boolean check = 
+                checkKnights(x,y) ||
+                checkBishops(x,y) || 
+                checkRooks(x,y) ||
+                checkPawns(x,y);
+            if (check) JOptionPane.showMessageDialog(this, "Szach!");
         } 
         catch (Exception e) {System.out.println(e);};
 //        int checkCount = 0;        
@@ -159,24 +165,26 @@ public class ChessBoard extends JPanel {
         */
 //        return checkCount != 0;
     }  
-    private void checkBishops(int kingX, int kingY) {
+    private boolean checkBishops(int kingX, int kingY) {
         try {            
-            checkDiagonal(Direction.TOP_LEFT, kingX, kingY);
-            checkDiagonal(Direction.TOP_RIGHT, kingX, kingY);
-            checkDiagonal(Direction.BOTTOM_LEFT, kingX, kingY);
-            checkDiagonal(Direction.BOTTOM_RIGHT, kingX, kingY);
+            return checkDiagonal(Direction.TOP_LEFT, kingX, kingY) || 
+                    checkDiagonal(Direction.TOP_RIGHT, kingX, kingY) || 
+                    checkDiagonal(Direction.BOTTOM_LEFT, kingX, kingY) ||
+                    checkDiagonal(Direction.BOTTOM_RIGHT, kingX, kingY);
         } catch (Exception e) {
             System.out.println(e);
+            return false;
         }
     }
-    private void checkRooks(int kingX, int kingY) {
+    private boolean checkRooks(int kingX, int kingY) {
         try {            
-            checkCross(Direction.HORIZONTAL_LEFT, kingX, kingY);
-            checkCross(Direction.HORIZONTAL_RIGHT,kingX, kingY);
-            checkCross(Direction.VERTICAL_UP, kingX, kingY);
-            checkCross(Direction.VERTICAL_DOWN, kingX, kingY);
+            return checkCross(Direction.HORIZONTAL_LEFT, kingX, kingY) ||
+                    checkCross(Direction.HORIZONTAL_RIGHT,kingX, kingY) ||
+                    checkCross(Direction.VERTICAL_UP, kingX, kingY) ||
+                    checkCross(Direction.VERTICAL_DOWN, kingX, kingY);
         } catch (Exception e) {
             System.out.println(e);
+            return false;
         }
     }
     private enum Direction {
@@ -225,7 +233,7 @@ public class ChessBoard extends JPanel {
         }  
         return false;
     }
-    private void checkDiagonal(Direction d, int kingX, int kingY) throws Exception {
+    private boolean checkDiagonal(Direction d, int kingX, int kingY) throws Exception {
         int limitX, diffX, limitY, diffY, x = kingX, y = kingY;
         switch (d) {            
             case TOP_LEFT:
@@ -244,20 +252,18 @@ public class ChessBoard extends JPanel {
                 throw new Exception("Incorrect direction specified!");
         }
         x += diffX;
-        y += diffY;
-        boolean isFoeOccupied = false;
+        y += diffY;        
         for (int i = x, j = y; i != limitX && j != limitY; i += diffX, j += diffY) {
             ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
             System.out.println(i + "," + j);
             if (cp != null)                             
             {
-                isFoeOccupied = cp.getFigureColor() != currentColor && (cp instanceof Bishop || cp instanceof Queen);
-                break;
+                return cp.getFigureColor() != currentColor && (cp instanceof Bishop || cp instanceof Queen);               
             }            
         }
-        System.out.println(isFoeOccupied);
+        return false;
     }
-    private void checkCross(Direction d, int kingX, int kingY) throws Exception {
+    private boolean checkCross(Direction d, int kingX, int kingY) throws Exception {
         int limitX, diffX, limitY, diffY, x = kingX, y = kingY;
         switch (d) {            
             case HORIZONTAL_LEFT:
@@ -275,33 +281,35 @@ public class ChessBoard extends JPanel {
             default:
                 throw new Exception("Incorrect direction specified!");
         }
-        x += diffX; y += diffY;
-        boolean isFoeOccupied = false;
+        x += diffX; y += diffY;        
         for (int i = x, j = y; i != limitX || j != limitY; i += diffX, j += diffY) {
             ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
             System.out.println(i + "," + j);
             if (cp != null)                             
             {
-                isFoeOccupied = cp.getFigureColor() != currentColor && (cp instanceof Rook || cp instanceof Queen);
-                break;
+                return cp.getFigureColor() != currentColor && (cp instanceof Rook || cp instanceof Queen);                
             }            
         }
-        System.out.println(isFoeOccupied);
+        return false;
     }
-    private int checkKnights(int kingX, int kingY) {
+    private boolean checkKnights(int kingX, int kingY) {
         Point[] points =  { new Point(1,2), new Point(-1,2),
                           new Point(-2,1), new Point(-2,-1),
                           new Point(1,-2), new Point(-1,-2),
                           new Point(2,-1), new Point(2,1) };
-        int x, y, checkCount = 0;
+        int x, y, checkCount = 0; ChessPiece cp;
         for (Point p : points) {
             x = kingX + (int) p.getX();
-            y = kingY + (int) p.getY();
-            if (x <= 7 && x >= 0 && y <= 7 && y >= 0)
-                if (chessMatrix[x][y].getCurrentChessPiece() instanceof Knight)
+            y = kingY + (int) p.getY();            
+            if (x <= 7 && x >= 0 && y <= 7 && y >= 0) {                
+                cp = chessMatrix[x][y].getCurrentChessPiece();
+                if (cp instanceof Knight && cp.getFigureColor() != currentColor) {
+                    System.out.println(x + " " + y);
                     checkCount++;            
+                }
+            }
         }
-        return checkCount;
+        return checkCount != 0;
     }
     private boolean mate() {
         int mateCount = 0;

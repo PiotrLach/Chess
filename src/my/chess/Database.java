@@ -93,8 +93,8 @@ public class Database {
                     {
                         try {
                             setLoadedGamePieces(rs.getString("piece"),rs.getInt("x"),rs.getInt("y"));
-                        } catch (Exception e) {
-                            System.out.println(e.toString());
+                        } catch (IOException | SQLException e) {
+                            System.out.println(e);
                         }
                     }
                     break;
