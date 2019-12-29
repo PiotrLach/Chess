@@ -140,23 +140,29 @@ public class ChessBoard extends JPanel {
         }        
         throw new Exception("King has not been found.");
     }    
-    private void findFriends() {
-        System.out.println("find friends /////////////////////////////////////");
+    private boolean piecesToBlockCheckAvailable() {
+//        System.out.println("find friends /////////////////////////////////////");
         int sum = 0;
-        for (Point p : path) {
+        for (Point p : path) {        
             int x = (int) p.getX(), y = (int) p.getY();
-            System.out.println(x + " " + y);
-            System.out.println(checkKnights(x,y,oppositeColor));
-            System.out.println(checkBishops(x,y,oppositeColor));
-            System.out.println(checkRooks(x,y,oppositeColor));
-            System.out.println(checkPawns(x,y,oppositeColor, Type.FRIEND));
+//            System.out.println(x + "," + y);
+//            System.out.println(checkKnights(x,y,oppositeColor));
+//            System.out.println(checkBishops(x,y,oppositeColor));
+//            System.out.println(checkRooks(x,y,oppositeColor));
             sum += checkKnights(x,y,oppositeColor);
             sum += checkBishops(x,y,oppositeColor);
             sum += checkRooks(x,y,oppositeColor);
-            sum += checkPawns(x,y,oppositeColor, Type.FRIEND);
+            if(chessMatrix[x][y].getCurrentChessPiece() != null)
+                sum += checkPawns(x,y,oppositeColor, Type.FRIEND);
+            else
+                sum += checkPawnsOnUnocuppiedFields(x,y);
+            if (sum > 0) {
+                return true;
+            }
         }
         System.out.println(sum);
-        System.out.println("find friends /////////////////////////////////////");
+//        System.out.println("find friends /////////////////////////////////////");
+        return sum > 0;
     }
     private void check() {        
         try { 
@@ -176,8 +182,13 @@ public class ChessBoard extends JPanel {
             System.out.println(sum);
             if (sum == 1) {
                 JOptionPane.showMessageDialog(this, "Szach!");
-                findFriends();
-            }            
+                if(!piecesToBlockCheckAvailable()) {
+                    mate(x,y);
+                }
+            }
+            else if (sum > 1) {
+                mate(x,y);
+            }
 //            if (check) {
 //                System.out.println(path);
 //                JOptionPane.showMessageDialog(this, "Szach!");
@@ -186,7 +197,27 @@ public class ChessBoard extends JPanel {
         catch (Exception e) {
             System.out.println(e);
         }
-    }  
+    }
+    private void mate(int x, int y) {
+        ArrayList<Point> rescue = new ArrayList();
+        int sum = 0;
+        for (int i = x - 1; i <= x + 1; i++) {
+            for (int j = y - 1; j <= y + 1; j++) {
+                if (i != x && j != y && i <=7 && i >= 0 && j <= 7 && j >= 0) {
+                    ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
+                    if (cp != null && cp.getFigureColor() != currentColor) {
+                        sum += checkKnights(i,j,currentColor);
+                        sum += checkBishops(i,j,currentColor);
+                        sum += checkRooks(i,j,currentColor);
+                        sum += checkPawns(i,j,currentColor, Type.FOE);
+                        if (sum == 0) rescue.add(new Point(i,j));
+                    }
+                    sum = 0;
+                }
+            }
+        }
+        System.out.println(rescue);
+    }
     private int checkBishops(int kingX, int kingY, Color color) {
         int sum = 0;
         try {            
@@ -213,19 +244,32 @@ public class ChessBoard extends JPanel {
     }
     private enum Direction {
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT,
-        HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN
+        HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN,
+        VERTICAL_UP_TWO_PLACES,VERTICAL_DOWN_TWO_PLACES
     };
     private enum Type {
         FRIEND, FOE
     };
-    private int checkPawnsUnocuppied (int kingX, int kingY) {
-        if (startingPoints.get(currentColor) == 1) {
-            
+    private int checkPawnsOnUnocuppiedFields (int kingX, int kingY) {
+        int sum = 0;
+        try {
+            if (startingPoints.get(currentColor) == 1) {
+                sum += checkPawn(Direction.VERTICAL_DOWN, kingX, kingY, oppositeColor) ? 1 : 0;
+                if (kingX == 3) {
+                    sum += checkPawn(Direction.VERTICAL_DOWN_TWO_PLACES, kingX, kingY, oppositeColor) ? 1 : 0;
+                }
+            }
+            else {
+                sum += checkPawn(Direction.VERTICAL_UP, kingX, kingY, oppositeColor) ? 1 : 0;
+                if (kingX == 4) {
+                    sum += checkPawn(Direction.VERTICAL_UP_TWO_PLACES, kingX, kingY, oppositeColor) ? 1 : 0;
+                }
+            }
         }
-        else {
-            
-        }            
-        return 0;
+        catch (Exception e) {
+            System.out.println(e);      
+        }
+        return sum;
     }
     private int checkPawns(int kingX, int kingY, Color color, Type t) {
         int sum = 0;
@@ -274,10 +318,16 @@ public class ChessBoard extends JPanel {
                 limitX = -1; diffX = -1; limitY = 8; diffY = 1;
                 break;
             case VERTICAL_UP:   
-                limitX = -1; diffX = -1; limitY = 8; diffY = 1;
+                limitX = 8; diffX = 1; limitY = 0; diffY = 0;
                 break;
             case VERTICAL_DOWN:   
-                limitX = -1; diffX = -1; limitY = 8; diffY = 1;
+                limitX = -1; diffX = -1; limitY = 0; diffY = 0;
+                break;
+            case VERTICAL_UP_TWO_PLACES:   
+                limitX = 8; diffX = 2; limitY = 0; diffY = 0;
+                break;
+            case VERTICAL_DOWN_TWO_PLACES:   
+                limitX = -1; diffX = -2; limitY = 0; diffY = 0;
                 break;
             default: 
                 throw new Exception("Incorrect direction specified!");            
@@ -382,7 +432,7 @@ public class ChessBoard extends JPanel {
             if (x <= 7 && x >= 0 && y <= 7 && y >= 0) {                
                 cp = chessMatrix[x][y].getCurrentChessPiece();
                 if (cp instanceof Knight && cp.getFigureColor() != color) {
-                    System.out.println(x + " " + y);
+//                    System.out.println(x + " " + y);
                     pathTemp.add(new Point(x,y));
                     if (color == currentColor) path = new ArrayList(pathTemp);
                     checkCount++;            
@@ -390,10 +440,6 @@ public class ChessBoard extends JPanel {
             }
         }
         return checkCount;
-    }
-    private boolean mate() {
-        int mateCount = 0;
-        return mateCount != 0;
     }
 
     private void moveBoardPiece(Point p){

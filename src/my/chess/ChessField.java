@@ -30,9 +30,9 @@ public class ChessField extends Rectangle {
         Color myWhite = new Color(255, 255, 204); 
         Color myBrown = new Color(153, 102, 0); 
         if ((row % 2 == 1 && column % 2 == 0) || (row % 2 == 0 && column % 2 == 1)) 
-            g.setColor(myBrown);
-        else 
             g.setColor(myWhite);
+        else 
+            g.setColor(myBrown);
         g.fillRect(x,y,width,height);
     }
     public void highlightChessField(Graphics g){
