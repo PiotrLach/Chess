@@ -227,7 +227,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void manageSavesNewSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesNewSaveActionPerformed
         savesPanel1.saveNewGame();
-        savesPanel1.restartUI();
+//        savesPanel1.restartUI();
         myTabbedPane.setSelectedIndex(2);
     }//GEN-LAST:event_manageSavesNewSaveActionPerformed
 

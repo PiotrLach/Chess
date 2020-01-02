@@ -92,7 +92,7 @@ public class Database {
                     while(rs.next())
                     {
                         try {
-                            setLoadedGamePieces(rs.getString("piece"),rs.getInt("x"),rs.getInt("y"));
+                            setLoadedGamePiece(rs.getString("piece"),rs.getInt("x"),rs.getInt("y"));
                         } catch (IOException | SQLException e) {
                             System.out.println(e);
                         }
@@ -150,7 +150,7 @@ public class Database {
                 
         }            
     }
-    private static void setLoadedGamePieces(String pieceID, int x, int y) throws IOException {        
+    private static void setLoadedGamePiece(String pieceID, int x, int y) throws IOException {        
         if(pieceID != null) {
 //            System.out.println(x+" "+ y +" " +Integer.parseInt(pieceID));
             ChessBoard.setChessMatrixField(x, y, choosePiece(Integer.parseInt(pieceID)));            
