@@ -117,8 +117,15 @@ public class ChessBoard extends JPanel {
                     chessMatrix[sourceI][sourceJ].setHighlighted(false);
                     chessMatrix[i][j].setHighlighted(true);
                     selectedChessPiece=chessMatrix[i][j].getCurrentChessPiece();
-                    sourceI=i; sourceJ=j;   
+                    sourceI=i; sourceJ=j;
+//                    System.out.println("sX" + sourceI + " sY" + sourceJ);
                     repaint();  
+                    break loop;
+                } 
+                else if (chessMatrix[i][j].contains(p) 
+                        && currentColor != chessMatrix[i][j].getCurrentChessPiece().getFigureColor()) {
+                    String color = currentColor == Color.WHITE ? "białych" : "czarnych";
+                    JOptionPane.showMessageDialog(this, "Teraz ruch " + color + "!");
                     break loop;
                 }
 //                else
@@ -180,15 +187,15 @@ public class ChessBoard extends JPanel {
             sum += checkPawns(x,y,currentColor, Type.FOE);
             System.out.println(path);
             System.out.println(sum);
-            if (sum == 1) {
+            if (check = (sum == 1)) {                
                 JOptionPane.showMessageDialog(this, "Szach!");
                 if(!piecesToBlockCheckAvailable()) {
                     mate(x,y);
                 }
             }
-            else if (sum > 1) {
+            else if (check = (sum > 1)) {
                 mate(x,y);
-            }
+            }            
 //            if (check) {
 //                System.out.println(path);
 //                JOptionPane.showMessageDialog(this, "Szach!");
@@ -216,7 +223,12 @@ public class ChessBoard extends JPanel {
                 }
             }
         }
-        System.out.println(rescue);
+        if (rescue.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Mat!");
+        }
+        else {
+            path = new ArrayList(rescue);
+        }
     }
     private int checkBishops(int kingX, int kingY, Color color) {
         int sum = 0;
@@ -253,16 +265,20 @@ public class ChessBoard extends JPanel {
     private int checkPawnsOnUnocuppiedFields (int kingX, int kingY) {
         int sum = 0;
         try {
-            if (startingPoints.get(currentColor) == 1) {
-                sum += checkPawn(Direction.VERTICAL_DOWN, kingX, kingY, oppositeColor) ? 1 : 0;
+            if (startingPoints.get(currentColor) == 1) {                
                 if (kingX == 3) {
                     sum += checkPawn(Direction.VERTICAL_DOWN_TWO_PLACES, kingX, kingY, oppositeColor) ? 1 : 0;
+                } 
+                else {
+                    sum += checkPawn(Direction.VERTICAL_DOWN, kingX, kingY, oppositeColor) ? 1 : 0;
                 }
             }
-            else {
-                sum += checkPawn(Direction.VERTICAL_UP, kingX, kingY, oppositeColor) ? 1 : 0;
+            else {                
                 if (kingX == 4) {
                     sum += checkPawn(Direction.VERTICAL_UP_TWO_PLACES, kingX, kingY, oppositeColor) ? 1 : 0;
+                } 
+                else {
+                    sum += checkPawn(Direction.VERTICAL_UP, kingX, kingY, oppositeColor) ? 1 : 0;
                 }
             }
         }
@@ -449,7 +465,7 @@ public class ChessBoard extends JPanel {
             for (int j=0;j<8; j++) {                
                 if (selectedChessPiece!=null
                     && chessMatrix[i][j].contains(p) 
-                    && chessMatrix[i][j].isHighlighted()==false                    
+                    && !chessMatrix[i][j].isHighlighted()                    
                     && 
                       (
                         chessMatrix[i][j].getCurrentChessPiece()==null 
@@ -460,23 +476,23 @@ public class ChessBoard extends JPanel {
                       )                    
                     && selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)
                     && pathIsFree(sourceI, sourceJ, i,j)
+                    && (!check || (check && path.contains(new Point(i,j)) && !(selectedChessPiece instanceof King)))
                     )
-                {                    
+                {   
+                    check = false;                    
                     chessMatrix[i][j].setCurrentChessPiece(selectedChessPiece);
                     selectedChessPiece=null;                    
                     chessMatrix[sourceI][sourceJ].setCurrentChessPiece(null);
                     chessMatrix[sourceI][sourceJ].setHighlighted(false);
-                    if (currentColor == Color.WHITE) {
-                        currentColor = Color.BLACK;
-                        oppositeColor = Color.WHITE;
-                    }
-                    else {
-                        currentColor = Color.WHITE;                    
-                        oppositeColor = Color.BLACK;
-                    }
+                    currentColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
+                    oppositeColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
                     repaint();
                     check();
                     break loop;                                        
+                }
+                else if (chessMatrix[i][j].contains(p) && !selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)) {
+                    JOptionPane.showMessageDialog(this, "Ruch niedozwolony: warunek ruchu nie spełniony!\n");
+                    break loop;
                 }
             }
         }        
@@ -525,20 +541,10 @@ public class ChessBoard extends JPanel {
     public void setNewGame() throws IOException {
                         
         clearBoard();                               
-        Color c1;
-        Color c2;
-        if (new Random().nextInt(2) == 1) {
-            c1 = Color.BLACK;
-            c2 = Color.WHITE;
-            startingPoints.put(Color.BLACK, 1);
-            startingPoints.put(Color.WHITE, 6);
-        }
-        else {
-            c1 = Color.WHITE;
-            c2 = Color.BLACK;
-            startingPoints.put(Color.WHITE, 1);
-            startingPoints.put(Color.BLACK, 6);
-        }
+        Color c1 = new Random().nextInt(2) == 1 ? Color.BLACK : Color.WHITE;
+        Color c2 = c1 == Color.BLACK ? Color.WHITE : Color.BLACK;
+        startingPoints.put(c1, 1);
+        startingPoints.put(c2, 6);        
         for (int i=0; i<8; i++) {            
             chessMatrix[1][i].setCurrentChessPiece(new Pawn(c1,Images.getPAWN(c1),1));            
             chessMatrix[6][i].setCurrentChessPiece(new Pawn(c2,Images.getPAWN(c2),6));
@@ -562,7 +568,9 @@ public class ChessBoard extends JPanel {
         repaint();
     } 
     private void clearBoard() {
-        currentColor=Color.WHITE;
+        currentColor = Color.WHITE;
+        oppositeColor = Color.BLACK;
+        check = false;
         startingPoints = new HashMap<>();
         for (int i=0; i<8; i++)             
             for (int j=0; j<8; j++) 
@@ -589,6 +597,7 @@ public class ChessBoard extends JPanel {
         else 
             throw new IllegalArgumentException("Columns and rows indices cannot exceed 7");
     }
+    private boolean check = false;
     private HashMap<Color, Integer> startingPoints;
     private ArrayList<Point> path;
     private static final ChessField[][] chessMatrix = new ChessField[8][8];    

@@ -41,6 +41,7 @@ abstract public class ChessPiece {
         return chessPieceName;
     }
     abstract public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2);
+    private static String message;
     protected String chessPieceName;  
     protected Color figureColor;
 //    protected int x,y;    
