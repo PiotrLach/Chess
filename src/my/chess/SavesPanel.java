@@ -33,7 +33,7 @@ public class SavesPanel extends JPanel {
         buttonGroup = new ButtonGroup();
         String selectGames = "SELECT gameID FROM games;";
         Database.sqlConnection(selectGames, QueryType.SELECT_GAMES);
-        for (Integer i = 0; i<Database.games.size(); i++) {
+        for (Integer i = 0; i<Database.games.size(); i++) {           
             radioButtons.add(new JRadioButton(Database.games.get(i).toString()));            
             buttonGroup.add(radioButtons.get(i));
             add(radioButtons.get(i));
@@ -57,11 +57,16 @@ public class SavesPanel extends JPanel {
                 setChessMatrixField(i, j, null);                
     }
     public void loadSavedGame() {
-        Integer i = getSelected();
-        clearBoard();
-        getGameColorFromDB(i);
-        String selectChessFields = "SELECT x, y, piece FROM chessFields WHERE game="+i+";";
-        Database.sqlConnection(selectChessFields, QueryType.SELECT_CHESS_FIELDS); 
+        try {
+            Integer i = getSelected();
+            clearBoard();
+            getGameColorFromDB(i);
+            String selectChessFields = "SELECT x, y, piece FROM chessFields WHERE game="+i+";";
+            Database.sqlConnection(selectChessFields, QueryType.SELECT_CHESS_FIELDS); 
+        }
+        catch (Exception e) {
+            System.out.println(e);
+        }
     }
     private void getGameColorFromDB(Integer i) {
         String selectMaxGameID = "SELECT currentColor FROM games WHERE gameID = "+i+";"; 
@@ -107,7 +112,7 @@ public class SavesPanel extends JPanel {
             }
         }
         insertNewGame.append(insertFields);
-        System.out.println(insertFields.toString());
+//        System.out.println(insertFields.toString());
         Database.sqlConnection(insertNewGame.toString(), QueryType.OTHER);
         JRadioButton jb = new JRadioButton(String.valueOf(Database.gameID));
         radioButtons.add(jb);            
@@ -122,66 +127,77 @@ public class SavesPanel extends JPanel {
         Database.sqlConnection(selectMaxGameID, QueryType.SELECT_MAX_GAME_ID);
     }
     public void deleteDatabaseRecord(){
-        Integer gameID = getSelected();
-//        String s = "DELETE FROM chessFields WHERE game ="+gameID+";\n";
-//        s += "DELETE FROM games WHERE gameID ="+gameID+";";
-//        Database.sqlConnection(s, QueryType.OTHER);
-        Comparator<JRadioButton> c = (JRadioButton b1, JRadioButton b2) -> b1.getText().compareTo(b2.getText()); 
-        JRadioButton jb = new JRadioButton(gameID.toString());
-        Collections.sort(radioButtons, c);
-//        System.out.println(Collections.binarySearch(radioButtons, jb, c));
-        remove(Collections.binarySearch(radioButtons, jb, c));
-        buttonGroup.remove(jb);
-        radioButtons.remove(jb);
-        updateUI();
+        try {
+            Integer gameID = getSelected();
+            String s = "DELETE FROM chessFields WHERE game ="+gameID+";\n";
+            s += "DELETE FROM games WHERE gameID ="+gameID+";";
+            Database.sqlConnection(s, QueryType.OTHER);
+            Comparator<JRadioButton> c = (JRadioButton b1, JRadioButton b2) -> b1.getText().compareTo(b2.getText()); 
+            JRadioButton jb = new JRadioButton(gameID.toString());
+            Collections.sort(radioButtons, c);
+    //        System.out.println(Collections.binarySearch(radioButtons, jb, c));
+            int idx = Collections.binarySearch(radioButtons, jb, c);
+            System.out.println(idx);
+            remove(radioButtons.get(idx));        
+            buttonGroup.remove(radioButtons.get(idx));
+            radioButtons.remove(idx);
+            updateUI();
+        }
+        catch (Exception e) {
+            System.out.println(e);
+        }
     }
-    public void updateDatabaseRecord(){ 
-        Integer gameID = getSelected();
-//        String s = "";
-        StringBuilder sb = new StringBuilder("");
-        sb.append("UPDATE games SET currentColor =");
-        sb.append(parseColorValue(ChessBoard.getCurrentColor()));
-        sb.append(" WHERE gameID=");
-        sb.append(gameID);
-        sb.append(";");
-        for (int i=0; i<8; i++) {             
-            for (int j=0; j<8; j++) {
-                if (ChessBoard.getChessMatrixField(i, j).getCurrentChessPiece() != null) {
-                    sb.append( "UPDATE chessFields ");
-                    sb.append("SET piece=");
-                    sb.append(pieceIntValue(ChessBoard.getChessMatrixField(i, j).getCurrentChessPiece()).toString());
-                    sb.append(" WHERE x=");
-                    sb.append(i);
-                    sb.append(" AND y=");
-                    sb.append(j);
-                    sb.append(" AND game =");
-                    sb.append(gameID);
-                    sb.append(";");
-                }
-                else {
-                    sb.append("UPDATE chessFields SET piece=null WHERE x=");
-                    sb.append(i);
-                    sb.append(" AND y=");
-                    sb.append(j);
-                    sb.append(" AND game =");
-                    sb.append(gameID);
-                    sb.append(";");
+    public void updateDatabaseRecord(){
+        try {
+            Integer gameID = getSelected();
+            StringBuilder sb = new StringBuilder("");
+            sb.append("UPDATE games SET currentColor =");
+            sb.append(parseColorValue(ChessBoard.getCurrentColor()));
+            sb.append(" WHERE gameID=");
+            sb.append(gameID);
+            sb.append(";");
+            for (int i=0; i<8; i++) {             
+                for (int j=0; j<8; j++) {
+                    if (ChessBoard.getChessMatrixField(i, j).getCurrentChessPiece() != null) {
+                        sb.append( "UPDATE chessFields ");
+                        sb.append("SET piece=");
+                        sb.append(pieceIntValue(ChessBoard.getChessMatrixField(i, j).getCurrentChessPiece()).toString());
+                        sb.append(" WHERE x=");
+                        sb.append(i);
+                        sb.append(" AND y=");
+                        sb.append(j);
+                        sb.append(" AND game =");
+                        sb.append(gameID);
+                        sb.append(";");
+                    }
+                    else {
+                        sb.append("UPDATE chessFields SET piece=null WHERE x=");
+                        sb.append(i);
+                        sb.append(" AND y=");
+                        sb.append(j);
+                        sb.append(" AND game =");
+                        sb.append(gameID);
+                        sb.append(";");
+                    }
                 }
             }
+            Database.sqlConnection(sb.toString(), QueryType.OTHER);
         }
-        Database.sqlConnection(sb.toString(), QueryType.OTHER);
+        catch (Exception e) {
+            System.out.println(e);
+        }
     }
-    private Integer getSelected(){
+    private Integer getSelected() throws Exception {
         Integer gameid = 0;
 //        for (JRadioButton rb : radioButtons) {            
         for (int i = 0; i < radioButtons.size(); i++) {
             if (radioButtons.get(i).isSelected()) {
                 gameid = Integer.parseInt(radioButtons.get(i).getText());
 //                System.out.println(i);
-                break;
+                return gameid;
             }
         }
-        return gameid;
+        throw new Exception("Nie wybrano zapisu gry do usunięcia!");
     }     
     private int parseColorValue(Color c) throws IllegalArgumentException {
         if (c == Color.BLACK) 
