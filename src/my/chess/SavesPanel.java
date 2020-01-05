@@ -17,6 +17,7 @@ import javax.swing.JRadioButton;
 import my.chess.Database.QueryType;
 import static my.chess.ChessBoard.setChessMatrixField;
 import my.chess.pieces.ChessPiece;
+import my.chess.pieces.King;
 //import my.chess.Database.*;
 /**
  *
@@ -73,7 +74,10 @@ public class SavesPanel extends JPanel {
             for (int y=0; y<8; y++) {
                 if (ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece() != null) {
                     selectPieceID = new StringBuilder("(SELECT pieceID FROM chessPieces WHERE pieceName = '");
-                    selectPieceID.append(ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece().getChessPieceName());
+                    selectPieceID.append(ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece().getPieceName());
+                    if (ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece() instanceof King) {
+                        System.out.println(x + " " + y);
+                    }
                     selectPieceID.append("' AND pieceColor = ");
                     selectPieceID.append(parseColorValue(ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece().getFigureColor()));
                     selectPieceID.append(")");
@@ -89,15 +93,15 @@ public class SavesPanel extends JPanel {
                     insertFields.append(");\n");
                     
                 }
-//                else {
-//                    insertFields.append( "INSERT INTO chessFields (x, y, game) VALUES (");
-//                    insertFields.append( x);
-//                    insertFields.append( ",");
-//                    insertFields.append( y);
-//                    insertFields.append( ",");
-//                    insertFields.append( Database.gameID);
-//                    insertFields.append( ");\n");
-//                }
+                else {
+                    insertFields.append( "INSERT INTO chessFields (x, y, game) VALUES (");
+                    insertFields.append( x);
+                    insertFields.append( ",");
+                    insertFields.append( y);
+                    insertFields.append( ",");
+                    insertFields.append( Database.gameID);
+                    insertFields.append( ");\n");
+                }
             }
         }
         insertNewGame.append(insertFields);
@@ -150,7 +154,7 @@ public class SavesPanel extends JPanel {
                     if (ChessBoard.getChessMatrixField(i, j).getCurrentChessPiece() != null) {
                         sb.append( "UPDATE chessFields ");
                         sb.append("SET piece=");
-                        sb.append(pieceIntValue(ChessBoard.getChessMatrixField(i, j).getCurrentChessPiece()).toString());
+                        sb.append(pieceIntValue(ChessBoard.getChessMatrixField(i, j).getCurrentChessPiece()));
                         sb.append(" WHERE x=");
                         sb.append(i);
                         sb.append(" AND y=");
@@ -197,27 +201,29 @@ public class SavesPanel extends JPanel {
             throw new IllegalArgumentException("There can only be black and white colors");
             
     }        
-    private Integer pieceIntValue(ChessPiece cp) {
-        Integer i;
+    private int pieceIntValue(ChessPiece cp) throws IllegalArgumentException{
+        int i;
         if (cp.getFigureColor() == Color.BLACK)
             i = 0;
         else
-            i = 6;            
-        switch (cp.getChessPieceName()) {
+            i = 7;            
+        switch (cp.getPieceName()) {
             default:
-                return null;
-            case "P":
-                return 0+i;            
-            case "W":
-                return 1+i;            
-            case "G":
+                throw new IllegalArgumentException("No such figure!");
+            case Pawn1:
+                return 0+i;
+            case Pawn6:
+                return 1+i;      
+            case Rook:
                 return 2+i;            
-            case "S":
+            case Bishop:
                 return 3+i;            
-            case "H":
+            case Knight:
                 return 4+i;            
-            case "K":
-                return 5+i;
+            case Queen:
+                return 5+i;            
+            case King:
+                return 6+i;
         }
     }
     private class RadioButton extends JRadioButton { 

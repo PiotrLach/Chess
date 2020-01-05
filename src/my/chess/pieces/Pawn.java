@@ -26,9 +26,9 @@ public class Pawn extends ChessPiece{
             twoFieldsAheadIsNotOccupied;
     private int startingX;
     
-    public Pawn(Color figureColor, Image img, int startingX/*, int y*/) {
-        super("P", figureColor,img/*, startingX, y*/);       
-        this.startingX = startingX;
+    public Pawn(Color figureColor, Image img, PieceName p/*, int y*/) {
+        super(p, figureColor,img/*, startingX, y*/);       
+        this.startingX = p == PieceName.Pawn1 ? 1 : 6;
 //        chooseStartingX();
     }
     private void chooseStartingX() {

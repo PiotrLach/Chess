@@ -16,7 +16,7 @@ public class Bishop extends ChessPiece {
 //    @Override
     
     public Bishop(Color figureColor, Image img/*, int x, int y*/) {
-        super("G", figureColor,img/*, x, y*/);
+        super(PieceName.Bishop, figureColor,img/*, x, y*/);
     }    
     
     @Override

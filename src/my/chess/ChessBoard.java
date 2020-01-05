@@ -122,7 +122,7 @@ public class ChessBoard extends JPanel {
                     repaint();  
                     break loop;
                 } 
-                else if (chessMatrix[i][j].contains(p) 
+                else if (chessMatrix[i][j].contains(p) && chessMatrix[i][j].getCurrentChessPiece()!=null
                         && currentColor != chessMatrix[i][j].getCurrentChessPiece().getFigureColor()) {
                     String color = currentColor == Color.WHITE ? "białych" : "czarnych";
                     JOptionPane.showMessageDialog(this, "Teraz ruch " + color + "!");
@@ -546,8 +546,8 @@ public class ChessBoard extends JPanel {
         startingPoints.put(c1, 1);
         startingPoints.put(c2, 6);        
         for (int i=0; i<8; i++) {            
-            chessMatrix[1][i].setCurrentChessPiece(new Pawn(c1,Images.getPAWN(c1),1));            
-            chessMatrix[6][i].setCurrentChessPiece(new Pawn(c2,Images.getPAWN(c2),6));
+            chessMatrix[1][i].setCurrentChessPiece(new Pawn(c1,Images.getPAWN(c1),ChessPiece.PieceName.Pawn1));            
+            chessMatrix[6][i].setCurrentChessPiece(new Pawn(c2,Images.getPAWN(c2),ChessPiece.PieceName.Pawn6));
         }                
         chessMatrix[0][0].setCurrentChessPiece(new Rook(c1,Images.getROOK(c1)));
         chessMatrix[0][1].setCurrentChessPiece(new Knight(c1,Images.getKNIGHT(c1)));

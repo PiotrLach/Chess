@@ -15,7 +15,7 @@ import java.awt.Image;
 public class Knight extends ChessPiece{
 
     public Knight(Color figureColor, Image img/*, int x, int y*/) {
-        super("S", figureColor,img/*, x, y*/);
+        super(PieceName.Knight, figureColor,img/*, x, y*/);
     }
 
     @Override
