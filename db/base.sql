@@ -13,18 +13,29 @@ CREATE TABLE chessPieces(
 	pieceColor INTEGER NOT NULL,
 	FOREIGN KEY (pieceColor) REFERENCES colors(colorValue)
 );
+-- CREATE TABLE startingPositions(
+--         positionID INTEGER PRIMARY KEY,
+--         position INTEGER,
+--         color INTEGER,
+--         FOREIGN KEY (color) REFERENCES colors(colorValue)
+-- );
 CREATE TABLE games(
 	gameID INTEGER PRIMARY KEY,
 	currentColor INTEGER NOT NULL,
-	FOREIGN KEY (currentColor) REFERENCES colors(colorValue)
+        FOREIGN KEY (currentColor) REFERENCES colors(colorValue),
+        date TEXT
+--         startingPosition1 INTEGER,
+--         startingPosition2 INTEGER,	
+--         FOREIGN KEY (startingPosition1) REFERENCES startingPositions(positionID),
+--         FOREIGN KEY (startingPosition2) REFERENCES startingPositions(positionID)
 );
-CREATE TABLE chessPlayers(
-	playerName TEXT PRIMARY KEY,
-	playerColor INTEGER NOT NULL,
-	gameID INTEGER,
-	FOREIGN KEY (playerColor) REFERENCES colors(colorValue),
-	FOREIGN KEY (gameID) REFERENCES games(gameID)
-);
+-- CREATE TABLE chessPlayers(
+-- 	playerName TEXT PRIMARY KEY,
+-- 	playerColor INTEGER NOT NULL,
+-- 	gameID INTEGER,
+-- 	FOREIGN KEY (playerColor) REFERENCES colors(colorValue),
+-- 	FOREIGN KEY (gameID) REFERENCES games(gameID)
+-- );
 CREATE TABLE chessFields(
 	chessFieldID INTEGER PRIMARY KEY,
 	x INTEGER CHECK (x<8),
@@ -48,6 +59,8 @@ INSERT INTO chessPieces VALUES (8, "G", 1);
 INSERT INTO chessPieces VALUES (9, "S", 1);
 INSERT INTO chessPieces VALUES (10, "H", 1);
 INSERT INTO chessPieces VALUES (11, "K", 1);
+-- INSERT INTO chessPieces VALUES (12, "P", 0);
+-- INSERT INTO chessPieces VALUES (13, "P", 1);
 INSERT INTO games VALUES (0, 0);
 INSERT INTO chessFields VALUES (0, 0, 0, 0, 0);
 --INSERT INTO games VALUES((SELECT MAX(gameID) FROM games)+1,0);

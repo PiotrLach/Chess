@@ -42,13 +42,13 @@ public class MainFrame extends javax.swing.JFrame {
         gameExitButton = new javax.swing.JButton();
         mainChessBoard = new my.chess.ChessBoard();
         jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        savesPanel1 = new my.chess.SavesPanel();
         jPanel1 = new javax.swing.JPanel();
         manageSavesLoad = new javax.swing.JButton();
         manageSavesOverwrite = new javax.swing.JButton();
         manageSavesDelete = new javax.swing.JButton();
         manageSavesNewSave = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        savesPanel1 = new my.chess.SavesPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 640));
@@ -126,15 +126,9 @@ public class MainFrame extends javax.swing.JFrame {
 
         myTabbedPane.addTab("Game", mainChessBoard);
 
-        jPanel2.setLayout(new java.awt.GridLayout(1, 0));
+        jPanel2.setLayout(new java.awt.BorderLayout());
 
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        jScrollPane1.setViewportView(savesPanel1);
-
-        jPanel2.add(jScrollPane1);
-
-        jPanel1.setLayout(new java.awt.GridLayout(2, 2, 20, 20));
+        jPanel1.setLayout(new java.awt.GridLayout(1, 4, 20, 20));
 
         manageSavesLoad.setText("Load");
         manageSavesLoad.addActionListener(new java.awt.event.ActionListener() {
@@ -168,7 +162,13 @@ public class MainFrame extends javax.swing.JFrame {
         });
         jPanel1.add(manageSavesNewSave);
 
-        jPanel2.add(jPanel1);
+        jPanel2.add(jPanel1, java.awt.BorderLayout.PAGE_END);
+
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        jScrollPane1.setViewportView(savesPanel1);
+
+        jPanel2.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         myTabbedPane.addTab("Saves", jPanel2);
 
@@ -218,11 +218,11 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_manageSavesLoadActionPerformed
 
     private void manageSavesDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesDeleteActionPerformed
-            savesPanel1.deleteDatabaseRecord();
+        savesPanel1.deleteDatabaseRecord();
     }//GEN-LAST:event_manageSavesDeleteActionPerformed
 
     private void manageSavesOverwriteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesOverwriteActionPerformed
-            savesPanel1.updateDatabaseRecord();
+        savesPanel1.updateDatabaseRecord();
     }//GEN-LAST:event_manageSavesOverwriteActionPerformed
 
     private void manageSavesNewSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesNewSaveActionPerformed

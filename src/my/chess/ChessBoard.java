@@ -490,7 +490,7 @@ public class ChessBoard extends JPanel {
                     check();
                     break loop;                                        
                 }
-                else if (chessMatrix[i][j].contains(p) && !selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)) {
+                else if ( selectedChessPiece!=null && chessMatrix[i][j].contains(p) && !selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)) {
                     JOptionPane.showMessageDialog(this, "Ruch niedozwolony: warunek ruchu nie spełniony!\n");
                     break loop;
                 }

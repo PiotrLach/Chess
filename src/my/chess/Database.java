@@ -155,7 +155,6 @@ public class Database {
 //            System.out.println(x+" "+ y +" " +Integer.parseInt(pieceID));
             ChessBoard.setChessMatrixField(x, y, choosePiece(Integer.parseInt(pieceID)));            
         }
-        ChessBoard.getChessMatrixField(x, y).setHighlighted(false);
     }
     private static ChessPiece choosePiece(int num) throws IllegalArgumentException {
         switch (num) {

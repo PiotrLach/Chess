@@ -35,20 +35,9 @@ public class SavesPanel extends JPanel {
         Database.sqlConnection(selectGames, QueryType.SELECT_GAMES);
         for (Integer i = 0; i<Database.games.size(); i++) {           
             radioButtons.add(new JRadioButton(Database.games.get(i).toString()));            
-            buttonGroup.add(radioButtons.get(i));
+            buttonGroup.add(radioButtons.get(i));            
             add(radioButtons.get(i));
         }        
-    }
-    private void clearUI() {
-        removeAll();
-        radioButtons = null;
-        buttonGroup = null;
-        Database.games = null;
-    }
-    public void restartUI(){
-//        clearUI();
-//        initUI();
-//        updateUI();
     }
     private void clearBoard() {                
         ChessBoard.setCurrentColor(Color.WHITE);        
@@ -75,7 +64,7 @@ public class SavesPanel extends JPanel {
     public void saveNewGame() {        
         StringBuilder selectPieceID;
         StringBuilder insertFields = new StringBuilder("");
-        StringBuilder insertNewGame = new StringBuilder("INSERT INTO games VALUES((SELECT MAX(gameID) FROM games)+1,");
+        StringBuilder insertNewGame = new StringBuilder("INSERT INTO games(currentColor) VALUES(");//(SELECT MAX(gameID) FROM games)+1,");
                             insertNewGame.append(parseColorValue(ChessBoard.getCurrentColor()));
                             insertNewGame.append(");");        
         getGameIDfromDB();
@@ -88,8 +77,8 @@ public class SavesPanel extends JPanel {
                     selectPieceID.append("' AND pieceColor = ");
                     selectPieceID.append(parseColorValue(ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece().getFigureColor()));
                     selectPieceID.append(")");
-                    insertFields.append("INSERT INTO chessFields VALUES (");
-                    insertFields.append("(SELECT MAX(chessFieldID) FROM chessFields)+1,");
+                    insertFields.append("INSERT INTO chessFields(x,y,piece,game) VALUES (");
+//                    insertFields.append("(SELECT MAX(chessFieldID) FROM chessFields)+1,");
                     insertFields.append(x);
                     insertFields.append(",");
                     insertFields.append(y);
@@ -207,7 +196,7 @@ public class SavesPanel extends JPanel {
         else
             throw new IllegalArgumentException("There can only be black and white colors");
             
-    }
+    }        
     private Integer pieceIntValue(ChessPiece cp) {
         Integer i;
         if (cp.getFigureColor() == Color.BLACK)
@@ -230,6 +219,14 @@ public class SavesPanel extends JPanel {
             case "K":
                 return 5+i;
         }
+    }
+    private class RadioButton extends JRadioButton { 
+
+        public RadioButton(String text) {
+            super(text);
+        }
+        private int gameID;
+        private String date;
     }
     private ArrayList<JRadioButton> radioButtons;
     private ButtonGroup buttonGroup;
