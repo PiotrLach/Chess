@@ -33,6 +33,8 @@ import my.chess.pieces.Rook;
 public class Database {
     public static enum QueryType { OTHER, SELECT_CHESS_FIELDS, SELECT_MAX_GAME_ID, SELECT_GAME_COLOR, SELECT_GAMES};
     public static ArrayList<Integer> games;    
+    public static ArrayList<String> dates;
+    public static ArrayList<String> names;
     public static int gameID = 1;    
     public static void createNewDatabase() {
  
@@ -67,6 +69,8 @@ public class Database {
     public static void sqlConnection(String myQuery, QueryType q) {
         
         games = new ArrayList();    
+        dates = new ArrayList();
+        names = new ArrayList();
         Connection c = null;        
         ResultSet rs;
         Connection connection = null;
@@ -85,6 +89,8 @@ public class Database {
                     while(rs.next())
                     {
                         games.add(rs.getInt("gameID"));
+                        dates.add(rs.getString("date"));
+                        names.add(rs.getString("name"));
                     }
                     break;                
                 case SELECT_CHESS_FIELDS:

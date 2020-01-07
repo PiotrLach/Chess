@@ -53,8 +53,8 @@
         <Container class="javax.swing.JPanel" name="mainMenuPanel">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Main menu">
-                <Property name="tabTitle" type="java.lang.String" value="Main menu"/>
+              <JTabbedPaneConstraints tabName="Menu g&#x142;&#xf3;wne">
+                <Property name="tabTitle" type="java.lang.String" value="Menu g&#x142;&#xf3;wne"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -92,7 +92,7 @@
           <SubComponents>
             <Component class="javax.swing.JButton" name="gameStartButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Start a new game"/>
+                <Property name="text" type="java.lang.String" value="Nowa gra"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gameStartButtonActionPerformed"/>
@@ -100,7 +100,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="gameManageSavesButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Manage saves"/>
+                <Property name="text" type="java.lang.String" value="Save&apos;y"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gameManageSavesButtonActionPerformed"/>
@@ -108,7 +108,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="gameExitButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Exit without saving"/>
+                <Property name="text" type="java.lang.String" value="Wyjd&#x17a; z gry"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gameExitButtonActionPerformed"/>
@@ -129,8 +129,8 @@
           </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Game">
-                <Property name="tabTitle" type="java.lang.String" value="Game"/>
+              <JTabbedPaneConstraints tabName="Gra">
+                <Property name="tabTitle" type="java.lang.String" value="Gra"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -151,8 +151,8 @@
         <Container class="javax.swing.JPanel" name="jPanel2">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Saves">
-                <Property name="tabTitle" type="java.lang.String" value="Saves"/>
+              <JTabbedPaneConstraints tabName="Save&apos;y">
+                <Property name="tabTitle" type="java.lang.String" value="Save&apos;y"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -175,7 +175,7 @@
               <SubComponents>
                 <Component class="javax.swing.JButton" name="manageSavesLoad">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Load"/>
+                    <Property name="text" type="java.lang.String" value="Wczytaj"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="manageSavesLoadActionPerformed"/>
@@ -183,7 +183,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="manageSavesOverwrite">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Overwrite selected"/>
+                    <Property name="text" type="java.lang.String" value="Nadpisz"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="manageSavesOverwriteActionPerformed"/>
@@ -191,7 +191,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="manageSavesDelete">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Delete"/>
+                    <Property name="text" type="java.lang.String" value="Usu&#x144;"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="manageSavesDeleteActionPerformed"/>
@@ -199,7 +199,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="manageSavesNewSave">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="New save"/>
+                    <Property name="text" type="java.lang.String" value="Nowy zapis"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="manageSavesNewSaveActionPerformed"/>

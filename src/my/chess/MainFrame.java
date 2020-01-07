@@ -58,21 +58,21 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        gameStartButton.setText("Start a new game");
+        gameStartButton.setText("Nowa gra");
         gameStartButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 gameStartButtonActionPerformed(evt);
             }
         });
 
-        gameManageSavesButton.setText("Manage saves");
+        gameManageSavesButton.setText("Save'y");
         gameManageSavesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 gameManageSavesButtonActionPerformed(evt);
             }
         });
 
-        gameExitButton.setText("Exit without saving");
+        gameExitButton.setText("Wyjdź z gry");
         gameExitButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 gameExitButtonActionPerformed(evt);
@@ -104,7 +104,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap(312, Short.MAX_VALUE))
         );
 
-        myTabbedPane.addTab("Main menu", mainMenuPanel);
+        myTabbedPane.addTab("Menu główne", mainMenuPanel);
 
         mainChessBoard.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         mainChessBoard.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -124,13 +124,13 @@ public class MainFrame extends javax.swing.JFrame {
             .addGap(0, 717, Short.MAX_VALUE)
         );
 
-        myTabbedPane.addTab("Game", mainChessBoard);
+        myTabbedPane.addTab("Gra", mainChessBoard);
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
         jPanel1.setLayout(new java.awt.GridLayout(1, 4, 20, 20));
 
-        manageSavesLoad.setText("Load");
+        manageSavesLoad.setText("Wczytaj");
         manageSavesLoad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 manageSavesLoadActionPerformed(evt);
@@ -138,7 +138,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         jPanel1.add(manageSavesLoad);
 
-        manageSavesOverwrite.setText("Overwrite selected");
+        manageSavesOverwrite.setText("Nadpisz");
         manageSavesOverwrite.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 manageSavesOverwriteActionPerformed(evt);
@@ -146,7 +146,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         jPanel1.add(manageSavesOverwrite);
 
-        manageSavesDelete.setText("Delete");
+        manageSavesDelete.setText("Usuń");
         manageSavesDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 manageSavesDeleteActionPerformed(evt);
@@ -154,7 +154,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         jPanel1.add(manageSavesDelete);
 
-        manageSavesNewSave.setText("New save");
+        manageSavesNewSave.setText("Nowy zapis");
         manageSavesNewSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 manageSavesNewSaveActionPerformed(evt);
@@ -170,7 +170,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jPanel2.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        myTabbedPane.addTab("Saves", jPanel2);
+        myTabbedPane.addTab("Save'y", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

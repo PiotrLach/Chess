@@ -23,6 +23,7 @@ CREATE TABLE games(
 	gameID INTEGER PRIMARY KEY,
 	currentColor INTEGER NOT NULL,        
         date TEXT,
+        name TEXT,
         FOREIGN KEY (currentColor) REFERENCES colors(colorValue)
 );
 -- CREATE TABLE chessPlayers(

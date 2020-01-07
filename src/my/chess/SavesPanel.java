@@ -8,10 +8,13 @@ package my.chess;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.swing.ButtonGroup;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import my.chess.Database.QueryType;
@@ -26,16 +29,16 @@ import my.chess.pieces.King;
 public class SavesPanel extends JPanel {
 //    private JRadioButton myRadio;    
     public SavesPanel() {
-        setLayout(new GridLayout(0, 1, 5, 10));
+        setLayout(new GridLayout(0, 1, 0, 0));
         initUI();
     }  
     private void initUI() {                
         radioButtons =  new ArrayList();
         buttonGroup = new ButtonGroup();
-        String selectGames = "SELECT gameID FROM games;";
+        String selectGames = "SELECT gameID,name,date FROM games;";
         Database.sqlConnection(selectGames, QueryType.SELECT_GAMES);
         for (Integer i = 0; i<Database.games.size(); i++) {           
-            radioButtons.add(new JRadioButton(Database.games.get(i).toString()));            
+            radioButtons.add(new RadioButton(Database.games.get(i), Database.dates.get(i),Database.names.get(i)));            
             buttonGroup.add(radioButtons.get(i));            
             add(radioButtons.get(i));
         }        
@@ -48,7 +51,7 @@ public class SavesPanel extends JPanel {
     }
     public void loadSavedGame() {
         try {
-            Integer i = getSelected();
+            Integer i = getSelectedGameId();
             clearBoard();
             getGameColorFromDB(i);
             String selectChessFields = "SELECT x, y, piece FROM chessFields WHERE game="+i+";";
@@ -62,56 +65,63 @@ public class SavesPanel extends JPanel {
         String selectMaxGameID = "SELECT currentColor FROM games WHERE gameID = "+i+";"; 
         Database.sqlConnection(selectMaxGameID, QueryType.SELECT_GAME_COLOR);
     }
-    public void saveNewGame() {        
-        StringBuilder selectPieceID;
-        StringBuilder insertFields = new StringBuilder("");
-        StringBuilder insertNewGame = new StringBuilder("INSERT INTO games(currentColor) VALUES(");//(SELECT MAX(gameID) FROM games)+1,");
-                            insertNewGame.append(parseColorValue(ChessBoard.getCurrentColor()));
-                            insertNewGame.append(");");        
-        getGameIDfromDB();
-        Database.gameID++;
-        for (int x=0; x<8; x++) {             
-            for (int y=0; y<8; y++) {
-                if (ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece() != null) {
-                    selectPieceID = new StringBuilder("(SELECT pieceID FROM chessPieces WHERE pieceName = '");
-                    selectPieceID.append(ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece().getPieceName());
-                    if (ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece() instanceof King) {
-                        System.out.println(x + " " + y);
+    public void saveNewGame() {     
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String date = myDateObj.format(myFormatObj);
+        String name = JOptionPane.showInputDialog(this, "Wpisz nazwę save'a:");
+        if (name != null) {                   
+            StringBuilder selectPieceID;
+            StringBuilder insertFields = new StringBuilder("");
+            StringBuilder insertNewGame = new StringBuilder("INSERT INTO games(currentColor,date,name) VALUES(");//(SELECT MAX(gameID) FROM games)+1,");
+                                insertNewGame.append(parseColorValue(ChessBoard.getCurrentColor()));
+                                insertNewGame.append(",'");
+                                insertNewGame.append(date);
+                                insertNewGame.append("','");
+                                insertNewGame.append(name);
+                                insertNewGame.append("');");        
+            getGameIDfromDB();
+            Database.gameID++;
+            for (int x=0; x<8; x++) {             
+                for (int y=0; y<8; y++) {
+                    if (ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece() != null) {
+                        selectPieceID = new StringBuilder("(SELECT pieceID FROM chessPieces WHERE pieceName = '");
+                        selectPieceID.append(ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece().getPieceName());                    
+                        selectPieceID.append("' AND pieceColor = ");
+                        selectPieceID.append(parseColorValue(ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece().getFigureColor()));
+                        selectPieceID.append(")");
+                        insertFields.append("INSERT INTO chessFields(x,y,piece,game) VALUES (");
+    //                    insertFields.append("(SELECT MAX(chessFieldID) FROM chessFields)+1,");
+                        insertFields.append(x);
+                        insertFields.append(",");
+                        insertFields.append(y);
+                        insertFields.append(",");
+                        insertFields.append(selectPieceID);
+                        insertFields.append(",");
+                        insertFields.append(Database.gameID);
+                        insertFields.append(");\n");
+
                     }
-                    selectPieceID.append("' AND pieceColor = ");
-                    selectPieceID.append(parseColorValue(ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece().getFigureColor()));
-                    selectPieceID.append(")");
-                    insertFields.append("INSERT INTO chessFields(x,y,piece,game) VALUES (");
-//                    insertFields.append("(SELECT MAX(chessFieldID) FROM chessFields)+1,");
-                    insertFields.append(x);
-                    insertFields.append(",");
-                    insertFields.append(y);
-                    insertFields.append(",");
-                    insertFields.append(selectPieceID);
-                    insertFields.append(",");
-                    insertFields.append(Database.gameID);
-                    insertFields.append(");\n");
-                    
-                }
-                else {
-                    insertFields.append( "INSERT INTO chessFields (x, y, game) VALUES (");
-                    insertFields.append( x);
-                    insertFields.append( ",");
-                    insertFields.append( y);
-                    insertFields.append( ",");
-                    insertFields.append( Database.gameID);
-                    insertFields.append( ");\n");
+                    else {
+                        insertFields.append( "INSERT INTO chessFields (x, y, game) VALUES (");
+                        insertFields.append( x);
+                        insertFields.append( ",");
+                        insertFields.append( y);
+                        insertFields.append( ",");
+                        insertFields.append( Database.gameID);
+                        insertFields.append( ");\n");
+                    }
                 }
             }
+            insertNewGame.append(insertFields);
+    //        System.out.println(insertFields.toString());
+            Database.sqlConnection(insertNewGame.toString(), QueryType.OTHER);
+            RadioButton rb = new RadioButton(Database.gameID,date,name);
+            radioButtons.add(rb);            
+            buttonGroup.add(rb);
+            add(rb);
+            updateUI();
         }
-        insertNewGame.append(insertFields);
-//        System.out.println(insertFields.toString());
-        Database.sqlConnection(insertNewGame.toString(), QueryType.OTHER);
-        JRadioButton jb = new JRadioButton(String.valueOf(Database.gameID));
-        radioButtons.add(jb);            
-        buttonGroup.add(jb);
-        add(jb);
-        updateUI();
 //        System.out.println(insertFields);
 //        System.out.println(ctr);
     }
@@ -121,19 +131,24 @@ public class SavesPanel extends JPanel {
     }
     public void deleteDatabaseRecord(){
         try {
-            Integer gameID = getSelected();
-            String s = "DELETE FROM chessFields WHERE game ="+gameID+";\n";
-            s += "DELETE FROM games WHERE gameID ="+gameID+";";
-            Database.sqlConnection(s, QueryType.OTHER);
-            Comparator<JRadioButton> c = (JRadioButton b1, JRadioButton b2) -> b1.getText().compareTo(b2.getText()); 
-            JRadioButton jb = new JRadioButton(gameID.toString());
-            Collections.sort(radioButtons, c);
+            int gameId = getSelectedGameId();
+            String deleteQuery = "DELETE FROM chessFields WHERE game ="+gameId+";\n";
+            deleteQuery += "DELETE FROM games WHERE gameID ="+gameId+";";
+            Database.sqlConnection(deleteQuery, QueryType.OTHER);
+//            Comparator<JRadioButton> c = (JRadioButton b1, JRadioButton b2) -> b1.getText().compareTo(b2.getText());             
+//            JRadioButton jb = new JRadioButton(gameID.toString());
+//            Collections.sort(radioButtons, c);
     //        System.out.println(Collections.binarySearch(radioButtons, jb, c));
-            int idx = Collections.binarySearch(radioButtons, jb, c);
-            System.out.println(idx);
-            remove(radioButtons.get(idx));        
-            buttonGroup.remove(radioButtons.get(idx));
-            radioButtons.remove(idx);
+//            int idx = Collections.binarySearch(radioButtons, jb, c);
+//            int size = 
+            for (int i = 0; i < radioButtons.size(); i++) {
+                if (radioButtons.get(i).isSelected()) {
+                    remove(radioButtons.get(i));        
+                    buttonGroup.remove(radioButtons.get(i));
+                    radioButtons.remove(i);
+                    break;
+                }
+            }                        
             updateUI();
         }
         catch (Exception e) {
@@ -142,7 +157,7 @@ public class SavesPanel extends JPanel {
     }
     public void updateDatabaseRecord(){
         try {
-            Integer gameID = getSelected();
+            int gameID = getSelectedGameId();
             StringBuilder sb = new StringBuilder("");
             sb.append("UPDATE games SET currentColor =");
             sb.append(parseColorValue(ChessBoard.getCurrentColor()));
@@ -180,14 +195,10 @@ public class SavesPanel extends JPanel {
             System.out.println(e);
         }
     }
-    private Integer getSelected() throws Exception {
-        Integer gameid = 0;
-//        for (JRadioButton rb : radioButtons) {            
+    private int getSelectedGameId() throws Exception {            
         for (int i = 0; i < radioButtons.size(); i++) {
-            if (radioButtons.get(i).isSelected()) {
-                gameid = Integer.parseInt(radioButtons.get(i).getText());
-//                System.out.println(i);
-                return gameid;
+            if (radioButtons.get(i).isSelected()) {                
+                return radioButtons.get(i).getGameID();
             }
         }
         throw new Exception("Nie wybrano zapisu gry do usunięcia!");
@@ -228,12 +239,21 @@ public class SavesPanel extends JPanel {
     }
     private class RadioButton extends JRadioButton { 
 
-        public RadioButton(String text) {
-            super(text);
+        public RadioButton(int gameID, String date, String name) {
+            this.gameID = gameID;
+            this.date = date;
+            this.name = name;
+            setText(name + ", " + date);
         }
+
+        public int getGameID() {
+            return gameID;
+        }
+        
         private int gameID;
         private String date;
+        private String name;
     }
-    private ArrayList<JRadioButton> radioButtons;
+    private ArrayList<RadioButton> radioButtons;
     private ButtonGroup buttonGroup;
 }
