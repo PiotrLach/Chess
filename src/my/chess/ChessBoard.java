@@ -128,9 +128,11 @@ public class ChessBoard extends JPanel {
                     JOptionPane.showMessageDialog(this, "Teraz ruch " + color + "!");
                     break loop;
                 }
-//                else
+//                else if (chessMatrix[i][j].contains(p) && chessMatrix[i][j].getCurrentChessPiece()!=null
+//                        && currentColor == chessMatrix[i][j].getCurrentChessPiece().getFigureColor())
 //                {                    
 //                    chessMatrix[i][j].setHighlighted(false);
+//                    repaint();
 //                }            
             }
         }      
@@ -567,10 +569,11 @@ public class ChessBoard extends JPanel {
         chessMatrix[7][7].setCurrentChessPiece(new Rook(c2,Images.getROOK(c2)));   
         repaint();
     } 
-    private void clearBoard() {
+    public static void clearBoard() {
         currentColor = Color.WHITE;
         oppositeColor = Color.BLACK;
         check = false;
+        selectedChessPiece = null;
         startingPoints = new HashMap<>();
         for (int i=0; i<8; i++)             
             for (int j=0; j<8; j++) 
@@ -597,14 +600,14 @@ public class ChessBoard extends JPanel {
         else 
             throw new IllegalArgumentException("Columns and rows indices cannot exceed 7");
     }
-    private boolean check = false;
-    private HashMap<Color, Integer> startingPoints;
+    private static boolean check = false;
+    private static HashMap<Color, Integer> startingPoints;
     private ArrayList<Point> path;
     private static final ChessField[][] chessMatrix = new ChessField[8][8];    
     private static Color currentColor;            
-    private Color oppositeColor;
+    private static Color oppositeColor;
     private int sourceI, sourceJ, destI, destJ;  
-    private ChessPiece selectedChessPiece;
+    private static ChessPiece selectedChessPiece;
     private int beginHeight,
                 endHeight,
                 beginWidth,

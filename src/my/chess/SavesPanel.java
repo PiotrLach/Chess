@@ -43,16 +43,10 @@ public class SavesPanel extends JPanel {
             add(radioButtons.get(i));
         }        
     }
-    private void clearBoard() {                
-        ChessBoard.setCurrentColor(Color.WHITE);        
-        for (int i=0; i<8; i++)             
-            for (int j=0; j<8; j++)
-                setChessMatrixField(i, j, null);                
-    }
     public void loadSavedGame() {
         try {
             Integer i = getSelectedGameId();
-            clearBoard();
+            ChessBoard.clearBoard();
             getGameColorFromDB(i);
             String selectChessFields = "SELECT x, y, piece FROM chessFields WHERE game="+i+";";
             Database.sqlConnection(selectChessFields, QueryType.SELECT_CHESS_FIELDS); 
