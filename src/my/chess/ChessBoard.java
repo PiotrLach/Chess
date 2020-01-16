@@ -214,7 +214,7 @@ public class ChessBoard extends JPanel {
             for (int j = y - 1; j <= y + 1; j++) {
                 if (i != x && j != y && i <=7 && i >= 0 && j <= 7 && j >= 0) {
                     ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
-                    if (cp != null && cp.getFigureColor() != currentColor) {
+                    if (cp == null) {
                         sum += checkKnights(i,j,currentColor);
                         sum += checkBishops(i,j,currentColor);
                         sum += checkRooks(i,j,currentColor);
