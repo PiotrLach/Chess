@@ -80,8 +80,6 @@ public class ChessBoard extends JPanel {
         int x=0,y=0;
         for (int i = beginHeight; i > endHeight; i -= diffVertical) {         
             for (int j = beginWidth; j < endWidth; j += diffHorizontal)  {
-//        for (int i = 640; i > 0; i -= 80) {         
-//            for (int j = 0; j < 640; j += 80)  {
                 ChessField c = new ChessField(j,i,80,80,x,y);
                 chessMatrix[x][y] = c;                                
 //                System.out.println(chessMatrix[x][y].toString());                
@@ -107,31 +105,37 @@ public class ChessBoard extends JPanel {
     private void chooseBoardPiece(Point p){
         loop:
         for (int i=0; i<8;i++) {
-            for (int j=0;j<8; j++) {                
-                if (chessMatrix[i][j].contains(p) 
-                    && chessMatrix[i][j].isHighlighted()==false
-                    && chessMatrix[i][j].getCurrentChessPiece()!=null
-                    && currentColor == chessMatrix[i][j].getCurrentChessPiece().getFigureColor()
-                        )
+            for (int j=0;j<8; j++) {  
+                ChessField cf = chessMatrix[i][j];
+                ChessPiece cp = cf.getCurrentChessPiece();
+                if (cf.contains(p) 
+                    && !cf.isHighlighted()
+                    && cp != null
+                    && currentColor == cp.getFigureColor()
+                    && (!check || 
+                        (check && piecesToBlockCheckAvailable())
+                        ||
+                        (check && cp instanceof King && piecesToBlockCheckUnavailable))
+                    )
                 {                    
                     chessMatrix[sourceI][sourceJ].setHighlighted(false);
-                    chessMatrix[i][j].setHighlighted(true);
-                    selectedChessPiece=chessMatrix[i][j].getCurrentChessPiece();
+                    cf.setHighlighted(true);
+                    selectedChessPiece=cp;
                     sourceI=i; sourceJ=j;
 //                    System.out.println("sX" + sourceI + " sY" + sourceJ);
                     repaint();  
                     break loop;
                 } 
-                else if (chessMatrix[i][j].contains(p) && chessMatrix[i][j].getCurrentChessPiece()!=null
-                        && currentColor != chessMatrix[i][j].getCurrentChessPiece().getFigureColor()) {
+                else if (cf.contains(p) && cp !=null
+                        && currentColor != cp.getFigureColor()) {
                     String color = currentColor == Color.WHITE ? "białych" : "czarnych";
                     JOptionPane.showMessageDialog(this, "Teraz ruch " + color + "!");
                     break loop;
                 }
-//                else if (chessMatrix[i][j].contains(p) && chessMatrix[i][j].getCurrentChessPiece()!=null
-//                        && currentColor == chessMatrix[i][j].getCurrentChessPiece().getFigureColor())
+//                else if (cf.contains(p) && cf.getCurrentChessPiece()!=null
+//                        && currentColor == cf.getCurrentChessPiece().getFigureColor())
 //                {                    
-//                    chessMatrix[i][j].setHighlighted(false);
+//                    cf.setHighlighted(false);
 //                    repaint();
 //                }            
             }
@@ -169,7 +173,7 @@ public class ChessBoard extends JPanel {
                 return true;
             }
         }
-        System.out.println(sum);
+        System.out.println("Pieces to block check: " + sum + " " + (sum > 0));
 //        System.out.println("find friends /////////////////////////////////////");
         return sum > 0;
     }
@@ -187,16 +191,23 @@ public class ChessBoard extends JPanel {
             sum += checkBishops(x,y,currentColor);
             sum += checkRooks(x,y,currentColor);
             sum += checkPawns(x,y,currentColor, Type.FOE);
-            System.out.println(path);
-            System.out.println(sum);
+            if (path != null) {
+                ArrayList<Point> pathTemp = new ArrayList(path);                
+                checkKingNeighborhood(x, y);     
+                path = new ArrayList(pathTemp);
+                System.out.println("Path " + path);            
+                System.out.println("King path" + kingPath);
+            }            
             if (check = (sum == 1)) {                
                 JOptionPane.showMessageDialog(this, "Szach!");
-                if(!piecesToBlockCheckAvailable()) {
-                    mate(x,y);
+                piecesToBlockCheckUnavailable = !piecesToBlockCheckAvailable();
+//                System.out.println("Pieces available" + piecesToBlockCheckAvailable);
+                if(piecesToBlockCheckUnavailable) {
+                    mate = mate(x,y);
                 }
             }
             else if (check = (sum > 1)) {
-                mate(x,y);
+                mate = mate(x,y);
             }            
 //            if (check) {
 //                System.out.println(path);
@@ -204,10 +215,23 @@ public class ChessBoard extends JPanel {
 //            }
         } 
         catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e + "!!!!!!!!");
         }
     }
-    private void mate(int x, int y) {
+    private boolean mate(int x, int y) {
+        ArrayList<Point> rescue;// = new ArrayList();
+//        int sum = 0;
+        rescue = checkKingNeighborhood(x, y);
+        if (rescue.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Mat!");
+            return true;
+        }
+        else {
+//            path = new ArrayList(rescue);
+            return false;
+        }        
+    }
+    private ArrayList<Point> checkKingNeighborhood(int x, int y) {
         ArrayList<Point> rescue = new ArrayList();
         int sum = 0;
         for (int i = x - 1; i <= x + 1; i++) {
@@ -225,12 +249,9 @@ public class ChessBoard extends JPanel {
                 }
             }
         }
-        if (rescue.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Mat!");
-        }
-        else {
-            path = new ArrayList(rescue);
-        }
+        kingPath = new ArrayList(rescue);
+        System.out.println("Check king neighborhood:" + rescue);
+        return rescue;
     }
     private int checkBishops(int kingX, int kingY, Color color) {
         int sum = 0;
@@ -459,37 +480,38 @@ public class ChessBoard extends JPanel {
         }
         return checkCount;
     }
-
+    private boolean stillCheck() {
+       check();
+       return check == true;     
+    }
     private void moveBoardPiece(Point p){
 //        boolean flag=false;
         loop:
         for (int i=0; i<8;i++) {
-            for (int j=0;j<8; j++) {                
-                if (selectedChessPiece!=null
-                    && chessMatrix[i][j].contains(p) 
-                    && !chessMatrix[i][j].isHighlighted()                    
-                    && 
-                      (
-                        chessMatrix[i][j].getCurrentChessPiece()==null 
-                                || 
-                                (chessMatrix[i][j].getCurrentChessPiece()!=null
-                                    && selectedChessPiece.isFoe(chessMatrix[i][j].getCurrentChessPiece() ) 
-                                )
-                      )                    
+            for (int j=0;j<8; j++) {
+                ChessField cf = chessMatrix[i][j];
+                ChessPiece cp = cf.getCurrentChessPiece();
+                if (selectedChessPiece != null
+                    && cf.contains(p) 
+                    && !cf.isHighlighted()                    
+                    && ( cp == null || selectedChessPiece.isFoe(cp) )                    
                     && selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)
                     && pathIsFree(sourceI, sourceJ, i,j)
-                    && (!check || (check && path.contains(new Point(i,j)) && !(selectedChessPiece instanceof King)))
+                    && (!check || (check && !(selectedChessPiece instanceof King) && path.contains(new Point(i,j)) )
+                        || (check && selectedChessPiece instanceof King && kingPath.contains(new Point(i,j)))
+                        )
+                        //&& !(selectedChessPiece instanceof King)))
                     )
-                {   
+                {                       
                     check = false;                    
-                    chessMatrix[i][j].setCurrentChessPiece(selectedChessPiece);
+                    cf.setCurrentChessPiece(selectedChessPiece);
                     selectedChessPiece=null;                    
                     chessMatrix[sourceI][sourceJ].setCurrentChessPiece(null);
                     chessMatrix[sourceI][sourceJ].setHighlighted(false);
                     currentColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
                     oppositeColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
-                    repaint();
-                    check();
+                    repaint();                    
+                    check();                    
                     break loop;                                        
                 }
                 else if ( selectedChessPiece!=null && chessMatrix[i][j].contains(p) && !selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)) {
@@ -575,6 +597,8 @@ public class ChessBoard extends JPanel {
         check = false;
         selectedChessPiece = null;
         startingPoints = new HashMap<>();
+        startingPoints.put(Color.BLACK, 6);
+        startingPoints.put(Color.WHITE, 1); 
         for (int i=0; i<8; i++)             
             for (int j=0; j<8; j++) 
                 chessMatrix[i][j].setCurrentChessPiece(null);
@@ -600,9 +624,9 @@ public class ChessBoard extends JPanel {
         else 
             throw new IllegalArgumentException("Columns and rows indices cannot exceed 7");
     }
-    private static boolean check = false;
+    private static boolean check = false, mate = false, piecesToBlockCheckUnavailable = false;
     private static HashMap<Color, Integer> startingPoints;
-    private ArrayList<Point> path;
+    private ArrayList<Point> path, kingPath;
     private static final ChessField[][] chessMatrix = new ChessField[8][8];    
     private static Color currentColor;            
     private static Color oppositeColor;
