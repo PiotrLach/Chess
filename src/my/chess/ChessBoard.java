@@ -8,16 +8,11 @@ package my.chess;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
-import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import my.chess.pieces.*;
@@ -113,7 +108,7 @@ public class ChessBoard extends JPanel {
                     && cp != null
                     && currentColor == cp.getFigureColor()
                     && (!check || 
-                        (check && piecesToBlockCheckAvailable())
+                        (check && !piecesToBlockCheckUnavailable)
                         ||
                         (check && cp instanceof King && piecesToBlockCheckUnavailable))
                     )
@@ -157,18 +152,18 @@ public class ChessBoard extends JPanel {
 //        System.out.println("find friends /////////////////////////////////////");
         int sum = 0;
         for (Point p : path) {        
-            int x = (int) p.getX(), y = (int) p.getY();
-//            System.out.println(x + "," + y);
-//            System.out.println(checkKnights(x,y,oppositeColor));
-//            System.out.println(checkBishops(x,y,oppositeColor));
-//            System.out.println(checkRooks(x,y,oppositeColor));
-            sum += checkKnights(x,y,oppositeColor);
+            int x = (int) p.getX(), y = (int) p.getY();            
+            sum += checkKnights(x,y,oppositeColor);            
+//            System.out.println("knights" + sum);
             sum += checkBishops(x,y,oppositeColor);
+//            System.out.println("bishops" + sum);
             sum += checkRooks(x,y,oppositeColor);
+//            System.out.println("rooks" + sum);
             if(chessMatrix[x][y].getCurrentChessPiece() != null)
                 sum += checkPawns(x,y,oppositeColor, Type.FRIEND);
             else
                 sum += checkPawnsOnUnocuppiedFields(x,y);
+//            System.out.println("pawns" + sum);
             if (sum > 0) {
                 return true;
             }
@@ -201,7 +196,7 @@ public class ChessBoard extends JPanel {
             if (check = (sum == 1)) {                
                 JOptionPane.showMessageDialog(this, "Szach!");
                 piecesToBlockCheckUnavailable = !piecesToBlockCheckAvailable();
-//                System.out.println("Pieces available" + piecesToBlockCheckAvailable);
+//                System.out.println("Pieces unavailable" + piecesToBlockCheckUnavailable);
                 if(piecesToBlockCheckUnavailable) {
                     mate = mate(x,y);
                 }
