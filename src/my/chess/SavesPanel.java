@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -49,7 +50,9 @@ public class SavesPanel extends JPanel {
             ChessBoard.clearBoard();
             getGameColorFromDB(i);
             String selectChessFields = "SELECT x, y, piece FROM chessFields WHERE game="+i+";";
+            String selectStartingPositions = "select color,position from startingpositions where gameid = "+i+";";
             Database.sqlConnection(selectChessFields, QueryType.SELECT_CHESS_FIELDS); 
+            Database.sqlConnection(selectStartingPositions, QueryType.SELECT_POSITIONS); 
         }
         catch (Exception e) {
             System.out.println(e);
@@ -76,6 +79,12 @@ public class SavesPanel extends JPanel {
                                 insertNewGame.append("');");        
             getGameIDfromDB();
             Database.gameID++;
+            HashMap<Color, Integer> points = ChessBoard.getstartingPoints();
+            String insertNewStartingPositions = "insert into startingPositions(gameID,position,color) VALUES" +
+                                                "("+Database.gameID+","+points.get(Color.BLACK)+","+ 0 +");";
+            insertNewStartingPositions += "insert into startingPositions(gameID,position,color) VALUES" +
+                                                "("+Database.gameID+","+points.get(Color.WHITE)+","+ 1 +");";
+            insertNewGame.append(insertNewStartingPositions);
             for (int x=0; x<8; x++) {             
                 for (int y=0; y<8; y++) {
                     if (ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece() != null) {

@@ -229,9 +229,11 @@ public class ChessBoard extends JPanel {
     private ArrayList<Point> checkKingNeighborhood(int x, int y) {
         ArrayList<Point> rescue = new ArrayList();
         int sum = 0;
+        System.out.println("Check king neighborhood:");
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
-                if (i != x && j != y && i <=7 && i >= 0 && j <= 7 && j >= 0) {
+                if ((i <=7 && i >= 0) && (j <= 7 && j >= 0)) {
+                    System.out.println(i + " " + j);
                     ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
                     if (cp == null) {
                         sum += checkKnights(i,j,currentColor);
@@ -617,8 +619,8 @@ public class ChessBoard extends JPanel {
         check = false;
         selectedChessPiece = null;
         startingPoints = new HashMap<>();
-        startingPoints.put(Color.BLACK, 6);
-        startingPoints.put(Color.WHITE, 1); 
+//        startingPoints.put(Color.BLACK, 6);
+//        startingPoints.put(Color.WHITE, 1); 
         for (int i=0; i<8; i++)             
             for (int j=0; j<8; j++) 
                 chessMatrix[i][j].setCurrentChessPiece(null);
@@ -643,6 +645,18 @@ public class ChessBoard extends JPanel {
             chessMatrix[x][y].setCurrentChessPiece(cp);
         else 
             throw new IllegalArgumentException("Columns and rows indices cannot exceed 7");
+    }
+    public static void setStartingPoints(Color c, Integer i) throws Exception {
+        if (startingPoints == null) {
+            startingPoints = new HashMap();            
+        }        
+        startingPoints.put(c, i);
+        if (startingPoints.size() > 2) {
+            throw new Exception("Too many starting points!");
+        }
+    }
+    public static HashMap<Color, Integer> getstartingPoints() {
+        return startingPoints;
     }
     private static boolean check = false, mate = false, piecesToBlockCheckUnavailable = false;
     private static HashMap<Color, Integer> startingPoints;

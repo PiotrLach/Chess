@@ -31,7 +31,7 @@ import my.chess.pieces.Rook;
  * @author bruce
  */
 public class Database {
-    public static enum QueryType { OTHER, SELECT_CHESS_FIELDS, SELECT_MAX_GAME_ID, SELECT_GAME_COLOR, SELECT_GAMES};
+    public static enum QueryType { OTHER, SELECT_CHESS_FIELDS, SELECT_MAX_GAME_ID, SELECT_GAME_COLOR, SELECT_GAMES, SELECT_POSITIONS};
     public static ArrayList<Integer> games;    
     public static ArrayList<String> dates;
     public static ArrayList<String> names;
@@ -83,6 +83,18 @@ public class Database {
             switch (q) {
                 case OTHER:
                     statement.executeUpdate(myQuery);
+                    break;
+                case SELECT_POSITIONS:
+                    rs = statement.executeQuery(myQuery);                    
+                    while(rs.next())
+                    {
+                        try {
+                            Color col = rs.getInt("color") == 0 ? Color.BLACK : Color.WHITE;
+                            ChessBoard.setStartingPoints(col, rs.getInt("position"));
+                        } catch (Exception e) {
+                            System.out.println(e);
+                        }
+                    }
                     break;
                 case SELECT_GAMES:
                     rs = statement.executeQuery(myQuery);
