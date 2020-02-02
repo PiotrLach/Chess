@@ -475,9 +475,33 @@ public class ChessBoard extends JPanel {
         }
         return checkCount;
     }
-    private boolean stillCheck() {
-       check();
-       return check == true;     
+    private boolean selfMadeCheck(int row, int column) {
+        if (!check) {
+            ChessField source = chessMatrix[sourceI][sourceJ];
+            ChessField target = chessMatrix[row][column];
+            source.setCurrentChessPiece(null);
+            target.setCurrentChessPiece(selectedChessPiece);
+            int sum = 0;           
+            try {                            
+                Point p = findKing();
+                System.out.println(p);
+                int x = (int) p.getX(), y = (int) p.getY();                    
+                sum += checkKnights(x,y,currentColor);
+                sum += checkBishops(x,y,currentColor);
+                sum += checkRooks(x,y,currentColor);
+                sum += checkPawns(x,y,currentColor, Type.FOE);                
+            }
+            catch (Exception e) {
+                System.out.println(e);
+            }
+            if (sum > 0) JOptionPane.showMessageDialog(this, "Ruch niedozwolony: skutkowałby szachem króla!\n");
+            source.setCurrentChessPiece(selectedChessPiece);
+            target.setCurrentChessPiece(null);
+            return sum > 0;
+        }
+        else {
+            return false;
+        }        
     }
     private void moveBoardPiece(Point p){
 //        boolean flag=false;
@@ -492,6 +516,7 @@ public class ChessBoard extends JPanel {
                     && ( cp == null || selectedChessPiece.isFoe(cp) )                    
                     && selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)
                     && pathIsFree(sourceI, sourceJ, i,j)
+                    && !selfMadeCheck(i,j)
                     && (!check || (check && !(selectedChessPiece instanceof King) && path.contains(new Point(i,j)) )
                         || (check && selectedChessPiece instanceof King && kingPath.contains(new Point(i,j)))
                         )
