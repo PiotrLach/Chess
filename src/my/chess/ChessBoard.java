@@ -36,10 +36,10 @@ public class ChessBoard extends JPanel {
 //        setPieces();
     }
     public void calculateSize() {        
-//        System.out.println(getWidth() + " " + getHeight()); 
+//        //System.out.println(getWidth() + " " + getHeight()); 
         int height = getHeight(),
                 width = getWidth();
-//        System.out.println(width + " " + height);
+//        //System.out.println(width + " " + height);
         beginHeight = (int) height;
         endHeight = (int) 0;      
         while ( (beginHeight - endHeight) % 8 != 0) {            
@@ -51,13 +51,13 @@ public class ChessBoard extends JPanel {
         beginWidth =  (int) (width - height) / 2;
         endWidth = (int) beginWidth + height;      
         while ( (endWidth - beginWidth) % 8 != 0) {
-//            System.out.println(endWidth + " " + beginWidth);
+//            //System.out.println(endWidth + " " + beginWidth);
             endWidth--;
         }   
         diffHorizontal = (endWidth - beginWidth) / 8;
-//        System.out.println(beginHeight + " " + endHeight + " " + beginWidth + " " + endWidth);
+//        //System.out.println(beginHeight + " " + endHeight + " " + beginWidth + " " + endWidth);
         int x=0,y=0;
-//        System.out.println(diffHorizontal + " " + diffVertical);
+//        //System.out.println(diffHorizontal + " " + diffVertical);
         for (int i = beginHeight; i > endHeight; i -= diffVertical) {         
             for (int j = beginWidth; j < endWidth; j += diffHorizontal)  {
                 chessMatrix[x][y].setLocation(j, i);
@@ -77,8 +77,8 @@ public class ChessBoard extends JPanel {
             for (int j = beginWidth; j < endWidth; j += diffHorizontal)  {
                 ChessField c = new ChessField(j,i,80,80,x,y);
                 chessMatrix[x][y] = c;                                
-//                System.out.println(chessMatrix[x][y].toString());                
-//                System.out.println(c+" "+this.getWidth()+" "+this.getHeight());
+//                //System.out.println(chessMatrix[x][y].toString());                
+//                //System.out.println(c+" "+this.getWidth()+" "+this.getHeight());
                 y++;                
             }
             y=0;            
@@ -117,7 +117,7 @@ public class ChessBoard extends JPanel {
                     cf.setHighlighted(true);
                     selectedChessPiece=cp;
                     sourceI=i; sourceJ=j;
-//                    System.out.println("sX" + sourceI + " sY" + sourceJ);
+//                    //System.out.println("sX" + sourceI + " sY" + sourceJ);
                     repaint();  
                     break loop;
                 } 
@@ -149,38 +149,38 @@ public class ChessBoard extends JPanel {
         throw new Exception("King has not been found.");
     }    
     private boolean piecesToBlockCheckAvailable() {
-//        System.out.println("find friends /////////////////////////////////////");
+//        //System.out.println("find friends /////////////////////////////////////");
         int sum = 0;
         for (Point p : path) {        
             int x = (int) p.getX(), y = (int) p.getY();            
             sum += checkKnights(x,y,oppositeColor);            
-//            System.out.println("knights" + sum);
+//            //System.out.println("knights" + sum);
             sum += checkBishops(x,y,oppositeColor);
-//            System.out.println("bishops" + sum);
+//            //System.out.println("bishops" + sum);
             sum += checkRooks(x,y,oppositeColor);
-//            System.out.println("rooks" + sum);
+//            //System.out.println("rooks" + sum);
             if(chessMatrix[x][y].getCurrentChessPiece() != null)
                 sum += checkPawns(x,y,oppositeColor, Type.FRIEND);
             else
                 sum += checkPawnsOnUnocuppiedFields(x,y);
-//            System.out.println("pawns" + sum);
+//            //System.out.println("pawns" + sum);
             if (sum > 0) {
                 return true;
             }
         }
-        System.out.println("Pieces to block check: " + sum + " " + (sum > 0));
-//        System.out.println("find friends /////////////////////////////////////");
+        //System.out.println("Pieces to block check: " + sum + " " + (sum > 0));
+//        //System.out.println("find friends /////////////////////////////////////");
         return sum > 0;
     }
     private void check() {        
         try { 
             Point p = findKing();
-            System.out.println(p);
+            //System.out.println(p);
             int x = (int) p.getX(), y = (int) p.getY();
-//            System.out.println(checkKnights(x,y,currentColor));
-//            System.out.println(checkBishops(x,y,currentColor));
-//            System.out.println(checkRooks(x,y,currentColor));
-//            System.out.println(checkPawns(x,y,currentColor, Type.FOE));
+//            //System.out.println(checkKnights(x,y,currentColor));
+//            //System.out.println(checkBishops(x,y,currentColor));
+//            //System.out.println(checkRooks(x,y,currentColor));
+//            //System.out.println(checkPawns(x,y,currentColor, Type.FOE));
             int sum = 0;
             sum += checkKnights(x,y,currentColor);
             sum += checkBishops(x,y,currentColor);
@@ -190,13 +190,13 @@ public class ChessBoard extends JPanel {
                 ArrayList<Point> pathTemp = new ArrayList(path);                
                 checkKingNeighborhood(x, y);     
                 path = new ArrayList(pathTemp);
-                System.out.println("Path " + path);            
-                System.out.println("King path" + kingPath);
+                //System.out.println("Path " + path);            
+                //System.out.println("King path" + kingPath);
             }            
             if (check = (sum == 1)) {                
                 JOptionPane.showMessageDialog(this, "Szach!");
                 piecesToBlockCheckUnavailable = !piecesToBlockCheckAvailable();
-//                System.out.println("Pieces unavailable" + piecesToBlockCheckUnavailable);
+//                //System.out.println("Pieces unavailable" + piecesToBlockCheckUnavailable);
                 if(piecesToBlockCheckUnavailable) {
                     mate = mate(x,y);
                 }
@@ -205,12 +205,12 @@ public class ChessBoard extends JPanel {
                 mate = mate(x,y);
             }            
 //            if (check) {
-//                System.out.println(path);
+//                //System.out.println(path);
 //                JOptionPane.showMessageDialog(this, "Szach!");
 //            }
         } 
         catch (Exception e) {
-            System.out.println(e + "!!!!!!!!");
+            //System.out.println(e + "!!!!!!!!");
         }
     }
     private boolean mate(int x, int y) {
@@ -229,11 +229,11 @@ public class ChessBoard extends JPanel {
     private ArrayList<Point> checkKingNeighborhood(int x, int y) {
         ArrayList<Point> rescue = new ArrayList();
         int sum = 0;
-        System.out.println("Check king neighborhood:");
+        //System.out.println("Check king neighborhood:");
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
                 if ((i <=7 && i >= 0) && (j <= 7 && j >= 0)) {
-                    System.out.println(i + " " + j);
+                    //System.out.println(i + " " + j);
                     ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
                     if (cp == null) {
                         sum += checkKnights(i,j,currentColor);
@@ -247,7 +247,7 @@ public class ChessBoard extends JPanel {
             }
         }
         kingPath = new ArrayList(rescue);
-        System.out.println("Check king neighborhood:" + rescue);
+        //System.out.println("Check king neighborhood:" + rescue);
         return rescue;
     }
     private int checkBishops(int kingX, int kingY, Color color) {
@@ -258,7 +258,7 @@ public class ChessBoard extends JPanel {
             sum += checkDiagonal(Direction.BOTTOM_LEFT, kingX, kingY,color) ? 1 : 0;
             sum += checkDiagonal(Direction.BOTTOM_RIGHT, kingX, kingY,color) ? 1 : 0;
         } catch (Exception e) {
-            System.out.println(e);            
+            //System.out.println(e);            
         }
         return sum;
     }
@@ -270,7 +270,7 @@ public class ChessBoard extends JPanel {
             sum += checkCross(Direction.VERTICAL_UP, kingX, kingY,color) ? 1 : 0;
             sum += checkCross(Direction.VERTICAL_DOWN, kingX, kingY,color) ? 1 : 0;
         } catch (Exception e) {
-            System.out.println(e);            
+            //System.out.println(e);            
         }
         return sum;
     }
@@ -303,7 +303,7 @@ public class ChessBoard extends JPanel {
             }
         }
         catch (Exception e) {
-            System.out.println(e);      
+            //System.out.println(e);      
         }
         return sum;
     }
@@ -331,7 +331,7 @@ public class ChessBoard extends JPanel {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e);            
+            //System.out.println(e);            
         }        
         return sum;
     }
@@ -403,7 +403,7 @@ public class ChessBoard extends JPanel {
         y += diffY;        
         for (int i = x, j = y; i != limitX && j != limitY; i += diffX, j += diffY) {
             ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
-//            System.out.println(i + "," + j);
+//            //System.out.println(i + "," + j);
             pathTemp.add(new Point(i,j));
             if (cp != null)                            
             {
@@ -440,7 +440,7 @@ public class ChessBoard extends JPanel {
         x += diffX; y += diffY;        
         for (int i = x, j = y; i != limitX || j != limitY; i += diffX, j += diffY) {
             ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
-//            System.out.println(i + "," + j);
+//            //System.out.println(i + "," + j);
             pathTemp.add(new Point(i,j));
             if (cp != null )                             
             {                
@@ -468,7 +468,7 @@ public class ChessBoard extends JPanel {
             if (x <= 7 && x >= 0 && y <= 7 && y >= 0) {                
                 cp = chessMatrix[x][y].getCurrentChessPiece();
                 if (cp instanceof Knight && cp.getFigureColor() != color) {
-//                    System.out.println(x + " " + y);
+//                    //System.out.println(x + " " + y);
                     pathTemp.add(new Point(x,y));
                     if (color == currentColor) path = new ArrayList(pathTemp);
                     checkCount++;            
@@ -486,7 +486,7 @@ public class ChessBoard extends JPanel {
             int sum = 0;           
             try {                            
                 Point p = findKing();
-                System.out.println(p);
+                //System.out.println(p);
                 int x = (int) p.getX(), y = (int) p.getY();                    
                 sum += checkKnights(x,y,currentColor);
                 sum += checkBishops(x,y,currentColor);
@@ -494,7 +494,7 @@ public class ChessBoard extends JPanel {
                 sum += checkPawns(x,y,currentColor, Type.FOE);                
             }
             catch (Exception e) {
-                System.out.println(e);
+                //System.out.println(e);
             }
             if (sum > 0) JOptionPane.showMessageDialog(this, "Ruch niedozwolony: skutkowałby szachem króla!\n");
             source.setCurrentChessPiece(selectedChessPiece);
