@@ -10,7 +10,7 @@ import java.awt.Image;
 
 /**
  *
- * @author bruce
+ * @author Piotr Lach
  */
 public class Queen extends ChessPiece {
 

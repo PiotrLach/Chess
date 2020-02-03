@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS colors;
 -- DROP TABLE IF EXISTS chessPlayers;
 DROP TABLE IF EXISTS chessPieces;
+DROP TABLE IF EXISTS startingPositions;
 DROP TABLE IF EXISTS games;
 DROP TABLE IF EXISTS chessFields;
 PRAGMA foreign_keys = ON;
@@ -13,6 +14,13 @@ CREATE TABLE chessPieces(
 	pieceColor INTEGER NOT NULL,
 	FOREIGN KEY (pieceColor) REFERENCES colors(colorValue)
 );
+CREATE TABLE games(
+	gameID INTEGER PRIMARY KEY,
+	currentColor INTEGER NOT NULL,        
+        date TEXT,
+        name TEXT,
+        FOREIGN KEY (currentColor) REFERENCES colors(colorValue)
+);
 CREATE TABLE startingPositions(
         positionID INTEGER PRIMARY KEY,
         gameID INTEGER,
@@ -20,25 +28,6 @@ CREATE TABLE startingPositions(
         color INTEGER,
         FOREIGN KEY (color) REFERENCES colors(colorValue),
         FOREIGN KEY (gameID) REFERENCES games(gameID)
-);
-insert into startingPositions(gameID,position,color) VALUES
-(1,1,0);
-insert into startingPositions(gameID,position,color) VALUES
-(1,6,1);
-insert into startingPositions(gameID,position,color) VALUES
-(2,1,1);
-insert into startingPositions(gameID,position,color) VALUES
-(2,6,0);
-insert into startingPositions(gameID,position,color) VALUES
-(3,1,1);
-insert into startingPositions(gameID,position,color) VALUES
-(3,6,0);
-CREATE TABLE games(
-	gameID INTEGER PRIMARY KEY,
-	currentColor INTEGER NOT NULL,        
-        date TEXT,
-        name TEXT,
-        FOREIGN KEY (currentColor) REFERENCES colors(colorValue)
 );
 -- CREATE TABLE chessPlayers(
 -- 	playerName TEXT PRIMARY KEY,

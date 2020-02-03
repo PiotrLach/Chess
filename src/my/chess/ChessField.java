@@ -12,7 +12,7 @@ import java.awt.Rectangle;
 
 /**
  *
- * @author bruce
+ * @author Piotr Lach
  */
 public class ChessField extends Rectangle {
     

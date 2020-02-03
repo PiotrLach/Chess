@@ -20,7 +20,7 @@ import my.chess.pieces.*;
 
 /**
  *
- * @author bruce
+ * @author Piotr Lach
  */
 public class ChessBoard extends JPanel {
     public ChessBoard() {

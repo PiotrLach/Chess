@@ -12,7 +12,7 @@ import java.awt.Image;
 
 /**
  *
- * @author bruce
+ * @author Piotr Lach
  */
 abstract public class ChessPiece {    
     public ChessPiece(PieceName pieceName, Color figureColor, Image img/*, int x, int y*/) {

@@ -28,7 +28,7 @@ import my.chess.pieces.Queen;
 import my.chess.pieces.Rook;
 /**
  *
- * @author bruce
+ * @author Piotr Lach
  */
 public class Database {
     public static enum QueryType { OTHER, SELECT_CHESS_FIELDS, SELECT_MAX_GAME_ID, SELECT_GAME_COLOR, SELECT_GAMES, SELECT_POSITIONS};

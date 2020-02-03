@@ -25,7 +25,7 @@ import my.chess.pieces.King;
 //import my.chess.Database.*;
 /**
  *
- * @author bruce
+ * @author Piotr Lach
  */
 public class SavesPanel extends JPanel {
 //    private JRadioButton myRadio;    

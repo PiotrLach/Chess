@@ -12,7 +12,7 @@ import my.chess.ChessBoard;
 
 /**
  *
- * @author bruce
+ * @author Piotr Lach
  */
 public class Pawn extends ChessPiece{
           

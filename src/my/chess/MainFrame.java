@@ -15,7 +15,7 @@ import my.chess.pieces.Images;
 
 /**
  *
- * @author bruce
+ * @author Piotr Lach
  */
 public class MainFrame extends javax.swing.JFrame {
 
