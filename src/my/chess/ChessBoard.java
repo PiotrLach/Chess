@@ -279,6 +279,10 @@ public class ChessBoard extends JPanel {
         HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN,
         VERTICAL_UP_TWO_PLACES,VERTICAL_DOWN_TWO_PLACES
     };
+    private enum Directions {
+        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT,
+        HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN
+    };
     private enum Type {
         FRIEND, FOE
     };
@@ -477,6 +481,63 @@ public class ChessBoard extends JPanel {
         }
         return checkCount;
     }
+    private void checkRemaster() {        
+        int kingX = 0, kingY = 0;
+        try {
+            Point p = findKing();
+            //System.out.println(p);
+            kingX = (int) p.getX();
+            kingY = (int) p.getY();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        ArrayList<Point> pathTemp = new ArrayList();        
+        int sum = 0;           
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {                
+//                System.out.println(i + " " + j);
+                ChessField cf = chessMatrix[i][j];
+                ChessPiece cp = cf.getCurrentChessPiece();
+                if (cp != null
+                    && cp.getFigureColor() != currentColor
+                    && cp.movementConditionFullfilled(i,j, kingX, kingY)                      
+                    && pathIsFree(i,j, kingX, kingY)) {
+                    pathTemp.add(new Point(i,j));
+                    pathTemp.addAll(makePath(i,j, kingX, kingY));
+                    sum++;
+                }
+            }
+        }
+        if (sum > 0) {
+            System.out.println("Szach!");            
+            System.out.println(pathTemp);
+            if (!piecesToBlockCheckAvailableRemaster(pathTemp)) {
+                System.out.println("Not available!");
+//                mateRemaster(kingX,kingY);
+            }
+        }        
+        
+    }
+    private boolean piecesToBlockCheckAvailableRemaster(ArrayList<Point> path) {
+        for (Point p : path) {
+            int x = (int) p.getX(), y = (int) p.getY();
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {                    
+                    ChessField cf = chessMatrix[i][j];
+                    ChessPiece cp = cf.getCurrentChessPiece();
+                    if (cp != null
+                        && !(cp instanceof King)
+                        && cp.getFigureColor() == currentColor
+                        && cp.movementConditionFullfilled(i,j, x, y)                      
+                        && pathIsFree(i,j, x, y)) {
+                        System.out.println(cp.getPieceName());
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     private boolean selfMadeCheck(int row, int column) {
         if (!check) {
             ChessField source = chessMatrix[sourceI][sourceJ];
@@ -533,7 +594,8 @@ public class ChessBoard extends JPanel {
                     currentColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
                     oppositeColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
                     repaint();                    
-                    check();                    
+                    check(); 
+                    checkRemaster();
                     break loop;                                        
                 }
                 else if ( selectedChessPiece!=null && chessMatrix[i][j].contains(p) && !selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)) {
@@ -566,6 +628,20 @@ public class ChessBoard extends JPanel {
 //            highlightAll(g);
 //        }
     }
+    private ArrayList<Point> makePath(int x1, int y1, int x2, int y2) {
+        ArrayList<Point> pathTemp = new ArrayList();
+        int verticalDifference, horizontalDifference, notNullCount = 0;
+        verticalDifference = x1 == x2 ? 0 : (x1 < x2 ? 1 : -1);                        
+        horizontalDifference = y1 == y2 ? 0 : (y1 < y2 ? 1 : -1);
+        x1 += verticalDifference;
+        y1 += horizontalDifference;
+        for (int i = x1, j = y1; i != x2 || j != y2; i += verticalDifference, j+= horizontalDifference) {
+            pathTemp.add(new Point(i,j));
+            ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
+            notNullCount += cp == null ? 0 : 1;
+        }         
+        return pathTemp;
+    }
     private boolean pathIsFree(int x1, int y1, int x2, int y2) {
         int verticalDifference, horizontalDifference, notNullCount = 0;
         if (!(selectedChessPiece instanceof Knight)) {
@@ -577,9 +653,9 @@ public class ChessBoard extends JPanel {
                 ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
                 notNullCount += cp == null ? 0 : 1;
             }
-            if (notNullCount > 0) {
-                JOptionPane.showMessageDialog(this, "Ruch niedozwolony: po drodze są inne figury!");
-            }            
+//            if (notNullCount > 0) {
+//                JOptionPane.showMessageDialog(this, "Ruch niedozwolony: po drodze są inne figury!");
+//            }            
         }
         return notNullCount == 0;
     }
