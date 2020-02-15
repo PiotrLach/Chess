@@ -103,7 +103,8 @@ public class ChessBoard extends JPanel {
             for (int j=0;j<8; j++) {  
                 ChessField cf = chessMatrix[i][j];
                 ChessPiece cp = cf.getCurrentChessPiece();
-                if (cf.contains(p) 
+                if (!mate
+                    && cf.contains(p) 
                     && !cf.isHighlighted()
                     && cp != null
                     && currentColor == cp.getFigureColor()
@@ -168,6 +169,7 @@ public class ChessBoard extends JPanel {
 //                System.out.println(i + " " + j);
                 ChessField cf = chessMatrix[i][j];
                 ChessPiece cp = cf.getCurrentChessPiece();
+                if (i != kingX && j != kingY)
                 if (cp != null
                     && cp.getFigureColor() != currentColor
                     && cp.movementConditionFullfilled(i,j, kingX, kingY)                      
@@ -180,39 +182,40 @@ public class ChessBoard extends JPanel {
                 }
             }
         }
-        if (separate) path.addAll(pathTemp);
+        if (separate) path = new ArrayList(pathTemp);
         if (sum == 0) {
             return false;
         }
-        else if (separate) {
+        else if (sum > 0 && separate) {
 //            System.out.println("Szach!");  
             JOptionPane.showMessageDialog(this, "Szach!");
 //            System.out.println(pathTemp);
+            kingPath = new ArrayList(mate(kingX, kingY));
+            System.out.println(kingPath);
             if (piecesToBlockCheckUnavailable = !piecesToBlockCheckAvailable(pathTemp)) {
-//                System.out.println("Not available!");
-                mate = mate(kingX,kingY);
-                if (mate) JOptionPane.showMessageDialog(this, "Mat!");
+//                System.out.println("Not available!");                
+                if (mate = kingPath.isEmpty()) JOptionPane.showMessageDialog(this, "Mat!");
             }            
         }    
         return true;
     }
-    private boolean mate(int x, int y) {
+    private ArrayList<Point> mate(int x, int y) {
         ArrayList<Point> rescue = new ArrayList();        
         //System.out.println("Check king neighborhood:");
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
                 if ((i <=7 && i >= 0) && (j <= 7 && j >= 0)) {                    
                     ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
-//                    System.out.println(i + " " + j);
-                    if (cp == null || cp.getFigureColor() != currentColor) {                                                
+                    if (cp == null || cp.getFigureColor() != currentColor) { 
+                        System.out.println(i + " " + j);
                         if (!check(i,j,false)) rescue.add(new Point(i,j));
                     }
                 }
             }
         }
-        kingPath = new ArrayList(rescue);
-        System.out.println("Rescue:" + rescue);        
-        return rescue.isEmpty();
+//        kingPath = new ArrayList(rescue);
+//        System.out.println("Rescue:" + rescue);        
+        return rescue;
     }
     private boolean piecesToBlockCheckAvailable(ArrayList<Point> path) {
         for (Point p : path) {
@@ -288,7 +291,7 @@ public class ChessBoard extends JPanel {
                     currentColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
                     oppositeColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
                     repaint();
-                    path = new ArrayList();
+//                    path = new ArrayList();
                     check();
                     break loop;                                        
                 }
@@ -324,15 +327,13 @@ public class ChessBoard extends JPanel {
     }
     private ArrayList<Point> makePath(int x1, int y1, int x2, int y2) {
         ArrayList<Point> pathTemp = new ArrayList();
-        int verticalDifference, horizontalDifference, notNullCount = 0;
+        int verticalDifference, horizontalDifference;
         verticalDifference = x1 == x2 ? 0 : (x1 < x2 ? 1 : -1);                        
         horizontalDifference = y1 == y2 ? 0 : (y1 < y2 ? 1 : -1);
         x1 += verticalDifference;
         y1 += horizontalDifference;
         for (int i = x1, j = y1; i != x2 || j != y2; i += verticalDifference, j+= horizontalDifference) {
             pathTemp.add(new Point(i,j));
-            ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
-            notNullCount += cp == null ? 0 : 1;
         }         
         return pathTemp;
     }
