@@ -24,6 +24,7 @@ public class Pawn extends ChessPiece{
     }    
     private boolean diagonalLeftIsOccupied, diagonalRightIsOccupied, straightAheadIsNotOccupied,
             twoFieldsAheadIsNotOccupied;
+    public boolean twoMovementsMade = false;
     private int startingX;
     
     public Pawn(Color figureColor, Image img, PieceName p/*, int y*/) {
@@ -99,6 +100,27 @@ public class Pawn extends ChessPiece{
     private void checkTwoFieldsAhead(ChessField c){
         twoFieldsAheadIsNotOccupied=c.getCurrentChessPiece()==null;
     }
+    private boolean enPassant(int x1, int y1, int x2, int y2) {
+        if ((x1 - x2) == (startingX == 1 ? -1 : 1) && Math.abs(y1 - y2) == 1) {            
+            System.out.println("---");
+    //        System.out.println(startingX);
+            System.out.println(x1 + " " + y1 + " " + x2 + " " + y2);
+            int temp = y1 - (y1 - y2);
+            System.out.println(x1 + " " + temp);
+            ChessField cf = ChessBoard.getChessMatrixField(x1, y1 - (y1 - y2));
+            ChessPiece neighbor = cf.getCurrentChessPiece();             
+            if (neighbor instanceof Pawn) {                
+                Pawn p = (Pawn) neighbor;
+//                System.out.println(p.twoMovementsMade);
+//                if (p.twoMovementsMade) {                
+                    cf.setCurrentChessPiece(null);
+                    return true;
+//                }
+            }
+        }
+        return false;
+    }
+//    public boolean lastMovement;
     @Override
     public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
 //        System.out.println("X1: "+x1+
@@ -112,12 +134,14 @@ public class Pawn extends ChessPiece{
             oneMovement*=-1;
             left*=-1;
             right*=-1;
-        }
+        }        
         boolean movement = ( (x2-x1==oneMovement && Math.abs(y1-y2)==0) && straightAheadIsNotOccupied )
                 ||  ( (x1==startingX && x2-x1==twoMovements && Math.abs(y1-y2)==0) && twoFieldsAheadIsNotOccupied & straightAheadIsNotOccupied)
                 ||  ( (x2-x1==oneMovement && y2-y1==left ) && diagonalLeftIsOccupied)
-                ||  ( (x2-x1==oneMovement && y2-y1==right ) && diagonalRightIsOccupied );
-        //updateCoordinates(movement, x2, y2);
+                ||  ( (x2-x1==oneMovement && y2-y1==right ) && diagonalRightIsOccupied )
+                ||  enPassant(x1, y1, x2, y2);                
+//        if (!twoMovementsMade /* || oneMovementMade && twoMovementsMade */) 
+//            twoMovementsMade = x2 - x1 == twoMovements && movement == true;
         return movement;
     }   
 

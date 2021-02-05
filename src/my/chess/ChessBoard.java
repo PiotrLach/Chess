@@ -12,10 +12,12 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import my.chess.pieces.*;
+import my.chess.pieces.ChessPiece.PieceName;
 
 
 /**
@@ -161,6 +163,13 @@ public class ChessBoard extends JPanel {
         }
         check = check(kingX,kingY, true);
     }
+    /**
+     * Tests if check occurs
+     * @param kingX
+     * @param kingY
+     * @param separate
+     * @return check value
+     */
     private boolean check(int kingX, int kingY, boolean separate) {        
         ArrayList<Point> pathTemp = new ArrayList();        
         int sum = 0;           
@@ -284,14 +293,17 @@ public class ChessBoard extends JPanel {
                     )
                 {                       
                     check = false;                    
+//                    if ((i == 0 || i == 7) && selectedChessPiece instanceof Pawn) {
+//                        promote((Pawn) selectedChessPiece);
+//                    }
                     cf.setCurrentChessPiece(selectedChessPiece);
+                    movementLog = new Log(currentColor, sourceI, sourceJ, i, j, selectedChessPiece.getPieceName());
                     selectedChessPiece = null;                    
                     chessMatrix[sourceI][sourceJ].setCurrentChessPiece(null);
-                    chessMatrix[sourceI][sourceJ].setHighlighted(false);
+                    chessMatrix[sourceI][sourceJ].setHighlighted(false);                    
                     currentColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
                     oppositeColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
                     repaint();
-//                    path = new ArrayList();
                     check();
                     break loop;                                        
                 }
@@ -301,6 +313,19 @@ public class ChessBoard extends JPanel {
                 }
             }
         }        
+    }
+    private void promote(Pawn p) {
+        String[] possibilites = {"Goniec"};
+        String s = (String) JOptionPane.showInputDialog(
+                            this,
+                            "Wybierz figurę:\n",
+                            "Wybierz figurę",
+                            JOptionPane.INFORMATION_MESSAGE,
+                            null,
+                            possibilites,
+                            possibilites[0]);
+        System.out.println(s);
+
     }
     @Override                 
     public void paint(Graphics g) {
@@ -429,6 +454,7 @@ public class ChessBoard extends JPanel {
         return startingPoints;
     }
     private static boolean check = false, mate = false, piecesToBlockCheckUnavailable = false;
+    public static Log movementLog;
     private static HashMap<Color, Integer> startingPoints;
     private ArrayList<Point> path, kingPath;
     private static final ChessField[][] chessMatrix = new ChessField[8][8];    
