@@ -67,16 +67,11 @@ public class SavesPanel extends JPanel {
         DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String date = myDateObj.format(myFormatObj);
         String name = JOptionPane.showInputDialog(this, "Wpisz nazwę save'a:");
-        if (name != null) {
-            StringBuilder selectPieceID;
-            StringBuilder insertFields = new StringBuilder("");
-            StringBuilder insertNewGame = new StringBuilder("INSERT INTO games(currentColor,date,name) VALUES(");
-            insertNewGame.append(parseColorValue(ChessBoard.getCurrentColor()));
-            insertNewGame.append(",'");
-            insertNewGame.append(date);
-            insertNewGame.append("','");
-            insertNewGame.append(name);
-            insertNewGame.append("');");
+        if (name != null) {            
+            StringBuilder insertFields = new StringBuilder();            
+            StringBuilder insertNewGame = new StringBuilder();
+            int cv = parseColorValue(ChessBoard.getCurrentColor());
+            insertNewGame.append(String.format(insertGame, cv, date, name));            
             getGameIDfromDB();
             Database.gameID++;
             HashMap<Color, Integer> points = ChessBoard.getstartingPoints();
@@ -90,30 +85,11 @@ public class SavesPanel extends JPanel {
                     ChessField cf = ChessBoard.getChessMatrixField(x, y);
                     ChessPiece cp = cf.getCurrentChessPiece();
                     if (cp != null) {
-                        selectPieceID = new StringBuilder("(SELECT pieceID FROM chessPieces WHERE pieceName = '");
-                        selectPieceID.append(cp.getPieceName());
-                        selectPieceID.append("' AND pieceColor = ");
-                        selectPieceID.append(parseColorValue(cp.getFigureColor()));
-                        selectPieceID.append(")");
-                        insertFields.append("INSERT INTO chessFields(x,y,piece,game) VALUES (");                        
-                        insertFields.append(x);
-                        insertFields.append(",");
-                        insertFields.append(y);
-                        insertFields.append(",");
-                        insertFields.append(selectPieceID);
-                        insertFields.append(",");
-                        insertFields.append(Database.gameID);
-                        insertFields.append(");\n");
+                        String selectPieceID = String.format(selectPiece, cp.getPieceName(), parseColorValue(cp.getFigureColor()));
+                        insertFields.append(String.format(insertChessFields, x, y, selectPieceID, Database.gameID));                                            
 
                     } else {
-                        insertFields.append(String.format(insertChessFields, x, y, Database.gameID));
-//                        insertFields.append("INSERT INTO chessFields (x, y, game) VALUES (");
-//                        insertFields.append(x);
-//                        insertFields.append(",");
-//                        insertFields.append(y);
-//                        insertFields.append(",");
-//                        insertFields.append(Database.gameID);
-//                        insertFields.append(");\n");
+                        insertFields.append(String.format(insertChessFields, x, y, "null", Database.gameID));
                     }
                 }
             }
@@ -253,7 +229,8 @@ public class SavesPanel extends JPanel {
     private final String 
         selectPiece = "(SELECT pieceID FROM chessPieces WHERE pieceName = '%s' AND pieceColor = %d)",
         updateColor = "UPDATE games SET currentColor = %d WHERE gameID = %d;",
-        updatePieceValue = "UPDATE chessFields SET piece = %s WHERE x = %d AND y = %d AND game = %d;",
-        insertChessFields = "INSERT INTO chessFields (x, y, game) VALUES (%d, %d, %d);";
+        updatePieceValue = "UPDATE chessFields SET piece = %s WHERE x = %d AND y = %d AND game = %d;",        
+        insertChessFields = "INSERT INTO chessFields(x,y,piece,game) VALUES (%d, %d, %s, %d);",
+        insertGame = "INSERT INTO games(currentColor,date,name) VALUES(%d, '%s', '%s');";
     
 }
