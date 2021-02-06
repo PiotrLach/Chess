@@ -17,7 +17,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
-import javax.imageio.ImageIO;
 import my.chess.pieces.Bishop;
 import my.chess.pieces.ChessPiece;
 import my.chess.pieces.Images;
@@ -26,58 +25,64 @@ import my.chess.pieces.Knight;
 import my.chess.pieces.Pawn;
 import my.chess.pieces.Queen;
 import my.chess.pieces.Rook;
+
 /**
  *
  * @author Piotr Lach
  */
 public class Database {
-    public static enum QueryType { OTHER, SELECT_CHESS_FIELDS, SELECT_MAX_GAME_ID, SELECT_GAME_COLOR, SELECT_GAMES, SELECT_POSITIONS};
-    public static ArrayList<Integer> games;    
+
+    public static enum QueryType {
+        OTHER, SELECT_CHESS_FIELDS, SELECT_MAX_GAME_ID, SELECT_GAME_COLOR, SELECT_GAMES, SELECT_POSITIONS
+    };
+    public static ArrayList<Integer> games;
     public static ArrayList<String> dates;
     public static ArrayList<String> names;
-    public static int gameID = 1;    
+    public static int gameID = 1;
+
     public static void createNewDatabase() {
- 
-        String url = "jdbc:sqlite:db"+File.separator+"chess.db";
- 
+
+        String url = "jdbc:sqlite:db" + File.separator + "chess.db";
+
         try (Connection conn = DriverManager.getConnection(url)) {
             if (conn != null) {
                 DatabaseMetaData meta = conn.getMetaData();
                 System.out.println("The driver name is " + meta.getDriverName());
                 System.out.println("A new database has been created.");
             }
- 
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
+
     private String readSqlFile() {
         String data = "";
         try {
-            File f = new File("db"+File.separator+"base.sql");
+            File f = new File("db" + File.separator + "base.sql");
             Scanner myReader = new Scanner(f);
             while (myReader.hasNextLine()) {
                 data += myReader.nextLine() + "\n";
-    //            System.out.println(data);
+                //            System.out.println(data);
             }
             myReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred: " + e.toString());            
-        } 
+            System.out.println("An error occurred: " + e.toString());
+        }
         return data;
     }
+
     public static void sqlConnection(String myQuery, QueryType q) {
-        
-        games = new ArrayList();    
+
+        games = new ArrayList();
         dates = new ArrayList();
         names = new ArrayList();
-        Connection c = null;        
+        Connection c = null;
         ResultSet rs;
         Connection connection = null;
-        try
-        {
+        try {
             // create a database connection
-            connection = DriverManager.getConnection("jdbc:sqlite:db"+File.separator+"chess.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:db" + File.separator + "chess.db");
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);  // set timeout to 30 sec.
             switch (q) {
@@ -85,9 +90,8 @@ public class Database {
                     statement.executeUpdate(myQuery);
                     break;
                 case SELECT_POSITIONS:
-                    rs = statement.executeQuery(myQuery);                    
-                    while(rs.next())
-                    {
+                    rs = statement.executeQuery(myQuery);
+                    while (rs.next()) {
                         try {
                             Color col = rs.getInt("color") == 0 ? Color.BLACK : Color.WHITE;
                             ChessBoard.setStartingPoints(col, rs.getInt("position"));
@@ -98,19 +102,17 @@ public class Database {
                     break;
                 case SELECT_GAMES:
                     rs = statement.executeQuery(myQuery);
-                    while(rs.next())
-                    {
+                    while (rs.next()) {
                         games.add(rs.getInt("gameID"));
                         dates.add(rs.getString("date"));
                         names.add(rs.getString("name"));
                     }
-                    break;                
+                    break;
                 case SELECT_CHESS_FIELDS:
                     rs = statement.executeQuery(myQuery);
-                    while(rs.next())
-                    {
+                    while (rs.next()) {
                         try {
-                            setLoadedGamePiece(rs.getString("piece"),rs.getInt("x"),rs.getInt("y"));
+                            setLoadedGamePiece(rs.getString("piece"), rs.getInt("x"), rs.getInt("y"));
                         } catch (IOException | SQLException e) {
                             System.out.println(e);
                         }
@@ -118,10 +120,9 @@ public class Database {
                     break;
                 case SELECT_MAX_GAME_ID:
                     rs = statement.executeQuery(myQuery);
-                    while(rs.next())
-                    {                        
-                        gameID = rs.getInt("MAX(gameID)");                        
-                    }                    
+                    while (rs.next()) {
+                        gameID = rs.getInt("MAX(gameID)");
+                    }
                     break;
                 case SELECT_GAME_COLOR:
 //                    System.out.println(myQuery);
@@ -129,83 +130,79 @@ public class Database {
 //                    ResultSetMetaData rsmd = rs.getMetaData();
 //                    String name = rsmd.getColumnName(1);
 //                    System.out.println(name);
-                    while(rs.next())
-                    {                                                
+                    while (rs.next()) {
                         ChessBoard.setCurrentColor(parseIntValue(rs.getInt("currentColor")));
 //                        System.out.println(rs.getInt("currentColor"));
-                    }                    
+                    }
                     break;
-            }            
-        }
-        catch(SQLException e)
-        {
+            }
+        } catch (SQLException e) {
             // if the error message is "out of memory", 
             // it probably means no database file is found
             System.err.println(e.getMessage());
-        }
-        finally
-        {
-            try
-            {
-                if(connection != null)
-                connection.close();
-            }
-            catch(SQLException e)
-            {
-              // connection close failed.
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                // connection close failed.
                 System.err.println(e);
             }
         }
     }
+
     private static Color parseIntValue(int i) {
-        switch(i) {
-            default: 
+        switch (i) {
+            default:
                 throw new IllegalArgumentException("Color value can only be 0 or 1");
             case 0:
                 return Color.BLACK;
             case 1:
                 return Color.WHITE;
-                
-        }            
-    }
-    private static void setLoadedGamePiece(String pieceID, int x, int y) throws IOException {        
-        if(pieceID != null) {
-//            System.out.println(x+" "+ y +" " +Integer.parseInt(pieceID));
-            ChessBoard.setChessMatrixField(x, y, choosePiece(Integer.parseInt(pieceID)));            
+
         }
     }
+
+    private static void setLoadedGamePiece(String pieceID, int x, int y) throws IOException {
+        if (pieceID != null) {
+//            System.out.println(x+" "+ y +" " +Integer.parseInt(pieceID));
+            ChessBoard.setChessMatrixField(x, y, choosePiece(Integer.parseInt(pieceID)));
+        }
+    }
+
     private static ChessPiece choosePiece(int num) throws IllegalArgumentException {
         switch (num) {
             default:
                 throw new IllegalArgumentException("Piece ID value has to be between 0 and 11");
             case 0:
-                return new Pawn(Color.BLACK,Images.getPAWN(Color.BLACK),ChessPiece.PieceName.Pawn1);
+                return new Pawn(Color.BLACK, Images.getPAWN(Color.BLACK), ChessPiece.PieceName.Pawn1);
             case 1:
-                return new Pawn(Color.BLACK,Images.getPAWN(Color.BLACK),ChessPiece.PieceName.Pawn6);
+                return new Pawn(Color.BLACK, Images.getPAWN(Color.BLACK), ChessPiece.PieceName.Pawn6);
             case 2:
-                return new Rook(Color.BLACK,Images.getROOK(Color.BLACK));
+                return new Rook(Color.BLACK, Images.getROOK(Color.BLACK));
             case 3:
-                return new Bishop(Color.BLACK,Images.getBISHOP(Color.BLACK));
+                return new Bishop(Color.BLACK, Images.getBISHOP(Color.BLACK));
             case 4:
-                return new Knight(Color.BLACK,Images.getKNIGHT(Color.BLACK));
+                return new Knight(Color.BLACK, Images.getKNIGHT(Color.BLACK));
             case 5:
-                return new Queen(Color.BLACK,Images.getQUEEN(Color.BLACK));
+                return new Queen(Color.BLACK, Images.getQUEEN(Color.BLACK));
             case 6:
-                return new King(Color.BLACK,Images.getKING(Color.BLACK));
+                return new King(Color.BLACK, Images.getKING(Color.BLACK));
             case 7:
-                return new Pawn(Color.WHITE,Images.getPAWN(Color.WHITE),ChessPiece.PieceName.Pawn1);
+                return new Pawn(Color.WHITE, Images.getPAWN(Color.WHITE), ChessPiece.PieceName.Pawn1);
             case 8:
-                return new Pawn(Color.WHITE,Images.getPAWN(Color.WHITE),ChessPiece.PieceName.Pawn6);
+                return new Pawn(Color.WHITE, Images.getPAWN(Color.WHITE), ChessPiece.PieceName.Pawn6);
             case 9:
-                return new Rook(Color.WHITE,Images.getROOK(Color.WHITE));
+                return new Rook(Color.WHITE, Images.getROOK(Color.WHITE));
             case 10:
-                return new Bishop(Color.WHITE,Images.getBISHOP(Color.WHITE));
+                return new Bishop(Color.WHITE, Images.getBISHOP(Color.WHITE));
             case 11:
-                return new Knight(Color.WHITE,Images.getKNIGHT(Color.WHITE));
+                return new Knight(Color.WHITE, Images.getKNIGHT(Color.WHITE));
             case 12:
-                return new Queen(Color.WHITE,Images.getQUEEN(Color.WHITE));
+                return new Queen(Color.WHITE, Images.getQUEEN(Color.WHITE));
             case 13:
-                return new King(Color.WHITE,Images.getKING(Color.WHITE));                
+                return new King(Color.WHITE, Images.getKING(Color.WHITE));
         }
     }
 }

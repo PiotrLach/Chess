@@ -16,7 +16,7 @@ import javax.imageio.ImageIO;
  * @author Edward Cullen
  */
 public class Images {
-    
+
     public static void loadImages() throws IOException {
         PAWN_BLACK = ImageIO.read(new File("res/black/pawn.png"));
         PAWN_WHITE = ImageIO.read(new File("res/white/pawn.png"));
@@ -31,43 +31,55 @@ public class Images {
         KING_BLACK = ImageIO.read(new File("res/black/king.png"));
         KING_WHITE = ImageIO.read(new File("res/white/king.png"));
     }
+
     public static Image getPAWN(Color c) {
-        if (c == Color.BLACK)
+        if (c == Color.BLACK) {
             return PAWN_BLACK;
-        else
+        } else {
             return PAWN_WHITE;
+        }
     }
+
     public static Image getROOK(Color c) {
-        if (c == Color.BLACK)
+        if (c == Color.BLACK) {
             return ROOK_BLACK;
-        else
+        } else {
             return ROOK_WHITE;
+        }
     }
+
     public static Image getBISHOP(Color c) {
-        if (c == Color.BLACK)
+        if (c == Color.BLACK) {
             return BISHOP_BLACK;
-        else
+        } else {
             return BISHOP_WHITE;
+        }
     }
+
     public static Image getKNIGHT(Color c) {
-        if (c == Color.BLACK)
+        if (c == Color.BLACK) {
             return KNIGHT_BLACK;
-        else
+        } else {
             return KNIGHT_WHITE;
+        }
     }
+
     public static Image getQUEEN(Color c) {
-        if (c == Color.BLACK)
+        if (c == Color.BLACK) {
             return QUEEN_BLACK;
-        else
+        } else {
             return QUEEN_WHITE;
+        }
     }
+
     public static Image getKING(Color c) {
-        if (c == Color.BLACK)
+        if (c == Color.BLACK) {
             return KING_BLACK;
-        else
+        } else {
             return KING_WHITE;
+        }
     }
-    private static Image PAWN_BLACK;    
+    private static Image PAWN_BLACK;
     private static Image PAWN_WHITE;
     private static Image ROOK_BLACK;
     private static Image ROOK_WHITE;

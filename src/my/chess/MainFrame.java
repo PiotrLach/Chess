@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import my.chess.pieces.Images;
 
-
 /**
  *
  * @author Piotr Lach
@@ -209,7 +208,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_gameExitButtonActionPerformed
 
     private void gameManageSavesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameManageSavesButtonActionPerformed
-        myTabbedPane.setSelectedIndex(2);       
+        myTabbedPane.setSelectedIndex(2);
     }//GEN-LAST:event_gameManageSavesButtonActionPerformed
 
     private void manageSavesLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesLoadActionPerformed
@@ -264,8 +263,7 @@ public class MainFrame extends javax.swing.JFrame {
         //</editor-fold>
         try {
             Images.loadImages();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.println(e.toString());
         }
         /* Create and display the form */

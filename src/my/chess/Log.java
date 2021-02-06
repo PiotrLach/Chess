@@ -13,7 +13,7 @@ import my.chess.pieces.ChessPiece.PieceName;
  * @author bruce
  */
 public class Log {
-    
+
     public Log(Color color, int x1, int y1, int x2, int y2, PieceName name) {
         this.color = color;
         this.x1 = x1;

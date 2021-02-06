@@ -15,16 +15,16 @@ import java.awt.Image;
 public class King extends ChessPiece {
 
     public King(Color figureColor, Image img/*, int x, int y*/) {
-        super(PieceName.King, figureColor,img/*, x, y*/);
+        super(PieceName.King, figureColor, img/*, x, y*/);
     }
 
     @Override
     public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
-        boolean movement = (Math.abs(x1-x2) == 1 && Math.abs(y1-y2) == 1 ) 
-                            || (Math.abs(x1-x2)==1 && Math.abs(y1-y2)==0) 
-                            || (Math.abs(x1-x2)==0 && Math.abs(y1-y2)==1);
+        boolean movement = (Math.abs(x1 - x2) == 1 && Math.abs(y1 - y2) == 1)
+                || (Math.abs(x1 - x2) == 1 && Math.abs(y1 - y2) == 0)
+                || (Math.abs(x1 - x2) == 0 && Math.abs(y1 - y2) == 1);
         //updateCoordinates(movement, x2, y2);
         return movement;
     }
-    
+
 }
