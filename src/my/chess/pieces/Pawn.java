@@ -32,7 +32,7 @@ public class Pawn extends ChessPiece {
         twoForwardMovements = isOnBottomRow ? 2 : -2;
     }
 
-    private void checkAvailableMovement(Movement m, ChessField c) {
+    private void checkAvailableMovement(Movement m, ChessField c) {        
         switch (m) {
             case STRAIGHT_AHEAD:
                 straightAheadIsNotOccupied = c.getCurrentChessPiece() == null;

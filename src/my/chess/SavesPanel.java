@@ -70,7 +70,7 @@ public class SavesPanel extends JPanel {
         if (name != null) {
             StringBuilder selectPieceID;
             StringBuilder insertFields = new StringBuilder("");
-            StringBuilder insertNewGame = new StringBuilder("INSERT INTO games(currentColor,date,name) VALUES(");//(SELECT MAX(gameID) FROM games)+1,");
+            StringBuilder insertNewGame = new StringBuilder("INSERT INTO games(currentColor,date,name) VALUES(");
             insertNewGame.append(parseColorValue(ChessBoard.getCurrentColor()));
             insertNewGame.append(",'");
             insertNewGame.append(date);
@@ -87,14 +87,15 @@ public class SavesPanel extends JPanel {
             insertNewGame.append(insertNewStartingPositions);
             for (int x = 0; x < 8; x++) {
                 for (int y = 0; y < 8; y++) {
-                    if (ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece() != null) {
+                    ChessField cf = ChessBoard.getChessMatrixField(x, y);
+                    ChessPiece cp = cf.getCurrentChessPiece();
+                    if (cp != null) {
                         selectPieceID = new StringBuilder("(SELECT pieceID FROM chessPieces WHERE pieceName = '");
-                        selectPieceID.append(ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece().getPieceName());
+                        selectPieceID.append(cp.getPieceName());
                         selectPieceID.append("' AND pieceColor = ");
-                        selectPieceID.append(parseColorValue(ChessBoard.getChessMatrixField(x, y).getCurrentChessPiece().getFigureColor()));
+                        selectPieceID.append(parseColorValue(cp.getFigureColor()));
                         selectPieceID.append(")");
-                        insertFields.append("INSERT INTO chessFields(x,y,piece,game) VALUES (");
-                        //                    insertFields.append("(SELECT MAX(chessFieldID) FROM chessFields)+1,");
+                        insertFields.append("INSERT INTO chessFields(x,y,piece,game) VALUES (");                        
                         insertFields.append(x);
                         insertFields.append(",");
                         insertFields.append(y);
@@ -105,13 +106,14 @@ public class SavesPanel extends JPanel {
                         insertFields.append(");\n");
 
                     } else {
-                        insertFields.append("INSERT INTO chessFields (x, y, game) VALUES (");
-                        insertFields.append(x);
-                        insertFields.append(",");
-                        insertFields.append(y);
-                        insertFields.append(",");
-                        insertFields.append(Database.gameID);
-                        insertFields.append(");\n");
+                        insertFields.append(String.format(insertChessFields, x, y, Database.gameID));
+//                        insertFields.append("INSERT INTO chessFields (x, y, game) VALUES (");
+//                        insertFields.append(x);
+//                        insertFields.append(",");
+//                        insertFields.append(y);
+//                        insertFields.append(",");
+//                        insertFields.append(Database.gameID);
+//                        insertFields.append(");\n");
                     }
                 }
             }
@@ -162,33 +164,17 @@ public class SavesPanel extends JPanel {
     public void updateDatabaseRecord() {
         try {
             int gameID = getSelectedGameId();
-            StringBuilder sb = new StringBuilder("");
-            sb.append("UPDATE games SET currentColor =");
-            sb.append(parseColorValue(ChessBoard.getCurrentColor()));
-            sb.append(" WHERE gameID=");
-            sb.append(gameID);
-            sb.append(";");
+            StringBuilder sb = new StringBuilder();
+            Color c = ChessBoard.getCurrentColor();
+            sb.append(String.format(updateColor, parseColorValue(c), gameID));
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
-                    if (ChessBoard.getChessMatrixField(i, j).getCurrentChessPiece() != null) {
-                        sb.append("UPDATE chessFields ");
-                        sb.append("SET piece=");
-                        sb.append(pieceIntValue(ChessBoard.getChessMatrixField(i, j).getCurrentChessPiece()));
-                        sb.append(" WHERE x=");
-                        sb.append(i);
-                        sb.append(" AND y=");
-                        sb.append(j);
-                        sb.append(" AND game =");
-                        sb.append(gameID);
-                        sb.append(";");
+                    ChessField cf = ChessBoard.getChessMatrixField(i, j);
+                    ChessPiece cp = cf.getCurrentChessPiece();
+                    if (cp != null) {
+                        sb.append(String.format(updatePieceValue, pieceIntValue(cp), i, j, gameID));
                     } else {
-                        sb.append("UPDATE chessFields SET piece=null WHERE x=");
-                        sb.append(i);
-                        sb.append(" AND y=");
-                        sb.append(j);
-                        sb.append(" AND game =");
-                        sb.append(gameID);
-                        sb.append(";");
+                        sb.append(String.format(updatePieceValue, "null", i, j, gameID));
                     }
                 }
             }
@@ -264,4 +250,10 @@ public class SavesPanel extends JPanel {
     }
     private ArrayList<RadioButton> radioButtons;
     private ButtonGroup buttonGroup;
+    private final String 
+        selectPiece = "(SELECT pieceID FROM chessPieces WHERE pieceName = '%s' AND pieceColor = %d)",
+        updateColor = "UPDATE games SET currentColor = %d WHERE gameID = %d;",
+        updatePieceValue = "UPDATE chessFields SET piece = %s WHERE x = %d AND y = %d AND game = %d;",
+        insertChessFields = "INSERT INTO chessFields (x, y, game) VALUES (%d, %d, %d);";
+    
 }
