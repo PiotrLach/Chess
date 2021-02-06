@@ -22,13 +22,15 @@ public class Pawn extends ChessPiece {
         DIAGONAL_RIGHT,
         TWO_FIELDS_AHEAD;
     }
-    private boolean diagonalLeftIsOccupied, diagonalRightIsOccupied, straightAheadIsNotOccupied,
+    private boolean diagonalLeftIsOccupied,
+            diagonalRightIsOccupied,
+            straightAheadIsNotOccupied,
             twoFieldsAheadIsNotOccupied;
     public boolean twoMovementsMade = false;
     private int startingX;
 
-    public Pawn(Color figureColor, Image img, PieceName p/*, int y*/) {
-        super(p, figureColor, img/*, startingX, y*/);
+    public Pawn(Color figureColor, Image img, PieceName p) {
+        super(p, figureColor, img);
         this.startingX = p == PieceName.Pawn1 ? 1 : 6;
     }
 
@@ -58,26 +60,21 @@ public class Pawn extends ChessPiece {
     }
 
     private void checkBoardConditions(int x, int y) {
-        int leftBoundary, rightBoundary, topBoundary;
-        int forwardMovement, diagonalLeftMovement, diagonalRightMovement;
-        int twoFieldsForwardMovement;
-        if (startingX == 1) {
-            leftBoundary = 0;
-            rightBoundary = 7;
-            topBoundary = 7;
-            forwardMovement = 1;
-            diagonalLeftMovement = -1;
-            diagonalRightMovement = 1;
-            twoFieldsForwardMovement = 2;
-        } else {
-            leftBoundary = 7;
-            rightBoundary = 0;
-            topBoundary = 0;
-            forwardMovement = -1;
-            diagonalLeftMovement = 1;
-            diagonalRightMovement = -1;
-            twoFieldsForwardMovement = -2;
-        }
+        boolean isOnBottomRow = startingX == 1;
+        int leftBoundary = isOnBottomRow ? 0 : 7,
+                                
+            rightBoundary = isOnBottomRow ? 7 : 0,
+                
+            topBoundary = isOnBottomRow ? 7 : 0,
+                
+            forwardMovement = isOnBottomRow ? 1 : -1, 
+                
+            diagonalLeftMovement = isOnBottomRow ? -1 : 1,
+                
+            diagonalRightMovement = isOnBottomRow ? 1 : -1, 
+                
+            twoFieldsForwardMovement = isOnBottomRow ? 2 : -2;
+        
         if (y != leftBoundary && x != topBoundary) {
             checkDiagonalLeft(ChessBoard.getChessMatrixField(x + forwardMovement, y + diagonalLeftMovement));
         }
@@ -128,14 +125,14 @@ public class Pawn extends ChessPiece {
     @Override
     public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
         checkBoardConditions(x1, y1);
-        boolean top = startingX == 6;
-        int twoMovements = top ? 2 : -2,
-            oneMovement = top ? 1 : -1, 
-            left = top ? -1 : 1, 
-            right = top ? 1 : -1;  
+        boolean bottomRow = startingX == 1;
+        int twoMovements = bottomRow ? 2 : -2,
+            oneMovement = bottomRow ? 1 : -1, 
+            left = bottomRow ? -1 : 1, 
+            right = bottomRow ? 1 : -1;  
         
         boolean movement = ((x2 - x1 == oneMovement && Math.abs(y1 - y2) == 0) && straightAheadIsNotOccupied)
-                || ((x1 == startingX && x2 - x1 == twoMovements && Math.abs(y1 - y2) == 0) && twoFieldsAheadIsNotOccupied & straightAheadIsNotOccupied)
+                || ((x1 == startingX && x2 - x1 == twoMovements && Math.abs(y1 - y2) == 0) && twoFieldsAheadIsNotOccupied && straightAheadIsNotOccupied)
                 || ((x2 - x1 == oneMovement && y2 - y1 == left) && diagonalLeftIsOccupied)
                 || ((x2 - x1 == oneMovement && y2 - y1 == right) && diagonalRightIsOccupied)
                 || enPassant(x1, y1, x2, y2);
