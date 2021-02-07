@@ -14,8 +14,8 @@ import java.awt.Image;
  */
 public class King extends ChessPiece {
 
-    public King(Color figureColor, Image img) {
-        super(PieceName.King, figureColor, img);
+    public King(Color figureColor) {
+        super(PieceName.King, figureColor, Images.getKING(figureColor));
     }
 
     @Override

@@ -14,8 +14,8 @@ import java.awt.Image;
  */
 public class Bishop extends ChessPiece {
 
-    public Bishop(Color figureColor, Image img) {
-        super(PieceName.Bishop, figureColor, img);
+    public Bishop(Color figureColor) {
+        super(PieceName.Bishop, figureColor, Images.getBISHOP(figureColor));
     }
 
     @Override

@@ -16,8 +16,8 @@ import my.chess.ChessBoard;
  */
 public class Pawn extends ChessPiece {
 
-    public Pawn(Color figureColor, Image img, PieceName p) {
-        super(p, figureColor, img);
+    public Pawn(Color figureColor, PieceName p) {
+        super(p, figureColor, Images.getPAWN(figureColor));
 
         startingX = p == PieceName.Pawn1 ? 1 : 6;
 

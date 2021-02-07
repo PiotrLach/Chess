@@ -407,25 +407,25 @@ public class ChessBoard extends JPanel {
         startingPoints.put(c1, 1);
         startingPoints.put(c2, 6);
         for (int i = 0; i < 8; i++) {
-            chessMatrix[1][i].setCurrentChessPiece(new Pawn(c1, Images.getPAWN(c1), ChessPiece.PieceName.Pawn1));
-            chessMatrix[6][i].setCurrentChessPiece(new Pawn(c2, Images.getPAWN(c2), ChessPiece.PieceName.Pawn6));
+            chessMatrix[1][i].setCurrentChessPiece(new Pawn(c1, ChessPiece.PieceName.Pawn1));
+            chessMatrix[6][i].setCurrentChessPiece(new Pawn(c2, ChessPiece.PieceName.Pawn6));
         }
-        chessMatrix[0][0].setCurrentChessPiece(new Rook(c1, Images.getROOK(c1)));
-        chessMatrix[0][1].setCurrentChessPiece(new Knight(c1, Images.getKNIGHT(c1)));
-        chessMatrix[0][2].setCurrentChessPiece(new Bishop(c1, Images.getBISHOP(c1)));
-        chessMatrix[0][3].setCurrentChessPiece(new Queen(c1, Images.getQUEEN(c1)));
-        chessMatrix[0][4].setCurrentChessPiece(new King(c1, Images.getKING(c1)));
-        chessMatrix[0][5].setCurrentChessPiece(new Bishop(c1, Images.getBISHOP(c1)));
-        chessMatrix[0][6].setCurrentChessPiece(new Knight(c1, Images.getKNIGHT(c1)));
-        chessMatrix[0][7].setCurrentChessPiece(new Rook(c1, Images.getROOK(c1)));
-        chessMatrix[7][0].setCurrentChessPiece(new Rook(c2, Images.getROOK(c2)));
-        chessMatrix[7][1].setCurrentChessPiece(new Knight(c2, Images.getKNIGHT(c2)));
-        chessMatrix[7][2].setCurrentChessPiece(new Bishop(c2, Images.getBISHOP(c2)));
-        chessMatrix[7][3].setCurrentChessPiece(new Queen(c2, Images.getQUEEN(c2)));
-        chessMatrix[7][4].setCurrentChessPiece(new King(c2, Images.getKING(c2)));
-        chessMatrix[7][5].setCurrentChessPiece(new Bishop(c2, Images.getBISHOP(c2)));
-        chessMatrix[7][6].setCurrentChessPiece(new Knight(c2, Images.getKNIGHT(c2)));
-        chessMatrix[7][7].setCurrentChessPiece(new Rook(c2, Images.getROOK(c2)));
+        chessMatrix[0][0].setCurrentChessPiece(new Rook(c1));
+        chessMatrix[0][1].setCurrentChessPiece(new Knight(c1));
+        chessMatrix[0][2].setCurrentChessPiece(new Bishop(c1));
+        chessMatrix[0][3].setCurrentChessPiece(new Queen(c1));
+        chessMatrix[0][4].setCurrentChessPiece(new King(c1));
+        chessMatrix[0][5].setCurrentChessPiece(new Bishop(c1));
+        chessMatrix[0][6].setCurrentChessPiece(new Knight(c1));
+        chessMatrix[0][7].setCurrentChessPiece(new Rook(c1));
+        chessMatrix[7][0].setCurrentChessPiece(new Rook(c2));
+        chessMatrix[7][1].setCurrentChessPiece(new Knight(c2));
+        chessMatrix[7][2].setCurrentChessPiece(new Bishop(c2));
+        chessMatrix[7][3].setCurrentChessPiece(new Queen(c2));
+        chessMatrix[7][4].setCurrentChessPiece(new King(c2));
+        chessMatrix[7][5].setCurrentChessPiece(new Bishop(c2));
+        chessMatrix[7][6].setCurrentChessPiece(new Knight(c2));
+        chessMatrix[7][7].setCurrentChessPiece(new Rook(c2));
         repaint();
     }
 

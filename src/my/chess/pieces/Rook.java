@@ -14,8 +14,8 @@ import java.awt.Image;
  */
 public class Rook extends ChessPiece {
 
-    public Rook(Color figureColor, Image img) {
-        super(PieceName.Rook, figureColor, img);
+    public Rook(Color figureColor) {
+        super(PieceName.Rook, figureColor, Images.getROOK(figureColor));
     }
 
     @Override
