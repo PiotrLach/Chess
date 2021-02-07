@@ -17,14 +17,12 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import my.chess.Database.QueryType;
 import my.chess.pieces.ChessPiece;
-//import my.chess.Database.*;
 
 /**
  *
  * @author Piotr Lach
  */
-public class SavesPanel extends JPanel {
-//    private JRadioButton myRadio;    
+public class SavesPanel extends JPanel { 
 
     public SavesPanel() {
         setLayout(new GridLayout(0, 1, 0, 0));
@@ -34,7 +32,7 @@ public class SavesPanel extends JPanel {
     private void initUI() {
         radioButtons = new ArrayList();
         buttonGroup = new ButtonGroup();
-        String selectGames = "SELECT gameID,name,date FROM games;";
+        final String selectGames = "SELECT gameID,name,date FROM games;";
         Database.sqlConnection(selectGames, QueryType.SELECT_GAMES);
         for (Integer i = 0; i < Database.games.size(); i++) {
             radioButtons.add(new RadioButton(Database.games.get(i), Database.dates.get(i), Database.names.get(i)));
@@ -67,34 +65,37 @@ public class SavesPanel extends JPanel {
         DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String date = myDateObj.format(myFormatObj);
         String name = JOptionPane.showInputDialog(this, "Wpisz nazwę save'a:");
-        if (name != null) {            
-            StringBuilder insertFields = new StringBuilder();            
+        if (name != null) {
+            StringBuilder insertFields = new StringBuilder();
             StringBuilder insertNewGame = new StringBuilder();
+            
             int cv = parseColorValue(ChessBoard.getCurrentColor());
-            insertNewGame.append(String.format(insertGame, cv, date, name));            
+            insertNewGame.append(String.format(insertGame, cv, date, name));
             getGameIDfromDB();
             Database.gameID++;
             HashMap<Color, Integer> points = ChessBoard.getstartingPoints();
+            
             String insertNewStartingPositions = "insert into startingPositions(gameID,position,color) VALUES"
                     + "(" + Database.gameID + "," + points.get(Color.BLACK) + "," + 0 + ");";
             insertNewStartingPositions += "insert into startingPositions(gameID,position,color) VALUES"
                     + "(" + Database.gameID + "," + points.get(Color.WHITE) + "," + 1 + ");";
+            
             insertNewGame.append(insertNewStartingPositions);
+            
             for (int x = 0; x < 8; x++) {
                 for (int y = 0; y < 8; y++) {
                     ChessField cf = ChessBoard.getChessMatrixField(x, y);
                     ChessPiece cp = cf.getCurrentChessPiece();
                     if (cp != null) {
                         String selectPieceID = String.format(selectPiece, cp.getPieceName(), parseColorValue(cp.getFigureColor()));
-                        insertFields.append(String.format(insertChessFields, x, y, selectPieceID, Database.gameID));                                            
+                        insertFields.append(String.format(insertChessFields, x, y, selectPieceID, Database.gameID));
 
                     } else {
                         insertFields.append(String.format(insertChessFields, x, y, "null", Database.gameID));
                     }
                 }
             }
-            insertNewGame.append(insertFields);
-            //        System.out.println(insertFields.toString());
+            insertNewGame.append(insertFields);            
             Database.sqlConnection(insertNewGame.toString(), QueryType.OTHER);
             RadioButton rb = new RadioButton(Database.gameID, date, name);
             radioButtons.add(rb);
@@ -102,8 +103,6 @@ public class SavesPanel extends JPanel {
             add(rb);
             updateUI();
         }
-//        System.out.println(insertFields);
-//        System.out.println(ctr);
     }
 
     private void getGameIDfromDB() {
@@ -117,12 +116,6 @@ public class SavesPanel extends JPanel {
             String deleteQuery = "DELETE FROM chessFields WHERE game =" + gameId + ";\n";
             deleteQuery += "DELETE FROM games WHERE gameID =" + gameId + ";";
             Database.sqlConnection(deleteQuery, QueryType.OTHER);
-//            Comparator<JRadioButton> c = (JRadioButton b1, JRadioButton b2) -> b1.getText().compareTo(b2.getText());             
-//            JRadioButton jb = new JRadioButton(gameID.toString());
-//            Collections.sort(radioButtons, c);
-            //        System.out.println(Collections.binarySearch(radioButtons, jb, c));
-//            int idx = Collections.binarySearch(radioButtons, jb, c);
-//            int size = 
             for (int i = 0; i < radioButtons.size(); i++) {
                 if (radioButtons.get(i).isSelected()) {
                     remove(radioButtons.get(i));
@@ -226,11 +219,10 @@ public class SavesPanel extends JPanel {
     }
     private ArrayList<RadioButton> radioButtons;
     private ButtonGroup buttonGroup;
-    private final String 
-        selectPiece = "(SELECT pieceID FROM chessPieces WHERE pieceName = '%s' AND pieceColor = %d)",
-        updateColor = "UPDATE games SET currentColor = %d WHERE gameID = %d;",
-        updatePieceValue = "UPDATE chessFields SET piece = %s WHERE x = %d AND y = %d AND game = %d;",        
-        insertChessFields = "INSERT INTO chessFields(x,y,piece,game) VALUES (%d, %d, %s, %d);",
-        insertGame = "INSERT INTO games(currentColor,date,name) VALUES(%d, '%s', '%s');";
-    
+    private final String selectPiece = "(SELECT pieceID FROM chessPieces WHERE pieceName = '%s' AND pieceColor = %d)",
+            updateColor = "UPDATE games SET currentColor = %d WHERE gameID = %d;",
+            updatePieceValue = "UPDATE chessFields SET piece = %s WHERE x = %d AND y = %d AND game = %d;",
+            insertChessFields = "INSERT INTO chessFields(x,y,piece,game) VALUES (%d, %d, %s, %d);",
+            insertGame = "INSERT INTO games(currentColor,date,name) VALUES(%d, '%s', '%s');";
+
 }

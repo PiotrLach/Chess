@@ -56,22 +56,6 @@ public class Database {
         }
     }
 
-    private String readSqlFile() {
-        String data = "";
-        try {
-            File f = new File("db" + File.separator + "base.sql");
-            Scanner myReader = new Scanner(f);
-            while (myReader.hasNextLine()) {
-                data += myReader.nextLine() + "\n";
-                //            System.out.println(data);
-            }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred: " + e.toString());
-        }
-        return data;
-    }
-
     public static void sqlConnection(String myQuery, QueryType q) {
 
         games = new ArrayList();
@@ -81,64 +65,47 @@ public class Database {
         ResultSet rs;
         Connection connection = null;
         try {
-            // create a database connection
             connection = DriverManager.getConnection("jdbc:sqlite:db" + File.separator + "chess.db");
             Statement statement = connection.createStatement();
-            statement.setQueryTimeout(30);  // set timeout to 30 sec.
+            statement.setQueryTimeout(30);
             switch (q) {
                 case OTHER:
                     statement.executeUpdate(myQuery);
                     break;
-                case SELECT_POSITIONS:
+                default:
                     rs = statement.executeQuery(myQuery);
                     while (rs.next()) {
-                        try {
-                            Color col = rs.getInt("color") == 0 ? Color.BLACK : Color.WHITE;
-                            ChessBoard.setStartingPoints(col, rs.getInt("position"));
-                        } catch (Exception e) {
-                            System.out.println(e);
+                        switch (q) {
+                            case SELECT_POSITIONS:
+                                try {
+                                    Color col = rs.getInt("color") == 0 ? Color.BLACK : Color.WHITE;
+                                    ChessBoard.setStartingPoints(col, rs.getInt("position"));
+                                } catch (Exception e) {
+                                    System.out.println(e);
+                                }
+                                break;
+                            case SELECT_GAMES:
+                                games.add(rs.getInt("gameID"));
+                                dates.add(rs.getString("date"));
+                                names.add(rs.getString("name"));
+                                break;
+                            case SELECT_CHESS_FIELDS:
+                                try {
+                                    setLoadedGamePiece(rs.getString("piece"), rs.getInt("x"), rs.getInt("y"));
+                                } catch (IOException | SQLException e) {
+                                    System.out.println(e);
+                                }
+                                break;
+                            case SELECT_MAX_GAME_ID:
+                                gameID = rs.getInt("MAX(gameID)");
+                                break;
+                            case SELECT_GAME_COLOR:
+                                ChessBoard.setCurrentColor(parseIntValue(rs.getInt("currentColor")));
+                                break;
                         }
                     }
-                    break;
-                case SELECT_GAMES:
-                    rs = statement.executeQuery(myQuery);
-                    while (rs.next()) {
-                        games.add(rs.getInt("gameID"));
-                        dates.add(rs.getString("date"));
-                        names.add(rs.getString("name"));
-                    }
-                    break;
-                case SELECT_CHESS_FIELDS:
-                    rs = statement.executeQuery(myQuery);
-                    while (rs.next()) {
-                        try {
-                            setLoadedGamePiece(rs.getString("piece"), rs.getInt("x"), rs.getInt("y"));
-                        } catch (IOException | SQLException e) {
-                            System.out.println(e);
-                        }
-                    }
-                    break;
-                case SELECT_MAX_GAME_ID:
-                    rs = statement.executeQuery(myQuery);
-                    while (rs.next()) {
-                        gameID = rs.getInt("MAX(gameID)");
-                    }
-                    break;
-                case SELECT_GAME_COLOR:
-//                    System.out.println(myQuery);
-                    rs = statement.executeQuery(myQuery);
-//                    ResultSetMetaData rsmd = rs.getMetaData();
-//                    String name = rsmd.getColumnName(1);
-//                    System.out.println(name);
-                    while (rs.next()) {
-                        ChessBoard.setCurrentColor(parseIntValue(rs.getInt("currentColor")));
-//                        System.out.println(rs.getInt("currentColor"));
-                    }
-                    break;
             }
         } catch (SQLException e) {
-            // if the error message is "out of memory", 
-            // it probably means no database file is found
             System.err.println(e.getMessage());
         } finally {
             try {
@@ -146,7 +113,6 @@ public class Database {
                     connection.close();
                 }
             } catch (SQLException e) {
-                // connection close failed.
                 System.err.println(e);
             }
         }
@@ -166,7 +132,6 @@ public class Database {
 
     private static void setLoadedGamePiece(String pieceID, int x, int y) throws IOException {
         if (pieceID != null) {
-//            System.out.println(x+" "+ y +" " +Integer.parseInt(pieceID));
             ChessBoard.setChessMatrixField(x, y, choosePiece(Integer.parseInt(pieceID)));
         }
     }
@@ -204,5 +169,20 @@ public class Database {
             case 13:
                 return new King(Color.WHITE, Images.getKING(Color.WHITE));
         }
+    }
+
+    private String readSqlFile() {
+        String data = "";
+        try {
+            File f = new File("db" + File.separator + "base.sql");
+            Scanner myReader = new Scanner(f);
+            while (myReader.hasNextLine()) {
+                data += myReader.nextLine() + "\n";
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred: " + e.toString());
+        }
+        return data;
     }
 }
