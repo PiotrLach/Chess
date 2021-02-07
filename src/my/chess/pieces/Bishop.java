@@ -13,20 +13,14 @@ import java.awt.Image;
  * @author Piotr Lach
  */
 public class Bishop extends ChessPiece {
-//    @Override
 
-    public Bishop(Color figureColor, Image img/*, int x, int y*/) {
-        super(PieceName.Bishop, figureColor, img/*, x, y*/);
+    public Bishop(Color figureColor, Image img) {
+        super(PieceName.Bishop, figureColor, img);
     }
 
     @Override
     public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
-//        System.out.println("X1: "+x1+
-//                   " Y1: "+y1+
-//                   " X2: "+x2+
-//                   " Y2: "+y2);
         boolean movement = Math.abs(x1 - x2) == Math.abs(y1 - y2);
-        //updateCoordinates(movement, x2, y2);
         return movement;
     }
 

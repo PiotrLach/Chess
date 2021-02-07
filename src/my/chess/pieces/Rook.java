@@ -14,20 +14,15 @@ import java.awt.Image;
  */
 public class Rook extends ChessPiece {
 
-    public Rook(Color figureColor, Image img/*, int x, int y*/) {
-        super(PieceName.Rook, figureColor, img/*, x, y*/);
+    public Rook(Color figureColor, Image img) {
+        super(PieceName.Rook, figureColor, img);
     }
 
     @Override
     public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
-//        System.out.println("X1: "+x1+
-//           " Y1: "+y1+
-//           " X2: "+x2+
-//           " Y2: "+y2);
         boolean movement = (Math.abs(x1 - x2) > 0 && Math.abs(y1 - y2) == 0)
                 || (Math.abs(x1 - x2) == 0 && Math.abs(y1 - y2) > 0);
 
-        //updateCoordinates(movement, x2, y2);
         return movement;
     }
 

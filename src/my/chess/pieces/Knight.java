@@ -12,17 +12,17 @@ import java.awt.Image;
  *
  * @author Piotr Lach
  */
-public class Knight extends ChessPiece{
+public class Knight extends ChessPiece {
 
-    public Knight(Color figureColor, Image img/*, int x, int y*/) {
-        super(PieceName.Knight, figureColor,img/*, x, y*/);
+    public Knight(Color figureColor, Image img) {
+        super(PieceName.Knight, figureColor, img);
     }
 
     @Override
     public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
-        boolean movement = (Math.abs(x1-x2)==2 && Math.abs(y1-y2)==1)
-                            || (Math.abs(x1-x2)==1 && Math.abs(y1-y2)==2);
-                return movement;
+        boolean movement = (Math.abs(x1 - x2) == 2 && Math.abs(y1 - y2) == 1)
+                || (Math.abs(x1 - x2) == 1 && Math.abs(y1 - y2) == 2);
+        return movement;
     }
-    
+
 }

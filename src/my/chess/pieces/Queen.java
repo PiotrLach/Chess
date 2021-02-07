@@ -14,8 +14,8 @@ import java.awt.Image;
  */
 public class Queen extends ChessPiece {
 
-    public Queen(Color figureColor, Image img/*, int x, int y*/) {
-        super(PieceName.Queen, figureColor, img/*, x, y*/);
+    public Queen(Color figureColor, Image img) {
+        super(PieceName.Queen, figureColor, img);
     }
 
     @Override
@@ -23,7 +23,6 @@ public class Queen extends ChessPiece {
         boolean movement = (Math.abs(x1 - x2) == Math.abs(y1 - y2))
                 || (Math.abs(x1 - x2) > 0 && Math.abs(y1 - y2) == 0)
                 || (Math.abs(x1 - x2) == 0 && Math.abs(y1 - y2) > 0);
-        //updateCoordinates(movement, x2, y2);
         return movement;
     }
 

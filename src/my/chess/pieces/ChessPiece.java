@@ -15,12 +15,10 @@ import java.awt.Image;
  */
 abstract public class ChessPiece {
 
-    public ChessPiece(PieceName pieceName, Color figureColor, Image img/*, int x, int y*/) {
+    public ChessPiece(PieceName pieceName, Color figureColor, Image img) {
         this.pieceName = pieceName;
         this.figureColor = figureColor;
         this.img = img;
-//        this.x=x;
-//        this.y=y;
     }
 
     public void drawImage(Graphics g, int drawX, int drawY, int width, int height) {
@@ -48,7 +46,6 @@ abstract public class ChessPiece {
     private static String message;
     protected String chessPieceName;
     protected Color figureColor;
-//    protected int x,y;    
     protected Image img;
     protected PieceName pieceName;
 }
