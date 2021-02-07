@@ -12,12 +12,10 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import my.chess.pieces.*;
-import my.chess.pieces.ChessPiece.PieceName;
 
 /**
  *
@@ -355,24 +353,20 @@ public class ChessBoard extends JPanel {
         super.paint(g);
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (chessMatrix[i][j].isHighlighted()) {
-                    chessMatrix[i][j].highlightChessField(g);
+                ChessField cf = chessMatrix[i][j];
+                if (cf.isHighlighted()) {
+                    cf.highlightChessField(g);
                 } else {
-                    chessMatrix[i][j].drawChessField(g, i, j);
+                    cf.drawChessField(g, i, j);
                 }
-                if (chessMatrix[i][j].getCurrentChessPiece() != null) {
-                    Double x = chessMatrix[i][j].getX();
-                    Double y = chessMatrix[i][j].getY();
-                    //                    Double width = chessMatrix[i][j].getWidth(); 
-                    //                    Double height = chessMatrix[i][j].getHeight();
-                    //                    chessMatrix[i][j].getCurrentChessPiece().drawPieceSymbol(g, x.intValue(),y.intValue());
-                    chessMatrix[i][j].getCurrentChessPiece().drawImage(g, x.intValue(), y.intValue(), diffHorizontal, diffVertical);
+                if (cf.getCurrentChessPiece() != null) {
+                    Double x = cf.getX();
+                    Double y = cf.getY();
+                    ChessPiece cp = cf.getCurrentChessPiece();
+                    cp.drawImage(g, x.intValue(), y.intValue(), diffHorizontal, diffVertical);
                 }
             }
         }
-//        if (highlightOnResize) {
-//            highlightAll(g);
-//        }
     }
 
     private ArrayList<Point> makePath(int x1, int y1, int x2, int y2) {

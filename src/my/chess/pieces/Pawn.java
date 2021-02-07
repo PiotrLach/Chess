@@ -18,11 +18,11 @@ public class Pawn extends ChessPiece {
 
     public Pawn(Color figureColor, Image img, PieceName p) {
         super(p, figureColor, img);
-        
+
         startingX = p == PieceName.Pawn1 ? 1 : 6;
-        
+
         boolean isOnBottomRow = startingX == 1;
-        
+
         leftBoundary = isOnBottomRow ? 0 : 7;
         rightBoundary = isOnBottomRow ? 7 : 0;
         topBoundary = isOnBottomRow ? 7 : 0;
@@ -32,7 +32,7 @@ public class Pawn extends ChessPiece {
         twoForwardMovements = isOnBottomRow ? 2 : -2;
     }
 
-    private void checkAvailableMovement(Movement m, ChessField c) {        
+    private void checkAvailableMovement(Movement m, ChessField c) {
         switch (m) {
             case STRAIGHT_AHEAD:
                 straightAheadIsNotOccupied = c.getCurrentChessPiece() == null;
@@ -84,7 +84,7 @@ public class Pawn extends ChessPiece {
     private boolean enPassant(int x1, int y1, int x2, int y2) {
         if ((x1 - x2) == (startingX == 1 ? -1 : 1) && Math.abs(y1 - y2) == 1) {
             System.out.println("---");
-                        System.out.format("%d %d %d %d", x1, y1, x2, y2);
+            System.out.format("%d %d %d %d", x1, y1, x2, y2);
             int temp = y1 - (y1 - y2);
             System.out.println(x1 + " " + temp);
             ChessField cf = ChessBoard.getChessMatrixField(x1, y1 - (y1 - y2));
@@ -106,9 +106,9 @@ public class Pawn extends ChessPiece {
         boolean availableMovements[] = {
             (isVertical && isNotHorizontal) && straightAheadIsNotOccupied,
             ((x1 == startingX && x2 - x1 == twoForwardMovements && isNotHorizontal) && twoFieldsAheadIsNotOccupied && straightAheadIsNotOccupied),
-            ((isVertical && y2 - y1 == diagonalLeftMovement) && diagonalLeftIsOccupied),          
+            ((isVertical && y2 - y1 == diagonalLeftMovement) && diagonalLeftIsOccupied),
             ((isVertical && y2 - y1 == diagonalRightMovement) && diagonalRightIsOccupied)
-        };        
+        };
         for (boolean b : availableMovements) {
             if (b) {
                 return true;
@@ -121,6 +121,7 @@ public class Pawn extends ChessPiece {
 //                || enPassant(x1, y1, x2, y2);
         return false;
     }
+
     public enum Movement {
         STRAIGHT_AHEAD,
         DIAGONAL_LEFT,
@@ -130,15 +131,14 @@ public class Pawn extends ChessPiece {
     private boolean diagonalLeftIsOccupied,
             diagonalRightIsOccupied,
             straightAheadIsNotOccupied,
-            twoFieldsAheadIsNotOccupied;        
-    private final int 
-            startingX,
-            leftBoundary,                                
-            rightBoundary,                
-            topBoundary,                
-            oneForwardMovement,                
-            diagonalLeftMovement,                
-            diagonalRightMovement,                
+            twoFieldsAheadIsNotOccupied;
+    private final int startingX,
+            leftBoundary,
+            rightBoundary,
+            topBoundary,
+            oneForwardMovement,
+            diagonalLeftMovement,
+            diagonalRightMovement,
             twoForwardMovements;
 
 }

@@ -29,8 +29,6 @@ public class ChessField extends Rectangle {
     }
 
     public void drawChessField(Graphics g, int row, int column) {
-        Color myWhite = new Color(255, 255, 204);
-        Color myBrown = new Color(153, 102, 0);
         if ((row % 2 == 1 && column % 2 == 0) || (row % 2 == 0 && column % 2 == 1)) {
             g.setColor(myWhite);
         } else {
@@ -59,7 +57,9 @@ public class ChessField extends Rectangle {
     public void setCurrentChessPiece(ChessPiece currentChessPiece) {
         this.currentChessPiece = currentChessPiece;
     }
-
+    private final Color
+            myWhite = new Color(255, 255, 204),
+            myBrown = new Color(153, 102, 0);
     @Override
     public String toString() {
         return "x: " + x + ", y: " + y + ", matrixCoordinateX: " + matrixCoordinateX

@@ -22,7 +22,7 @@ import my.chess.pieces.ChessPiece;
  *
  * @author Piotr Lach
  */
-public class SavesPanel extends JPanel { 
+public class SavesPanel extends JPanel {
 
     public SavesPanel() {
         setLayout(new GridLayout(0, 1, 0, 0));
@@ -68,20 +68,20 @@ public class SavesPanel extends JPanel {
         if (name != null) {
             StringBuilder insertFields = new StringBuilder();
             StringBuilder insertNewGame = new StringBuilder();
-            
+
             int cv = parseColorValue(ChessBoard.getCurrentColor());
             insertNewGame.append(String.format(insertGame, cv, date, name));
             getGameIDfromDB();
             Database.gameID++;
             HashMap<Color, Integer> points = ChessBoard.getstartingPoints();
-            
+
             String insertNewStartingPositions = "insert into startingPositions(gameID,position,color) VALUES"
                     + "(" + Database.gameID + "," + points.get(Color.BLACK) + "," + 0 + ");";
             insertNewStartingPositions += "insert into startingPositions(gameID,position,color) VALUES"
                     + "(" + Database.gameID + "," + points.get(Color.WHITE) + "," + 1 + ");";
-            
+
             insertNewGame.append(insertNewStartingPositions);
-            
+
             for (int x = 0; x < 8; x++) {
                 for (int y = 0; y < 8; y++) {
                     ChessField cf = ChessBoard.getChessMatrixField(x, y);
@@ -95,7 +95,7 @@ public class SavesPanel extends JPanel {
                     }
                 }
             }
-            insertNewGame.append(insertFields);            
+            insertNewGame.append(insertFields);
             Database.sqlConnection(insertNewGame.toString(), QueryType.OTHER);
             RadioButton rb = new RadioButton(Database.gameID, date, name);
             radioButtons.add(rb);
