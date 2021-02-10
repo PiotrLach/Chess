@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import my.chess.pieces.Bishop;
 import my.chess.pieces.ChessPiece;
-import my.chess.pieces.Images;
 import my.chess.pieces.King;
 import my.chess.pieces.Knight;
 import my.chess.pieces.Pawn;

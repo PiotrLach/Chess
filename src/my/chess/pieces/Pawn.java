@@ -6,7 +6,6 @@
 package my.chess.pieces;
 
 import java.awt.Color;
-import java.awt.Image;
 import my.chess.ChessField;
 import my.chess.ChessBoard;
 
