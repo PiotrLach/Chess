@@ -270,7 +270,7 @@ public class ChessBoard extends JPanel {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 ChessField cf = chessMatrix[i][j];
-                ChessPiece cp = cf.getCurrentChessPiece();
+                ChessPiece cp = cf.getCurrentChessPiece();                                
                 if (selectedChessPiece != null
                         && cf.contains(p)
                         && !cf.isHighlighted()
