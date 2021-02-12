@@ -22,56 +22,12 @@ public class Pawn extends ChessPiece {
 
         boolean isOnBottomRow = startingX == 1;
 
-        leftBoundary = isOnBottomRow ? 0 : 7;
-        rightBoundary = isOnBottomRow ? 7 : 0;
-        topBoundary = isOnBottomRow ? 7 : 0;
         oneForwardMovement = isOnBottomRow ? 1 : -1;
         diagonalLeftMovement = isOnBottomRow ? -1 : 1;
         diagonalRightMovement = isOnBottomRow ? 1 : -1;
         twoForwardMovements = isOnBottomRow ? 2 : -2;
     }
-
-    private void checkAvailableMovements(int type, ChessField c) {
-        boolean isNull = c.getCurrentChessPiece() == null;
-        boolean isFoe = !isNull && this.isFoe(c.getCurrentChessPiece());        
-        switch (type) {
-            case 0:
-                diagonalLeftIsOccupied = isFoe;
-                break;
-            case 1:
-                diagonalRightIsOccupied = isFoe;
-                break;
-            case 2:
-                straightAheadIsNotOccupied = isNull;
-                break;
-            case 3:
-                twoFieldsAheadIsNotOccupied = isNull;
-                break;
-        }
-    }
-
-    private void checkBoardConditions(int x, int y) {        
-        boolean constraints[] = { 
-            y != leftBoundary && x != topBoundary,
-            y != rightBoundary && x != topBoundary,
-            x != topBoundary,
-            x == startingX
-        };
-        int coordinates[] = {
-            (x + oneForwardMovement) << 4 | (y + diagonalLeftMovement),
-            (x + oneForwardMovement) << 4 | (y + diagonalRightMovement),
-            (x + oneForwardMovement) << 4 | (y),
-            (x + twoForwardMovements) << 4 | (y)
-        };
-        for (int type = 0; type < 4; type++) { 
-            if (constraints[type]) {                
-                x = coordinates[type] >> 4 & MASK;
-                y = coordinates[type] & MASK;
-                checkAvailableMovements(type, ChessBoard.getChessMatrixField(x, y));
-            }
-        }
-    }
-
+    
     private boolean enPassant(int x1, int y1, int x2, int y2) {
         if ((x1 - x2) == (startingX == 1 ? -1 : 1) && Math.abs(y1 - y2) == 1) {
             System.out.println("---");
@@ -89,39 +45,40 @@ public class Pawn extends ChessPiece {
         return false;
     }
 
+    private boolean check(String type, int x, int y) {
+        ChessField cf = ChessBoard.getChessMatrixField(x, y);
+        boolean isNull = cf.getCurrentChessPiece() == null;
+        boolean isFoe = !isNull && this.isFoe(cf.getCurrentChessPiece());
+        switch(type) {
+            default:
+                return isNull;
+            case FOE:                            
+                return isFoe;            
+        }
+    }
     @Override
     public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
-        checkBoardConditions(x1, y1);
         boolean isVertical = x2 - x1 == oneForwardMovement;
-        boolean isNotHorizontal = Math.abs(y1 - y2) == 0;
+        boolean isNotHorizontal = Math.abs(y1 - y2) == 0;        
+        boolean isNullAhead = check(NULL, x2, y2);
+        boolean isFoeDiagonal = check(FOE, x2, y2);
         boolean availableMovements[] = {
-            (isVertical && isNotHorizontal) && straightAheadIsNotOccupied,
-            ((x1 == startingX && x2 - x1 == twoForwardMovements && isNotHorizontal) && twoFieldsAheadIsNotOccupied && straightAheadIsNotOccupied),
-            ((isVertical && y2 - y1 == diagonalLeftMovement) && diagonalLeftIsOccupied),
-            ((isVertical && y2 - y1 == diagonalRightMovement) && diagonalRightIsOccupied)
-        };
+            isVertical && isNotHorizontal && isNullAhead,
+            x1 == startingX && x2 - x1 == twoForwardMovements && isNotHorizontal && check(NULL, x1 + oneForwardMovement, y1) && isNullAhead,
+            isVertical && y2 - y1 == diagonalLeftMovement && isFoeDiagonal,
+            isVertical && y2 - y1 == diagonalRightMovement && isFoeDiagonal
+        };        
         for (boolean b : availableMovements) {
             if (b) {
                 return true;
             }
         }
-//        boolean movement = ((x2 - x1 == oneForwardMovement && Math.abs(y1 - y2) == 0) && straightAheadIsNotOccupied)
-//                || ((x1 == startingX && x2 - x1 == twoForwardMovements && Math.abs(y1 - y2) == 0) && twoFieldsAheadIsNotOccupied && straightAheadIsNotOccupied)
-//                || ((x2 - x1 == oneForwardMovement && y2 - y1 == diagonalLeftMovement) && diagonalLeftIsOccupied)
-//                || ((x2 - x1 == oneForwardMovement && y2 - y1 == diagonalRightMovement) && diagonalRightIsOccupied);
-//                || enPassant(x1, y1, x2, y2);
         return false;
     }
 
-    private final int MASK = 0xF;
-    private boolean diagonalLeftIsOccupied,
-            diagonalRightIsOccupied,
-            straightAheadIsNotOccupied,
-            twoFieldsAheadIsNotOccupied;
+    private final String FOE = "FOE";
+    private final String NULL = "NULL";
     private final int startingX,
-            leftBoundary,
-            rightBoundary,
-            topBoundary,
             oneForwardMovement,
             diagonalLeftMovement,
             diagonalRightMovement,

@@ -140,7 +140,7 @@ public class ChessBoard extends JPanel {
         int kingX = 0, kingY = 0;
         try {
             Point p = findKing();
-                        kingX = (int) p.getX();
+            kingX = (int) p.getX();
             kingY = (int) p.getY();
         } catch (Exception e) {
             System.out.println(e);
@@ -197,7 +197,7 @@ public class ChessBoard extends JPanel {
 
     private ArrayList<Point> mate(int x, int y) {
         ArrayList<Point> rescue = new ArrayList();
-                for (int i = x - 1; i <= x + 1; i++) {
+        for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
                 if ((i <= 7 && i >= 0) && (j <= 7 && j >= 0)) {
                     ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
@@ -242,10 +242,10 @@ public class ChessBoard extends JPanel {
             int sum = 0;
             try {
                 Point p = findKing();
-                                int x = (int) p.getX(), y = (int) p.getY();
+                int x = (int) p.getX(), y = (int) p.getY();
                 sum += !check(x, y, false) ? 0 : 1;
             } catch (Exception e) {
-                            }
+            }
             if (sum > 0) {
                 JOptionPane.showMessageDialog(this, "Ruch niedozwolony: skutkowałby szachem króla!\n");
             }
@@ -256,21 +256,21 @@ public class ChessBoard extends JPanel {
             return false;
         }
     }
-    private boolean boardPieceMovementConditions(ChessField cf, ChessPiece cp, Point p, int i, int j) {
-        final boolean conditions[] = {
 
-        };
+    private boolean boardPieceMovementConditions(ChessField cf, ChessPiece cp, Point p, int i, int j) {
+        final boolean conditions[] = {};
         for (boolean condition : conditions) {
-            
-        }  
+
+        }
         return true;
     }
+
     private void moveBoardPiece(Point p) {
         loop:
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 ChessField cf = chessMatrix[i][j];
-                ChessPiece cp = cf.getCurrentChessPiece();                                
+                ChessPiece cp = cf.getCurrentChessPiece();
                 if (selectedChessPiece != null
                         && cf.contains(p)
                         && !cf.isHighlighted()
@@ -279,8 +279,7 @@ public class ChessBoard extends JPanel {
                         && pathIsFree(sourceI, sourceJ, i, j)
                         && !selfMadeCheck(i, j)
                         && (!check || (check && !(selectedChessPiece instanceof King) && path.contains(new Point(i, j)))
-                        || (check && selectedChessPiece instanceof King && kingPath.contains(new Point(i, j))))
-                        ) {
+                        || (check && selectedChessPiece instanceof King && kingPath.contains(new Point(i, j))))) {
                     check = false;
                     System.out.format("%d %d\n", i, j);
                     cf.setCurrentChessPiece(selectedChessPiece);
@@ -293,7 +292,9 @@ public class ChessBoard extends JPanel {
                     repaint();
                     check();
                     break loop;
-                } else if (selectedChessPiece != null && chessMatrix[i][j].contains(p) && !selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)) {
+                } else if (selectedChessPiece != null
+                        && chessMatrix[i][j].contains(p)
+                        && !selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)) {
                     JOptionPane.showMessageDialog(this, "Ruch niedozwolony: warunek ruchu nie spełniony!\n");
                     break loop;
                 }
