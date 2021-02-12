@@ -20,11 +20,9 @@ public class Pawn extends ChessPiece {
 
         startingX = p == PieceName.Pawn1 ? 1 : 6;
 
-        boolean isOnBottomRow = startingX == 1;
+        isOnBottomRow = startingX == 1;
 
         oneForwardMovement = isOnBottomRow ? 1 : -1;
-        diagonalLeftMovement = isOnBottomRow ? -1 : 1;
-        diagonalRightMovement = isOnBottomRow ? 1 : -1;
         twoForwardMovements = isOnBottomRow ? 2 : -2;
     }
     
@@ -58,15 +56,19 @@ public class Pawn extends ChessPiece {
     }
     @Override
     public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
-        boolean isVertical = x2 - x1 == oneForwardMovement;
-        boolean isNotHorizontal = Math.abs(y1 - y2) == 0;        
+        ChessField cf = ChessBoard.getChessMatrixField(x2, y2);
+        
+        boolean isVertical =  x2 - x1 == oneForwardMovement; // isOnBottomRow ? x2 > x1 : x2 < x1; 
+        boolean isHorizontal = Math.abs(y1 - y2) > 0 && Math.abs(y1 - y2) < 2;           
+//        boolean isNullAhead = cf.getCurrentChessPiece() == null;
+//        boolean isFoeDiagonal = !isNullAhead && this.isFoe(cf.getCurrentChessPiece());
         boolean isNullAhead = check(NULL, x2, y2);
         boolean isFoeDiagonal = check(FOE, x2, y2);
+
         boolean availableMovements[] = {
-            isVertical && isNotHorizontal && isNullAhead,
-            x1 == startingX && x2 - x1 == twoForwardMovements && isNotHorizontal && check(NULL, x1 + oneForwardMovement, y1) && isNullAhead,
-            isVertical && y2 - y1 == diagonalLeftMovement && isFoeDiagonal,
-            isVertical && y2 - y1 == diagonalRightMovement && isFoeDiagonal
+            isVertical && !isHorizontal && isNullAhead,
+            x1 == startingX && x2 - x1 == twoForwardMovements && !isHorizontal && /*check(NULL, x1 + oneForwardMovement, y1) &&*/ isNullAhead,
+            isVertical && isHorizontal && isFoeDiagonal
         };        
         for (boolean b : availableMovements) {
             if (b) {
@@ -75,13 +77,11 @@ public class Pawn extends ChessPiece {
         }
         return false;
     }
-
+    private final boolean isOnBottomRow;
     private final String FOE = "FOE";
     private final String NULL = "NULL";
     private final int startingX,
             oneForwardMovement,
-            diagonalLeftMovement,
-            diagonalRightMovement,
             twoForwardMovements;
 
 }
