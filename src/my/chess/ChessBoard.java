@@ -70,7 +70,7 @@ public class ChessBoard extends JPanel {
         int x = 0, y = 0;
         for (int i = beginHeight; i > endHeight; i -= diffVertical) {
             for (int j = beginWidth; j < endWidth; j += diffHorizontal) {
-                ChessField c = new ChessField(j, i, 80, 80, x, y);
+                ChessField c = new ChessField(j, i, 80, 80);
                 chessMatrix[x][y] = c;
                 y++;
             }

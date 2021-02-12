@@ -17,15 +17,10 @@ import java.awt.Rectangle;
 public class ChessField extends Rectangle {
 
     private ChessPiece currentChessPiece;
-    private final int matrixCoordinateX;
-    private final int matrixCoordinateY;
     private boolean highlighted;
 
-    public ChessField(int x, int y, int width, int height, int matrixCoordinateX,
-            int matrixCoordinateY) {
-        super(x, y, width, height);
-        this.matrixCoordinateX = matrixCoordinateX;
-        this.matrixCoordinateY = matrixCoordinateY;
+    public ChessField(int x, int y, int width, int height) {
+        super(x, y, width, height);       
     }
 
     public void drawChessField(Graphics g, int row, int column) {
@@ -57,13 +52,7 @@ public class ChessField extends Rectangle {
     public void setCurrentChessPiece(ChessPiece currentChessPiece) {
         this.currentChessPiece = currentChessPiece;
     }
-    private final Color
-            myWhite = new Color(255, 255, 204),
+    private final Color myWhite = new Color(255, 255, 204),
             myBrown = new Color(153, 102, 0);
-    @Override
-    public String toString() {
-        return "x: " + x + ", y: " + y + ", matrixCoordinateX: " + matrixCoordinateX
-                + ", matrixCoordinateY: " + matrixCoordinateY;
-    }
 
 }
