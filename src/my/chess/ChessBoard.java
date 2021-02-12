@@ -281,7 +281,7 @@ public class ChessBoard extends JPanel {
                         && (!check || (check && !(selectedChessPiece instanceof King) && path.contains(new Point(i, j)))
                         || (check && selectedChessPiece instanceof King && kingPath.contains(new Point(i, j))))) {
                     check = false;
-                    System.out.format("%d %d\n", i, j);
+//                    System.out.format("%d %d\n", i, j);
                     cf.setCurrentChessPiece(selectedChessPiece);
                     movementLog = new Log(currentColor, sourceI, sourceJ, i, j, selectedChessPiece.getPieceName());
                     selectedChessPiece = null;

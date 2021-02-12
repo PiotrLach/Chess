@@ -21,9 +21,6 @@ public class Pawn extends ChessPiece {
         startingX = p == PieceName.Pawn1 ? 1 : 6;
 
         isOnBottomRow = startingX == 1;
-
-        oneForwardMovement = isOnBottomRow ? 1 : -1;
-        twoForwardMovements = isOnBottomRow ? 2 : -2;
     }
     
     private boolean enPassant(int x1, int y1, int x2, int y2) {
@@ -47,17 +44,20 @@ public class Pawn extends ChessPiece {
     public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
         ChessField cf = ChessBoard.getChessMatrixField(x2, y2);
         
-        boolean isVertical = (isOnBottomRow ? x2 > x1 : x2 < x1) && Math.abs(x1 - x2) < 2; // x2 - x1 == oneForwardMovement;  
-        boolean isHorizontal = Math.abs(y1 - y2) == 1;//> 0 && Math.abs(y1 - y2) < 2;           
-        boolean isNullAhead = cf.getCurrentChessPiece() == null;
-        boolean isFoeDiagonal = !isNullAhead && this.isFoe(cf.getCurrentChessPiece());
-
+        boolean bOneForwardMovement = Math.abs(x1 - x2) == 1, 
+                bTwoForwardMovements = Math.abs(x1 - x2) == 2,
+                isVertical = (isOnBottomRow ? x2 > x1 : x2 < x1),
+                isHorizontal = Math.abs(y1 - y2) == 1,           
+                isNotHorizontal = Math.abs(y1 - y2) == 0,           
+                isNullAhead = cf.getCurrentChessPiece() == null,
+                isFoeDiagonal = !isNullAhead && this.isFoe(cf.getCurrentChessPiece());
+        
         boolean availableMovements[] = {
-            isVertical && !isHorizontal && isNullAhead,
-            x1 == startingX && x2 - x1 == twoForwardMovements && !isHorizontal && isNullAhead,
-            isVertical && isHorizontal && isFoeDiagonal
+            isVertical && bOneForwardMovement && isNotHorizontal && isNullAhead,
+            isVertical && x1 == startingX && bTwoForwardMovements && isNotHorizontal && isNullAhead,
+            isVertical && bOneForwardMovement && isHorizontal && isFoeDiagonal
         };        
-        for (boolean b : availableMovements) {
+        for (boolean b : availableMovements) {            
             if (b) {
                 return true;
             }
@@ -65,10 +65,6 @@ public class Pawn extends ChessPiece {
         return false;
     }
     private final boolean isOnBottomRow;
-    private final String FOE = "FOE";
-    private final String NULL = "NULL";
-    private final int startingX,
-            oneForwardMovement,
-            twoForwardMovements;
+    private final int startingX;
 
 }
