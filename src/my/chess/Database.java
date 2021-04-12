@@ -96,7 +96,7 @@ public class Database {
                                 }
                                 break;
                             case SELECT_MAX_GAME_ID:
-                                gameID = rs.getInt("MAX(gameID)");
+                                gameID = rs.getInt("MAX(gameID)");                                
                                 break;
                             case SELECT_GAME_COLOR:
                                 ChessBoard.setCurrentColor(parseIntValue(rs.getInt("currentColor")));

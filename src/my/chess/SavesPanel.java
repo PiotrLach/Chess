@@ -32,7 +32,7 @@ public class SavesPanel extends JPanel {
     private void initUI() {
         radioButtons = new ArrayList();
         buttonGroup = new ButtonGroup();
-        final String selectGames = "SELECT gameID,name,date FROM games;";
+        final String selectGames = "SELECT gameID, name, date FROM games;";
         Database.sqlConnection(selectGames, QueryType.SELECT_GAMES);
         for (Integer i = 0; i < Database.games.size(); i++) {
             radioButtons.add(new RadioButton(Database.games.get(i), Database.dates.get(i), Database.names.get(i)));
@@ -46,10 +46,10 @@ public class SavesPanel extends JPanel {
             Integer i = getSelectedGameId();
             ChessBoard.clearBoard();
             getGameColorFromDB(i);
-            String selectChessFields = "SELECT x, y, piece FROM chessFields WHERE game=" + i + ";";
-            String selectStartingPositions = "select color,position from startingpositions where gameid = " + i + ";";
-            Database.sqlConnection(selectChessFields, QueryType.SELECT_CHESS_FIELDS);
-            Database.sqlConnection(selectStartingPositions, QueryType.SELECT_POSITIONS);
+            final String selectChessFields = "SELECT x, y, piece FROM chessFields WHERE game = %d;";
+            final String selectStartingPositions = "SELECT color, position FROM startingpositions WHERE gameid = %d;";
+            Database.sqlConnection(String.format(selectChessFields, i), QueryType.SELECT_CHESS_FIELDS);
+            Database.sqlConnection(String.format(selectStartingPositions, i), QueryType.SELECT_POSITIONS);
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -204,8 +204,6 @@ public class SavesPanel extends JPanel {
 
         public RadioButton(int gameID, String date, String name) {
             this.gameID = gameID;
-            this.date = date;
-            this.name = name;
             setText(name + ", " + date);
         }
 
@@ -213,16 +211,14 @@ public class SavesPanel extends JPanel {
             return gameID;
         }
 
-        private int gameID;
-        private String date;
-        private String name;
+        private final int gameID;
     }
     private ArrayList<RadioButton> radioButtons;
     private ButtonGroup buttonGroup;
     private final String selectPiece = "(SELECT pieceID FROM chessPieces WHERE pieceName = '%s' AND pieceColor = %d)",
             updateColor = "UPDATE games SET currentColor = %d WHERE gameID = %d;",
             updatePieceValue = "UPDATE chessFields SET piece = %s WHERE x = %d AND y = %d AND game = %d;",
-            insertChessFields = "INSERT INTO chessFields(x,y,piece,game) VALUES (%d, %d, %s, %d);",
+            insertChessFields = "INSERT INTO chessFields(x, y, piece,game) VALUES (%d, %d, %s, %d);",
             insertGame = "INSERT INTO games(currentColor,date,name) VALUES(%d, '%s', '%s');";
 
 }
