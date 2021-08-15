@@ -5,6 +5,13 @@
  */
 package my.chess;
 
+import my.chess.pieces.Rook;
+import my.chess.pieces.Knight;
+import my.chess.pieces.King;
+import my.chess.pieces.ChessPiece;
+import my.chess.pieces.Queen;
+import my.chess.pieces.Bishop;
+import my.chess.pieces.Pawn;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -15,7 +22,6 @@ import java.util.HashMap;
 import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import my.chess.pieces.*;
 
 /**
  *

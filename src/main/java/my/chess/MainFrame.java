@@ -39,7 +39,6 @@ public class MainFrame extends javax.swing.JFrame {
         gameStartButton = new javax.swing.JButton();
         gameManageSavesButton = new javax.swing.JButton();
         gameExitButton = new javax.swing.JButton();
-        mainChessBoard = new my.chess.ChessBoard();
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         manageSavesLoad = new javax.swing.JButton();
@@ -48,6 +47,7 @@ public class MainFrame extends javax.swing.JFrame {
         manageSavesNewSave = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         savesPanel1 = new my.chess.SavesPanel();
+        mainChessBoard = new my.chess.ChessBoard();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 640));
@@ -56,6 +56,8 @@ public class MainFrame extends javax.swing.JFrame {
                 formComponentResized(evt);
             }
         });
+
+        myTabbedPane.setName(""); // NOI18N
 
         gameStartButton.setText("Nowa gra");
         gameStartButton.addActionListener(new java.awt.event.ActionListener() {
@@ -84,12 +86,12 @@ public class MainFrame extends javax.swing.JFrame {
             mainMenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainMenuPanelLayout.createSequentialGroup()
                 .addGap(428, 428, 428)
-                .addGroup(mainMenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(gameManageSavesButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(mainMenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(gameStartButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(gameExitButton, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)))
-                .addContainerGap(341, Short.MAX_VALUE))
+                .addGroup(mainMenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(gameStartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(mainMenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(gameManageSavesButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(gameExitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(365, Short.MAX_VALUE))
         );
         mainMenuPanelLayout.setVerticalGroup(
             mainMenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -104,26 +106,6 @@ public class MainFrame extends javax.swing.JFrame {
         );
 
         myTabbedPane.addTab("Menu główne", mainMenuPanel);
-
-        mainChessBoard.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        mainChessBoard.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                mainChessBoardMouseClicked(evt);
-            }
-        });
-
-        javax.swing.GroupLayout mainChessBoardLayout = new javax.swing.GroupLayout(mainChessBoard);
-        mainChessBoard.setLayout(mainChessBoardLayout);
-        mainChessBoardLayout.setHorizontalGroup(
-            mainChessBoardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 990, Short.MAX_VALUE)
-        );
-        mainChessBoardLayout.setVerticalGroup(
-            mainChessBoardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 717, Short.MAX_VALUE)
-        );
-
-        myTabbedPane.addTab("Gra", mainChessBoard);
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
@@ -171,14 +153,30 @@ public class MainFrame extends javax.swing.JFrame {
 
         myTabbedPane.addTab("Save'y", jPanel2);
 
+        mainChessBoard.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mainChessBoardMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout mainChessBoardLayout = new javax.swing.GroupLayout(mainChessBoard);
+        mainChessBoard.setLayout(mainChessBoardLayout);
+        mainChessBoardLayout.setHorizontalGroup(
+            mainChessBoardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1016, Short.MAX_VALUE)
+        );
+        mainChessBoardLayout.setVerticalGroup(
+            mainChessBoardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 719, Short.MAX_VALUE)
+        );
+
+        myTabbedPane.addTab("Gra", mainChessBoard);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(myTabbedPane)
-                .addContainerGap())
+            .addComponent(myTabbedPane)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -197,10 +195,10 @@ public class MainFrame extends javax.swing.JFrame {
     private void gameStartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameStartButtonActionPerformed
         try {
             mainChessBoard.setNewGame();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        myTabbedPane.setSelectedIndex(1);
+        myTabbedPane.setSelectedIndex(2);
     }//GEN-LAST:event_gameStartButtonActionPerformed
 
     private void gameExitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameExitButtonActionPerformed
@@ -208,7 +206,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_gameExitButtonActionPerformed
 
     private void gameManageSavesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameManageSavesButtonActionPerformed
-        myTabbedPane.setSelectedIndex(2);
+        myTabbedPane.setSelectedIndex(1);
     }//GEN-LAST:event_gameManageSavesButtonActionPerformed
 
     private void manageSavesLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesLoadActionPerformed
@@ -227,7 +225,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void manageSavesNewSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesNewSaveActionPerformed
         savesPanel1.saveNewGame();
 //        savesPanel1.restartUI();
-//        myTabbedPane.setSelectedIndex(2);
+        myTabbedPane.setSelectedIndex(2);
     }//GEN-LAST:event_manageSavesNewSaveActionPerformed
 
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
