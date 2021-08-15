@@ -23,6 +23,12 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
         initComponents();
+        var classLoader = getClass().getClassLoader();
+        try {
+            Images.loadImages(classLoader);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -259,12 +265,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-        try {
-            Images.loadImages();
-        } catch (IOException e) {
-            System.out.println(e.toString());
-        }
-        /* Create and display the form */
+        /* Create and display the form */                
         java.awt.EventQueue.invokeLater(() -> {
             new MainFrame().setVisible(true);
         });

@@ -9,71 +9,97 @@ import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 /**
  *
- * @author Edward Cullen
+ * @author Piotr Lach
  */
 public class Images {
 
-    public static void loadImages() throws IOException {
-        PAWN_BLACK = ImageIO.read(new File("res/black/pawn.png"));
-        PAWN_WHITE = ImageIO.read(new File("res/white/pawn.png"));
-        ROOK_BLACK = ImageIO.read(new File("res/black/rook.png"));
-        ROOK_WHITE = ImageIO.read(new File("res/white/rook.png"));
-        BISHOP_BLACK = ImageIO.read(new File("res/black/bishop.png"));
-        BISHOP_WHITE = ImageIO.read(new File("res/white/bishop.png"));
-        KNIGHT_BLACK = ImageIO.read(new File("res/black/knight.png"));
-        KNIGHT_WHITE = ImageIO.read(new File("res/white/knight.png"));
-        QUEEN_BLACK = ImageIO.read(new File("res/black/queen.png"));
-        QUEEN_WHITE = ImageIO.read(new File("res/white/queen.png"));
-        KING_BLACK = ImageIO.read(new File("res/black/king.png"));
-        KING_WHITE = ImageIO.read(new File("res/white/king.png"));
-    }
+//    private Images() {
+//        try {
+//            loadImages();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//    }
+//    
+//    private static Images images = new Images();   
 
-    public static Image getPAWN(Color c) {
-        if (c == Color.BLACK) {
+    
+    private static InputStream getResource(String fileName, ClassLoader classLoader) throws Exception {
+        // The class loader that loaded the class        
+        var inputStream = classLoader.getResourceAsStream(fileName);
+
+        // the stream holding the file content
+        if (inputStream == null) {
+            throw new Exception("file not found! " + fileName);
+        } else {
+            return inputStream;
+        }
+    }
+    
+    public static void loadImages(ClassLoader classLoader) throws Exception {
+        PAWN_BLACK = ImageIO.read(getResource("black/pawn.png", classLoader));
+        PAWN_WHITE = ImageIO.read(getResource("white/pawn.png", classLoader));
+        ROOK_BLACK = ImageIO.read(getResource("black/rook.png", classLoader));
+        ROOK_WHITE = ImageIO.read(getResource("white/rook.png", classLoader));
+        BISHOP_BLACK = ImageIO.read(getResource("black/bishop.png", classLoader));
+        BISHOP_WHITE = ImageIO.read(getResource("white/bishop.png", classLoader));
+        KNIGHT_BLACK = ImageIO.read(getResource("black/knight.png", classLoader));
+        KNIGHT_WHITE = ImageIO.read(getResource("white/knight.png", classLoader));
+        QUEEN_BLACK = ImageIO.read(getResource("black/queen.png", classLoader));
+        QUEEN_WHITE = ImageIO.read(getResource("white/queen.png", classLoader));
+        KING_BLACK = ImageIO.read(getResource("black/king.png", classLoader));
+        KING_WHITE = ImageIO.read(getResource("white/king.png", classLoader));
+    }   
+
+    public static Image getPAWN(Color color) {
+        if (color ==  Color.BLACK) {
             return PAWN_BLACK;
         } else {
             return PAWN_WHITE;
         }
     }
 
-    public static Image getROOK(Color c) {
-        if (c == Color.BLACK) {
+    public static Image getROOK(Color color) {
+        if (color ==  Color.BLACK) {
             return ROOK_BLACK;
         } else {
             return ROOK_WHITE;
         }
     }
 
-    public static Image getBISHOP(Color c) {
-        if (c == Color.BLACK) {
+    public static Image getBISHOP(Color color) {
+        if (color ==  Color.BLACK) {
             return BISHOP_BLACK;
         } else {
             return BISHOP_WHITE;
         }
     }
 
-    public static Image getKNIGHT(Color c) {
-        if (c == Color.BLACK) {
+    public static Image getKNIGHT(Color color) {
+        if (color ==  Color.BLACK) {
             return KNIGHT_BLACK;
         } else {
             return KNIGHT_WHITE;
         }
     }
 
-    public static Image getQUEEN(Color c) {
-        if (c == Color.BLACK) {
+    public static Image getQUEEN(Color color) {
+        if (color ==  Color.BLACK) {
             return QUEEN_BLACK;
         } else {
             return QUEEN_WHITE;
         }
     }
 
-    public static Image getKING(Color c) {
-        if (c == Color.BLACK) {
+    public static Image getKING(Color color) {
+        if (color ==  Color.BLACK) {
             return KING_BLACK;
         } else {
             return KING_WHITE;
