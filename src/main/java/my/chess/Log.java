@@ -6,7 +6,7 @@
 package my.chess;
 
 import java.awt.Color;
-import my.chess.pieces.ChessPiece.PieceName;
+import my.chess.pieces.Piece.PieceName;
 
 /**
  *

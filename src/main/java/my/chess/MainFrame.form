@@ -201,7 +201,7 @@
             </Container>
           </SubComponents>
         </Container>
-        <Container class="my.chess.ChessBoard" name="mainChessBoard">
+        <Container class="my.chess.Board" name="mainChessBoard">
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="mainChessBoardMouseClicked"/>
           </Events>

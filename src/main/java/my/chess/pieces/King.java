@@ -12,7 +12,7 @@ import java.awt.Image;
  *
  * @author Piotr Lach
  */
-public class King extends ChessPiece {
+public class King extends Piece {
 
     public King(Color figureColor) {
         super(PieceName.King, figureColor, Images.getKING(figureColor));

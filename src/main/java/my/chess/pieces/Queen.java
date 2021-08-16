@@ -11,7 +11,7 @@ import java.awt.Color;
  *
  * @author Piotr Lach
  */
-public class Queen extends ChessPiece {
+public class Queen extends Piece {
 
     public Queen(Color figureColor) {        
         super(PieceName.Queen, figureColor, Images.getQUEEN(figureColor));

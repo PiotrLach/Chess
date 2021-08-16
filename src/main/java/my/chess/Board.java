@@ -8,7 +8,7 @@ package my.chess;
 import my.chess.pieces.Rook;
 import my.chess.pieces.Knight;
 import my.chess.pieces.King;
-import my.chess.pieces.ChessPiece;
+import my.chess.pieces.Piece;
 import my.chess.pieces.Queen;
 import my.chess.pieces.Bishop;
 import my.chess.pieces.Pawn;
@@ -27,9 +27,9 @@ import javax.swing.JPanel;
  *
  * @author Piotr Lach
  */
-public class ChessBoard extends JPanel {
+public class Board extends JPanel {
 
-    public ChessBoard() {
+    public Board() {
         beginHeight = 640;
         endHeight = 0;
         beginWidth = 0;
@@ -76,8 +76,8 @@ public class ChessBoard extends JPanel {
         int x = 0, y = 0;
         for (int i = beginHeight; i > endHeight; i -= diffVertical) {
             for (int j = beginWidth; j < endWidth; j += diffHorizontal) {
-                ChessField c = new ChessField(j, i, 80, 80);
-                chessMatrix[x][y] = c;
+                Square square = new Square(j, i, 80, 80);
+                chessMatrix[x][y] = square;
                 y++;
             }
             y = 0;
@@ -88,39 +88,39 @@ public class ChessBoard extends JPanel {
         }
     }
 
-    public void selectAndMove(MouseEvent evt) {
-        if (evt.getButton() == MouseEvent.BUTTON3) {
-            Point p = evt.getPoint();
-            chooseBoardPiece(p);
-        } else if (evt.getButton() == MouseEvent.BUTTON1) {
-            Point p = evt.getPoint();
-            moveBoardPiece(p);
+    public void selectAndMove(MouseEvent mouseEvent) {
+        if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
+            Point point = mouseEvent.getPoint();
+            choosePiece(point);
+        } else if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
+            Point point = mouseEvent.getPoint();
+            movePiece(point);
         }
     }
 
-    private void chooseBoardPiece(Point p) {
+    private void choosePiece(Point p) {
         loop:
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                ChessField cf = chessMatrix[i][j];
-                ChessPiece cp = cf.getCurrentChessPiece();
+                Square square = chessMatrix[i][j];
+                Piece piece = square.getPiece();
                 if (!mate
-                        && cf.contains(p)
-                        && !cf.isHighlighted()
-                        && cp != null
-                        && currentColor == cp.getFigureColor()
+                        && square.contains(p)
+                        && !square.isHighlighted()
+                        && piece != null
+                        && currentColor == piece.getFigureColor()
                         && (!check
                         || (check && !piecesToBlockCheckUnavailable)
-                        || (check && cp instanceof King && piecesToBlockCheckUnavailable))) {
+                        || (check && piece instanceof King && piecesToBlockCheckUnavailable))) {
                     chessMatrix[sourceI][sourceJ].setHighlighted(false);
-                    cf.setHighlighted(true);
-                    selectedChessPiece = cp;
+                    square.setHighlighted(true);
+                    selectedChessPiece = piece;
                     sourceI = i;
                     sourceJ = j;
                     repaint();
                     break loop;
-                } else if (cf.contains(p) && cp != null
-                        && currentColor != cp.getFigureColor()) {
+                } else if (square.contains(p) && piece != null
+                        && currentColor != piece.getFigureColor()) {
                     String color = currentColor == Color.WHITE ? "białych" : "czarnych";
                     JOptionPane.showMessageDialog(this, "Teraz ruch " + color + "!");
                     break loop;
@@ -132,7 +132,7 @@ public class ChessBoard extends JPanel {
     private Point findKing() throws Exception {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
+                Piece cp = chessMatrix[i][j].getPiece();
                 if (cp instanceof King && cp.getFigureColor() == currentColor) {
                     Point kingCoordinates = new Point(i, j);
                     return kingCoordinates;
@@ -145,9 +145,9 @@ public class ChessBoard extends JPanel {
     private void check() {
         int kingX = 0, kingY = 0;
         try {
-            Point p = findKing();
-            kingX = (int) p.getX();
-            kingY = (int) p.getY();
+            Point point = findKing();
+            kingX = (int) point.getX();
+            kingY = (int) point.getY();
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -168,14 +168,14 @@ public class ChessBoard extends JPanel {
         boolean isKnight;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                ChessField cf = chessMatrix[i][j];
-                ChessPiece cp = cf.getCurrentChessPiece();                
+                Square square = chessMatrix[i][j];
+                Piece piece = square.getPiece();                
                 if (i != kingX && j != kingY) {                    
-                    if (cp != null
-                            && cp.getFigureColor() != currentColor
-                            && cp.movementConditionFullfilled(i, j, kingX, kingY)
+                    if (piece != null
+                            && piece.getFigureColor() != currentColor
+                            && piece.movementConditionFullfilled(i, j, kingX, kingY)
 //                            && pathIsFree(i, j, kingX, kingY) ) 
-                            && (isKnight = cp instanceof Knight
+                            && (isKnight = piece instanceof Knight
                             || pathIsFree(i, j, kingX, kingY))) 
                     { // ???                        
                         if (!isKnight && separate) {
@@ -210,7 +210,7 @@ public class ChessBoard extends JPanel {
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
                 if ((i <= 7 && i >= 0) && (j <= 7 && j >= 0)) {
-                    ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
+                    Piece cp = chessMatrix[i][j].getPiece();
                     if (cp == null || cp.getFigureColor() != currentColor) {
                         System.out.println(i + " " + j);
                         if (!check(i, j, false)) {
@@ -228,12 +228,12 @@ public class ChessBoard extends JPanel {
             int x = (int) p.getX(), y = (int) p.getY();
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
-                    ChessField cf = chessMatrix[i][j];
-                    ChessPiece cp = cf.getCurrentChessPiece();
-                    if (cp != null
-                            && !(cp instanceof King)
-                            && cp.getFigureColor() == currentColor
-                            && cp.movementConditionFullfilled(i, j, x, y)
+                    Square square = chessMatrix[i][j];
+                    Piece piece = square.getPiece();
+                    if (piece != null
+                            && !(piece instanceof King)
+                            && piece.getFigureColor() == currentColor
+                            && piece.movementConditionFullfilled(i, j, x, y)
                             && pathIsFree(i, j, x, y)) {
                         return true;
                     }
@@ -245,38 +245,38 @@ public class ChessBoard extends JPanel {
 
     private boolean selfMadeCheck(int row, int column) {
         if (!check) {
-            ChessField source = chessMatrix[sourceI][sourceJ];
-            ChessField target = chessMatrix[row][column];
-            source.setCurrentChessPiece(null);
-            target.setCurrentChessPiece(selectedChessPiece);
+            Square source = chessMatrix[sourceI][sourceJ];
+            Square target = chessMatrix[row][column];
+            source.setPiece(null);
+            target.setPiece(selectedChessPiece);
             int sum = 0;
             try {
-                Point p = findKing();
-                int x = (int) p.getX(), y = (int) p.getY();
+                Point point = findKing();
+                int x = (int) point.getX(), y = (int) point.getY();
                 sum += !check(x, y, false) ? 0 : 1;
             } catch (Exception e) {
             }
             if (sum > 0) {
                 JOptionPane.showMessageDialog(this, "Ruch niedozwolony: skutkowałby szachem króla!\n");
             }
-            source.setCurrentChessPiece(selectedChessPiece);
-            target.setCurrentChessPiece(null);
+            source.setPiece(selectedChessPiece);
+            target.setPiece(null);
             return sum > 0;
         } else {
             return false;
         }
     }
 
-    private void moveBoardPiece(Point p) {
+    private void movePiece(Point point) {
         loop:
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                ChessField cf = chessMatrix[i][j];
-                ChessPiece cp = cf.getCurrentChessPiece();
+                Square square = chessMatrix[i][j];
+                Piece piece = square.getPiece();
                 if (selectedChessPiece != null
-                        && cf.contains(p)
-                        && !cf.isHighlighted()
-                        && (cp == null || selectedChessPiece.isFoe(cp))
+                        && square.contains(point)
+                        && !square.isHighlighted()
+                        && (piece == null || selectedChessPiece.isFoe(piece))
                         && selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)
                         && pathIsFree(sourceI, sourceJ, i, j)
                         && !selfMadeCheck(i, j)
@@ -284,10 +284,10 @@ public class ChessBoard extends JPanel {
                         || (check && selectedChessPiece instanceof King && kingPath.contains(new Point(i, j))))) {
                     check = false;
 //                    System.out.format("%d %d\n", i, j);
-                    cf.setCurrentChessPiece(selectedChessPiece);
+                    square.setPiece(selectedChessPiece);
                     movementLog = new Log(currentColor, sourceI, sourceJ, i, j, selectedChessPiece.getPieceName());
                     selectedChessPiece = null;
-                    chessMatrix[sourceI][sourceJ].setCurrentChessPiece(null);
+                    chessMatrix[sourceI][sourceJ].setPiece(null);
                     chessMatrix[sourceI][sourceJ].setHighlighted(false);
                     currentColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
                     oppositeColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
@@ -295,7 +295,7 @@ public class ChessBoard extends JPanel {
                     check();                    
                     break loop;
                 } else if (selectedChessPiece != null
-                        && chessMatrix[i][j].contains(p)
+                        && chessMatrix[i][j].contains(point)
                         && !selectedChessPiece.movementConditionFullfilled(sourceI, sourceJ, i, j)) {
                     JOptionPane.showMessageDialog(this, "Ruch niedozwolony: warunek ruchu nie spełniony!\n");
                     break loop;
@@ -323,17 +323,17 @@ public class ChessBoard extends JPanel {
         super.paint(g);
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                ChessField cf = chessMatrix[i][j];
-                if (cf.isHighlighted()) {
-                    cf.highlightChessField(g);
+                Square square = chessMatrix[i][j];
+                if (square.isHighlighted()) {
+                    square.highlightChessField(g);
                 } else {
-                    cf.drawChessField(g, i, j);
+                    square.drawChessField(g, i, j);
                 }
-                if (cf.getCurrentChessPiece() != null) {
-                    Double x = cf.getX();
-                    Double y = cf.getY();
-                    ChessPiece cp = cf.getCurrentChessPiece();
-                    cp.drawImage(g, x.intValue(), y.intValue(), diffHorizontal, diffVertical);
+                if (square.getPiece() != null) {
+                    Double x = square.getX();
+                    Double y = square.getY();
+                    Piece piece = square.getPiece();
+                    piece.drawImage(g, x.intValue(), y.intValue(), diffHorizontal, diffVertical);
                 }
             }
         }
@@ -362,8 +362,8 @@ public class ChessBoard extends JPanel {
             y1 += horizontalDifference;
             for (int i = x1, j = y1; i != x2 || j != y2; i += verticalDifference, j += horizontalDifference) {
                 System.out.format("%d %d\n", i, j);
-                ChessPiece cp = chessMatrix[i][j].getCurrentChessPiece();
-                notNullCount += cp == null ? 0 : 1;
+                Piece piece = chessMatrix[i][j].getPiece();
+                notNullCount += piece == null ? 0 : 1;
             }
         }
         return notNullCount == 0;
@@ -371,24 +371,24 @@ public class ChessBoard extends JPanel {
 
     public void setNewGame() throws IOException {
         clearBoard();
-        Color c1 = new Random().nextInt(2) == 1 ? Color.BLACK : Color.WHITE;
-        Color c2 = c1 == Color.BLACK ? Color.WHITE : Color.BLACK;
-        startingPoints.put(c1, 1);
-        startingPoints.put(c2, 6);
+        Color color1 = new Random().nextInt(2) == 1 ? Color.BLACK : Color.WHITE;
+        Color color2 = color1 == Color.BLACK ? Color.WHITE : Color.BLACK;
+        startingPoints.put(color1, 1);
+        startingPoints.put(color2, 6);
         for (int i = 0; i < 8; i++) {
-            chessMatrix[1][i].setCurrentChessPiece(new Pawn(c1, ChessPiece.PieceName.Pawn1));
-            chessMatrix[6][i].setCurrentChessPiece(new Pawn(c2, ChessPiece.PieceName.Pawn6));
+            chessMatrix[1][i].setPiece(new Pawn(color1, Piece.PieceName.Pawn1));
+            chessMatrix[6][i].setPiece(new Pawn(color2, Piece.PieceName.Pawn6));
         }
         for (int i = 0; i <= 7; i += 7) {
-            Color c = i == 0 ? c1 : c2;
-            chessMatrix[i][0].setCurrentChessPiece(new Rook(c));
-            chessMatrix[i][1].setCurrentChessPiece(new Knight(c));
-            chessMatrix[i][2].setCurrentChessPiece(new Bishop(c));
-            chessMatrix[i][3].setCurrentChessPiece(new Queen(c));
-            chessMatrix[i][4].setCurrentChessPiece(new King(c));
-            chessMatrix[i][5].setCurrentChessPiece(new Bishop(c));
-            chessMatrix[i][6].setCurrentChessPiece(new Knight(c));
-            chessMatrix[i][7].setCurrentChessPiece(new Rook(c));
+            Color color = i == 0 ? color1 : color2;
+            chessMatrix[i][0].setPiece(new Rook(color));
+            chessMatrix[i][1].setPiece(new Knight(color));
+            chessMatrix[i][2].setPiece(new Bishop(color));
+            chessMatrix[i][3].setPiece(new Queen(color));
+            chessMatrix[i][4].setPiece(new King(color));
+            chessMatrix[i][5].setPiece(new Bishop(color));
+            chessMatrix[i][6].setPiece(new Knight(color));
+            chessMatrix[i][7].setPiece(new Rook(color));
         }
         repaint();
     }
@@ -401,14 +401,14 @@ public class ChessBoard extends JPanel {
         startingPoints = new HashMap<>();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                chessMatrix[i][j].setCurrentChessPiece(null);
+                chessMatrix[i][j].setPiece(null);
             }
         }
     }
 
-    public static void setCurrentColor(Color c) throws IllegalArgumentException {
-        if (c == Color.BLACK || c == Color.WHITE) {
-            currentColor = c;
+    public static void setCurrentColor(Color color) throws IllegalArgumentException {
+        if (color == Color.BLACK || color == Color.WHITE) {
+            currentColor = color;
         } else {
             throw new IllegalArgumentException("Current color can only be black or white");
         }
@@ -418,7 +418,7 @@ public class ChessBoard extends JPanel {
         return currentColor;
     }
 
-    public static ChessField getChessMatrixField(int x, int y) throws IllegalArgumentException {
+    public static Square getSquare(int x, int y) throws IllegalArgumentException {
         if (x < 8 && y < 8) {
             return chessMatrix[x][y];
         } else {
@@ -426,19 +426,19 @@ public class ChessBoard extends JPanel {
         }
     }
 
-    public static void setChessMatrixField(int x, int y, ChessPiece cp) throws IllegalArgumentException {
+    public static void setSquare(int x, int y, Piece piece) throws IllegalArgumentException {
         if (x < 8 && y < 8) {
-            chessMatrix[x][y].setCurrentChessPiece(cp);
+            chessMatrix[x][y].setPiece(piece);
         } else {
             throw new IllegalArgumentException("Columns and rows indices cannot exceed 7");
         }
     }
 
-    public static void setStartingPoints(Color c, Integer i) throws Exception {
+    public static void setStartingPoints(Color color, Integer integer) throws Exception {
         if (startingPoints == null) {
             startingPoints = new HashMap();
         }
-        startingPoints.put(c, i);
+        startingPoints.put(color, integer);
         if (startingPoints.size() > 2) {
             throw new Exception("Too many starting points!");
         }
@@ -451,11 +451,11 @@ public class ChessBoard extends JPanel {
     public static Log movementLog;
     private static HashMap<Color, Integer> startingPoints;
     private ArrayList<Point> path, kingPath;
-    private static final ChessField[][] chessMatrix = new ChessField[8][8];
+    private static final Square[][] chessMatrix = new Square[8][8];
     private static Color currentColor;
     private static Color oppositeColor;
     private int sourceI, sourceJ, destI, destJ;
-    private static ChessPiece selectedChessPiece;
+    private static Piece selectedChessPiece;
     private int beginHeight,
             endHeight,
             beginWidth,

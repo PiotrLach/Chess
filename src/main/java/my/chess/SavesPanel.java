@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import my.chess.Database.QueryType;
-import my.chess.pieces.ChessPiece;
+import my.chess.pieces.Piece;
 
 /**
  *
@@ -44,7 +44,7 @@ public class SavesPanel extends JPanel {
     public void loadSavedGame() {
         try {
             Integer i = getSelectedGameId();
-            ChessBoard.clearBoard();
+            Board.clearBoard();
             getGameColorFromDB(i);
             final String selectChessFields = "SELECT x, y, piece FROM chessFields WHERE game = %d;";
             final String selectStartingPositions = "SELECT color, position FROM startingpositions WHERE gameid = %d;";
@@ -69,11 +69,11 @@ public class SavesPanel extends JPanel {
             StringBuilder insertFields = new StringBuilder();
             StringBuilder insertNewGame = new StringBuilder();
 
-            int cv = parseColorValue(ChessBoard.getCurrentColor());
+            int cv = parseColorValue(Board.getCurrentColor());
             insertNewGame.append(String.format(insertGame, cv, date, name));
             getGameIDfromDB();
             Database.gameID++;
-            HashMap<Color, Integer> points = ChessBoard.getstartingPoints();
+            HashMap<Color, Integer> points = Board.getstartingPoints();
 
             String insertNewStartingPositions = "insert into startingPositions(gameID,position,color) VALUES"
                     + "(" + Database.gameID + "," + points.get(Color.BLACK) + "," + 0 + ");";
@@ -84,8 +84,8 @@ public class SavesPanel extends JPanel {
 
             for (int x = 0; x < 8; x++) {
                 for (int y = 0; y < 8; y++) {
-                    ChessField cf = ChessBoard.getChessMatrixField(x, y);
-                    ChessPiece cp = cf.getCurrentChessPiece();
+                    Square cf = Board.getSquare(x, y);
+                    Piece cp = cf.getPiece();
                     if (cp != null) {
                         String selectPieceID = String.format(selectPiece, cp.getPieceName(), parseColorValue(cp.getFigureColor()));
                         insertFields.append(String.format(insertChessFields, x, y, selectPieceID, Database.gameID));
@@ -134,14 +134,14 @@ public class SavesPanel extends JPanel {
         try {
             int gameID = getSelectedGameId();
             StringBuilder sb = new StringBuilder();
-            Color c = ChessBoard.getCurrentColor();
+            Color c = Board.getCurrentColor();
             sb.append(String.format(updateColor, parseColorValue(c), gameID));
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
-                    ChessField cf = ChessBoard.getChessMatrixField(i, j);
-                    ChessPiece cp = cf.getCurrentChessPiece();
-                    if (cp != null) {
-                        sb.append(String.format(updatePieceValue, pieceIntValue(cp), i, j, gameID));
+                    Square square = Board.getSquare(i, j);
+                    Piece piece = square.getPiece();
+                    if (piece != null) {
+                        sb.append(String.format(updatePieceValue, pieceIntValue(piece), i, j, gameID));
                     } else {
                         sb.append(String.format(updatePieceValue, "null", i, j, gameID));
                     }
@@ -173,7 +173,7 @@ public class SavesPanel extends JPanel {
 
     }
 
-    private int pieceIntValue(ChessPiece cp) throws IllegalArgumentException {
+    private int pieceIntValue(Piece cp) throws IllegalArgumentException {
         int i;
         if (cp.getFigureColor() == Color.BLACK) {
             i = 0;

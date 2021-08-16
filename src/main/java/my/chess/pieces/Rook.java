@@ -12,7 +12,7 @@ import java.awt.Image;
  *
  * @author Piotr Lach
  */
-public class Rook extends ChessPiece {
+public class Rook extends Piece {
 
     public Rook(Color figureColor) {
         super(PieceName.Rook, figureColor, Images.getROOK(figureColor));

@@ -11,7 +11,7 @@ import java.awt.Color;
  *
  * @author Piotr Lach
  */
-public class Bishop extends ChessPiece {
+public class Bishop extends Piece {
 
     public Bishop(Color figureColor) {
         super(PieceName.Bishop, figureColor, Images.getBISHOP(figureColor));

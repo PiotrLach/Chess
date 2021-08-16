@@ -28,7 +28,7 @@
 	      <archive>
 		<manifest>
 		  <mainClass>
-		    main.java.my.chess.MainFrame
+		    my.chess.MainFrame
 		  </mainClass>
 		</manifest>
 		<manifestEntries>

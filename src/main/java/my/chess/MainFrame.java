@@ -53,7 +53,7 @@ public class MainFrame extends javax.swing.JFrame {
         manageSavesNewSave = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         savesPanel1 = new my.chess.SavesPanel();
-        mainChessBoard = new my.chess.ChessBoard();
+        mainChessBoard = new my.chess.Board();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 640));
@@ -278,7 +278,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private my.chess.ChessBoard mainChessBoard;
+    private my.chess.Board mainChessBoard;
     private javax.swing.JPanel mainMenuPanel;
     private javax.swing.JButton manageSavesDelete;
     private javax.swing.JButton manageSavesLoad;

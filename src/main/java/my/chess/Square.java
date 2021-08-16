@@ -5,7 +5,7 @@
  */
 package my.chess;
 
-import my.chess.pieces.ChessPiece;
+import my.chess.pieces.Piece;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -14,27 +14,27 @@ import java.awt.Rectangle;
  *
  * @author Piotr Lach
  */
-public class ChessField extends Rectangle {
+public class Square extends Rectangle {
 
-    private ChessPiece currentChessPiece;
+    private Piece piece;
     private boolean highlighted;
 
-    public ChessField(int x, int y, int width, int height) {
+    public Square(int x, int y, int width, int height) {
         super(x, y, width, height);       
     }
 
-    public void drawChessField(Graphics g, int row, int column) {
+    public void drawChessField(Graphics graphics, int row, int column) {
         if ((row % 2 == 1 && column % 2 == 0) || (row % 2 == 0 && column % 2 == 1)) {
-            g.setColor(myWhite);
+            graphics.setColor(myWhite);
         } else {
-            g.setColor(myBrown);
+            graphics.setColor(myBrown);
         }
-        g.fillRect(x, y, width, height);
+        graphics.fillRect(x, y, width, height);
     }
 
-    public void highlightChessField(Graphics g) {
-        g.setColor(Color.RED);
-        g.fillRect(x, y, width, height);
+    public void highlightChessField(Graphics graphics) {
+        graphics.setColor(Color.RED);
+        graphics.fillRect(x, y, width, height);
     }
 
     public boolean isHighlighted() {
@@ -45,12 +45,12 @@ public class ChessField extends Rectangle {
         this.highlighted = highlighted;
     }
 
-    public ChessPiece getCurrentChessPiece() {
-        return currentChessPiece;
+    public Piece getPiece() {
+        return piece;
     }
 
-    public void setCurrentChessPiece(ChessPiece currentChessPiece) {
-        this.currentChessPiece = currentChessPiece;
+    public void setPiece(Piece piece) {
+        this.piece = piece;
     }
     private final Color myWhite = new Color(255, 255, 204),
             myBrown = new Color(153, 102, 0);

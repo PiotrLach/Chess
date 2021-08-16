@@ -13,16 +13,16 @@ import java.awt.Image;
  *
  * @author Piotr Lach
  */
-abstract public class ChessPiece {
+abstract public class Piece {
 
-    public ChessPiece(PieceName pieceName, Color figureColor, Image img) {
+    public Piece(PieceName pieceName, Color figureColor, Image img) {
         this.pieceName = pieceName;
         this.figureColor = figureColor;
         this.img = img;
     }
 
-    public void drawImage(Graphics g, int drawX, int drawY, int width, int height) {
-        g.drawImage(img, drawX, drawY, width, height, null);
+    public void drawImage(Graphics graphics, int drawX, int drawY, int width, int height) {
+        graphics.drawImage(img, drawX, drawY, width, height, null);
     }
 
     public enum PieceName {
@@ -33,8 +33,8 @@ abstract public class ChessPiece {
         return figureColor;
     }
 
-    public boolean isFoe(ChessPiece cp) {
-        return cp.getFigureColor() != figureColor;
+    public boolean isFoe(Piece piece) {
+        return piece.getFigureColor() != figureColor;
     }
 
     public PieceName getPieceName() {

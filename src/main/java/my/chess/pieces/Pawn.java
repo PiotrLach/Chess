@@ -6,14 +6,15 @@
 package my.chess.pieces;
 
 import java.awt.Color;
-import my.chess.ChessField;
-import my.chess.ChessBoard;
+import java.util.List;
+import my.chess.Square;
+import my.chess.Board;
 
 /**
  *
  * @author Piotr Lach
  */
-public class Pawn extends ChessPiece {
+public class Pawn extends Piece {
 
     public Pawn(Color figureColor, PieceName p) {
         super(p, figureColor, Images.getPAWN(figureColor));
@@ -29,11 +30,11 @@ public class Pawn extends ChessPiece {
             System.out.format("%d %d %d %d", x1, y1, x2, y2);
             int temp = y1 - (y1 - y2);
             System.out.println(x1 + " " + temp);
-            ChessField cf = ChessBoard.getChessMatrixField(x1, y1 - (y1 - y2));
-            ChessPiece neighbor = cf.getCurrentChessPiece();
+            Square square = Board.getSquare(x1, y1 - (y1 - y2));
+            Piece neighbor = square.getPiece();
             if (neighbor instanceof Pawn) {
                 Pawn p = (Pawn) neighbor;
-                cf.setCurrentChessPiece(null);
+                square.setPiece(null);
                 return true;
             }
         }
@@ -42,27 +43,22 @@ public class Pawn extends ChessPiece {
     
     @Override
     public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
-        ChessField cf = ChessBoard.getChessMatrixField(x2, y2);
+        Square square = Board.getSquare(x2, y2);
         
         boolean bOneForwardMovement = Math.abs(x1 - x2) == 1, 
                 bTwoForwardMovements = Math.abs(x1 - x2) == 2,
                 isVertical = (isOnBottomRow ? x2 > x1 : x2 < x1),
                 isHorizontal = Math.abs(y1 - y2) == 1,           
                 isNotHorizontal = Math.abs(y1 - y2) == 0,           
-                isNullAhead = cf.getCurrentChessPiece() == null,
-                isFoeDiagonal = !isNullAhead && this.isFoe(cf.getCurrentChessPiece());
+                isNullAhead = square.getPiece() == null,
+                isFoeDiagonal = !isNullAhead && this.isFoe(square.getPiece());
         
-        boolean availableMovements[] = {
+        var availableMovements = List.of(
             isVertical && bOneForwardMovement && isNotHorizontal && isNullAhead,
             isVertical && x1 == startingX && bTwoForwardMovements && isNotHorizontal && isNullAhead,
             isVertical && bOneForwardMovement && isHorizontal && isFoeDiagonal
-        };        
-        for (boolean b : availableMovements) {            
-            if (b) {
-                return true;
-            }
-        }
-        return false;
+        );
+        return availableMovements.contains(true);      
     }
     private final boolean isOnBottomRow;
     private final int startingX;

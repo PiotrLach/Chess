@@ -18,7 +18,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
 import my.chess.pieces.Bishop;
-import my.chess.pieces.ChessPiece;
+import my.chess.pieces.Piece;
 import my.chess.pieces.King;
 import my.chess.pieces.Knight;
 import my.chess.pieces.Pawn;
@@ -78,7 +78,7 @@ public class Database {
                             case SELECT_POSITIONS:
                                 try {
                                     Color col = rs.getInt("color") == 0 ? Color.BLACK : Color.WHITE;
-                                    ChessBoard.setStartingPoints(col, rs.getInt("position"));
+                                    Board.setStartingPoints(col, rs.getInt("position"));
                                 } catch (Exception e) {
                                     System.out.println(e);
                                 }
@@ -99,7 +99,7 @@ public class Database {
                                 gameID = rs.getInt("MAX(gameID)");                                
                                 break;
                             case SELECT_GAME_COLOR:
-                                ChessBoard.setCurrentColor(parseIntValue(rs.getInt("currentColor")));
+                                Board.setCurrentColor(parseIntValue(rs.getInt("currentColor")));
                                 break;
                         }
                     }
@@ -131,18 +131,18 @@ public class Database {
 
     private static void setLoadedGamePiece(String pieceID, int x, int y) throws IOException {
         if (pieceID != null) {
-            ChessBoard.setChessMatrixField(x, y, choosePiece(Integer.parseInt(pieceID)));
+            Board.setSquare(x, y, choosePiece(Integer.parseInt(pieceID)));
         }
     }
 
-    private static ChessPiece choosePiece(int num) throws IllegalArgumentException {
+    private static Piece choosePiece(int num) throws IllegalArgumentException {
         switch (num) {
             default:
                 throw new IllegalArgumentException("Piece ID value has to be between 0 and 11");
             case 0:
-                return new Pawn(Color.BLACK,  ChessPiece.PieceName.Pawn1);
+                return new Pawn(Color.BLACK,  Piece.PieceName.Pawn1);
             case 1:
-                return new Pawn(Color.BLACK,  ChessPiece.PieceName.Pawn6);
+                return new Pawn(Color.BLACK,  Piece.PieceName.Pawn6);
             case 2:
                 return new Rook(Color.BLACK);
             case 3:
@@ -154,9 +154,9 @@ public class Database {
             case 6:
                 return new King(Color.BLACK);
             case 7:
-                return new Pawn(Color.WHITE,  ChessPiece.PieceName.Pawn1);
+                return new Pawn(Color.WHITE,  Piece.PieceName.Pawn1);
             case 8:
-                return new Pawn(Color.WHITE,  ChessPiece.PieceName.Pawn6);
+                return new Pawn(Color.WHITE,  Piece.PieceName.Pawn6);
             case 9:
                 return new Rook(Color.WHITE);
             case 10:
