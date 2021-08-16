@@ -23,7 +23,7 @@ public class Square extends Rectangle {
         super(x, y, width, height);       
     }
 
-    public void drawChessField(Graphics graphics, int row, int column) {
+    public void drawSquare(Graphics graphics, int row, int column) {
         if ((row % 2 == 1 && column % 2 == 0) || (row % 2 == 0 && column % 2 == 1)) {
             graphics.setColor(myWhite);
         } else {
@@ -32,7 +32,7 @@ public class Square extends Rectangle {
         graphics.fillRect(x, y, width, height);
     }
 
-    public void highlightChessField(Graphics graphics) {
+    public void highlightSquare(Graphics graphics) {
         graphics.setColor(Color.RED);
         graphics.fillRect(x, y, width, height);
     }

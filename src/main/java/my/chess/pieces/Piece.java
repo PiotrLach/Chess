@@ -41,7 +41,7 @@ abstract public class Piece {
         return pieceName;
     }
 
-    abstract public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2);
+    abstract public boolean isCorrectMovement(int x1, int y1, int x2, int y2);
 
     private static String message;
     protected String chessPieceName;

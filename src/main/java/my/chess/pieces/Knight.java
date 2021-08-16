@@ -19,7 +19,7 @@ public class Knight extends Piece {
     }
 
     @Override
-    public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
+    public boolean isCorrectMovement(int x1, int y1, int x2, int y2) {
         boolean movement = (Math.abs(x1 - x2) == 2 && Math.abs(y1 - y2) == 1)
                 || (Math.abs(x1 - x2) == 1 && Math.abs(y1 - y2) == 2);
         return movement;

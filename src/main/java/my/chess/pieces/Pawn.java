@@ -42,7 +42,7 @@ public class Pawn extends Piece {
     }
     
     @Override
-    public boolean movementConditionFullfilled(int x1, int y1, int x2, int y2) {
+    public boolean isCorrectMovement(int x1, int y1, int x2, int y2) {
         Square square = Board.getSquare(x2, y2);
         
         boolean bOneForwardMovement = Math.abs(x1 - x2) == 1, 
