@@ -64,10 +64,7 @@ public class Board extends JPanel {
                 y++;
             }
             y = 0;
-            x++;
-            if (x == 8) {
-                x = 0;
-            }
+            x = x == 8 ? 0 : ++x;
         }
         repaint();
     }
@@ -81,10 +78,7 @@ public class Board extends JPanel {
                 y++;
             }
             y = 0;
-            x++;
-            if (x == 8) {
-                x = 0;
-            }
+            x = x == 8 ? 0 : ++x;
         }
     }
 
