@@ -84,10 +84,10 @@ public class SavesPanel extends JPanel {
 
             for (int x = 0; x < 8; x++) {
                 for (int y = 0; y < 8; y++) {
-                    Square cf = Board.getSquare(x, y);
-                    Piece cp = cf.getPiece();
-                    if (cp != null) {
-                        String selectPieceID = String.format(selectPiece, cp.getPieceName(), parseColorValue(cp.getFigureColor()));
+                    Square square = Board.getSquare(x, y);
+                    Piece piece = square.getPiece();
+                    if (piece != null) {
+                        String selectPieceID = String.format(selectPiece, piece.getName(), parseColorValue(piece.color));
                         insertFields.append(String.format(insertChessFields, x, y, selectPieceID, Database.gameID));
 
                     } else {
@@ -174,12 +174,12 @@ public class SavesPanel extends JPanel {
 
     }
 
-    private int pieceIntValue(Piece cp) throws IllegalArgumentException {
+    private int pieceIntValue(Piece piece) throws IllegalArgumentException {
        
-        var color = cp.getFigureColor();       
+        var color = piece.color;       
         int i = color == Color.BLACK ? 0 : 7;
         
-        return switch (cp.getPieceName()) {
+        return switch (piece.getName()) {
             default -> throw new IllegalArgumentException("No such figure!");
             case Pawn1 -> 0 + i;
             case Pawn6 -> 1 + i;

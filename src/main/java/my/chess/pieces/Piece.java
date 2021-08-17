@@ -16,36 +16,30 @@ import java.awt.Image;
 abstract public class Piece {
 
     public Piece(PieceName pieceName, Color figureColor, Image img) {
-        this.pieceName = pieceName;
-        this.figureColor = figureColor;
-        this.img = img;
+        this.name = pieceName;
+        this.color = figureColor;
+        this.image = img;
     }
 
     public void drawImage(Graphics graphics, int drawX, int drawY, int width, int height) {
-        graphics.drawImage(img, drawX, drawY, width, height, null);
+        graphics.drawImage(image, drawX, drawY, width, height, null);
     }
 
     public enum PieceName {
         Pawn1, Pawn6, Bishop, Knight, Rook, King, Queen
     }
 
-    public Color getFigureColor() {
-        return figureColor;
-    }
-
     public boolean isFoe(Piece piece) {
-        return piece.getFigureColor() != figureColor;
+        return piece.color != color;
     }
 
-    public PieceName getPieceName() {
-        return pieceName;
+    public PieceName getName() {
+        return name;
     }
 
     abstract public boolean isCorrectMovement(int x1, int y1, int x2, int y2);
 
-    private static String message;
-    protected String chessPieceName;
-    protected Color figureColor;
-    protected Image img;
-    protected PieceName pieceName;
+    public final Color color;
+    protected Image image;
+    protected PieceName name;
 }

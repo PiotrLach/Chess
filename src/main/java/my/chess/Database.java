@@ -55,51 +55,53 @@ public class Database {
         }
     }
 
-    public static void sqlConnection(String myQuery, QueryType q) {
+    public static void sqlConnection(String myQuery, QueryType queryType) {
 
         games = new ArrayList();
         dates = new ArrayList();
-        names = new ArrayList();
-        Connection c = null;
-        ResultSet rs;
+        names = new ArrayList();        
+        ResultSet resultSet;
         Connection connection = null;
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:db" + File.separator + "chess.db");
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
-            switch (q) {
+            switch (queryType) {
                 case OTHER:
                     statement.executeUpdate(myQuery);
                     break;
                 default:
-                    rs = statement.executeQuery(myQuery);
-                    while (rs.next()) {
-                        switch (q) {
+                    resultSet = statement.executeQuery(myQuery);
+                    while (resultSet.next()) {
+                        switch (queryType) {
                             case SELECT_POSITIONS:
                                 try {
-                                    Color col = rs.getInt("color") == 0 ? Color.BLACK : Color.WHITE;
-                                    Board.setStartingPoints(col, rs.getInt("position"));
+                                    Color color = resultSet.getInt("color") == 0 ? Color.BLACK : Color.WHITE;
+                                    Board.setStartingPoints(color, resultSet.getInt("position"));
                                 } catch (Exception e) {
                                     System.out.println(e);
                                 }
                                 break;
                             case SELECT_GAMES:
-                                games.add(rs.getInt("gameID"));
-                                dates.add(rs.getString("date"));
-                                names.add(rs.getString("name"));
+                                games.add(resultSet.getInt("gameID"));
+                                dates.add(resultSet.getString("date"));
+                                names.add(resultSet.getString("name"));
                                 break;
                             case SELECT_CHESS_FIELDS:
                                 try {
-                                    setLoadedGamePiece(rs.getString("piece"), rs.getInt("x"), rs.getInt("y"));
+                                    setLoadedGamePiece(resultSet.getString("piece"),
+                                            resultSet.getInt("x"),
+                                            resultSet.getInt("y")
+                                    );
                                 } catch (IOException | SQLException e) {
                                     System.out.println(e);
                                 }
                                 break;
                             case SELECT_MAX_GAME_ID:
-                                gameID = rs.getInt("MAX(gameID)");                                
+                                gameID = resultSet.getInt("MAX(gameID)");                                
                                 break;
                             case SELECT_GAME_COLOR:
-                                Board.setCurrentColor(parseIntValue(rs.getInt("currentColor")));
+                                Board.setCurrentColor(parseIntValue(resultSet.getInt("currentColor")));
                                 break;
                         }
                     }
@@ -118,15 +120,11 @@ public class Database {
     }
 
     private static Color parseIntValue(int i) {
-        switch (i) {
-            default:
-                throw new IllegalArgumentException("Color value can only be 0 or 1");
-            case 0:
-                return Color.BLACK;
-            case 1:
-                return Color.WHITE;
-
-        }
+        return switch (i) {
+            default -> throw new IllegalArgumentException("Color value can only be 0 or 1");
+            case 0 -> Color.BLACK;
+            case 1 -> Color.WHITE;
+        };
     }
 
     private static void setLoadedGamePiece(String pieceID, int x, int y) throws IOException {
@@ -136,49 +134,34 @@ public class Database {
     }
 
     private static Piece choosePiece(int num) throws IllegalArgumentException {
-        switch (num) {
-            default:
-                throw new IllegalArgumentException("Piece ID value has to be between 0 and 11");
-            case 0:
-                return new Pawn(Color.BLACK,  Piece.PieceName.Pawn1);
-            case 1:
-                return new Pawn(Color.BLACK,  Piece.PieceName.Pawn6);
-            case 2:
-                return new Rook(Color.BLACK);
-            case 3:
-                return new Bishop(Color.BLACK);
-            case 4:
-                return new Knight(Color.BLACK);
-            case 5:
-                return new Queen(Color.BLACK);
-            case 6:
-                return new King(Color.BLACK);
-            case 7:
-                return new Pawn(Color.WHITE,  Piece.PieceName.Pawn1);
-            case 8:
-                return new Pawn(Color.WHITE,  Piece.PieceName.Pawn6);
-            case 9:
-                return new Rook(Color.WHITE);
-            case 10:
-                return new Bishop(Color.WHITE);
-            case 11:
-                return new Knight(Color.WHITE);
-            case 12:
-                return new Queen(Color.WHITE);
-            case 13:
-                return new King(Color.WHITE);
-        }
+        return switch (num) {
+            default -> throw new IllegalArgumentException("Piece ID value has to be between 0 and 11");
+            case 0 -> new Pawn(Color.BLACK,  Piece.PieceName.Pawn1);
+            case 1 -> new Pawn(Color.BLACK,  Piece.PieceName.Pawn6);
+            case 2 -> new Rook(Color.BLACK);
+            case 3 -> new Bishop(Color.BLACK);
+            case 4 -> new Knight(Color.BLACK);
+            case 5 -> new Queen(Color.BLACK);
+            case 6 -> new King(Color.BLACK);
+            case 7 -> new Pawn(Color.WHITE,  Piece.PieceName.Pawn1);
+            case 8 -> new Pawn(Color.WHITE,  Piece.PieceName.Pawn6);
+            case 9 -> new Rook(Color.WHITE);
+            case 10 -> new Bishop(Color.WHITE);
+            case 11 -> new Knight(Color.WHITE);
+            case 12 -> new Queen(Color.WHITE);
+            case 13 -> new King(Color.WHITE);
+        };
     }
 
     private String readSqlFile() {
         String data = "";
         try {
-            File f = new File("db" + File.separator + "base.sql");
-            Scanner myReader = new Scanner(f);
-            while (myReader.hasNextLine()) {
-                data += myReader.nextLine() + "\n";
+            File file = new File("db" + File.separator + "base.sql");
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                data += scanner.nextLine() + "\n";
             }
-            myReader.close();
+            scanner.close();
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred: " + e.toString());
         }

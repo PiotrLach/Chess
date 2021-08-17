@@ -92,17 +92,17 @@ public class Board extends JPanel {
         }
     }
 
-    private void choosePiece(Point p) {
+    private void choosePiece(Point point) {
         loop:
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Square square = squares[i][j];
                 Piece piece = square.getPiece();
                 if (!mate
-                        && square.contains(p)
+                        && square.contains(point)
                         && !square.isHighlighted()
                         && piece != null
-                        && currentColor == piece.getFigureColor()
+                        && currentColor == piece.color
                         && (!check
                         || (check && !piecesToBlockCheckUnavailable)
                         || (check && piece instanceof King && piecesToBlockCheckUnavailable))) {
@@ -113,8 +113,8 @@ public class Board extends JPanel {
                     sourceJ = j;
                     repaint();
                     break loop;
-                } else if (square.contains(p) && piece != null
-                        && currentColor != piece.getFigureColor()) {
+                } else if (square.contains(point) && piece != null
+                        && currentColor != piece.color) {
                     String color = currentColor == Color.WHITE ? "białych" : "czarnych";
                     JOptionPane.showMessageDialog(this, "Teraz ruch " + color + "!");
                     break loop;
@@ -127,7 +127,7 @@ public class Board extends JPanel {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 Piece piece = squares[row][col].getPiece();
-                if (piece instanceof King && piece.getFigureColor() == currentColor) {
+                if (piece instanceof King && piece.color == currentColor) {
                     Point kingCoordinates = new Point(row, col);
                     return kingCoordinates;
                 }
@@ -166,11 +166,11 @@ public class Board extends JPanel {
                 Piece piece = square.getPiece();                
                 if (row != kingX && col != kingY) {                    
                     if (piece != null
-                            && piece.getFigureColor() != currentColor
+                            && piece.color != currentColor
                             && piece.isCorrectMovement(row, col, kingX, kingY)
 //                            && pathIsFree(i, j, kingX, kingY) ) 
                             && (isKnight = piece instanceof Knight
-                            || pathIsFree(row, col, kingX, kingY))) 
+                            || isPathFree(row, col, kingX, kingY))) 
                     { // ???                        
                         if (!isKnight && separate) {
                             blockSquaresTemp.add(new Point(row, col));
@@ -205,7 +205,7 @@ public class Board extends JPanel {
             for (int col = y - 1; col <= y + 1; col++) {
                 if ((row <= 7 && row >= 0) && (col <= 7 && col >= 0)) {
                     Piece piece = squares[row][col].getPiece();
-                    if (piece == null || piece.getFigureColor() != currentColor) {
+                    if (piece == null || piece.color != currentColor) {
                         System.out.println(row + " " + col);
                         if (!check(row, col, false)) {
                             escapeSquares.add(new Point(row, col));
@@ -226,9 +226,9 @@ public class Board extends JPanel {
                     Piece piece = square.getPiece();
                     if (piece != null
                             && !(piece instanceof King)
-                            && piece.getFigureColor() == currentColor
+                            && piece.color == currentColor
                             && piece.isCorrectMovement(row, col, x, y)
-                            && pathIsFree(row, col, x, y)) {
+                            && isPathFree(row, col, x, y)) {
                         return true;
                     }
                 }
@@ -237,11 +237,11 @@ public class Board extends JPanel {
         return false;
     }
     /**
-     * Tests if user's movement will result in a check
+     * Tests if user's move will result in a check
      * @param row
      * @param column     
      */
-    private boolean selfMadeCheck(int row, int column) {
+    private boolean isSelfMadeCheck(int row, int column) {
         if (!check) {
             Square source = squares[sourceI][sourceJ];
             Square target = squares[row][column];
@@ -283,8 +283,8 @@ public class Board extends JPanel {
             && !square.isHighlighted()
             && (piece == null || selectedChessPiece.isFoe(piece))
             && selectedChessPiece.isCorrectMovement(sourceI, sourceJ, row, col)
-            && pathIsFree(sourceI, sourceJ, row, col)
-            && !selfMadeCheck(row, col)
+            && isPathFree(sourceI, sourceJ, row, col)
+            && !isSelfMadeCheck(row, col)
             && (!check || checkBlock || kingEscape);        
     }
 
@@ -305,9 +305,9 @@ public class Board extends JPanel {
                     currentColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
                     oppositeColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
                     repaint();                    
-                    check();
-                    
+                    check();                   
                     break loop;
+                    
                 } else if (selectedChessPiece != null
                         && squares[row][col].contains(dest)
                         && !selectedChessPiece.isCorrectMovement(sourceI, sourceJ, row, col)) {
@@ -347,7 +347,12 @@ public class Board extends JPanel {
                     Double x = square.getX();
                     Double y = square.getY();
                     Piece piece = square.getPiece();
-                    piece.drawImage(graphics, x.intValue(), y.intValue(), diffHorizontal, diffVertical);
+                    piece.drawImage(graphics,
+                            x.intValue(),
+                            y.intValue(),
+                            diffHorizontal,
+                            diffVertical
+                    );
                 }
             }
         }
@@ -366,7 +371,7 @@ public class Board extends JPanel {
         return pathTemp;
     }
 
-    private boolean pathIsFree(int x1, int y1, int x2, int y2) {
+    private boolean isPathFree(int x1, int y1, int x2, int y2) {
         System.out.format("%d %d %d %d\n", x1, y1, x2, y2);
         int verticalDifference, horizontalDifference, notNullCount = 0;
         if (!(selectedChessPiece instanceof Knight)) {            
@@ -468,7 +473,7 @@ public class Board extends JPanel {
     private static final Square[][] squares = new Square[8][8];
     private static Color currentColor;
     private static Color oppositeColor;
-    private int sourceI, sourceJ, destI, destJ;
+    private int sourceI, sourceJ;
     private static Piece selectedChessPiece;
     private int beginHeight,
             endHeight,
