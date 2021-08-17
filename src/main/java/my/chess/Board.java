@@ -158,24 +158,24 @@ public class Board extends JPanel {
      * @return check value
      */
     private boolean check(int kingX, int kingY, boolean separate) {
-        ArrayList<Point> pathTemp = new ArrayList();
+        ArrayList<Point> blockSquaresTemp = new ArrayList();
         int sum = 0;
         boolean isKnight;
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                Square square = squares[i][j];
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Square square = squares[row][col];
                 Piece piece = square.getPiece();                
-                if (i != kingX && j != kingY) {                    
+                if (row != kingX && col != kingY) {                    
                     if (piece != null
                             && piece.getFigureColor() != currentColor
-                            && piece.isCorrectMovement(i, j, kingX, kingY)
+                            && piece.isCorrectMovement(row, col, kingX, kingY)
 //                            && pathIsFree(i, j, kingX, kingY) ) 
                             && (isKnight = piece instanceof Knight
-                            || pathIsFree(i, j, kingX, kingY))) 
+                            || pathIsFree(row, col, kingX, kingY))) 
                     { // ???                        
                         if (!isKnight && separate) {
-                            pathTemp.add(new Point(i, j));
-                            pathTemp.addAll(makePath(i, j, kingX, kingY));
+                            blockSquaresTemp.add(new Point(row, col));
+                            blockSquaresTemp.addAll(makePath(row, col, kingX, kingY));
                         }
                         sum++;
                     }
@@ -183,16 +183,16 @@ public class Board extends JPanel {
             }
         }
         if (separate) {
-            path = new ArrayList(pathTemp);
+            blockSquares = new ArrayList(blockSquaresTemp);
         }
         if (sum == 0) {
             return false;
         } else if (sum > 0 && separate) {
             JOptionPane.showMessageDialog(this, "Szach!");
-            kingPath = new ArrayList(mate(kingX, kingY));
-            System.out.println(kingPath);
-            if (piecesToBlockCheckUnavailable = !piecesToBlockCheckAvailable(pathTemp)) {
-                if (mate = kingPath.isEmpty()) {
+            kingEscapeSquares = new ArrayList(mate(kingX, kingY));
+            System.out.println(kingEscapeSquares);
+            if (piecesToBlockCheckUnavailable = !piecesToBlockCheckAvailable(blockSquaresTemp)) {
+                if (mate = kingEscapeSquares.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Mat!");
                 }
             }
@@ -201,7 +201,7 @@ public class Board extends JPanel {
     }
 
     private ArrayList<Point> mate(int x, int y) {
-        ArrayList<Point> rescue = new ArrayList();
+        ArrayList<Point> escapeSquares = new ArrayList();
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
                 if ((i <= 7 && i >= 0) && (j <= 7 && j >= 0)) {
@@ -209,27 +209,27 @@ public class Board extends JPanel {
                     if (piece == null || piece.getFigureColor() != currentColor) {
                         System.out.println(i + " " + j);
                         if (!check(i, j, false)) {
-                            rescue.add(new Point(i, j));
+                            escapeSquares.add(new Point(i, j));
                         }
                     }
                 }
             }
         }
-        return rescue;
+        return escapeSquares;
     }
 
     private boolean piecesToBlockCheckAvailable(ArrayList<Point> path) {
         for (Point p : path) {
             int x = (int) p.getX(), y = (int) p.getY();
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    Square square = squares[i][j];
+            for (int row = 0; row < 8; row++) {
+                for (int col = 0; col < 8; col++) {
+                    Square square = squares[row][col];
                     Piece piece = square.getPiece();
                     if (piece != null
                             && !(piece instanceof King)
                             && piece.getFigureColor() == currentColor
-                            && piece.isCorrectMovement(i, j, x, y)
-                            && pathIsFree(i, j, x, y)) {
+                            && piece.isCorrectMovement(row, col, x, y)
+                            && pathIsFree(row, col, x, y)) {
                         return true;
                     }
                 }
@@ -267,51 +267,51 @@ public class Board extends JPanel {
         }
     }
     
-    private boolean isAcceptableMove(Point point, Square square, int row, int col) {
+    private boolean isAcceptableMove(Point dest, Square square, int row, int col) {
         Piece piece = square.getPiece();
-        var conditions = List.of(
-            selectedChessPiece != null,
-            square.contains(point),
-            !square.isHighlighted(),
-            piece == null || selectedChessPiece.isFoe(piece),
-            selectedChessPiece.isCorrectMovement(sourceI, sourceJ, row, col),
-            pathIsFree(sourceI, sourceJ, row, col),
-            !selfMadeCheck(row, col),
-            !check || (check && !(selectedChessPiece instanceof King) && path.contains(new Point(row, col)))
-        );        
-        return !conditions.contains(false);
+        Point current = new Point(row, col);
+        
+        var kingEscape = check 
+                && selectedChessPiece instanceof King 
+                && kingEscapeSquares.contains(current);
+        
+        var checkBlock = check 
+                && !(selectedChessPiece instanceof King)                
+                && blockSquares.contains(current);       
+        
+        return selectedChessPiece != null
+            && square.contains(dest)
+            && !square.isHighlighted()
+            && (piece == null || selectedChessPiece.isFoe(piece))
+            && selectedChessPiece.isCorrectMovement(sourceI, sourceJ, row, col)
+            && pathIsFree(sourceI, sourceJ, row, col)
+            && !selfMadeCheck(row, col)
+            && (!check || checkBlock || kingEscape);        
     }
 
-    private void movePiece(Point point) {
+    private void movePiece(Point dest) {
         loop:
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
-                Square square = squares[row][col];
-                Piece piece = square.getPiece();
-                Point destination = new Point(row, col);
-                if (selectedChessPiece != null
-                        && square.contains(point)
-                        && !square.isHighlighted()
-                        && (piece == null || selectedChessPiece.isFoe(piece))
-                        && selectedChessPiece.isCorrectMovement(sourceI, sourceJ, row, col)
-                        && pathIsFree(sourceI, sourceJ, row, col)
-                        && !selfMadeCheck(row, col)
-                        && (!check || (check && !(selectedChessPiece instanceof King) && path.contains(destination))
-                        || (check && selectedChessPiece instanceof King && kingPath.contains(destination)))) {
+                
+                Square square = squares[row][col];                
+                
+//                System.out.println(isAcceptableMove(dest, square, row, col));
+                if (isAcceptableMove(dest, square, row, col)) {
+                    
                     check = false;
-//                    System.out.format("%d %d\n", i, j);
                     square.setPiece(selectedChessPiece);
-                    movementLog = new Log(currentColor, sourceI, sourceJ, row, col, selectedChessPiece.getPieceName());
                     selectedChessPiece = null;
                     squares[sourceI][sourceJ].setPiece(null);
                     squares[sourceI][sourceJ].setHighlighted(false);
                     currentColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
                     oppositeColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
                     repaint();                    
-                    check();                    
+                    check();
+                    
                     break loop;
                 } else if (selectedChessPiece != null
-                        && squares[row][col].contains(point)
+                        && squares[row][col].contains(dest)
                         && !selectedChessPiece.isCorrectMovement(sourceI, sourceJ, row, col)) {
                     JOptionPane.showMessageDialog(this, "Ruch niedozwolony!\n");
                     break loop;
@@ -465,9 +465,8 @@ public class Board extends JPanel {
         return startingPoints;
     }
     private static boolean check = false, mate = false, piecesToBlockCheckUnavailable = false;
-    public static Log movementLog;
     private static HashMap<Color, Integer> startingPoints;
-    private ArrayList<Point> path, kingPath;
+    private ArrayList<Point> blockSquares, kingEscapeSquares;
     private static final Square[][] squares = new Square[8][8];
     private static Color currentColor;
     private static Color oppositeColor;
