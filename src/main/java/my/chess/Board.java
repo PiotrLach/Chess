@@ -19,7 +19,6 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -125,11 +124,11 @@ public class Board extends JPanel {
     }
 
     private Point findKing() throws Exception {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                Piece piece = squares[i][j].getPiece();
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Piece piece = squares[row][col].getPiece();
                 if (piece instanceof King && piece.getFigureColor() == currentColor) {
-                    Point kingCoordinates = new Point(i, j);
+                    Point kingCoordinates = new Point(row, col);
                     return kingCoordinates;
                 }
             }
@@ -202,14 +201,14 @@ public class Board extends JPanel {
 
     private ArrayList<Point> mate(int x, int y) {
         ArrayList<Point> escapeSquares = new ArrayList();
-        for (int i = x - 1; i <= x + 1; i++) {
-            for (int j = y - 1; j <= y + 1; j++) {
-                if ((i <= 7 && i >= 0) && (j <= 7 && j >= 0)) {
-                    Piece piece = squares[i][j].getPiece();
+        for (int row = x - 1; row <= x + 1; row++) {
+            for (int col = y - 1; col <= y + 1; col++) {
+                if ((row <= 7 && row >= 0) && (col <= 7 && col >= 0)) {
+                    Piece piece = squares[row][col].getPiece();
                     if (piece == null || piece.getFigureColor() != currentColor) {
-                        System.out.println(i + " " + j);
-                        if (!check(i, j, false)) {
-                            escapeSquares.add(new Point(i, j));
+                        System.out.println(row + " " + col);
+                        if (!check(row, col, false)) {
+                            escapeSquares.add(new Point(row, col));
                         }
                     }
                 }
@@ -218,9 +217,9 @@ public class Board extends JPanel {
         return escapeSquares;
     }
 
-    private boolean piecesToBlockCheckAvailable(ArrayList<Point> path) {
-        for (Point p : path) {
-            int x = (int) p.getX(), y = (int) p.getY();
+    private boolean piecesToBlockCheckAvailable(ArrayList<Point> blockSquares) {
+        for (Point point : blockSquares) {
+            int x = (int) point.getX(), y = (int) point.getY();
             for (int row = 0; row < 8; row++) {
                 for (int col = 0; col < 8; col++) {
                     Square square = squares[row][col];
@@ -296,7 +295,6 @@ public class Board extends JPanel {
                 
                 Square square = squares[row][col];                
                 
-//                System.out.println(isAcceptableMove(dest, square, row, col));
                 if (isAcceptableMove(dest, square, row, col)) {
                     
                     check = false;

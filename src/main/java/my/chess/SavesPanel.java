@@ -69,8 +69,8 @@ public class SavesPanel extends JPanel {
             StringBuilder insertFields = new StringBuilder();
             StringBuilder insertNewGame = new StringBuilder();
 
-            int cv = parseColorValue(Board.getCurrentColor());
-            insertNewGame.append(String.format(insertGame, cv, date, name));
+            int colorValue = parseColorValue(Board.getCurrentColor());
+            insertNewGame.append(String.format(insertGame, colorValue, date, name));
             getGameIDfromDB();
             Database.gameID++;
             HashMap<Color, Integer> points = Board.getstartingPoints();
@@ -156,16 +156,17 @@ public class SavesPanel extends JPanel {
     private int getSelectedGameId() throws Exception {
         for (int i = 0; i < radioButtons.size(); i++) {
             if (radioButtons.get(i).isSelected()) {
-                return radioButtons.get(i).getGameID();
+                return radioButtons.get(i).gameID;
             }
         }
         throw new Exception("Nie wybrano zapisu gry do usunięcia!");
     }
 
-    private int parseColorValue(Color c) throws IllegalArgumentException {
-        if (c == Color.BLACK) {
+    private int parseColorValue(final Color color) throws IllegalArgumentException {
+               
+        if (color == Color.BLACK) {
             return 0;
-        } else if (c == Color.WHITE) {
+        } else if (color == Color.WHITE) {
             return 1;
         } else {
             throw new IllegalArgumentException("There can only be black and white colors");
@@ -174,30 +175,20 @@ public class SavesPanel extends JPanel {
     }
 
     private int pieceIntValue(Piece cp) throws IllegalArgumentException {
-        int i;
-        if (cp.getFigureColor() == Color.BLACK) {
-            i = 0;
-        } else {
-            i = 7;
-        }
-        switch (cp.getPieceName()) {
-            default:
-                throw new IllegalArgumentException("No such figure!");
-            case Pawn1:
-                return 0 + i;
-            case Pawn6:
-                return 1 + i;
-            case Rook:
-                return 2 + i;
-            case Bishop:
-                return 3 + i;
-            case Knight:
-                return 4 + i;
-            case Queen:
-                return 5 + i;
-            case King:
-                return 6 + i;
-        }
+       
+        var color = cp.getFigureColor();       
+        int i = color == Color.BLACK ? 0 : 7;
+        
+        return switch (cp.getPieceName()) {
+            default -> throw new IllegalArgumentException("No such figure!");
+            case Pawn1 -> 0 + i;
+            case Pawn6 -> 1 + i;
+            case Rook -> 2 + i;
+            case Bishop -> 3 + i;
+            case Knight -> 4 + i;
+            case Queen -> 5 + i;
+            case King -> 6 + i;
+        };
     }
 
     private class RadioButton extends JRadioButton {
@@ -207,11 +198,7 @@ public class SavesPanel extends JPanel {
             setText(name + ", " + date);
         }
 
-        public int getGameID() {
-            return gameID;
-        }
-
-        private final int gameID;
+        public final int gameID;
     }
     private ArrayList<RadioButton> radioButtons;
     private ButtonGroup buttonGroup;
