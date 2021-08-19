@@ -16,10 +16,10 @@ import my.chess.Board;
  */
 public class Pawn extends Piece {
 
-    public Pawn(Color figureColor, PieceName p) {
-        super(p, figureColor, Images.getPAWN(figureColor));
+    public Pawn(Color color, PieceName pieceName) {
+        super(pieceName, color, Images.getPAWN(color));
 
-        startingX = p == PieceName.Pawn1 ? 1 : 6;
+        startingX = pieceName == PieceName.Pawn1 ? 1 : 6;
 
         isOnBottomRow = startingX == 1;
     }
@@ -45,8 +45,8 @@ public class Pawn extends Piece {
     public boolean isCorrectMovement(int x1, int y1, int x2, int y2) {
         Square square = Board.getSquare(x2, y2);
         
-        boolean bOneForwardMovement = Math.abs(x1 - x2) == 1, 
-                bTwoForwardMovements = Math.abs(x1 - x2) == 2,
+        boolean isOneForwardMovement = Math.abs(x1 - x2) == 1, 
+                isTwoForwardMovements = Math.abs(x1 - x2) == 2,
                 isVertical = (isOnBottomRow ? x2 > x1 : x2 < x1),
                 isHorizontal = Math.abs(y1 - y2) == 1,           
                 isNotHorizontal = Math.abs(y1 - y2) == 0,           
@@ -54,9 +54,9 @@ public class Pawn extends Piece {
                 isFoeDiagonal = !isNullAhead && this.isFoe(square.getPiece());
         
         var availableMovements = List.of(
-            isVertical && bOneForwardMovement && isNotHorizontal && isNullAhead,
-            isVertical && x1 == startingX && bTwoForwardMovements && isNotHorizontal && isNullAhead,
-            isVertical && bOneForwardMovement && isHorizontal && isFoeDiagonal
+            isVertical && isOneForwardMovement && isNotHorizontal && isNullAhead,
+            isVertical && x1 == startingX && isTwoForwardMovements && isNotHorizontal && isNullAhead,
+            isVertical && isOneForwardMovement && isHorizontal && isFoeDiagonal
         );
         return availableMovements.contains(true);      
     }

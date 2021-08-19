@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,10 +47,11 @@ public class Database {
 
         String url = "jdbc:sqlite:db" + File.separator + "chess.db";
 
-        try (Connection connection = DriverManager.getConnection(url)) {
+        try (var connection = DriverManager.getConnection(url)) {
             if (connection != null) {
-                DatabaseMetaData meta = connection.getMetaData();
-                System.out.println("The driver name is " + meta.getDriverName());
+                var databaseMetaData = connection.getMetaData();
+                var driverName = databaseMetaData.getDriverName();
+                System.out.println("The driver name is " + driverName);
                 System.out.println("A new database has been created.");
             }
 
@@ -64,9 +64,9 @@ public class Database {
         while (resultSet.next()) {
             switch (queryType) {
                 case SELECT_POSITIONS -> {
-                    int colorValue = resultSet.getInt("color");
+                    int colorIntValue = resultSet.getInt("color");
                     int position = resultSet.getInt("position");
-                    Color color = colorValue == 0 ? Color.BLACK : Color.WHITE;
+                    Color color = parseIntToColor(colorIntValue);
                     Board.setStartingPoints(color, position);
                 }
                 case SELECT_GAMES -> {
@@ -74,16 +74,18 @@ public class Database {
                     dates.add(resultSet.getString("date"));
                     names.add(resultSet.getString("name"));
                 }
-                case SELECT_CHESS_FIELDS -> 
-                    setLoadedGamePiece(resultSet.getString("piece"),
-                            resultSet.getInt("x"),
-                            resultSet.getInt("y")
-                    );                    
+                case SELECT_CHESS_FIELDS -> {
+                    int row = resultSet.getInt("x");
+                    int col = resultSet.getInt("y");
+                    String pieceID = resultSet.getString("piece");
+                    setLoadedPiece(pieceID, row, col);                    
+                }
                 case SELECT_MAX_GAME_ID ->
                     gameID = resultSet.getInt("MAX(gameID)");                    
                 case SELECT_GAME_COLOR -> {
-                    
-                    Board.setCurrentColor(parseIntValue(resultSet.getInt("currentColor")));                    
+                    int intColorValue = resultSet.getInt("currentColor");
+                    Color color = parseIntToColor(intColorValue);
+                    Board.setCurrentColor(color);                    
                 }
             }
         }
@@ -108,20 +110,20 @@ public class Database {
                     select(queryType, resultSet);
                 }
             }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
+        } catch (Exception exception) {
+            System.err.println(exception);
         } finally {
             try {
                 if (connection != null) {
                     connection.close();
                 }
-            } catch (SQLException e) {
-                System.err.println(e);
+            } catch (SQLException exception) {
+                System.err.println(exception);
             }
-        }
+        }        
     }
 
-    private static Color parseIntValue(int integer) {
+    private static Color parseIntToColor(int integer) {
         return switch (integer) {
             default -> {
                 String message = "Color value can only be 0 or 1";
@@ -132,13 +134,15 @@ public class Database {
         };
     }
 
-    private static void setLoadedGamePiece(String pieceID, int x, int y) throws IOException {
+    private static void setLoadedPiece(String pieceID, int row, int col) throws IOException {
         if (pieceID != null) {
-            Board.setSquare(x, y, choosePiece(Integer.parseInt(pieceID)));
+            int pieceIntValue = Integer.parseInt(pieceID);
+            Piece piece = parseIntToPiece(pieceIntValue);
+            Board.setPiece(row, col, piece);
         }
     }
 
-    private static Piece choosePiece(int num) throws IllegalArgumentException {        
+    private static Piece parseIntToPiece(int num) throws IllegalArgumentException {        
         return switch (num) {
             default -> {
                 String message = "Piece ID value has to be between 0 and 11";

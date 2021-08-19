@@ -133,21 +133,21 @@ public class SavesPanel extends JPanel {
     public void updateDatabaseRecord() {
         try {
             int gameID = getSelectedGameId();
-            StringBuilder sb = new StringBuilder();
-            Color c = Board.getCurrentColor();
-            sb.append(String.format(updateColor, parseColorValue(c), gameID));
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    Square square = Board.getSquare(i, j);
+            var stringBuilder = new StringBuilder();
+            var color = Board.getCurrentColor();
+            stringBuilder.append(String.format(updateColor, parseColorValue(color), gameID));
+            for (int row = 0; row < 8; row++) {
+                for (int col = 0; col < 8; col++) {
+                    Square square = Board.getSquare(row, col);
                     Piece piece = square.getPiece();
                     if (piece != null) {
-                        sb.append(String.format(updatePieceValue, pieceIntValue(piece), i, j, gameID));
+                        stringBuilder.append(String.format(updatePieceValue, pieceIntValue(piece), row, col, gameID));
                     } else {
-                        sb.append(String.format(updatePieceValue, "null", i, j, gameID));
+                        stringBuilder.append(String.format(updatePieceValue, "null", row, col, gameID));
                     }
                 }
             }
-            Database.sqlConnection(sb.toString(), QueryType.OTHER);
+            Database.sqlConnection(stringBuilder.toString(), QueryType.OTHER);
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -169,7 +169,8 @@ public class SavesPanel extends JPanel {
         } else if (color == Color.WHITE) {
             return 1;
         } else {
-            throw new IllegalArgumentException("There can only be black and white colors");
+            String message = "There can only be black and white colors";
+            throw new IllegalArgumentException(message);
         }
 
     }
