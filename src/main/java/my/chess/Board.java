@@ -94,9 +94,9 @@ public class Board extends JPanel {
 
     private void choosePiece(Point point) {
         loop:
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                Square square = squares[i][j];
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Square square = squares[row][col];
                 Piece piece = square.getPiece();
                 if (!mate
                         && square.contains(point)
@@ -106,11 +106,11 @@ public class Board extends JPanel {
                         && (!check
                         || (check && !piecesToBlockCheckUnavailable)
                         || (check && piece instanceof King && piecesToBlockCheckUnavailable))) {
-                    squares[sourceI][sourceJ].setHighlighted(false);
+                    squares[sourceRow][sourceCol].setHighlighted(false);
                     square.setHighlighted(true);
                     selectedChessPiece = piece;
-                    sourceI = i;
-                    sourceJ = j;
+                    sourceRow = row;
+                    sourceCol = col;
                     repaint();
                     break loop;
                 } else if (square.contains(point) && piece != null
@@ -243,7 +243,7 @@ public class Board extends JPanel {
      */
     private boolean isSelfMadeCheck(int row, int column) {
         if (!check) {
-            Square source = squares[sourceI][sourceJ];
+            Square source = squares[sourceRow][sourceCol];
             Square target = squares[row][column];
             source.setPiece(null);
             target.setPiece(selectedChessPiece);
@@ -282,8 +282,8 @@ public class Board extends JPanel {
             && square.contains(dest)
             && !square.isHighlighted()
             && (piece == null || selectedChessPiece.isFoe(piece))
-            && selectedChessPiece.isCorrectMovement(sourceI, sourceJ, row, col)
-            && isPathFree(sourceI, sourceJ, row, col)
+            && selectedChessPiece.isCorrectMovement(sourceRow, sourceCol, row, col)
+            && isPathFree(sourceRow, sourceCol, row, col)
             && !isSelfMadeCheck(row, col)
             && (!check || checkBlock || kingEscape);        
     }
@@ -300,8 +300,8 @@ public class Board extends JPanel {
                     check = false;
                     square.setPiece(selectedChessPiece);
                     selectedChessPiece = null;
-                    squares[sourceI][sourceJ].setPiece(null);
-                    squares[sourceI][sourceJ].setHighlighted(false);
+                    squares[sourceRow][sourceCol].setPiece(null);
+                    squares[sourceRow][sourceCol].setHighlighted(false);
                     currentColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
                     oppositeColor = currentColor == Color.WHITE ? Color.BLACK : Color.WHITE;
                     repaint();                    
@@ -310,7 +310,7 @@ public class Board extends JPanel {
                     
                 } else if (selectedChessPiece != null
                         && squares[row][col].contains(dest)
-                        && !selectedChessPiece.isCorrectMovement(sourceI, sourceJ, row, col)) {
+                        && !selectedChessPiece.isCorrectMovement(sourceRow, sourceCol, row, col)) {
                     JOptionPane.showMessageDialog(this, "Ruch niedozwolony!\n");
                     break loop;
                 }
@@ -320,7 +320,7 @@ public class Board extends JPanel {
 
     private void promote(Pawn p) {
         String[] possibilites = {"Goniec"};
-        String s = (String) JOptionPane.showInputDialog(
+        String string = (String) JOptionPane.showInputDialog(
                 this,
                 "Wybierz figurę:\n",
                 "Wybierz figurę",
@@ -328,7 +328,7 @@ public class Board extends JPanel {
                 null,
                 possibilites,
                 possibilites[0]);
-        System.out.println(s);
+        System.out.println(string);
 
     }
 
@@ -370,7 +370,7 @@ public class Board extends JPanel {
         }
         return pathTemp;
     }
-
+      
     private boolean isPathFree(int x1, int y1, int x2, int y2) {
         System.out.format("%d %d %d %d\n", x1, y1, x2, y2);
         int verticalDifference, horizontalDifference, notNullCount = 0;
@@ -473,7 +473,7 @@ public class Board extends JPanel {
     private static final Square[][] squares = new Square[8][8];
     private static Color currentColor;
     private static Color oppositeColor;
-    private int sourceI, sourceJ;
+    private int sourceRow, sourceCol;
     private static Piece selectedChessPiece;
     private int beginHeight,
             endHeight,

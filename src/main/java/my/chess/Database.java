@@ -32,7 +32,12 @@ import my.chess.pieces.Rook;
 public class Database {
 
     public static enum QueryType {
-        OTHER, SELECT_CHESS_FIELDS, SELECT_MAX_GAME_ID, SELECT_GAME_COLOR, SELECT_GAMES, SELECT_POSITIONS
+        OTHER, 
+        SELECT_CHESS_FIELDS,
+        SELECT_MAX_GAME_ID,
+        SELECT_GAME_COLOR,
+        SELECT_GAMES,
+        SELECT_POSITIONS
     };
     public static ArrayList<Integer> games;
     public static ArrayList<String> dates;
@@ -43,15 +48,44 @@ public class Database {
 
         String url = "jdbc:sqlite:db" + File.separator + "chess.db";
 
-        try (Connection conn = DriverManager.getConnection(url)) {
-            if (conn != null) {
-                DatabaseMetaData meta = conn.getMetaData();
+        try (Connection connection = DriverManager.getConnection(url)) {
+            if (connection != null) {
+                DatabaseMetaData meta = connection.getMetaData();
                 System.out.println("The driver name is " + meta.getDriverName());
                 System.out.println("A new database has been created.");
             }
 
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch (SQLException exception) {
+            System.out.println(exception);
+        }
+    }
+
+    private static void select(QueryType queryType, ResultSet resultSet) throws Exception {
+        while (resultSet.next()) {
+            switch (queryType) {
+                case SELECT_POSITIONS -> {
+                    int colorValue = resultSet.getInt("color");
+                    int position = resultSet.getInt("position");
+                    Color color = colorValue == 0 ? Color.BLACK : Color.WHITE;
+                    Board.setStartingPoints(color, position);
+                }
+                case SELECT_GAMES -> {
+                    games.add(resultSet.getInt("gameID"));
+                    dates.add(resultSet.getString("date"));
+                    names.add(resultSet.getString("name"));
+                }
+                case SELECT_CHESS_FIELDS -> 
+                    setLoadedGamePiece(resultSet.getString("piece"),
+                            resultSet.getInt("x"),
+                            resultSet.getInt("y")
+                    );                    
+                case SELECT_MAX_GAME_ID ->
+                    gameID = resultSet.getInt("MAX(gameID)");                    
+                case SELECT_GAME_COLOR -> {
+                    
+                    Board.setCurrentColor(parseIntValue(resultSet.getInt("currentColor")));                    
+                }
+            }
         }
     }
 
@@ -59,54 +93,22 @@ public class Database {
 
         games = new ArrayList();
         dates = new ArrayList();
-        names = new ArrayList();        
+        names = new ArrayList();
         ResultSet resultSet;
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:db" + File.separator + "chess.db");
+            String dbName = "jdbc:sqlite:db" + File.separator + "chess.db";
+            connection = DriverManager.getConnection(dbName);
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
             switch (queryType) {
-                case OTHER:
-                    statement.executeUpdate(myQuery);
-                    break;
-                default:
+                case OTHER -> statement.executeUpdate(myQuery);                    
+                default -> {
                     resultSet = statement.executeQuery(myQuery);
-                    while (resultSet.next()) {
-                        switch (queryType) {
-                            case SELECT_POSITIONS:
-                                try {
-                                    Color color = resultSet.getInt("color") == 0 ? Color.BLACK : Color.WHITE;
-                                    Board.setStartingPoints(color, resultSet.getInt("position"));
-                                } catch (Exception e) {
-                                    System.out.println(e);
-                                }
-                                break;
-                            case SELECT_GAMES:
-                                games.add(resultSet.getInt("gameID"));
-                                dates.add(resultSet.getString("date"));
-                                names.add(resultSet.getString("name"));
-                                break;
-                            case SELECT_CHESS_FIELDS:
-                                try {
-                                    setLoadedGamePiece(resultSet.getString("piece"),
-                                            resultSet.getInt("x"),
-                                            resultSet.getInt("y")
-                                    );
-                                } catch (IOException | SQLException e) {
-                                    System.out.println(e);
-                                }
-                                break;
-                            case SELECT_MAX_GAME_ID:
-                                gameID = resultSet.getInt("MAX(gameID)");                                
-                                break;
-                            case SELECT_GAME_COLOR:
-                                Board.setCurrentColor(parseIntValue(resultSet.getInt("currentColor")));
-                                break;
-                        }
-                    }
+                    select(queryType, resultSet);
+                }
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println(e.getMessage());
         } finally {
             try {
@@ -119,9 +121,12 @@ public class Database {
         }
     }
 
-    private static Color parseIntValue(int i) {
-        return switch (i) {
-            default -> throw new IllegalArgumentException("Color value can only be 0 or 1");
+    private static Color parseIntValue(int integer) {
+        return switch (integer) {
+            default -> {
+                String message = "Color value can only be 0 or 1";
+                throw new IllegalArgumentException(message);
+            }
             case 0 -> Color.BLACK;
             case 1 -> Color.WHITE;
         };
@@ -133,18 +138,21 @@ public class Database {
         }
     }
 
-    private static Piece choosePiece(int num) throws IllegalArgumentException {
+    private static Piece choosePiece(int num) throws IllegalArgumentException {        
         return switch (num) {
-            default -> throw new IllegalArgumentException("Piece ID value has to be between 0 and 11");
-            case 0 -> new Pawn(Color.BLACK,  Piece.PieceName.Pawn1);
-            case 1 -> new Pawn(Color.BLACK,  Piece.PieceName.Pawn6);
+            default -> {
+                String message = "Piece ID value has to be between 0 and 11";
+                throw new IllegalArgumentException(message);
+            }
+            case 0 -> new Pawn(Color.BLACK, Piece.PieceName.Pawn1);
+            case 1 -> new Pawn(Color.BLACK, Piece.PieceName.Pawn6);
             case 2 -> new Rook(Color.BLACK);
             case 3 -> new Bishop(Color.BLACK);
             case 4 -> new Knight(Color.BLACK);
             case 5 -> new Queen(Color.BLACK);
             case 6 -> new King(Color.BLACK);
-            case 7 -> new Pawn(Color.WHITE,  Piece.PieceName.Pawn1);
-            case 8 -> new Pawn(Color.WHITE,  Piece.PieceName.Pawn6);
+            case 7 -> new Pawn(Color.WHITE, Piece.PieceName.Pawn1);
+            case 8 -> new Pawn(Color.WHITE, Piece.PieceName.Pawn6);
             case 9 -> new Rook(Color.WHITE);
             case 10 -> new Bishop(Color.WHITE);
             case 11 -> new Knight(Color.WHITE);
