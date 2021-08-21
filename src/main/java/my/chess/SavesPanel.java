@@ -82,16 +82,16 @@ public class SavesPanel extends JPanel {
 
             insertNewGame.append(insertNewStartingPositions);
 
-            for (int x = 0; x < 8; x++) {
-                for (int y = 0; y < 8; y++) {
-                    Square square = Board.getSquare(x, y);
+            for (int row = 0; row < 8; row++) {
+                for (int col = 0; col < 8; col++) {
+                    Square square = Board.getSquare(row, col);
                     Piece piece = square.getPiece();
                     if (piece != null) {
                         String selectPieceID = String.format(selectPiece, piece.getName(), parseColorValue(piece.color));
-                        insertFields.append(String.format(insertChessFields, x, y, selectPieceID, Database.gameID));
+                        insertFields.append(String.format(insertChessFields, row, col, selectPieceID, Database.gameID));
 
                     } else {
-                        insertFields.append(String.format(insertChessFields, x, y, "null", Database.gameID));
+                        insertFields.append(String.format(insertChessFields, row, col, "null", Database.gameID));
                     }
                 }
             }

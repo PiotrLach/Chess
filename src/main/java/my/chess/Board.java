@@ -38,7 +38,10 @@ public class Board extends JPanel {
         diffVertical = 80;
         createFields();
     }
-
+    /**
+     * Recalculates the size of each square, so that it's relative to current
+     * window size
+     */
     public void calculateSize() {
         int height = getHeight(),
                 width = getWidth();
@@ -92,37 +95,41 @@ public class Board extends JPanel {
         }
     }
 
-    private void choosePiece(Point point) {
-        loop:
+    private void choosePiece(Point point) {        
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 Square square = squares[row][col];
                 Piece piece = square.getPiece();
-                if (!mate
+                if (!isMate
                         && square.contains(point)
                         && !square.isHighlighted()
                         && piece != null
                         && currentColor == piece.color
-                        && (!check
-                        || (check && !piecesToBlockCheckUnavailable)
-                        || (check && piece instanceof King && piecesToBlockCheckUnavailable))) {
+                        && (!isCheck
+                            || (isCheck && isCheckBlockPossible)
+                            || (isCheck && piece instanceof King && !isCheckBlockPossible))) {
                     squares[sourceRow][sourceCol].setHighlighted(false);
                     square.setHighlighted(true);
                     selectedPiece = piece;
                     sourceRow = row;
                     sourceCol = col;
                     repaint();
-                    break loop;
-                } else if (square.contains(point) && piece != null
+                    return;
+                } else if (square.contains(point) 
+                        && piece != null
                         && currentColor != piece.color) {
                     String color = currentColor == Color.WHITE ? "białych" : "czarnych";
                     JOptionPane.showMessageDialog(this, "Teraz ruch " + color + "!");
-                    break loop;
+                    return;
                 }
             }
         }
     }
-
+    /**
+     * Finds coordinates of current player's king
+     * @return
+     * @throws Exception 
+     */
     private Point findKing() throws Exception {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -145,7 +152,7 @@ public class Board extends JPanel {
         } catch (Exception exception) {
             System.out.println(exception);
         }
-        check = check(kingX, kingY, true);
+        isCheck = isCheck(kingX, kingY, true);
     }
 
     /**
@@ -156,7 +163,7 @@ public class Board extends JPanel {
      * @param separate
      * @return check value
      */
-    private boolean check(int kingX, int kingY, boolean separate) {
+    private boolean isCheck(int kingX, int kingY, boolean separate) {
         ArrayList<Point> blockSquaresTemp = new ArrayList();
         int sum = 0;
         boolean isKnight;
@@ -168,13 +175,13 @@ public class Board extends JPanel {
                     if (piece != null
                             && piece.color != currentColor
                             && piece.isCorrectMovement(row, col, kingX, kingY)
-//                            && pathIsFree(i, j, kingX, kingY) ) 
-                            && (isKnight = piece instanceof Knight
-                            || isPathFree(row, col, kingX, kingY))) 
-                    { // ???                        
+                            && (isKnight = piece instanceof Knight 
+                                || isPathFree(row, col, kingX, kingY))) 
+                    { // ???                          
                         if (!isKnight && separate) {
                             blockSquaresTemp.add(new Point(row, col));
-                            blockSquaresTemp.addAll(makePath(row, col, kingX, kingY));
+                            var coordinates = getPath(row, col, kingX, kingY);
+                            blockSquaresTemp.addAll(coordinates);
                         }
                         sum++;
                     }
@@ -190,8 +197,9 @@ public class Board extends JPanel {
             JOptionPane.showMessageDialog(this, "Szach!");
             kingEscapeSquares = new ArrayList(mate(kingX, kingY));
             System.out.println(kingEscapeSquares);
-            if (piecesToBlockCheckUnavailable = !piecesToBlockCheckAvailable(blockSquaresTemp)) {
-                if (mate = kingEscapeSquares.isEmpty()) {
+            isCheckBlockPossible = isCheckBlockPossible(blockSquaresTemp);
+            if (!isCheckBlockPossible) {
+                if (isMate = kingEscapeSquares.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Mat!");
                 }
             }
@@ -207,7 +215,7 @@ public class Board extends JPanel {
                     Piece piece = squares[row][col].getPiece();
                     if (piece == null || piece.color != currentColor) {
                         System.out.println(row + " " + col);
-                        if (!check(row, col, false)) {
+                        if (!isCheck(row, col, false)) {
                             escapeSquares.add(new Point(row, col));
                         }
                     }
@@ -217,7 +225,7 @@ public class Board extends JPanel {
         return escapeSquares;
     }
 
-    private boolean piecesToBlockCheckAvailable(ArrayList<Point> blockSquares) {
+    private boolean isCheckBlockPossible(ArrayList<Point> blockSquares) {
         for (Point point : blockSquares) {
             int x = (int) point.getX(), y = (int) point.getY();
             for (int row = 0; row < 8; row++) {
@@ -242,7 +250,7 @@ public class Board extends JPanel {
      * @param column     
      */
     private boolean isSelfMadeCheck(int row, int column) {
-        if (!check) {
+        if (!isCheck) {
             Square source = squares[sourceRow][sourceCol];
             Square target = squares[row][column];
             source.setPiece(null);
@@ -251,7 +259,7 @@ public class Board extends JPanel {
             try {
                 Point point = findKing();
                 int x = (int) point.getX(), y = (int) point.getY();
-                sum += !check(x, y, false) ? 0 : 1;
+                sum += !isCheck(x, y, false) ? 0 : 1;
             } catch (Exception e) {
                 System.out.println(e);
             }
@@ -271,11 +279,11 @@ public class Board extends JPanel {
         Piece piece = square.getPiece();
         Point current = new Point(row, col);
         
-        var kingEscape = check 
+        var kingEscape = isCheck 
                 && selectedPiece instanceof King 
                 && kingEscapeSquares.contains(current);
         
-        var checkBlock = check 
+        var checkBlock = isCheck 
                 && !(selectedPiece instanceof King)                
                 && blockSquares.contains(current);       
         
@@ -286,11 +294,10 @@ public class Board extends JPanel {
             && selectedPiece.isCorrectMovement(sourceRow, sourceCol, row, col)
             && isPathFree(sourceRow, sourceCol, row, col)
             && !isSelfMadeCheck(row, col)
-            && (!check || checkBlock || kingEscape);        
+            && (!isCheck || checkBlock || kingEscape);        
     }
 
-    private void movePiece(Point dest) {
-        loop:
+    private void movePiece(Point dest) {        
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 
@@ -298,23 +305,23 @@ public class Board extends JPanel {
                 
                 if (isAcceptableMove(dest, square, row, col)) {
                     
-                    check = false;
+                    isCheck = false;
                     square.setPiece(selectedPiece);
                     selectedPiece = null;
                     squares[sourceRow][sourceCol].setPiece(null);
                     squares[sourceRow][sourceCol].setHighlighted(false);
                     var isWhite = currentColor == Color.WHITE;
                     currentColor = isWhite ? Color.BLACK : Color.WHITE;
-                    oppositeColor = isWhite ? Color.BLACK : Color.WHITE;
+                    oppositeColor = !isWhite ? Color.BLACK : Color.WHITE;                    
                     repaint();                    
                     check();                   
-                    break loop;
+                    return;
                     
                 } else if (selectedPiece != null
                         && squares[row][col].contains(dest)
                         && !selectedPiece.isCorrectMovement(sourceRow, sourceCol, row, col)) {
                     JOptionPane.showMessageDialog(this, "Ruch niedozwolony!\n");
-                    break loop;
+                    return;
                 }
             }
         }
@@ -345,7 +352,7 @@ public class Board extends JPanel {
                 } else {
                     square.drawSquare(graphics, row, col);
                 }
-                if (square.getPiece() != null) {
+                if (square.getPiece() != null) {                                        
                     Double x = square.getX();
                     Double y = square.getY();
                     Piece piece = square.getPiece();
@@ -359,20 +366,33 @@ public class Board extends JPanel {
             }
         }
     }
-
-    private ArrayList<Point> makePath(int x1, int y1, int x2, int y2) {
-        ArrayList<Point> pathTemp = new ArrayList();
+    /**
+     * Retrieves a list of coordinates between point (x1, y1) and (x2, y2)
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2      
+     */
+    private ArrayList<Point> getPath(int x1, int y1, int x2, int y2) {
+        ArrayList<Point> coordinates = new ArrayList();
         int verticalDifference, horizontalDifference;
         verticalDifference = x1 == x2 ? 0 : (x1 < x2 ? 1 : -1);
         horizontalDifference = y1 == y2 ? 0 : (y1 < y2 ? 1 : -1);
         x1 += verticalDifference;
         y1 += horizontalDifference;
         for (int i = x1, j = y1; i != x2 || j != y2; i += verticalDifference, j += horizontalDifference) {
-            pathTemp.add(new Point(i, j));
+            coordinates.add(new Point(i, j));
         }
-        return pathTemp;
+        return coordinates;
     }
-      
+    /**
+     * Checks if there are pieces on the path between point (x1, y1)
+     * and point (x2, y2)
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2     
+     */
     private boolean isPathFree(int x1, int y1, int x2, int y2) {
         System.out.format("%d %d %d %d\n", x1, y1, x2, y2);
         int verticalDifference, horizontalDifference, notNullCount = 0;
@@ -418,7 +438,7 @@ public class Board extends JPanel {
     public static void clearBoard() {
         currentColor = Color.WHITE;
         oppositeColor = Color.BLACK;
-        check = false;
+        isCheck = false;
         selectedPiece = null;
         startingPoints = new HashMap<>();
         for (int row = 0; row < 8; row++) {
@@ -472,7 +492,9 @@ public class Board extends JPanel {
     public static HashMap<Color, Integer> getstartingPoints() {
         return startingPoints;
     }
-    private static boolean check = false, mate = false, piecesToBlockCheckUnavailable = false;
+    private static boolean isCheck = false, 
+            isMate = false, 
+            isCheckBlockPossible = false;
     private static HashMap<Color, Integer> startingPoints;
     private ArrayList<Point> blockSquares, kingEscapeSquares;
     private static final Square[][] squares = new Square[8][8];
