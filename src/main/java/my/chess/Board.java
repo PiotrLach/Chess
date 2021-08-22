@@ -244,12 +244,12 @@ public class Board extends JPanel {
     /**
      * Tests if user's move will result in a check
      * @param row
-     * @param column     
+     * @param col     
      */
-    private boolean isSelfMadeCheck(int row, int column) {
+    private boolean isSelfMadeCheck(int row, int col) {
         if (!isCheck) {
             Square source = squares[sourceRow][sourceCol];
-            Square target = squares[row][column];
+            Square target = squares[row][col];
             source.setPiece(null);
             target.setPiece(selectedPiece);
             int sum = 0;
@@ -436,6 +436,8 @@ public class Board extends JPanel {
         currentColor = Color.WHITE;
         oppositeColor = Color.BLACK;
         isCheck = false;
+        isMate = false;
+        isCheckBlockPossible = false;
         selectedPiece = null;
         startingPoints = new HashMap<>();
         for (int row = 0; row < 8; row++) {
