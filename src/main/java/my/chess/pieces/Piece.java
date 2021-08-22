@@ -21,8 +21,8 @@ abstract public class Piece {
         this.image = img;
     }
 
-    public void drawImage(Graphics graphics, int drawX, int drawY, int width, int height) {
-        graphics.drawImage(image, drawX, drawY, width, height, null);
+    public void drawImage(Graphics graphics, int x, int y, int width, int height) {
+        graphics.drawImage(image, x, y, width, height, null);
     }
 
     public enum PieceName {

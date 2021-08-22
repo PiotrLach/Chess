@@ -235,7 +235,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_manageSavesNewSaveActionPerformed
 
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
-        mainChessBoard.calculateSize();
+        mainChessBoard.recalculateSize();
     }//GEN-LAST:event_formComponentResized
 
     /**

@@ -30,58 +30,45 @@ import javax.swing.JPanel;
 public class Board extends JPanel {
 
     public Board() {
-        beginHeight = 640;
-        endHeight = 0;
-        beginWidth = 0;
-        endWidth = 640;
-        diffHorizontal = 80;
-        diffVertical = 80;
+        a1 = 640;
+        a0 = 0;
+        b0 = 0;
+        b1 = 640;
+        squareSize = 80;
         createSquares();
     }
     /**
-     * Recalculates the size of each square, so that it's relative to current
-     * window size
+     * Recalculates the size and placement of each square, 
+     * so that the board scales with window
      */
-    public void calculateSize() {
-        int height = getHeight(),
-                width = getWidth();
-        beginHeight = (int) height;
-        endHeight = (int) 0;
-        while ((beginHeight - endHeight) % 8 != 0) {
-            beginHeight--;
+    public void recalculateSize() {
+        int height = getHeight(), width = getWidth();
+        a0 = 0;
+        a1 = height;        
+        while (a1 % 8 != 0) {
+            a1--;
         }
-        diffVertical = (beginHeight - endHeight) / 8;
-        beginHeight -= diffVertical;
-        endHeight -= diffVertical;
-        beginWidth = (int) (width - height) / 2;
-        endWidth = (int) beginWidth + height;
-        while ((endWidth - beginWidth) % 8 != 0) {
-            endWidth--;
+        squareSize = a1 / 8;
+        b0 = (width - height) / 2;
+        b1 = b0 + height;
+        while ((b1 - b0) % 8 != 0) {
+            b1--;
         }
-        diffHorizontal = (endWidth - beginWidth) / 8;
-        int row = 0, col = 0;
-        for (int x = beginHeight; x > endHeight; x -= diffVertical) {
-            for (int y = beginWidth; y < endWidth; y += diffHorizontal) {
+        for (int x = a0, row = 0; x < a1; x += squareSize, row++) {
+            for (int y = b0, col = 0; y < b1; y += squareSize, col++) {
                 squares[row][col].setLocation(y, x);
-                squares[row][col].setSize(diffHorizontal, diffVertical);
-                col++;
+                squares[row][col].setSize(squareSize, squareSize);
             }
-            col = 0;
-            row = row == 8 ? 0 : ++row;
         }
         repaint();
     }
 
-    private void createSquares() {
-        int row = 0, col = 0;
-        for (int x = beginHeight; x > endHeight; x -= diffVertical) {
-            for (int y = beginWidth; y < endWidth; y += diffHorizontal) {
+    private void createSquares() {        
+        for (int x = a0, row = 0; x < a1; x += squareSize, row++) {
+            for (int y = b0, col = 0; y < b1; y += squareSize, col++) {
                 Square square = new Square(y, x, 80, 80);
-                squares[row][col] = square;
-                col++;
-            }
-            col = 0;
-            row = row == 8 ? 0 : ++row;
+                squares[row][col] = square;                
+            }            
         }
     }
 
@@ -116,16 +103,18 @@ public class Board extends JPanel {
                 Piece piece = square.getPiece();
                 
                 if (isChoosable(square, input)) {
+                    
                     squares[sourceRow][sourceCol].setHighlighted(false);
                     square.setHighlighted(true);                    
                     selectedPiece = piece;
                     sourceRow = row;
                     sourceCol = col;
                     repaint();
-                    return;                
+                    return;                               
                 } else if (square.contains(input) 
                         && piece != null
                         && currentColor != piece.color) {
+                    
                     boolean isWhite = currentColor == Color.WHITE;
                     String colorName = isWhite ? "białych" : "czarnych";
                     String message = "Teraz ruch " + colorName + "!";
@@ -285,7 +274,7 @@ public class Board extends JPanel {
         }
     }
     
-    private boolean isAcceptableMove(Point dest, Square square, int row, int col) {
+    private boolean isMoveable(Point dest, Square square, int row, int col) {
         Piece piece = square.getPiece();
         Point current = new Point(row, col);
         
@@ -313,7 +302,7 @@ public class Board extends JPanel {
                 
                 Square square = squares[row][col];                
                 
-                if (isAcceptableMove(dest, square, row, col)) {
+                if (isMoveable(dest, square, row, col)) {
                     
                     isCheck = false;
                     square.setPiece(selectedPiece);
@@ -369,8 +358,8 @@ public class Board extends JPanel {
                     piece.drawImage(graphics,
                             x.intValue(),
                             y.intValue(),
-                            diffHorizontal,
-                            diffVertical
+                            squareSize,
+                            squareSize
                     );
                 }
             }
@@ -512,11 +501,10 @@ public class Board extends JPanel {
     private static Color oppositeColor;
     private int sourceRow, sourceCol;
     private static Piece selectedPiece;
-    private int beginHeight,
-            endHeight,
-            beginWidth,
-            endWidth,
-            diffHorizontal,
-            diffVertical;
+    private int a1,
+            a0,
+            b0,
+            b1,
+            squareSize;
 
 }
