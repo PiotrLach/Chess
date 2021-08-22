@@ -29,12 +29,7 @@ import javax.swing.JPanel;
  */
 public class Board extends JPanel {
 
-    public Board() {
-        a1 = 640;
-        a0 = 0;
-        b0 = 0;
-        b1 = 640;
-        squareSize = 80;
+    public Board() {        
         createSquares();
     }
     /**
@@ -43,6 +38,7 @@ public class Board extends JPanel {
      */
     public void recalculateSize() {
         int height = getHeight(), width = getWidth();
+        int a1, a0, b0, b1;
         a0 = 0;
         a1 = height;        
         while (a1 % 8 != 0) {
@@ -63,7 +59,9 @@ public class Board extends JPanel {
         repaint();
     }
 
-    private void createSquares() {        
+    private void createSquares() { 
+        squareSize = 80;
+        int a1 = 640, a0 = 0, b0 = 0, b1 = 640;
         for (int x = a0, row = 0; x < a1; x += squareSize, row++) {
             for (int y = b0, col = 0; y < b1; y += squareSize, col++) {
                 Square square = new Square(y, x, 80, 80);
@@ -501,10 +499,6 @@ public class Board extends JPanel {
     private static Color oppositeColor;
     private int sourceRow, sourceCol;
     private static Piece selectedPiece;
-    private int a1,
-            a0,
-            b0,
-            b1,
-            squareSize;
+    private int squareSize;
 
 }
