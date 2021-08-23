@@ -6,6 +6,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
+import my.chess.Coord;
 import java.util.List;
 import my.chess.Square;
 import my.chess.Board;
@@ -19,18 +20,18 @@ public class Pawn extends Piece {
     public Pawn(Color color, PieceName pieceName) {
         super(pieceName, color, Images.getPAWN(color));
 
-        startingX = pieceName == PieceName.Pawn1 ? 1 : 6;
+        startingRow = pieceName == PieceName.Pawn1 ? 1 : 6;
 
-        isOnBottomRow = startingX == 1;
+        isOnBottomRow = startingRow == 1;
     }
     
-    private boolean enPassant(int x1, int y1, int x2, int y2) {
-        if ((x1 - x2) == (startingX == 1 ? -1 : 1) && Math.abs(y1 - y2) == 1) {
+    private boolean enPassant(Coord source, Coord target) {
+        if ((source.row - target.row) == (isOnBottomRow ? -1 : 1) && Math.abs(source.col - target.col) == 1) {
             System.out.println("---");
-            System.out.format("%d %d %d %d", x1, y1, x2, y2);
-            int temp = y1 - (y1 - y2);
-            System.out.println(x1 + " " + temp);
-            Square square = Board.getSquare(x1, y1 - (y1 - y2));
+            System.out.format("%d %d %d %d", source.row, source.col, target.row, target.col);
+            int temp = source.col - (source.col - target.col);
+            System.out.println(source.row + " " + temp);
+            Square square = Board.getSquare(source.row, source.col - (source.col - target.col));
             Piece neighbor = square.getPiece();
             if (neighbor instanceof Pawn) {
                 Pawn p = (Pawn) neighbor;
@@ -42,25 +43,25 @@ public class Pawn extends Piece {
     }
     
     @Override
-    public boolean isCorrectMovement(int x1, int y1, int x2, int y2) {
-        Square square = Board.getSquare(x2, y2);
+    public boolean isCorrectMovement(Coord source, Coord target) {
+        Square square = Board.getSquare(target.row, target.col);
         
-        boolean isOneForwardMovement = Math.abs(x1 - x2) == 1, 
-                isTwoForwardMovements = Math.abs(x1 - x2) == 2,
-                isVertical = (isOnBottomRow ? x2 > x1 : x2 < x1),
-                isHorizontal = Math.abs(y1 - y2) == 1,           
-                isNotHorizontal = Math.abs(y1 - y2) == 0,           
+        boolean isOneForwardMovement = Math.abs(source.row - target.row) == 1, 
+                isTwoForwardMovements = Math.abs(source.row - target.row) == 2,
+                isVertical = (isOnBottomRow ? target.row > source.row : target.row < source.row),
+                isHorizontal = Math.abs(source.col - target.col) == 1,           
+                isNotHorizontal = Math.abs(source.col - target.col) == 0,           
                 isNullAhead = square.getPiece() == null,
                 isFoeDiagonal = !isNullAhead && this.isFoe(square.getPiece());
         
         var availableMovements = List.of(
             isVertical && isOneForwardMovement && isNotHorizontal && isNullAhead,
-            isVertical && x1 == startingX && isTwoForwardMovements && isNotHorizontal && isNullAhead,
+            isVertical && source.row == startingRow && isTwoForwardMovements && isNotHorizontal && isNullAhead,
             isVertical && isOneForwardMovement && isHorizontal && isFoeDiagonal
         );
         return availableMovements.contains(true);      
     }
     private final boolean isOnBottomRow;
-    private final int startingX;
+    private final int startingRow;
 
 }

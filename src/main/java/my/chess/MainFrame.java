@@ -193,7 +193,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+   
     private void mainChessBoardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mainChessBoardMouseClicked
         mainChessBoard.selectAndMove(evt);
     }//GEN-LAST:event_mainChessBoardMouseClicked

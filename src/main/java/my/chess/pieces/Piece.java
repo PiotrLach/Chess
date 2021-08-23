@@ -6,6 +6,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
+import my.chess.Coord;
 import java.awt.Graphics;
 import java.awt.Image;
 
@@ -15,10 +16,10 @@ import java.awt.Image;
  */
 abstract public class Piece {
 
-    public Piece(PieceName pieceName, Color figureColor, Image img) {
+    public Piece(PieceName pieceName, Color color, Image image) {
         this.name = pieceName;
-        this.color = figureColor;
-        this.image = img;
+        this.color = color;
+        this.image = image;
     }
 
     public void drawImage(Graphics graphics, int x, int y, int width, int height) {
@@ -37,7 +38,7 @@ abstract public class Piece {
         return name;
     }
 
-    abstract public boolean isCorrectMovement(int x1, int y1, int x2, int y2);
+    abstract public boolean isCorrectMovement(Coord source, Coord target);
 
     public final Color color;
     protected Image image;

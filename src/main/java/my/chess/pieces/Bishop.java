@@ -6,6 +6,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
+import my.chess.Coord;
 
 /**
  *
@@ -18,8 +19,8 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public boolean isCorrectMovement(int x1, int y1, int x2, int y2) {
-        boolean movement = Math.abs(x1 - x2) == Math.abs(y1 - y2);
+    public boolean isCorrectMovement(Coord source, Coord target) {
+        boolean movement = Math.abs(source.row - target.row) == Math.abs(source.col - target.col);
         return movement;
     }
 

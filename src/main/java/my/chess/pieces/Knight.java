@@ -6,6 +6,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
+import my.chess.Coord;
 import java.awt.Image;
 
 /**
@@ -19,9 +20,9 @@ public class Knight extends Piece {
     }
 
     @Override
-    public boolean isCorrectMovement(int x1, int y1, int x2, int y2) {
-        boolean movement = (Math.abs(x1 - x2) == 2 && Math.abs(y1 - y2) == 1)
-                || (Math.abs(x1 - x2) == 1 && Math.abs(y1 - y2) == 2);
+    public boolean isCorrectMovement(Coord source, Coord target) {
+        boolean movement = (Math.abs(source.row - target.row) == 2 && Math.abs(source.col - target.col) == 1)
+                || (Math.abs(source.row - target.row) == 1 && Math.abs(source.col - target.col) == 2);
         return movement;
     }
 

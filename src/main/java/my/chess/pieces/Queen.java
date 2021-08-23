@@ -6,6 +6,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
+import my.chess.Coord;
 
 /**
  *
@@ -18,10 +19,10 @@ public class Queen extends Piece {
     }
 
     @Override
-    public boolean isCorrectMovement(int x1, int y1, int x2, int y2) {
-        boolean movement = (Math.abs(x1 - x2) == Math.abs(y1 - y2))
-                || (Math.abs(x1 - x2) > 0 && Math.abs(y1 - y2) == 0)
-                || (Math.abs(x1 - x2) == 0 && Math.abs(y1 - y2) > 0);
+    public boolean isCorrectMovement(Coord source, Coord target) {
+        boolean movement = (Math.abs(source.row - target.row) == Math.abs(source.col - target.col))
+                || (Math.abs(source.row - target.row) > 0 && Math.abs(source.col - target.col) == 0)
+                || (Math.abs(source.row - target.row) == 0 && Math.abs(source.col - target.col) > 0);
         return movement;
     }
 

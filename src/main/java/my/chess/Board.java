@@ -33,7 +33,7 @@ public class Board extends JPanel {
         createSquares();
     }
     /**
-     * Recalculates the size and placement of each square, 
+     * Recalculates the size and location for each square, 
      * so that the board scales with window
      */
     public void recalculateSize() {
@@ -113,9 +113,10 @@ public class Board extends JPanel {
                         && piece != null
                         && currentColor != piece.color) {
                     
-                    boolean isWhite = currentColor == Color.WHITE;
-                    String colorName = isWhite ? "białych" : "czarnych";
-                    String message = "Teraz ruch " + colorName + "!";
+                    var isWhite = currentColor == Color.WHITE;
+                    var colorName = isWhite ? "białych" : "czarnych";
+                    var message = "Teraz ruch " + colorName + "!";
+                    
                     JOptionPane.showMessageDialog(this, message);
                     return;
                 }
@@ -127,31 +128,43 @@ public class Board extends JPanel {
      * @return
      * @throws Exception 
      */
-    private Point findKing() throws Exception {
+    private Coord findKing() throws Exception {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 Piece piece = squares[row][col].getPiece();
                 if (piece instanceof King && piece.color == currentColor) {
-                    Point kingCoordinates = new Point(row, col);
-                    return kingCoordinates;
+                    var kingCoord = new Coord(row, col);
+                    return kingCoord;
                 }
             }
         }
         throw new Exception("King has not been found.");
     }
 
-    private void check() {
-        int kingX = 0, kingY = 0;
+    private void check() {        
         try {
-            Point point = findKing();
-            kingX = (int) point.getX();
-            kingY = (int) point.getY();
+            var kingCoord = findKing();            
+            isCheck = isCheck(kingCoord, true);
         } catch (Exception exception) {
             System.out.println(exception);
-        }
-        isCheck = isCheck(kingX, kingY, true);
+        }        
     }
 
+    public void test(Coord origin, Coord kingCoord, Piece piece) {
+        int row = origin.row;
+        int col = origin.col;
+        if (row != kingCoord.row
+        && col != kingCoord.col
+        && piece != null
+        && piece.color != currentColor
+        && piece.isCorrectMovement(origin, kingCoord)) {
+            System.out.println("Path free");
+            System.out.println(isPathFree(origin, kingCoord));
+            System.out.println("Correct movement");
+            System.out.println(piece.isCorrectMovement(origin, kingCoord));
+        }
+    }
+    
     /**
      * Tests if check occurs
      *
@@ -160,27 +173,31 @@ public class Board extends JPanel {
      * @param separate
      * @return check value
      */
-    private boolean isCheck(int kingRow, int kingCol, boolean separate) {
-        ArrayList<Point> enemySquaresTemp = new ArrayList();
+    private boolean isCheck(Coord kingCoord, boolean separate) {
+        ArrayList<Coord> enemySquaresTemp = new ArrayList();
         int sum = 0;
         boolean isKnight;
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 Square square = squares[row][col];
-                Piece piece = square.getPiece();                                
-                if (row != kingRow
-                        && col != kingCol
-                        && piece != null
-                        && piece.color != currentColor
-                        && piece.isCorrectMovement(row, col, kingRow, kingCol)
-                        && (isKnight = piece instanceof Knight 
-                            || isPathFree(row, col, kingRow, kingCol))) 
+                Piece piece = square.getPiece(); 
+                Coord origin = new Coord(row, col);
+                
+//                test(origin, kingCoord, piece);
+                
+                if (row != kingCoord.row
+                    && col != kingCoord.col
+                    && piece != null
+                    && piece.color != currentColor
+                    && piece.isCorrectMovement(origin, kingCoord)
+                    && (isKnight = piece instanceof Knight 
+                        || isPathFree(origin, kingCoord))) 
                 { // ???                          
                     if (!isKnight && separate) {
-                        enemySquaresTemp.add(new Point(row, col));
-                        var coordinates = getPath(row, col, kingRow, kingCol);
+                        enemySquaresTemp.add(new Coord(row, col));
+                        var coordinates = getPath(origin, kingCoord);
                         enemySquaresTemp.addAll(coordinates);
-                    }
+                    }                    
                     sum++;
                 }                
             }
@@ -192,7 +209,7 @@ public class Board extends JPanel {
             return false;
         } else if (sum > 0 && separate) {
             JOptionPane.showMessageDialog(this, "Szach!");
-            kingEscapeSquares = new ArrayList(mate(kingRow, kingCol));
+            kingEscapeSquares = new ArrayList(mate(kingCoord));
             System.out.println(kingEscapeSquares);
             isCheckBlockPossible = isCheckBlockPossible(enemySquaresTemp);
             if (!isCheckBlockPossible) {
@@ -204,16 +221,27 @@ public class Board extends JPanel {
         return true;
     }
 
-    private ArrayList<Point> mate(int kingRow, int kingCol) {
-        ArrayList<Point> escapeSquares = new ArrayList();
+    private ArrayList<Coord> mate(Coord kingCoord) {
+        ArrayList<Coord> escapeSquares = new ArrayList();
+        
+        int kingRow = kingCoord.row, kingCol = kingCoord.col;                
+        
         for (int row = kingRow - 1; row <= kingRow + 1; row++) {
+            
             for (int col = kingCol - 1; col <= kingCol + 1; col++) {
+                
                 if ((row <= 7 && row >= 0) && (col <= 7 && col >= 0)) {
-                    Piece piece = squares[row][col].getPiece();
+                    
+                    Square square = squares[row][col];                    
+                    Piece piece = square.getPiece();
+                    
+                    Coord coord = new Coord(row, col);
+                    
                     if (piece == null || piece.color != currentColor) {
-                        System.out.println(row + " " + col);
-                        if (!isCheck(row, col, false)) {
-                            escapeSquares.add(new Point(row, col));
+                        
+                        if (!isCheck(kingCoord, false)) {
+                            
+                            escapeSquares.add(coord);
                         }
                     }
                 }
@@ -222,18 +250,21 @@ public class Board extends JPanel {
         return escapeSquares;
     }
 
-    private boolean isCheckBlockPossible(ArrayList<Point> enemySquares) {
-        for (Point point : enemySquares) {
-            int x = (int) point.getX(), y = (int) point.getY();
+    private boolean isCheckBlockPossible(ArrayList<Coord> enemySquares) {
+        for (Coord target : enemySquares) {                        
+            
             for (int row = 0; row < 8; row++) {
                 for (int col = 0; col < 8; col++) {
                     Square square = squares[row][col];
                     Piece piece = square.getPiece();
+                    
+                    Coord source = new Coord(row, col);
+                    
                     if (piece != null
                             && !(piece instanceof King)
                             && piece.color == currentColor
-                            && piece.isCorrectMovement(row, col, x, y)
-                            && isPathFree(row, col, x, y)) {
+                            && piece.isCorrectMovement(source, target)
+                            && isPathFree(source, target)) {
                         return true;
                     }
                 }
@@ -248,15 +279,14 @@ public class Board extends JPanel {
      */
     private boolean isSelfMadeCheck(int row, int col) {
         if (!isCheck) {
-            Square source = squares[sourceRow][sourceCol];
-            Square target = squares[row][col];
-            source.setPiece(null);
-            target.setPiece(selectedPiece);
+            var sourceSquare = squares[sourceRow][sourceCol];
+            var targetSquare = squares[row][col];
+            sourceSquare.setPiece(null);
+            targetSquare.setPiece(selectedPiece);
             int sum = 0;
             try {
-                Point point = findKing();
-                int x = (int) point.getX(), y = (int) point.getY();
-                sum += !isCheck(x, y, false) ? 0 : 1;
+                var kingCoord = findKing();                
+                sum += !isCheck(kingCoord, false) ? 0 : 1;
             } catch (Exception e) {
                 System.out.println(e);
             }
@@ -264,8 +294,8 @@ public class Board extends JPanel {
                 var message = "Ruch niedozwolony: skutkowałby szachem króla!\n";
                 JOptionPane.showMessageDialog(this, message);
             }
-            source.setPiece(selectedPiece);
-            target.setPiece(null);
+            sourceSquare.setPiece(selectedPiece);
+            targetSquare.setPiece(null);
             return sum > 0;
         } else {
             return false;
@@ -276,29 +306,35 @@ public class Board extends JPanel {
         Piece piece = square.getPiece();
         Point current = new Point(row, col);
         
-        var kingEscape = isCheck 
+        var isKingEscape = isCheck 
                 && selectedPiece instanceof King 
                 && kingEscapeSquares.contains(current);
         
-        var checkBlock = isCheck 
+        var isCheckBlock = isCheck 
                 && !(selectedPiece instanceof King)                
-                && enemySquares.contains(current);       
+                && enemySquares.contains(current); 
+        
+        Coord source = new Coord(sourceRow, sourceCol);
+        Coord target = new Coord(row, col);
         
         return selectedPiece != null
             && square.contains(dest)
             && !square.isHighlighted()
             && (piece == null || selectedPiece.isFoe(piece))
-            && selectedPiece.isCorrectMovement(sourceRow, sourceCol, row, col)
-            && isPathFree(sourceRow, sourceCol, row, col)
+            && selectedPiece.isCorrectMovement(source, target)
+            && isPathFree(source, target)
             && !isSelfMadeCheck(row, col)
-            && (!isCheck || checkBlock || kingEscape);        
+            && (!isCheck || isCheckBlock || isKingEscape);        
     }
 
     private void movePiece(Point dest) {        
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 
-                Square square = squares[row][col];                
+                Square square = squares[row][col];
+
+                Coord source = new Coord(sourceRow, sourceCol);
+                Coord target = new Coord(row, col);                
                 
                 if (isMoveable(dest, square, row, col)) {
                     
@@ -316,7 +352,7 @@ public class Board extends JPanel {
                     
                 } else if (selectedPiece != null
                         && square.contains(dest)
-                        && !selectedPiece.isCorrectMovement(sourceRow, sourceCol, row, col)) {
+                        && !selectedPiece.isCorrectMovement(source, target)) {
                     JOptionPane.showMessageDialog(this, "Ruch niedozwolony!\n");
                     return;
                 }
@@ -362,46 +398,68 @@ public class Board extends JPanel {
                 }
             }
         }
+    }        
+    /**
+     * Retrieves a list of coordinates between source and target
+     * @param source
+     * @param target
+     */
+    private ArrayList<Coord> getPath(Coord source, Coord target) {  
+        
+        ArrayList<Coord> coords = new ArrayList();
+                           
+        var isSameRow = source.row == target.row;
+        var isSameCol = source.col == target.col;
+        var isTargetRowLower = source.row < target.row;
+        var isTargetColLower = source.col < target.col;
+        
+        int vDiff, hDiff; // vertical and horizontal difference
+
+        vDiff = isSameRow ? 0 : (isTargetRowLower ? 1 : -1);
+        hDiff = isSameCol ? 0 : (isTargetColLower ? 1 : -1);   
+
+        int row = source.row + vDiff;
+        int col = source.col + hDiff;
+        var isTargetReached = false;
+
+        for (; isTargetReached; row += vDiff, col += hDiff) {           
+
+            var pathCoord = new Coord(row, col);
+            coords.add(pathCoord);
+            
+            isTargetReached = row != target.row || col != target.col;
+        }        
+        return coords;
     }
     /**
-     * Retrieves a list of coordinates between point (x1, y1) and (x2, y2)
-     * @param x1
-     * @param y1
-     * @param x2
-     * @param y2      
+     * Checks if there are pieces on the path between source and target coords
+     * @param source
+     * @param target
      */
-    private ArrayList<Point> getPath(int x1, int y1, int x2, int y2) {
-        ArrayList<Point> coordinates = new ArrayList();
-        int verticalDifference, horizontalDifference;
-        verticalDifference = x1 == x2 ? 0 : (x1 < x2 ? 1 : -1);
-        horizontalDifference = y1 == y2 ? 0 : (y1 < y2 ? 1 : -1);
-        x1 += verticalDifference;
-        y1 += horizontalDifference;
-        for (int i = x1, j = y1; i != x2 || j != y2; i += verticalDifference, j += horizontalDifference) {
-            coordinates.add(new Point(i, j));
-        }
-        return coordinates;
-    }
-    /**
-     * Checks if there are pieces on the path between point (x1, y1)
-     * and point (x2, y2)
-     * @param x1
-     * @param y1
-     * @param x2
-     * @param y2     
-     */
-    private boolean isPathFree(int x1, int y1, int x2, int y2) {
-        System.out.format("%d %d %d %d\n", x1, y1, x2, y2);
-        int verticalDifference, horizontalDifference, notNullCount = 0;
-        if (!(selectedPiece instanceof Knight)) {            
-            verticalDifference = x1 == x2 ? 0 : (x1 < x2 ? 1 : -1);
-            horizontalDifference = y1 == y2 ? 0 : (y1 < y2 ? 1 : -1);           
-            x1 += verticalDifference;
-            y1 += horizontalDifference;
-            for (int i = x1, j = y1; i != x2 || j != y2; i += verticalDifference, j += horizontalDifference) {
-                System.out.format("%d %d\n", i, j);
-                Piece piece = squares[i][j].getPiece();
+    private boolean isPathFree(Coord source, Coord target) {       
+        int vDiff, hDiff; // vertical and horizontal difference
+        int notNullCount = 0;
+        
+        if (!(selectedPiece instanceof Knight)) { 
+            
+            var isSameRow = source.row == target.row;
+            var isSameCol = source.col == target.col;
+            var isTargetRowLower = source.row < target.row;
+            var isTargetColLower = source.col < target.col;
+            
+            vDiff = isSameRow ? 0 : (isTargetRowLower ? 1 : -1);
+            hDiff = isSameCol ? 0 : (isTargetColLower ? 1 : -1);   
+                        
+            int row = source.row + vDiff;
+            int col = source.col + hDiff;
+            var isTargetReached = false;
+            
+            for (; isTargetReached; row += vDiff, col += hDiff) {
+                                                
+                Piece piece = squares[row][col].getPiece();
                 notNullCount += piece == null ? 0 : 1;
+                
+                isTargetReached = row != target.row || col != target.col;
             }
         }
         return notNullCount == 0;

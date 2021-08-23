@@ -16,6 +16,6 @@ public class Coord {
         this.col = col;
     }
     
-    public int row;
-    public int col;
+    public final int row;
+    public final int col;
 }
