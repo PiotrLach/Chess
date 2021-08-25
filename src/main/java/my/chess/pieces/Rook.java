@@ -7,7 +7,6 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import my.chess.Coord;
-import java.awt.Image;
 
 /**
  *
@@ -21,10 +20,15 @@ public class Rook extends Piece {
 
     @Override
     public boolean isCorrectMovement(Coord source, Coord target) {
-        boolean movement = (Math.abs(source.row - target.row) > 0 && Math.abs(source.col - target.col) == 0)
-                || (Math.abs(source.row - target.row) == 0 && Math.abs(source.col - target.col) > 0);
-
-        return movement;
+        
+        int vDiff, hDiff; // vertical and horizontal difference;
+        vDiff = Math.abs(source.row - target.row);
+        hDiff = Math.abs(source.col - target.col);
+        
+        var isVerticalMov = vDiff > 0;
+        var isHorizontalMov = hDiff > 0;        
+        
+        return (isVerticalMov && !isHorizontalMov) || (isHorizontalMov && !isVerticalMov);
     }
 
 }
