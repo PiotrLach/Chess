@@ -5,17 +5,18 @@
  */
 package my.chess;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /**
  *
  * @author Piotr Lach
  */
-public class Coord {
-
-    public Coord(int row, int col) {
-        this.row = row;
-        this.col = col;
-    }
-    
+@EqualsAndHashCode
+@ToString
+@AllArgsConstructor
+public class Coord {        
     public final int row;
-    public final int col;
+    public final int col;      
 }

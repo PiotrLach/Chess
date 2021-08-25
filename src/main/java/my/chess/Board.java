@@ -150,18 +150,19 @@ public class Board extends JPanel {
         }        
     }
 
-    public void test(Coord origin, Coord kingCoord, Piece piece) {
-        int row = origin.row;
-        int col = origin.col;
-        if (row != kingCoord.row
-        && col != kingCoord.col
-        && piece != null
-        && piece.color != currentColor
-        && piece.isCorrectMovement(origin, kingCoord)) {
-            System.out.println("Path free");
-            System.out.println(isPathFree(origin, kingCoord));
-            System.out.println("Correct movement");
-            System.out.println(piece.isCorrectMovement(origin, kingCoord));
+    public void test(Coord source, Coord kingCoord, Piece piece) {
+        int row = source.row;
+        int col = source.col;        
+        if (!source.equals(kingCoord) && 
+//            (row != kingCoord.row
+//            || col != kingCoord.col) && 
+            piece != null
+            && piece.color != currentColor
+            && piece instanceof Rook
+            && piece.isCorrectMovement(source, kingCoord)) 
+        {
+            System.out.println("Path free");            
+            System.out.println("Origin" + source + "king" + kingCoord);
         }
     }
     
@@ -181,21 +182,18 @@ public class Board extends JPanel {
             for (int col = 0; col < 8; col++) {
                 Square square = squares[row][col];
                 Piece piece = square.getPiece(); 
-                Coord origin = new Coord(row, col);
+                Coord coord = new Coord(row, col);                                              
                 
-//                test(origin, kingCoord, piece);
-                
-                if (row != kingCoord.row
-                    && col != kingCoord.col
+                if (!coord.equals(kingCoord)
                     && piece != null
                     && piece.color != currentColor
-                    && piece.isCorrectMovement(origin, kingCoord)
+                    && piece.isCorrectMovement(coord, kingCoord)
                     && (isKnight = piece instanceof Knight 
-                        || isPathFree(origin, kingCoord))) 
+                        || isPathFree(coord, kingCoord))) 
                 { // ???                          
                     if (!isKnight && separate) {
                         enemySquaresTemp.add(new Coord(row, col));
-                        var coordinates = getPath(origin, kingCoord);
+                        var coordinates = getPath(coord, kingCoord);
                         enemySquaresTemp.addAll(coordinates);
                     }                    
                     sum++;
@@ -233,8 +231,7 @@ public class Board extends JPanel {
                 if ((row <= 7 && row >= 0) && (col <= 7 && col >= 0)) {
                     
                     Square square = squares[row][col];                    
-                    Piece piece = square.getPiece();
-                    
+                    Piece piece = square.getPiece();                    
                     Coord coord = new Coord(row, col);
                     
                     if (piece == null || piece.color != currentColor) {
@@ -422,12 +419,15 @@ public class Board extends JPanel {
         int col = source.col + hDiff;
         var isTargetReached = false;
 
-        for (; isTargetReached; row += vDiff, col += hDiff) {           
+        while (!isTargetReached) {            
 
             var pathCoord = new Coord(row, col);
             coords.add(pathCoord);
             
-            isTargetReached = row != target.row || col != target.col;
+            row += vDiff;
+            col += hDiff;
+                
+            isTargetReached = row == target.row && col == target.col;
         }        
         return coords;
     }
@@ -436,8 +436,7 @@ public class Board extends JPanel {
      * @param source
      * @param target
      */
-    private boolean isPathFree(Coord source, Coord target) {       
-        int vDiff, hDiff; // vertical and horizontal difference
+    private boolean isPathFree(Coord source, Coord target) {               
         int notNullCount = 0;
         
         if (!(selectedPiece instanceof Knight)) { 
@@ -447,19 +446,24 @@ public class Board extends JPanel {
             var isTargetRowLower = source.row < target.row;
             var isTargetColLower = source.col < target.col;
             
+            int vDiff, hDiff; // vertical and horizontal difference
+            
             vDiff = isSameRow ? 0 : (isTargetRowLower ? 1 : -1);
-            hDiff = isSameCol ? 0 : (isTargetColLower ? 1 : -1);   
-                        
+            hDiff = isSameCol ? 0 : (isTargetColLower ? 1 : -1); 
+                                    
             int row = source.row + vDiff;
             int col = source.col + hDiff;
             var isTargetReached = false;
             
-            for (; isTargetReached; row += vDiff, col += hDiff) {
-                                                
+            while (!isTargetReached) {                
+                
                 Piece piece = squares[row][col].getPiece();
                 notNullCount += piece == null ? 0 : 1;
                 
-                isTargetReached = row != target.row || col != target.col;
+                row += vDiff;
+                col += hDiff;
+                
+                isTargetReached = row == target.row && col == target.col;
             }
         }
         return notNullCount == 0;
