@@ -180,18 +180,20 @@ public class Board extends JPanel {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 Square square = squares[row][col];
-                Piece piece = square.getPiece(); 
-                Coord coord = new Coord(row, col);                                              
+                Piece foe = square.getPiece(); 
+                Coord coord = new Coord(row, col);     
+                
+                Coord[] coords = {coord, kingCoord};
                 
                 if (!coord.equals(kingCoord)
-                    && piece != null
-                    && piece.color != currentColor
-                    && piece.isCorrectMovement(coord, kingCoord)
-                    && isPathFree(coord, kingCoord, piece)) 
+                    && foe != null
+                    && foe.color != currentColor
+                    && foe.isCorrectMovement(coord, kingCoord)
+                    && isPathFree(coords, foe)) 
                 { // ???                          
                     if (separate) {
                         enemySquaresTemp.add(coord);
-                        var coordinates = getPath(coord, kingCoord);
+                        var coordinates = getPath(coords, foe);
                         enemySquaresTemp.addAll(coordinates);
                     }                    
                     sum++;
@@ -256,11 +258,13 @@ public class Board extends JPanel {
                     
                     Coord source = new Coord(row, col);
                     
+                    Coord[] coords = {source, target};
+                    
                     if (piece != null
                             && !(piece instanceof King)
                             && piece.color == currentColor
                             && piece.isCorrectMovement(source, target)
-                            && isPathFree(source, target, piece)) {                        
+                            && isPathFree(coords, piece)) {                        
                         return true;
                     }
                 }
@@ -310,12 +314,14 @@ public class Board extends JPanel {
         
         Coord source = new Coord(sourceRow, sourceCol);
         
+        Coord[] coords = {source, target};
+        
         return selectedPiece != null
             && square.contains(dest)
             && !square.isHighlighted()
             && (piece == null || selectedPiece.isFoe(piece))
             && selectedPiece.isCorrectMovement(source, target)
-            && isPathFree(source, target, selectedPiece)
+            && isPathFree(coords, selectedPiece)
             && !isSelfMadeCheck(target)
             && (!isCheck || isCheckBlock || isKingEscape);        
     }
@@ -391,78 +397,70 @@ public class Board extends JPanel {
                 }
             }
         }
-    }        
-    /**
-     * Retrieves a list of coordinates between source and target
-     * @param source
-     * @param target
-     */
-    private ArrayList<Coord> getPath(Coord source, Coord target) {  
-        
-        ArrayList<Coord> coords = new ArrayList<>();
-                           
-        var isSameRow = source.row == target.row;
-        var isSameCol = source.col == target.col;
-        var isTargetRowLower = source.row < target.row;
-        var isTargetColLower = source.col < target.col;
-        
-        int vDiff, hDiff; // vertical and horizontal difference
-
-        vDiff = isSameRow ? 0 : (isTargetRowLower ? 1 : -1);
-        hDiff = isSameCol ? 0 : (isTargetColLower ? 1 : -1);   
-
-        int row = source.row + vDiff;
-        int col = source.col + hDiff;
-        var isTargetReached = false;
-
-        while (!isTargetReached) {            
-
-            var pathCoord = new Coord(row, col);
-            coords.add(pathCoord);
-            
-            row += vDiff;
-            col += hDiff;
-                
-            isTargetReached = row == target.row && col == target.col;
-        }        
-        return coords;
     }
-    /**
-     * Checks if there are pieces on the path between source and target coords
-     * @param source
-     * @param target
-     */
-    private boolean isPathFree(Coord source, Coord target, Piece attackingPiece) {               
-        int notNullCount = 0;
-        
-        if (!(attackingPiece instanceof Knight)) { 
-            
+    private <T> T traverse(Coord[] coords, Piece foe, T t, Fun<Coord, T> fun) {
+
+        if (!(foe instanceof Knight)) {
+            Coord source = coords[0];
+            Coord target = coords[1];
+
             var isSameRow = source.row == target.row;
             var isSameCol = source.col == target.col;
             var isTargetRowLower = source.row < target.row;
             var isTargetColLower = source.col < target.col;
-            
+
             int vDiff, hDiff; // vertical and horizontal difference
-            
+
             vDiff = isSameRow ? 0 : (isTargetRowLower ? 1 : -1);
-            hDiff = isSameCol ? 0 : (isTargetColLower ? 1 : -1); 
-                                    
+            hDiff = isSameCol ? 0 : (isTargetColLower ? 1 : -1);
+
             int row = source.row + vDiff;
             int col = source.col + hDiff;
-            var isTargetReached = false;
-            
-            while (!isTargetReached) {                
+            var coord = new Coord(row, col);
+
+            for (; !coord.equals(target); row += vDiff, col += hDiff) {
+
+                t = fun.perform(coord, t);
                 
-                Piece piece = squares[row][col].getPiece();
-                notNullCount += piece == null ? 0 : 1;
-                
-                row += vDiff;
-                col += hDiff;
-                
-                isTargetReached = row == target.row && col == target.col;
+                coord = new Coord(row, col);
             }
         }
-        return notNullCount == 0;
+        return t;
+    }
+    /**
+     * Retrieves a list of coordinates between source and target coords
+     * @param coords
+     * @param foe
+     */
+    private ArrayList<Coord> getPath(Coord[] coords, Piece foe) {          
+        Fun<Coord, ArrayList<Coord>> fun = (coord, path) -> {
+            path.add(coord);
+            return path;
+        };
+        
+        ArrayList<Coord> path = new ArrayList<>();
+                        
+        return traverse(coords, foe, path, fun);
+    }
+    /**
+     * Checks if there are pieces on the path between source and target coords
+     * @param coords
+     * @param foe
+     */
+    private boolean isPathFree(Coord[] coords, Piece foe) {               
+        Fun<Coord, Integer> fun = (coord, nullCount) -> {
+            
+            Square square = squares[coord.row][coord.col];
+            Piece piece = square.getPiece();
+            
+            nullCount += piece == null ? 0 : 1; 
+            
+            return nullCount;
+        };
+        
+        Integer nullCount = 0;
+
+        return traverse(coords, foe, nullCount, fun) == 0;
     }
 
     public void setNewGame() throws IOException {
@@ -503,6 +501,10 @@ public class Board extends JPanel {
                 squares[row][col].setPiece(null);
             }
         }
+    }
+    @FunctionalInterface
+    private interface Fun <T, R> {
+        R perform(T arg1, R arg2);
     }
 
     public static void setCurrentColor(Color color) throws IllegalArgumentException {
