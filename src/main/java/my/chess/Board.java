@@ -175,9 +175,8 @@ public class Board extends JPanel {
      * @return check value
      */
     private boolean isCheck(Coord kingCoord, boolean separate) {
-        ArrayList<Coord> enemySquaresTemp = new ArrayList();
+        ArrayList<Coord> enemySquaresTemp = new ArrayList<>();
         int sum = 0;
-        boolean isKnight;
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 Square square = squares[row][col];
@@ -188,11 +187,10 @@ public class Board extends JPanel {
                     && piece != null
                     && piece.color != currentColor
                     && piece.isCorrectMovement(coord, kingCoord)
-                    && (isKnight = piece instanceof Knight 
-                        || isPathFree(coord, kingCoord))) 
+                    && isPathFree(coord, kingCoord, piece)) 
                 { // ???                          
-                    if (!isKnight && separate) {
-                        enemySquaresTemp.add(new Coord(row, col));
+                    if (separate) {
+                        enemySquaresTemp.add(coord);
                         var coordinates = getPath(coord, kingCoord);
                         enemySquaresTemp.addAll(coordinates);
                     }                    
@@ -201,15 +199,16 @@ public class Board extends JPanel {
             }
         }
         if (separate) {
-            enemySquares = new ArrayList(enemySquaresTemp);
+            enemySquares = new ArrayList<>(enemySquaresTemp);
         }
         if (sum == 0) {
             return false;
         } else if (sum > 0 && separate) {
             JOptionPane.showMessageDialog(this, "Szach!");
-            kingEscapeSquares = new ArrayList(mate(kingCoord));
+            kingEscapeSquares = new ArrayList<>(mate(kingCoord));
             System.out.println(kingEscapeSquares);
             isCheckBlockPossible = isCheckBlockPossible(enemySquaresTemp);
+            System.out.println(isCheckBlockPossible);
             if (!isCheckBlockPossible) {
                 if (isMate = kingEscapeSquares.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Mat!");
@@ -220,7 +219,7 @@ public class Board extends JPanel {
     }
 
     private ArrayList<Coord> mate(Coord kingCoord) {
-        ArrayList<Coord> escapeSquares = new ArrayList();
+        ArrayList<Coord> escapeSquares = new ArrayList<>();
         
         int kingRow = kingCoord.row, kingCol = kingCoord.col;                
         
@@ -236,7 +235,7 @@ public class Board extends JPanel {
                     
                     if (piece == null || piece.color != currentColor) {
                         
-                        if (!isCheck(kingCoord, false)) {
+                        if (!isCheck(coord, false)) {
                             
                             escapeSquares.add(coord);
                         }
@@ -261,7 +260,7 @@ public class Board extends JPanel {
                             && !(piece instanceof King)
                             && piece.color == currentColor
                             && piece.isCorrectMovement(source, target)
-                            && isPathFree(source, target)) {
+                            && isPathFree(source, target, piece)) {                        
                         return true;
                     }
                 }
@@ -274,10 +273,10 @@ public class Board extends JPanel {
      * @param row
      * @param col     
      */
-    private boolean isSelfMadeCheck(int row, int col) {
+    private boolean isSelfMadeCheck(Coord target) {
         if (!isCheck) {
             var sourceSquare = squares[sourceRow][sourceCol];
-            var targetSquare = squares[row][col];
+            var targetSquare = squares[target.row][target.col];
             sourceSquare.setPiece(null);
             targetSquare.setPiece(selectedPiece);
             int sum = 0;
@@ -299,28 +298,25 @@ public class Board extends JPanel {
         }
     }
     
-    private boolean isMoveable(Point dest, Square square, int row, int col) {
-        Piece piece = square.getPiece();
-        Point current = new Point(row, col);
-        
+    private boolean isMoveable(Point dest, Square square, Coord target) {
+        Piece piece = square.getPiece();        
         var isKingEscape = isCheck 
                 && selectedPiece instanceof King 
-                && kingEscapeSquares.contains(current);
+                && kingEscapeSquares.contains(target);
         
         var isCheckBlock = isCheck 
                 && !(selectedPiece instanceof King)                
-                && enemySquares.contains(current); 
+                && enemySquares.contains(target); 
         
         Coord source = new Coord(sourceRow, sourceCol);
-        Coord target = new Coord(row, col);
         
         return selectedPiece != null
             && square.contains(dest)
             && !square.isHighlighted()
             && (piece == null || selectedPiece.isFoe(piece))
             && selectedPiece.isCorrectMovement(source, target)
-            && isPathFree(source, target)
-            && !isSelfMadeCheck(row, col)
+            && isPathFree(source, target, selectedPiece)
+            && !isSelfMadeCheck(target)
             && (!isCheck || isCheckBlock || isKingEscape);        
     }
 
@@ -333,7 +329,7 @@ public class Board extends JPanel {
                 Coord source = new Coord(sourceRow, sourceCol);
                 Coord target = new Coord(row, col);                
                 
-                if (isMoveable(dest, square, row, col)) {
+                if (isMoveable(dest, square, target)) {
                     
                     isCheck = false;
                     square.setPiece(selectedPiece);
@@ -403,7 +399,7 @@ public class Board extends JPanel {
      */
     private ArrayList<Coord> getPath(Coord source, Coord target) {  
         
-        ArrayList<Coord> coords = new ArrayList();
+        ArrayList<Coord> coords = new ArrayList<>();
                            
         var isSameRow = source.row == target.row;
         var isSameCol = source.col == target.col;
@@ -436,10 +432,10 @@ public class Board extends JPanel {
      * @param source
      * @param target
      */
-    private boolean isPathFree(Coord source, Coord target) {               
+    private boolean isPathFree(Coord source, Coord target, Piece attackingPiece) {               
         int notNullCount = 0;
         
-        if (!(selectedPiece instanceof Knight)) { 
+        if (!(attackingPiece instanceof Knight)) { 
             
             var isSameRow = source.row == target.row;
             var isSameCol = source.col == target.col;
@@ -557,7 +553,7 @@ public class Board extends JPanel {
             isMate = false, 
             isCheckBlockPossible = false;
     private static HashMap<Color, Integer> startingPoints;
-    private ArrayList<Point> enemySquares, kingEscapeSquares;
+    private ArrayList<Coord> enemySquares, kingEscapeSquares;
     private static final Square[][] squares = new Square[8][8];
     private static Color currentColor;
     private static Color oppositeColor;
