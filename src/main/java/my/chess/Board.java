@@ -171,52 +171,53 @@ public class Board extends JPanel {
      *
      * @param kingRow
      * @param kingCol
-     * @param separate
+     * @param findEnemySquares
      * @return check value
      */
-    private boolean isCheck(Coord kingCoord, boolean separate) {
+    private boolean isCheck(Coord kingCoord, boolean findEnemySquares) {
         ArrayList<Coord> enemySquaresTemp = new ArrayList<>();
-        int sum = 0;
+        int attackers = 0;
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 Square square = squares[row][col];
-                Piece foe = square.getPiece(); 
+                Piece piece = square.getPiece(); 
                 Coord coord = new Coord(row, col);     
                 
                 Coord[] coords = {coord, kingCoord};
                 
                 if (!coord.equals(kingCoord)
-                    && foe != null
-                    && foe.color != currentColor
-                    && foe.isCorrectMovement(coord, kingCoord)
-                    && isPathFree(coords, foe)) 
-                { // ???                          
-                    if (separate) {
-                        enemySquaresTemp.add(coord);
-                        var coordinates = getPath(coords, foe);
-                        enemySquaresTemp.addAll(coordinates);
-                    }                    
-                    sum++;
-                }                
-            }
-        }
-        if (separate) {
-            enemySquares = new ArrayList<>(enemySquaresTemp);
-        }
-        if (sum == 0) {
-            return false;
-        } else if (sum > 0 && separate) {
-            JOptionPane.showMessageDialog(this, "Szach!");
-            kingEscapeSquares = new ArrayList<>(mate(kingCoord));
-            System.out.println(kingEscapeSquares);
-            isCheckBlockPossible = isCheckBlockPossible(enemySquaresTemp);
-            System.out.println(isCheckBlockPossible);
-            if (!isCheckBlockPossible) {
-                if (isMate = kingEscapeSquares.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Mat!");
+                    && piece != null
+                    && piece.color != currentColor
+                    && piece.isCorrectMovement(coord, kingCoord)
+                    && isPathFree(coords, piece)) 
+                {                                                                  
+                    attackers++;
+                } else {
+                    continue;
                 }
+                if (findEnemySquares) {
+                    enemySquaresTemp.add(coord);
+                    var coordinates = getPath(coords, piece);
+                    enemySquaresTemp.addAll(coordinates);
+                }
+                
             }
         }
+        if (attackers == 0) {
+            return false;
+        } else if (attackers > 0 && findEnemySquares) {                        
+            
+            JOptionPane.showMessageDialog(this, "Szach!");
+            
+            enemySquares = new ArrayList<>(enemySquaresTemp);            
+            kingEscapeSquares = new ArrayList<>(mate(kingCoord));            
+            isCheckBlockPossible = isCheckBlockPossible(enemySquaresTemp);                                    
+            isMate = !isCheckBlockPossible && kingEscapeSquares.isEmpty();
+            
+            if (isMate) {
+                JOptionPane.showMessageDialog(this, "Mat!");
+            }                        
+        }        
         return true;
     }
 
@@ -304,6 +305,7 @@ public class Board extends JPanel {
     
     private boolean isMoveable(Point dest, Square square, Coord target) {
         Piece piece = square.getPiece();        
+        
         var isKingEscape = isCheck 
                 && selectedPiece instanceof King 
                 && kingEscapeSquares.contains(target);
@@ -385,15 +387,10 @@ public class Board extends JPanel {
                     square.drawSquare(graphics, row, col);
                 }
                 if (square.getPiece() != null) {                                        
-                    Double x = square.getX();
-                    Double y = square.getY();
+                    int x = (int) square.getX();
+                    int y = (int) square.getY();
                     Piece piece = square.getPiece();
-                    piece.drawImage(graphics,
-                            x.intValue(),
-                            y.intValue(),
-                            squareSize,
-                            squareSize
-                    );
+                    piece.drawImage(graphics, x, y, squareSize, squareSize);
                 }
             }
         }
