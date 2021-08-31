@@ -202,7 +202,7 @@ public class Board extends JPanel {
                 }
                 
             }
-        }
+        }       
         if (attackers == 0) {
             return false;
         } else if (attackers > 0 && findEnemySquares) {                        
@@ -278,54 +278,91 @@ public class Board extends JPanel {
      * @param row
      * @param col     
      */
-    private boolean isSelfMadeCheck(Coord target) {
-        if (!isCheck) {
-            var sourceSquare = squares[sourceRow][sourceCol];
-            var targetSquare = squares[target.row][target.col];
-            sourceSquare.setPiece(null);
-            targetSquare.setPiece(selectedPiece);
-            int sum = 0;
-            try {
-                var kingCoord = findKing();                
-                sum += !isCheck(kingCoord, false) ? 0 : 1;
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-            if (sum > 0) {
-                var message = "Ruch niedozwolony: skutkowałby szachem króla!\n";
-                JOptionPane.showMessageDialog(this, message);
-            }
-            sourceSquare.setPiece(selectedPiece);
-            targetSquare.setPiece(null);
-            return sum > 0;
-        } else {
-            return false;
+    private boolean isSelfMadeCheck(Coord target) {        
+            
+        var sourceSquare = squares[sourceRow][sourceCol];
+        var targetSquare = squares[target.row][target.col];
+
+        sourceSquare.setPiece(null);
+        targetSquare.setPiece(selectedPiece);
+
+        var isSelfMadeCheck = true;
+
+        try {
+            var kingCoord = findKing();                
+            isSelfMadeCheck = isCheck(kingCoord, false);
+        } catch (Exception exception) {
+            System.out.println(exception);
         }
+
+        sourceSquare.setPiece(selectedPiece);
+        targetSquare.setPiece(null);
+
+        return isSelfMadeCheck;
     }
     
     private boolean isMoveable(Point dest, Square square, Coord target) {
-        Piece piece = square.getPiece();        
         
-        var isKingEscape = isCheck 
-                && selectedPiece instanceof King 
-                && kingEscapeSquares.contains(target);
+        if (!square.contains(dest)) {
+            return false;
+        }
         
-        var isCheckBlock = isCheck 
-                && !(selectedPiece instanceof King)                
-                && enemySquares.contains(target); 
+        Piece piece = square.getPiece();                        
         
         Coord source = new Coord(sourceRow, sourceCol);
         
         Coord[] coords = {source, target};
         
-        return selectedPiece != null
-            && square.contains(dest)
-            && !square.isHighlighted()
-            && (piece == null || selectedPiece.isFoe(piece))
-            && selectedPiece.isCorrectMovement(source, target)
-            && isPathFree(coords, selectedPiece)
-            && !isSelfMadeCheck(target)
-            && (!isCheck || isCheckBlock || isKingEscape);        
+        if (selectedPiece == null) {
+            var message = "Nie wybrano bierki!";
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }
+        
+        if (square.isHighlighted()) {
+            var message = "Nie można przenieść bierki w to samo miejsce!";
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }
+        
+        if (piece != null && !selectedPiece.isFoe(piece)) {
+            var message = "Nie można zbić bierki własnego koloru!";
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        } 
+        
+        if (!selectedPiece.isCorrectMovement(source, target)) {
+            var message = "Niepoprawny ruch dla wybranej bierki!";
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }
+        
+        if (!isPathFree(coords, selectedPiece)) {
+            var message = "Na drodze są inne bierki!";
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }                           
+        
+        var isKingEscape = selectedPiece instanceof King 
+            && kingEscapeSquares.contains(target);
+        
+        var isCheckBlock = !(selectedPiece instanceof King)                
+            && enemySquares.contains(target); 
+        
+        if (isCheck && !isCheckBlock && !isKingEscape) {
+            var message = "Szach! Trzeba mu zapobiec!";
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }
+        
+        if (isSelfMadeCheck(target)) {
+            var message = "Ruch skutkowałby szachem króla!";
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }
+        
+        return true; 
+              
     }
 
     private void movePiece(Point dest) {        
@@ -341,7 +378,7 @@ public class Board extends JPanel {
                     
                     isCheck = false;
                     square.setPiece(selectedPiece);
-                    selectedPiece = null;
+                    selectedPiece = null;                    
                     squares[sourceRow][sourceCol].setPiece(null);
                     squares[sourceRow][sourceCol].setHighlighted(false);
                     var isWhite = currentColor == Color.WHITE;
@@ -351,12 +388,7 @@ public class Board extends JPanel {
                     check();                   
                     return;
                     
-                } else if (selectedPiece != null
-                        && square.contains(dest)
-                        && !selectedPiece.isCorrectMovement(source, target)) {
-                    JOptionPane.showMessageDialog(this, "Ruch niedozwolony!\n");
-                    return;
-                }
+                } 
             }
         }
     }
@@ -552,7 +584,8 @@ public class Board extends JPanel {
             isMate = false, 
             isCheckBlockPossible = false;
     private static HashMap<Color, Integer> startingPoints;
-    private ArrayList<Coord> enemySquares, kingEscapeSquares;
+    private ArrayList<Coord> enemySquares = new ArrayList<>();
+    private ArrayList<Coord> kingEscapeSquares = new ArrayList<>();
     private static final Square[][] squares = new Square[8][8];
     private static Color currentColor;
     private static Color oppositeColor;
