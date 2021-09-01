@@ -23,8 +23,14 @@ public class Square extends Rectangle {
         super(x, y, width, height);       
     }
 
-    public void drawSquare(Graphics graphics, int row, int column) {
-        if ((row % 2 == 1 && column % 2 == 0) || (row % 2 == 0 && column % 2 == 1)) {
+    public void drawSquare(Graphics graphics, int row, int col) {        
+        
+        var isRowOdd = row % 2 == 1;
+        var isColOdd = col % 2 == 1;
+        
+        var isWhite = (isRowOdd && !isColOdd) || (!isRowOdd && isColOdd);
+                
+        if (isWhite) {
             graphics.setColor(myWhite);
         } else {
             graphics.setColor(myBrown);

@@ -82,9 +82,11 @@ public class Board extends JPanel {
 
     private boolean isChoosable(Square square, Point input) {
         Piece piece = square.getPiece();
+        
         boolean check = !isCheck
             || (isCheck && isCheckBlockPossible)
             || (isCheck && piece instanceof King && !isCheckBlockPossible);
+        
         return !isMate
             && square.contains(input)
             && !square.isHighlighted()
@@ -381,13 +383,15 @@ public class Board extends JPanel {
                     selectedPiece = null;                    
                     squares[sourceRow][sourceCol].setPiece(null);
                     squares[sourceRow][sourceCol].setHighlighted(false);
+                    
                     var isWhite = currentColor == Color.WHITE;
                     currentColor = isWhite ? Color.BLACK : Color.WHITE;
-                    oppositeColor = !isWhite ? Color.BLACK : Color.WHITE;                    
+                    oppositeColor = !isWhite ? Color.BLACK : Color.WHITE;
+                    
                     repaint();                    
                     check();                   
-                    return;
                     
+                    return;                    
                 } 
             }
         }
@@ -493,18 +497,26 @@ public class Board extends JPanel {
     }
 
     public void setNewGame() throws IOException {
+        
         clearBoard();
-        int draw = new Random().nextInt(2);
+        
+        int draw = new Random().nextInt(2);       
+        
         Color color1 = draw == 1 ? Color.BLACK : Color.WHITE;
         Color color2 = color1 == Color.BLACK ? Color.WHITE : Color.BLACK;
+        
         startingPoints.put(color1, 1);
         startingPoints.put(color2, 6);
+        
         for (int col = 0; col < 8; col++) {
             squares[1][col].setPiece(new Pawn(color1, Piece.PieceName.Pawn1));
             squares[6][col].setPiece(new Pawn(color2, Piece.PieceName.Pawn6));
         }
+        
         for (int row = 0; row <= 7; row += 7) {
+            
             Color color = row == 0 ? color1 : color2;
+            
             squares[row][0].setPiece(new Rook(color));
             squares[row][1].setPiece(new Knight(color));
             squares[row][2].setPiece(new Bishop(color));
@@ -514,6 +526,7 @@ public class Board extends JPanel {
             squares[row][6].setPiece(new Knight(color));
             squares[row][7].setPiece(new Rook(color));
         }
+        
         repaint();
     }
 
