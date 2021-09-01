@@ -80,7 +80,7 @@ public class Board extends JPanel {
         }
     }
 
-    private boolean isChoosable(Square square, Point input) {
+    private boolean isChoosableAi(Square square, Point input) {
         Piece piece = square.getPiece();
         
         boolean check = !isCheck
@@ -95,6 +95,47 @@ public class Board extends JPanel {
             && check;
     }
     
+    private boolean isChoosable(Square square, Point input) {
+        
+        if (isMate) {
+            var message = "Mat! Koniec gry!";
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }
+        
+        if (!square.contains(input)) {
+            return false;
+        }        
+        
+        Piece piece = square.getPiece();
+        
+        if (piece == null) {
+            var message = "Pole nie zawiera bierki!";
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }
+        
+        if (!(currentColor == piece.color)) {
+            var message = "Nie można wybrać bierki przeciwnika!";
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }
+        
+        if (square.isHighlighted()) {
+            var message = "Bierka jest już wybrana!";
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }
+        
+        if (isCheck && !isCheckBlockPossible && !(piece instanceof King)) {
+            var message = "Trzeba zapobiec szachowi!";
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }
+        
+        return true;
+    }
+    
     private void choosePiece(Point input) {        
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -107,21 +148,13 @@ public class Board extends JPanel {
                     squares[sourceRow][sourceCol].setHighlighted(false);
                     square.setHighlighted(true);                    
                     selectedPiece = piece;
+                    
                     sourceRow = row;
                     sourceCol = col;
+                    
                     repaint();
                     return;                               
-                } else if (square.contains(input) 
-                        && piece != null
-                        && currentColor != piece.color) {
-                    
-                    var isWhite = currentColor == Color.WHITE;
-                    var colorName = isWhite ? "białych" : "czarnych";
-                    var message = "Teraz ruch " + colorName + "!";
-                    
-                    JOptionPane.showMessageDialog(this, message);
-                    return;
-                }
+                } 
             }
         }
     }
@@ -328,7 +361,7 @@ public class Board extends JPanel {
         }
         
         if (piece != null && !selectedPiece.isFoe(piece)) {
-            var message = "Nie można zbić bierki własnego koloru!";
+            var message = "Nie można zbić własnej bierki!";
             JOptionPane.showMessageDialog(this, message);
             return false;
         } 
