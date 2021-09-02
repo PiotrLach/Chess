@@ -18,15 +18,17 @@ public class Square extends Rectangle {
 
     private Piece piece;
     private boolean highlighted;
+    public final Coord coord;
 
-    public Square(int x, int y, int width, int height) {
+    public Square(int x, int y, int width, int height, Coord coord) {
         super(x, y, width, height);       
+        this.coord = coord;
     }
 
-    public void drawSquare(Graphics graphics, int row, int col) {        
+    public void draw(Graphics graphics) {        
         
-        var isRowOdd = row % 2 == 1;
-        var isColOdd = col % 2 == 1;
+        var isRowOdd = coord.row % 2 == 1;
+        var isColOdd = coord.col % 2 == 1;
         
         var isWhite = (isRowOdd && !isColOdd) || (!isRowOdd && isColOdd);
                 
