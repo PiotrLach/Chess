@@ -18,5 +18,9 @@ import lombok.ToString;
 @AllArgsConstructor
 public class Coord {        
     public final int row;
-    public final int col;      
+    public final int col; 
+    
+    public boolean isOutOfBounds() {
+        return row > 7 || row < 0 || col < 0 || col > 7;
+    }
 }
