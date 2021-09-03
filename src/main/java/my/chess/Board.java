@@ -19,10 +19,8 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.Random;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import lombok.val;
@@ -202,7 +200,7 @@ public class Board extends JPanel {
                 JOptionPane.showMessageDialog(this, "Szach!");
     
                 enemySquares = findEnemySquares(kingSquare);            
-                kingEscapeSquares = findEscapeSquares(kingSquare.coord);            
+                kingEscapeSquares = findEscapeSquares(kingSquare);            
                 isCheckBlockPossible = isCheckBlockPossible(enemySquares);                                    
                 isMate = !isCheckBlockPossible && kingEscapeSquares.isEmpty();        
             }
@@ -226,23 +224,21 @@ public class Board extends JPanel {
         return findEnemySquares(kingSquare).size() > 0;
     }
         
-    private ArrayList<Coord> findEnemySquares(Square kingSquare) {
-        ArrayList<Coord> enemySquaresTemp = new ArrayList<>();        
+    private ArrayList<Square> findEnemySquares(Square kingSquare) {
+        ArrayList<Square> enemySquaresTemp = new ArrayList<>();        
         
-        for (var square : squares) {
-            Piece piece = square.getPiece();             
+        for (var source : squares) {
+            Piece piece = source.getPiece();             
 
-            Coord[] coords = {square.coord, kingSquare.coord};
-
-            if (!square.coord.equals(kingSquare.coord)
+            if (!source.coord.equals(kingSquare.coord)
                 && piece != null
                 && piece.color != currentColor
-                && piece.isCorrectMovement(square.coord, kingSquare.coord)
-                && isPathFree(coords, piece)) 
+                && piece.isCorrectMovement(source.coord, kingSquare.coord)
+                && isPathFree(source, kingSquare)) 
             {                                                                  
-                enemySquaresTemp.add(square.coord);
-                var coordinates = getPath(coords, piece);
-                enemySquaresTemp.addAll(coordinates);
+                enemySquaresTemp.add(source);
+                var path = getPath(source, kingSquare);
+                enemySquaresTemp.addAll(path);
             }                                        
         }      
         return enemySquaresTemp;                       
@@ -250,13 +246,13 @@ public class Board extends JPanel {
         
     /**
      * Finds squares for where king can escape to avoid check
-     * @param kingCoord
+     * @param kingSquare
      * @return 
      */
-    private ArrayList<Coord> findEscapeSquares(Coord kingCoord) {
-        ArrayList<Coord> escapeSquares = new ArrayList<>();
+    private ArrayList<Square> findEscapeSquares(Square kingSquare) {
+        ArrayList<Square> escapeSquares = new ArrayList<>();
         
-        int kingRow = kingCoord.row, kingCol = kingCoord.col;                
+        int kingRow = kingSquare.coord.row, kingCol = kingSquare.coord.col;                
         
         for (int row = kingRow - 1; row <= kingRow + 1; row++) {
             
@@ -279,27 +275,23 @@ public class Board extends JPanel {
                 
                 if (!isCheck(square)) {
                             
-                    escapeSquares.add(coord);
+                    escapeSquares.add(square);
                 }
             }
         }
         return escapeSquares;
     }
 
-    private boolean isCheckBlockPossible(ArrayList<Coord> enemySquares) {
-        for (Coord target : enemySquares) {                                    
-            for (Square square : squares) {                    
-                Piece piece = square.getPiece();
-
-                Coord source = square.coord;
-
-                Coord[] coords = {source, target};
+    private boolean isCheckBlockPossible(ArrayList<Square> enemySquares) {
+        for (Square target : enemySquares) {                                    
+            for (Square source : squares) {                    
+                Piece piece = source.getPiece();                
 
                 if (piece != null
                         && !(piece instanceof King)
                         && piece.color == currentColor
-                        && piece.isCorrectMovement(source, target)
-                        && isPathFree(coords, piece)) {                        
+                        && piece.isCorrectMovement(source.coord, target.coord)
+                        && isPathFree(source, target)) {                        
                     return true;
                 }
             }
@@ -331,53 +323,49 @@ public class Board extends JPanel {
         return isSelfMadeCheck;
     }
     
-    private boolean isMoveable(Point dest, Square square) {
+    private boolean isMoveable(Point dest, Square targetSquare) {
         
-        if (!square.contains(dest)) {
+        if (!targetSquare.contains(dest)) {
             return false;
         }
-        
-        Piece piece = square.getPiece();                        
-        
-        Coord source = sourceSquare.coord;
-        
-        Coord[] coords = {source, square.coord};
-        
+                                                             
         if (selectedPiece == null) {
             var message = "Nie wybrano bierki!";
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
         
-        if (square.isHighlighted()) {
+        if (targetSquare.isHighlighted()) {
             var message = "Nie można przenieść bierki w to samo miejsce!";
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
         
-        if (piece != null && !selectedPiece.isFoe(piece)) {
+        Piece piece = targetSquare.getPiece();   
+        
+        if (targetSquare.getPiece() != null && !selectedPiece.isFoe(piece)) {
             var message = "Nie można zbić własnej bierki!";
             JOptionPane.showMessageDialog(this, message);
             return false;
         } 
         
-        if (!selectedPiece.isCorrectMovement(source, square.coord)) {
+        if (!selectedPiece.isCorrectMovement(sourceSquare.coord, targetSquare.coord)) {
             var message = "Niepoprawny ruch dla wybranej bierki!";
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
         
-        if (!isPathFree(coords, selectedPiece)) {
+        if (!isPathFree(sourceSquare, targetSquare)) {
             var message = "Na drodze są inne bierki!";
             JOptionPane.showMessageDialog(this, message);
             return false;
         }                           
         
         var isKingEscape = selectedPiece instanceof King 
-            && kingEscapeSquares.contains(square.coord);
+            && kingEscapeSquares.contains(targetSquare);
         
         var isCheckBlock = !(selectedPiece instanceof King)                
-            && enemySquares.contains(square.coord); 
+            && enemySquares.contains(targetSquare); 
         
         if (isCheck && !isCheckBlock && !isKingEscape) {
             var message = "Szach! Trzeba mu zapobiec!";
@@ -385,7 +373,7 @@ public class Board extends JPanel {
             return false;
         }
         
-        if (isSelfMadeCheck(square)) {
+        if (isSelfMadeCheck(targetSquare)) {
             var message = "Ruch skutkowałby szachem króla!";
             JOptionPane.showMessageDialog(this, message);
             return false;
@@ -440,27 +428,25 @@ public class Board extends JPanel {
                                                     
     }
    
-    private <T> T traverse(Coord[] coords, Piece foe, T t, Fun<Coord, T> fun) {
+    private <T> T traverse(Square source, Square target, T t, Fun<Coord, T> fun) {
 
-        if (!(foe instanceof Knight)) {
-            Coord source = coords[0];
-            Coord target = coords[1];
+        if (!(source.getPiece() instanceof Knight)) {
 
-            var isSameRow = source.row == target.row;
-            var isSameCol = source.col == target.col;
-            var isTargetRowLower = source.row < target.row;
-            var isTargetColLower = source.col < target.col;
+            var isTargetSameRow = source.coord.row == target.coord.row;
+            var isTargetSameCol = source.coord.col == target.coord.col;
+            var isTargetRowLower = source.coord.row < target.coord.row;
+            var isTargetColLower = source.coord.col < target.coord.col;
 
             int vDiff, hDiff; // vertical and horizontal difference
 
-            vDiff = isSameRow ? 0 : (isTargetRowLower ? 1 : -1);
-            hDiff = isSameCol ? 0 : (isTargetColLower ? 1 : -1);
+            vDiff = isTargetSameRow ? 0 : (isTargetRowLower ? 1 : -1);
+            hDiff = isTargetSameCol ? 0 : (isTargetColLower ? 1 : -1);
 
-            int row = source.row + vDiff;
-            int col = source.col + hDiff;
+            int row = source.coord.row + vDiff;
+            int col = source.coord.col + hDiff;
             var coord = new Coord(row, col);
 
-            for (; !coord.equals(target); row += vDiff, col += hDiff) {
+            for (; !coord.equals(target.coord); row += vDiff, col += hDiff) {
 
                 t = fun.perform(coord, t);
                 
@@ -471,30 +457,37 @@ public class Board extends JPanel {
     }
     
     /**
-     * Retrieves a list of coordinates between source and target coords
-     * @param coords
+     * Retrieves a list of squares in straight line between source 
+     * and target squares
+     * @param source
+     * @param target
      * @param foe
      */    
-    private ArrayList<Coord> getPath(Coord[] coords, Piece foe) {          
-        Fun<Coord, ArrayList<Coord>> fun = (coord, path) -> {
-            path.add(coord);
+    private ArrayList<Square> getPath(Square source, Square target) {          
+        Fun<Coord, ArrayList<Square>> fun = (coord, path) -> {
+            
+            val idx = coord.row * 8 + coord.col;
+                        
+            path.add(squares.get(idx));
+            
             return path;
         };
         
-        ArrayList<Coord> path = new ArrayList<>();
+        ArrayList<Square> path = new ArrayList<>();
                         
-        return traverse(coords, foe, path, fun);
+        return traverse(source, target, path, fun);
     }
     
     /**
-     * Checks if there are pieces on the path between source and target coords
-     * @param coords
+     * Checks if there are pieces on the path between source and target squares
+     * @param source
+     * @param target
      * @param foe
      */
-    private boolean isPathFree(Coord[] coords, Piece foe) {               
+    private boolean isPathFree(Square source, Square target) {               
         Fun<Coord, Integer> fun = (coord, nullCount) -> {
             
-            int idx = coord.row * 8 + coord.col;
+            val idx = coord.row * 8 + coord.col;
             
             Square square = squares.get(idx);
             Piece piece = square.getPiece();
@@ -506,7 +499,7 @@ public class Board extends JPanel {
         
         Integer nullCount = 0;
 
-        return traverse(coords, foe, nullCount, fun) == 0;
+        return traverse(source, target, nullCount, fun) == 0;
     }
 
     public void setNewGame() throws IOException {
@@ -616,12 +609,12 @@ public class Board extends JPanel {
     public static HashMap<Color, Integer> getstartingPoints() {
         return startingPoints;
     }
-    private static boolean isCheck = false, 
-            isMate = false, 
-            isCheckBlockPossible = false;
+    private static boolean isCheck = false; 
+    private static boolean isMate = false; 
+    private static boolean isCheckBlockPossible = false;
     private static HashMap<Color, Integer> startingPoints;
-    private ArrayList<Coord> enemySquares = new ArrayList<>();
-    private ArrayList<Coord> kingEscapeSquares = new ArrayList<>();
+    private ArrayList<Square> enemySquares = new ArrayList<>();
+    private ArrayList<Square> kingEscapeSquares = new ArrayList<>();
     private static final ArrayList<Square> squares = new ArrayList<>();
     private static Color currentColor;
     private static Color oppositeColor;

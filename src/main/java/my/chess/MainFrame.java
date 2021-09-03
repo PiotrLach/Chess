@@ -5,9 +5,6 @@
  */
 package my.chess;
 
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import my.chess.pieces.Images;
@@ -237,7 +234,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
         mainChessBoard.recalculateSize();
     }//GEN-LAST:event_formComponentResized
-
+   
     /**
      * @param args the command line arguments
      */

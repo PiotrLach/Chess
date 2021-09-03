@@ -9,15 +9,18 @@ import my.chess.pieces.Piece;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import lombok.EqualsAndHashCode;
 
 /**
  *
  * @author Piotr Lach
  */
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class Square extends Rectangle {
-
-    private Piece piece;
-    private boolean highlighted = false;
+        
+    private Piece piece;    
+    private boolean highlighted = false;   
+    @EqualsAndHashCode.Include
     public final Coord coord;
 
     public Square(int x, int y, int width, int height, Coord coord) {
@@ -59,8 +62,8 @@ public class Square extends Rectangle {
 
     public void setPiece(Piece piece) {
         this.piece = piece;
-    }
-    private final Color myWhite = new Color(255, 255, 204),
-            myBrown = new Color(153, 102, 0);
+    }    
+    private final Color myWhite = new Color(255, 255, 204);    
+    private final Color myBrown = new Color(153, 102, 0);
 
 }
