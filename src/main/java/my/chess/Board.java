@@ -34,7 +34,7 @@ public class Board extends JPanel {
     public Board() {        
         createSquares();
     }
-       
+    
     /**
      * Recalculates the size and location for each square, 
      * so that the board scales with window
@@ -78,7 +78,7 @@ public class Board extends JPanel {
         }        
     }
 
-    public void selectAndMove(MouseEvent mouseEvent) {
+    public void selectAndMove(MouseEvent mouseEvent) {                       
         if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
             Point point = mouseEvent.getPoint();
             choosePiece(point);
@@ -263,10 +263,8 @@ public class Board extends JPanel {
                 if (coord.isOutOfBounds()) {
                     continue;
                 } 
-                    
-                int idx = row * 8 + col;
-                    
-                var square = squares.get(idx);                    
+                                       
+                var square = squares.get(coord.index);                    
                 var piece = square.getPiece();                                        
                     
                 if (piece != null && piece.color == currentColor) {
@@ -288,10 +286,11 @@ public class Board extends JPanel {
                 Piece piece = source.getPiece();                
 
                 if (piece != null
-                        && !(piece instanceof King)
-                        && piece.color == currentColor
-                        && piece.isCorrectMovement(source.coord, target.coord)
-                        && isPathFree(source, target)) {                        
+                    && !(piece instanceof King)
+                    && piece.color == currentColor
+                    && piece.isCorrectMovement(source.coord, target.coord)
+                    && isPathFree(source, target)) 
+                {                        
                     return true;
                 }
             }
@@ -464,11 +463,9 @@ public class Board extends JPanel {
      * @param foe
      */    
     private ArrayList<Square> getPath(Square source, Square target) {          
-        Fun<Coord, ArrayList<Square>> fun = (coord, path) -> {
-            
-            val idx = coord.row * 8 + coord.col;
+        Fun<Coord, ArrayList<Square>> fun = (coord, path) -> {                        
                         
-            path.add(squares.get(idx));
+            path.add(squares.get(coord.index));
             
             return path;
         };
@@ -486,10 +483,8 @@ public class Board extends JPanel {
      */
     private boolean isPathFree(Square source, Square target) {               
         Fun<Coord, Integer> fun = (coord, nullCount) -> {
-            
-            val idx = coord.row * 8 + coord.col;
-            
-            Square square = squares.get(idx);
+                                    
+            Square square = squares.get(coord.index);
             Piece piece = square.getPiece();
             
             nullCount += piece == null ? 0 : 1; 

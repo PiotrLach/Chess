@@ -5,7 +5,6 @@
  */
 package my.chess;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -15,10 +14,17 @@ import lombok.ToString;
  */
 @EqualsAndHashCode
 @ToString
-@AllArgsConstructor
-public class Coord {        
+public class Coord {    
+
+    public Coord(int row, int col) {
+        this.row = row;
+        this.col = col;
+        index = row * 8 + col;
+    }
+   
     public final int row;
     public final int col; 
+    public final int index;        
     
     public boolean isOutOfBounds() {
         return row > 7 || row < 0 || col < 0 || col > 7;
