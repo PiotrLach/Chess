@@ -243,7 +243,7 @@ public class Board extends JPanel {
             JOptionPane.showMessageDialog(this, "Szach!");
             
             enemySquares = new ArrayList<>(enemySquaresTemp);            
-            kingEscapeSquares = new ArrayList<>(mate(kingSquare.coord));            
+            kingEscapeSquares = findEscapeSquares(kingSquare.coord);            
             isCheckBlockPossible = isCheckBlockPossible(enemySquaresTemp);                                    
             isMate = !isCheckBlockPossible && kingEscapeSquares.isEmpty();
             
@@ -253,8 +253,14 @@ public class Board extends JPanel {
         }        
         return true;
     }
-
-    private ArrayList<Coord> mate(Coord kingCoord) {
+    
+    
+    /**
+     * Finds squares for where king can escape to avoid check
+     * @param kingCoord
+     * @return 
+     */
+    private ArrayList<Coord> findEscapeSquares(Coord kingCoord) {
         ArrayList<Coord> escapeSquares = new ArrayList<>();
         
         int kingRow = kingCoord.row, kingCol = kingCoord.col;                
@@ -263,21 +269,24 @@ public class Board extends JPanel {
             
             for (int col = kingCol - 1; col <= kingCol + 1; col++) {
                 
-                if ((row <= 7 && row >= 0) && (col <= 7 && col >= 0)) {
+                Coord coord = new Coord(row, col);
+                
+                if (coord.isOutOfBounds()) {
+                    continue;
+                } 
                     
-                    val idx = row * 8 + col;
+                int idx = row * 8 + col;
                     
-                    Square square = squares.get(idx);                    
-                    Piece piece = square.getPiece();                    
-                    Coord coord = new Coord(row, col);
+                var square = squares.get(idx);                    
+                var piece = square.getPiece();                                        
                     
-                    if (piece == null || piece.color != currentColor) {
-                        
-                        if (!isCheck(square, false)) {
+                if (piece != null && piece.color == currentColor) {
+                    continue;              
+                }   
+                
+                if (!isCheck(square, false)) {
                             
-                            escapeSquares.add(coord);
-                        }
-                    }
+                    escapeSquares.add(coord);
                 }
             }
         }
@@ -389,8 +398,7 @@ public class Board extends JPanel {
             return false;
         }
         
-        return true; 
-              
+        return true;               
     }
 
     private void movePiece(Point dest) {        
