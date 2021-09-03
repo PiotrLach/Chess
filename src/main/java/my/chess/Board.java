@@ -77,7 +77,7 @@ public class Board extends JPanel {
                 Square square = new Square(y, x, 80, 80, coord);
                 squares.add(square);
             }            
-        }
+        }        
     }
 
     public void selectAndMove(MouseEvent mouseEvent) {
@@ -105,17 +105,17 @@ public class Board extends JPanel {
             && check;
     }
     
-    private boolean isChoosable(Square square, Point input) {
+    private boolean isChoosable(Square square, Point input) {       
+        
+        if (!square.contains(input)) {
+            return false;
+        }        
         
         if (isMate) {
             var message = "Mat! Koniec gry!";
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
-        
-        if (!square.contains(input)) {
-            return false;
-        }        
         
         Piece piece = square.getPiece();
         
@@ -152,10 +152,8 @@ public class Board extends JPanel {
             
             Piece piece = square.getPiece();
             
-            if (isChoosable(square, input)) {
-                if (sourceSquare != null) {
-                    sourceSquare.setHighlighted(false);
-                }
+            if (isChoosable(square, input)) {                
+                sourceSquare.setHighlighted(false);                
                 square.setHighlighted(true);                    
                 selectedPiece = piece;
 
@@ -193,68 +191,63 @@ public class Board extends JPanel {
         throw new Exception("King has not been found.");
     }
 
-    private void check() {        
+    private void checkAndMate() {        
         try {
+            
             var kingSquare = findKing();            
-            isCheck = isCheck(kingSquare, true);
+            isCheck = isCheck(kingSquare);
+            
+            if (isCheck) {
+                
+                JOptionPane.showMessageDialog(this, "Szach!");
+    
+                enemySquares = findEnemySquares(kingSquare);            
+                kingEscapeSquares = findEscapeSquares(kingSquare.coord);            
+                isCheckBlockPossible = isCheckBlockPossible(enemySquares);                                    
+                isMate = !isCheckBlockPossible && kingEscapeSquares.isEmpty();        
+            }
+            
+            if (isMate) {
+                JOptionPane.showMessageDialog(this, "Mat!");
+            }   
+            
         } catch (Exception exception) {
             exception.printStackTrace();
         }        
     }
-
     
     /**
      * Tests if check occurs
      *
-     * @param kingCoord
-     * @param findEnemySquares
+     * @param kingSquare     
      * @return check value
      */
-    private boolean isCheck(Square kingSquare, boolean findEnemySquares) {
-        ArrayList<Coord> enemySquaresTemp = new ArrayList<>();
-        int attackers = 0;
+    private boolean isCheck(Square kingSquare) {
+        return findEnemySquares(kingSquare).size() > 0;
+    }
+        
+    private ArrayList<Coord> findEnemySquares(Square kingSquare) {
+        ArrayList<Coord> enemySquaresTemp = new ArrayList<>();        
         
         for (var square : squares) {
-            Piece piece = square.getPiece(); 
-            Coord coord = square.coord;
+            Piece piece = square.getPiece();             
 
-            Coord[] coords = {coord, kingSquare.coord};
+            Coord[] coords = {square.coord, kingSquare.coord};
 
-            if (!coord.equals(kingSquare.coord)
+            if (!square.coord.equals(kingSquare.coord)
                 && piece != null
                 && piece.color != currentColor
-                && piece.isCorrectMovement(coord, kingSquare.coord)
+                && piece.isCorrectMovement(square.coord, kingSquare.coord)
                 && isPathFree(coords, piece)) 
             {                                                                  
-                attackers++;
-            } else {
-                continue;
-            }
-            if (findEnemySquares) {
-                enemySquaresTemp.add(coord);
+                enemySquaresTemp.add(square.coord);
                 var coordinates = getPath(coords, piece);
                 enemySquaresTemp.addAll(coordinates);
-            }
-        }                      
-        if (attackers == 0) {
-            return false;
-        } else if (attackers > 0 && findEnemySquares) {                        
-            
-            JOptionPane.showMessageDialog(this, "Szach!");
-            
-            enemySquares = new ArrayList<>(enemySquaresTemp);            
-            kingEscapeSquares = findEscapeSquares(kingSquare.coord);            
-            isCheckBlockPossible = isCheckBlockPossible(enemySquaresTemp);                                    
-            isMate = !isCheckBlockPossible && kingEscapeSquares.isEmpty();
-            
-            if (isMate) {
-                JOptionPane.showMessageDialog(this, "Mat!");
-            }                        
-        }        
-        return true;
+            }                                        
+        }      
+        return enemySquaresTemp;                       
     }
-    
-    
+        
     /**
      * Finds squares for where king can escape to avoid check
      * @param kingCoord
@@ -284,7 +277,7 @@ public class Board extends JPanel {
                     continue;              
                 }   
                 
-                if (!isCheck(square, false)) {
+                if (!isCheck(square)) {
                             
                     escapeSquares.add(coord);
                 }
@@ -327,7 +320,7 @@ public class Board extends JPanel {
 
         try {
             var kingCoord = findKing();                
-            isSelfMadeCheck = isCheck(kingCoord, false);
+            isSelfMadeCheck = isCheck(kingCoord);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -418,7 +411,7 @@ public class Board extends JPanel {
                 oppositeColor = !isWhite ? Color.BLACK : Color.WHITE;
 
                 repaint();                    
-                check();                   
+                checkAndMate();                   
 
                 return;                    
             } 
@@ -632,8 +625,8 @@ public class Board extends JPanel {
     private static final ArrayList<Square> squares = new ArrayList<>();
     private static Color currentColor;
     private static Color oppositeColor;
-    private Square sourceSquare;
+    private Square sourceSquare = new Square(0, 0, 0, 0, new Coord(-1, -1));;
     private static Piece selectedPiece;
-    private int squareSize;
+    private int squareSize = 80;
 
 }

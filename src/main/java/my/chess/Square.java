@@ -17,7 +17,7 @@ import java.awt.Rectangle;
 public class Square extends Rectangle {
 
     private Piece piece;
-    private boolean highlighted;
+    private boolean highlighted = false;
     public final Coord coord;
 
     public Square(int x, int y, int width, int height, Coord coord) {
