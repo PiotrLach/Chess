@@ -5,8 +5,6 @@
  */
 package my.chess;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import my.chess.pieces.Images;
 
 /**
@@ -198,8 +196,8 @@ public class MainFrame extends javax.swing.JFrame {
     private void gameStartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameStartButtonActionPerformed
         try {
             mainChessBoard.setNewGame();
-        } catch (Exception ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         myTabbedPane.setSelectedIndex(2);
     }//GEN-LAST:event_gameStartButtonActionPerformed

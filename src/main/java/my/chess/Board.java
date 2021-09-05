@@ -41,18 +41,24 @@ public class Board extends JPanel {
      */
     public void recalculateSize() {
         int height = getHeight(), width = getWidth();
+        
         int a1, a0, b0, b1;
+        
         a0 = 0;
-        a1 = height;        
+        a1 = height;
+        
         while (a1 % 8 != 0) {
             a1--;
         }
+        
         squareSize = a1 / 8;
         b0 = (width - height) / 2;
         b1 = b0 + height;
+        
         while ((b1 - b0) % 8 != 0) {
             b1--;
         }
+        
         for (int x = a0, row = 0; x < a1; x += squareSize, row++) {
             for (int y = b0, col = 0; y < b1; y += squareSize, col++) {
                 
@@ -78,14 +84,17 @@ public class Board extends JPanel {
         }        
     }
 
-    public void selectAndMove(MouseEvent mouseEvent) {                       
-        if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
-            Point point = mouseEvent.getPoint();
-            choosePiece(point);
-        } else if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
-            Point point = mouseEvent.getPoint();
-            movePiece(point);
-        }
+    public void selectAndMove(MouseEvent mouseEvent) {
+        
+        var point = mouseEvent.getPoint();        
+        
+        switch (mouseEvent.getButton()) {
+            
+            case MouseEvent.BUTTON3 -> choosePiece(point);            
+            
+            case MouseEvent.BUTTON1 -> movePiece(point);            
+            
+        }       
     }
 
     private boolean isChoosableAi(Square square, Point input) {
@@ -146,8 +155,7 @@ public class Board extends JPanel {
     
     private void choosePiece(Point input) {                
                 
-        Consumer<Square> action = square -> {
-            
+        for (var square : squares) {            
             Piece piece = square.getPiece();
             
             if (isChoosable(square, input)) {                
@@ -160,13 +168,12 @@ public class Board extends JPanel {
                 repaint();                          
             } 
             
-        };
-        squares.forEach(action);
+        }       
     }
     
     /**
      * Finds square holding current player's king 
-     * @return king's row and col coordinates
+     * @return square holding current player's king
      * @throws Exception 
      */
     private Square findKing() throws Exception {     
@@ -247,7 +254,7 @@ public class Board extends JPanel {
     /**
      * Finds squares for where king can escape to avoid check
      * @param kingSquare
-     * @return 
+     * @return list of escape squares
      */
     private ArrayList<Square> findEscapeSquares(Square kingSquare) {
         ArrayList<Square> escapeSquares = new ArrayList<>();
@@ -271,8 +278,7 @@ public class Board extends JPanel {
                     continue;              
                 }   
                 
-                if (!isCheck(square)) {
-                            
+                if (!isCheck(square)) {                            
                     escapeSquares.add(square);
                 }
             }
@@ -409,21 +415,21 @@ public class Board extends JPanel {
     public void paint(Graphics graphics) {
         super.paint(graphics);
         
-        Consumer<Square> action = square -> {
+        for (var square : squares) {
+            
             if (square.isHighlighted()) {
                 square.highlightSquare(graphics);
             } else {
                 square.draw(graphics);
             }
+            
             if (square.getPiece() != null) {                                        
                 int x = (int) square.getX();
                 int y = (int) square.getY();
                 Piece piece = square.getPiece();
                 piece.drawImage(graphics, x, y, squareSize, squareSize);
-            }
-        };
-        
-        squares.forEach(action);
+            }        
+        }                
                                                     
     }
    
@@ -545,11 +551,9 @@ public class Board extends JPanel {
         selectedPiece = null;
         startingPoints = new HashMap<>();
         
-        Consumer<Square> action = square -> {
+        for (var square : squares) {
             square.setPiece(null);
-        };
-        
-        squares.forEach(action);
+        }                
     }
     
     @FunctionalInterface
