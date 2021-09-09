@@ -29,7 +29,7 @@ import my.chess.Board;
 public class Pawn extends Piece {
 
     public Pawn(Color color, PieceName pieceName) {
-        super(pieceName, color, Images.getPAWN(color));
+        super(pieceName, color, imageLoader.getPAWN(color));
 
         startingRow = pieceName == PieceName.Pawn1 ? 1 : 6;
 

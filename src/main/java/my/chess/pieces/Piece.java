@@ -54,4 +54,5 @@ abstract public class Piece {
     public final Color color;
     protected Image image;
     protected PieceName name;
+    protected static PieceImageLoader imageLoader = PieceImageLoader.INSTANCE; 
 }

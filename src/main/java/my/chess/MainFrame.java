@@ -16,8 +16,6 @@
 */
 package my.chess;
 
-import my.chess.pieces.Images;
-
 /**
  *
  * @author Piotr Lach
@@ -29,12 +27,6 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
         initComponents();
-        var classLoader = getClass().getClassLoader();
-        try {
-            Images.loadImages(classLoader);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     /**

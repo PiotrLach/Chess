@@ -27,7 +27,7 @@ import java.awt.Image;
 public class Knight extends Piece {
 
     public Knight(Color figureColor) {
-        super(PieceName.Knight, figureColor, Images.getKNIGHT(figureColor));
+        super(PieceName.Knight, figureColor, imageLoader.getKNIGHT(figureColor));
     }
 
     @Override

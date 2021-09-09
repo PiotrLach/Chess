@@ -26,7 +26,7 @@ import my.chess.Coord;
 public class Rook extends Piece {
 
     public Rook(Color figureColor) {
-        super(PieceName.Rook, figureColor, Images.getROOK(figureColor));
+        super(PieceName.Rook, figureColor, imageLoader.getROOK(figureColor));
     }
 
     @Override

@@ -26,7 +26,7 @@ import my.chess.Coord;
 public class Queen extends Piece {
 
     public Queen(Color figureColor) {        
-        super(PieceName.Queen, figureColor, Images.getQUEEN(figureColor));
+        super(PieceName.Queen, figureColor, imageLoader.getQUEEN(figureColor));
     }
 
     @Override
