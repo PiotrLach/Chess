@@ -18,7 +18,6 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import my.chess.Coord;
-import java.awt.Image;
 
 /**
  *
@@ -32,10 +31,24 @@ public class King extends Piece {
 
     @Override
     public boolean isCorrectMovement(Coord source, Coord target) {
-        boolean movement = (Math.abs(source.row - target.row) == 1 && Math.abs(source.col - target.col) == 1)
-                || (Math.abs(source.row - target.row) == 1 && Math.abs(source.col - target.col) == 0)
-                || (Math.abs(source.row - target.row) == 0 && Math.abs(source.col - target.col) == 1);
-        return movement;
+        
+        int verticalDiff, horizontalDiff; 
+        
+        verticalDiff = Math.abs(source.row - target.row);
+        horizontalDiff = Math.abs(source.col - target.col);
+        
+        var isOneVerticalDiff = verticalDiff == 1;
+        var isZeroVerticalDiff = verticalDiff == 0;        
+        var isOneHorizontalDiff = horizontalDiff == 1;
+        var isZeroHorizontalDiff = horizontalDiff == 0;
+        
+        var isOneDiagonalMove = isOneHorizontalDiff && isOneVerticalDiff;
+        var isOneVerticalMove = isOneVerticalDiff && isZeroHorizontalDiff;
+        var isOneHorizontalMove = isOneHorizontalDiff && isZeroVerticalDiff;
+        
+        
+        return isOneDiagonalMove || isOneVerticalMove || isOneHorizontalMove;
+               
     }
 
 }

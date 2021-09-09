@@ -31,8 +31,15 @@ public class Bishop extends Piece {
 
     @Override
     public boolean isCorrectMovement(Coord source, Coord target) {
-        boolean movement = Math.abs(source.row - target.row) == Math.abs(source.col - target.col);
-        return movement;
+        
+        int verticalDiff, horizontalDiff; 
+        
+        verticalDiff = Math.abs(source.row - target.row);
+        horizontalDiff = Math.abs(source.col - target.col);
+        
+        var isDiagonalMove = verticalDiff == horizontalDiff;
+                
+        return isDiagonalMove;
     }
 
 }

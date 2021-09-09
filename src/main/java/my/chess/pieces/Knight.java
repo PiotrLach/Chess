@@ -32,9 +32,20 @@ public class Knight extends Piece {
 
     @Override
     public boolean isCorrectMovement(Coord source, Coord target) {
-        boolean movement = (Math.abs(source.row - target.row) == 2 && Math.abs(source.col - target.col) == 1)
-                || (Math.abs(source.row - target.row) == 1 && Math.abs(source.col - target.col) == 2);
-        return movement;
+        
+        int verticalDiff, horizontalDiff; 
+        
+        verticalDiff = Math.abs(source.row - target.row);
+        horizontalDiff = Math.abs(source.col - target.col);
+        
+        var isTwoVerticalMoves = verticalDiff == 2;
+        var isOneVerticalMove = verticalDiff == 1;
+        
+        var isTwoHorizontalMoves = horizontalDiff == 2;
+        var isOneHorizontalMove = horizontalDiff == 1;                
+        
+        return (isTwoHorizontalMoves && isOneVerticalMove) || (isOneHorizontalMove && isTwoVerticalMoves);
+        
     }
 
 }

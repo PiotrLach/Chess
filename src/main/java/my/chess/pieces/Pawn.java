@@ -36,22 +36,6 @@ public class Pawn extends Piece {
         isOnBottomRow = startingRow == 1;
     }
     
-    private boolean enPassant(Coord source, Coord target) {
-        if ((source.row - target.row) == (isOnBottomRow ? -1 : 1) && Math.abs(source.col - target.col) == 1) {
-            System.out.println("---");
-            System.out.format("%d %d %d %d", source.row, source.col, target.row, target.col);
-            int temp = source.col - (source.col - target.col);
-            System.out.println(source.row + " " + temp);
-            Square square = Board.getSquare(source.row, source.col - (source.col - target.col));
-            Piece neighbor = square.getPiece();
-            if (neighbor instanceof Pawn) {
-                Pawn p = (Pawn) neighbor;
-                square.setPiece(null);
-                return true;
-            }
-        }
-        return false;
-    }
     
     @Override
     public boolean isCorrectMovement(Coord source, Coord target) {

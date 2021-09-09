@@ -31,10 +31,18 @@ public class Queen extends Piece {
 
     @Override
     public boolean isCorrectMovement(Coord source, Coord target) {
-        boolean movement = (Math.abs(source.row - target.row) == Math.abs(source.col - target.col))
-                || (Math.abs(source.row - target.row) > 0 && Math.abs(source.col - target.col) == 0)
-                || (Math.abs(source.row - target.row) == 0 && Math.abs(source.col - target.col) > 0);
-        return movement;
+        
+        int verticalDiff, horizontalDiff; 
+        
+        verticalDiff = Math.abs(source.row - target.row);
+        horizontalDiff = Math.abs(source.col - target.col);
+        
+        var isVerticalMove = verticalDiff > 0;
+        var isHorizontalMove = horizontalDiff > 0;
+        var isDiagonalMove = verticalDiff == horizontalDiff;
+        
+        return isDiagonalMove || (isVerticalMove && !isHorizontalMove) || (isHorizontalMove && !isVerticalMove);
+                              
     }
 
 }
