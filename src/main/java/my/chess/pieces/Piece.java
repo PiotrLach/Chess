@@ -17,7 +17,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
-import my.chess.Coord;
+import my.chess.Square;
 import java.awt.Graphics;
 import java.awt.Image;
 
@@ -49,7 +49,7 @@ abstract public class Piece {
         return name;
     }
 
-    abstract public boolean isCorrectMovement(Coord source, Coord target);
+    abstract public boolean isCorrectMovement(Square source, Square target);
 
     public final Color color;
     protected Image image;

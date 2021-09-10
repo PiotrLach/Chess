@@ -17,8 +17,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
-import my.chess.Coord;
-import java.awt.Image;
+import my.chess.Square;
 
 /**
  *
@@ -26,17 +25,17 @@ import java.awt.Image;
  */
 public class Knight extends Piece {
 
-    public Knight(Color figureColor) {
-        super(PieceName.Knight, figureColor, imageLoader.getKNIGHT(figureColor));
+    public Knight(Color pieceColor) {
+        super(PieceName.Knight, pieceColor, imageLoader.getKNIGHT(pieceColor));
     }
 
     @Override
-    public boolean isCorrectMovement(Coord source, Coord target) {
+    public boolean isCorrectMovement(Square source, Square target) {
         
         int verticalDiff, horizontalDiff; 
         
-        verticalDiff = Math.abs(source.row - target.row);
-        horizontalDiff = Math.abs(source.col - target.col);
+        verticalDiff = Math.abs(source.coord.row - target.coord.row);
+        horizontalDiff = Math.abs(source.coord.col - target.coord.col);
         
         var isTwoVerticalMoves = verticalDiff == 2;
         var isOneVerticalMove = verticalDiff == 1;

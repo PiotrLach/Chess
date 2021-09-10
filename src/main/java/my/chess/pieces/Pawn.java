@@ -17,10 +17,8 @@
 package my.chess.pieces;
 
 import java.awt.Color;
-import my.chess.Coord;
 import java.util.List;
 import my.chess.Square;
-import my.chess.Board;
 
 /**
  *
@@ -38,20 +36,19 @@ public class Pawn extends Piece {
     
     
     @Override
-    public boolean isCorrectMovement(Coord source, Coord target) {
-        Square square = Board.getSquare(target.row, target.col);
+    public boolean isCorrectMovement(Square source, Square target) {        
         
-        boolean isOneForwardMovement = Math.abs(source.row - target.row) == 1, 
-                isTwoForwardMovements = Math.abs(source.row - target.row) == 2,
-                isVertical = (isOnBottomRow ? target.row > source.row : target.row < source.row),
-                isHorizontal = Math.abs(source.col - target.col) == 1,           
-                isNotHorizontal = Math.abs(source.col - target.col) == 0,           
-                isNullAhead = square.getPiece() == null,
-                isFoeDiagonal = !isNullAhead && this.isFoe(square.getPiece());
+        boolean isOneForwardMovement = Math.abs(source.coord.row - target.coord.row) == 1, 
+                isTwoForwardMovements = Math.abs(source.coord.row - target.coord.row) == 2,
+                isVertical = (isOnBottomRow ? target.coord.row > source.coord.row : target.coord.row < source.coord.row),
+                isHorizontal = Math.abs(source.coord.col - target.coord.col) == 1,           
+                isNotHorizontal = Math.abs(source.coord.col - target.coord.col) == 0,           
+                isNullAhead = target.getPiece() == null,
+                isFoeDiagonal = !isNullAhead && this.isFoe(target.getPiece());
         
         var availableMovements = List.of(
             isVertical && isOneForwardMovement && isNotHorizontal && isNullAhead,
-            isVertical && source.row == startingRow && isTwoForwardMovements && isNotHorizontal && isNullAhead,
+            isVertical && source.coord.row == startingRow && isTwoForwardMovements && isNotHorizontal && isNullAhead,
             isVertical && isOneForwardMovement && isHorizontal && isFoeDiagonal
         );
         return availableMovements.contains(true);      

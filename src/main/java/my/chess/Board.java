@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.function.Consumer;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import lombok.val;
@@ -251,7 +250,7 @@ public class Board extends JPanel {
             if (!source.coord.equals(kingSquare.coord)
                 && piece != null
                 && piece.color != currentColor
-                && piece.isCorrectMovement(source.coord, kingSquare.coord)
+                && piece.isCorrectMovement(source, kingSquare)
                 && isPathFree(source, kingSquare)) 
             {                                                                  
                 enemySquaresTemp.add(source);
@@ -305,7 +304,7 @@ public class Board extends JPanel {
                 if (piece != null
                     && !(piece instanceof King)
                     && piece.color == currentColor
-                    && piece.isCorrectMovement(source.coord, target.coord)
+                    && piece.isCorrectMovement(source, target)
                     && isPathFree(source, target)) 
                 {                        
                     return true;
@@ -365,7 +364,7 @@ public class Board extends JPanel {
             return false;
         } 
         
-        if (!selectedPiece.isCorrectMovement(sourceSquare.coord, targetSquare.coord)) {
+        if (!selectedPiece.isCorrectMovement(sourceSquare, targetSquare)) {
             var message = "Niepoprawny ruch dla wybranej bierki!";
             JOptionPane.showMessageDialog(this, message);
             return false;

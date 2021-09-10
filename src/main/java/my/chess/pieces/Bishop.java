@@ -17,7 +17,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
-import my.chess.Coord;
+import my.chess.Square;
 
 /**
  *
@@ -25,17 +25,17 @@ import my.chess.Coord;
  */
 public class Bishop extends Piece {
 
-    public Bishop(Color figureColor) {
-        super(PieceName.Bishop, figureColor, imageLoader.getBISHOP(figureColor));
+    public Bishop(Color pieceColor) {
+        super(PieceName.Bishop, pieceColor, imageLoader.getBISHOP(pieceColor));
     }
 
     @Override
-    public boolean isCorrectMovement(Coord source, Coord target) {
+    public boolean isCorrectMovement(Square source, Square target) {
         
         int verticalDiff, horizontalDiff; 
         
-        verticalDiff = Math.abs(source.row - target.row);
-        horizontalDiff = Math.abs(source.col - target.col);
+        verticalDiff = Math.abs(source.coord.row - target.coord.row);
+        horizontalDiff = Math.abs(source.coord.col - target.coord.col);
         
         var isDiagonalMove = verticalDiff == horizontalDiff;
                 

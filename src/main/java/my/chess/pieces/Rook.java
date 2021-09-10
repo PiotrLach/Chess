@@ -17,7 +17,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
-import my.chess.Coord;
+import my.chess.Square;
 
 /**
  *
@@ -25,16 +25,16 @@ import my.chess.Coord;
  */
 public class Rook extends Piece {
 
-    public Rook(Color figureColor) {
-        super(PieceName.Rook, figureColor, imageLoader.getROOK(figureColor));
+    public Rook(Color pieceColor) {
+        super(PieceName.Rook, pieceColor, imageLoader.getROOK(pieceColor));
     }
 
     @Override
-    public boolean isCorrectMovement(Coord source, Coord target) {
+    public boolean isCorrectMovement(Square source, Square target) {
         
         int vDiff, hDiff; // vertical and horizontal difference;
-        vDiff = Math.abs(source.row - target.row);
-        hDiff = Math.abs(source.col - target.col);
+        vDiff = Math.abs(source.coord.row - target.coord.row);
+        hDiff = Math.abs(source.coord.col - target.coord.col);
         
         var isVerticalMov = vDiff > 0;
         var isHorizontalMov = hDiff > 0;        
