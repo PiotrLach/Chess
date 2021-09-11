@@ -32,6 +32,12 @@ public class Coord {
         this.col = col;
         index = row * 8 + col;
     }
+    
+    public Coord(int index) {
+        this.index = index;
+        col = index % 8;
+        row = (index - col) / 8;
+    }
    
     public final int row;
     public final int col; 
