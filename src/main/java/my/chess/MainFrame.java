@@ -16,6 +16,9 @@
 */
 package my.chess;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Piotr Lach
@@ -214,16 +217,28 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_gameManageSavesButtonActionPerformed
 
     private void manageSavesLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesLoadActionPerformed
-        savesPanel1.loadSavedGame();
-        myTabbedPane.setSelectedIndex(1);
+        try {
+            savesPanel1.loadSavedGame();
+            myTabbedPane.setSelectedIndex(1);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }//GEN-LAST:event_manageSavesLoadActionPerformed
 
     private void manageSavesDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesDeleteActionPerformed
-        savesPanel1.deleteDatabaseRecord();
+        try {
+            savesPanel1.deleteDatabaseRecord();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }//GEN-LAST:event_manageSavesDeleteActionPerformed
 
     private void manageSavesOverwriteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesOverwriteActionPerformed
-        savesPanel1.updateDatabaseRecord();
+        try {
+            savesPanel1.updateDatabaseRecord();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }//GEN-LAST:event_manageSavesOverwriteActionPerformed
 
     private void manageSavesNewSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageSavesNewSaveActionPerformed
