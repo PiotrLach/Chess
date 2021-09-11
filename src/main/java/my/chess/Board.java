@@ -522,8 +522,8 @@ public class Board extends JPanel {
         Color color1 = draw == 1 ? Color.BLACK : Color.WHITE;
         Color color2 = color1 == Color.BLACK ? Color.WHITE : Color.BLACK;
         
-        startingPoints.put(color1, 1);
-        startingPoints.put(color2, 6);
+        startPoints.put(color1, 1);
+        startPoints.put(color2, 6);
         
         for (int col = 0; col < 8; col++) {
             var topPawn = new Pawn(color1, Piece.PieceName.Pawn1);
@@ -559,7 +559,7 @@ public class Board extends JPanel {
         isMate = false;
         isCheckBlockPossible = false;
         selectedPiece = null;
-        startingPoints = new HashMap<>();
+        startPoints = new HashMap<>();
         
         for (var square : squares) {
             square.setPiece(null);
@@ -584,10 +584,9 @@ public class Board extends JPanel {
         return currentColor;
     }
 
-    public static Square getSquare(int row, int col) throws IllegalArgumentException {
-        if (row < 8 && col < 8) {
-            int idx = row * 8 + col;
-            return squares.get(idx);
+    public static Square getSquare(Coord coord) throws IllegalArgumentException {
+        if (!coord.isOutOfBounds()) {            
+            return squares.get(coord.index);
         } else {
             String message = "Columns and rows indices cannot exceed 7";
             throw new IllegalArgumentException(message);
@@ -606,22 +605,22 @@ public class Board extends JPanel {
     }
 
     public static void setStartingPoints(Color color, Integer integer) throws Exception {
-        if (startingPoints == null) {
-            startingPoints = new HashMap();
+        if (startPoints == null) {
+            startPoints = new HashMap();
         }
-        startingPoints.put(color, integer);
-        if (startingPoints.size() > 2) {
+        startPoints.put(color, integer);
+        if (startPoints.size() > 2) {
             throw new Exception("Too many starting points!");
         }
     }
 
-    public static HashMap<Color, Integer> getstartingPoints() {
-        return startingPoints;
+    public static HashMap<Color, Integer> getStartPoints() {
+        return startPoints;
     }
     private static boolean isCheck = false; 
     private static boolean isMate = false; 
     private static boolean isCheckBlockPossible = false;
-    private static HashMap<Color, Integer> startingPoints;
+    private static HashMap<Color, Integer> startPoints;
     private ArrayList<Square> enemySquares = new ArrayList<>();
     private ArrayList<Square> kingEscapeSquares = new ArrayList<>();
     private static final ArrayList<Square> squares = new ArrayList<>();

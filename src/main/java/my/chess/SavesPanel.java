@@ -26,6 +26,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import lombok.val;
 import my.chess.Database.QueryType;
 import my.chess.pieces.Piece;
 
@@ -40,78 +41,100 @@ public class SavesPanel extends JPanel {
         initUI();
     }
 
-    private void initUI() {
+    private void initUI() {        
         radioButtons = new ArrayList();
         buttonGroup = new ButtonGroup();
-        final String selectGames = "SELECT gameID, name, date FROM games;";
+        
+        val selectGames = "SELECT gameID, name, date FROM games;";
         Database.sqlConnection(selectGames, QueryType.SELECT_GAMES);
-        for (Integer i = 0; i < Database.games.size(); i++) {
-            radioButtons.add(new RadioButton(Database.games.get(i), Database.dates.get(i), Database.names.get(i)));
-            buttonGroup.add(radioButtons.get(i));
-            add(radioButtons.get(i));
+        for (Integer id = 0; id < Database.games.size(); id++) {
+            
+            var radioButton = new RadioButton(Database.games.get(id), Database.dates.get(id), Database.names.get(id));            
+            radioButtons.add(radioButton);
+            buttonGroup.add(radioButtons.get(id));
+            add(radioButtons.get(id));
+            
         }
     }
 
     public void loadSavedGame() throws Exception {        
-        Integer i = getSelectedGameId();
+        val id = getSelectedGameId();
+        
         Board.clearBoard();
-        getGameColorFromDB(i);
-        final String selectChessFields = "SELECT x, y, piece FROM chessFields WHERE game = %d;";
-        final String selectStartingPositions = "SELECT color, position FROM startingpositions WHERE gameid = %d;";
-        Database.sqlConnection(String.format(selectChessFields, i), QueryType.SELECT_CHESS_FIELDS);
-        Database.sqlConnection(String.format(selectStartingPositions, i), QueryType.SELECT_POSITIONS);        
+        getGameColorFromDB(id);
+        
+        var selectSquares = "SELECT x, y, piece FROM chessFields WHERE game = %d;";
+        var selectStartPositions = "SELECT color, position FROM startingpositions WHERE gameid = %d;";
+        
+        selectSquares = String.format(selectSquares, id);
+        selectStartPositions = String.format(selectStartPositions, id);
+        
+        Database.sqlConnection(selectSquares, QueryType.SELECT_CHESS_FIELDS);
+        Database.sqlConnection(selectStartPositions, QueryType.SELECT_POSITIONS);        
     }
 
-    private void getGameColorFromDB(Integer id) {
-        String selectMaxGameID = "SELECT currentColor FROM games WHERE gameID = " + id + ";";
-        Database.sqlConnection(selectMaxGameID, QueryType.SELECT_GAME_COLOR);
+    private void getGameColorFromDB(Integer gameID) {
+        
+        var selectCurrentColor = "SELECT currentColor FROM games WHERE gameID = %d;";
+        selectCurrentColor = String.format(selectCurrentColor, gameID);
+        Database.sqlConnection(selectCurrentColor, QueryType.SELECT_GAME_COLOR);
+        
     }
 
     public void saveNewGame() {
-        LocalDateTime myDateObj = LocalDateTime.now();
-        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        String date = myDateObj.format(myFormatObj);
-        String name = JOptionPane.showInputDialog(this, "Wpisz nazwę save'a:");
-        if (name != null) {
+        var localDateTime = LocalDateTime.now();
+        var dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        
+        var saveDate = localDateTime.format(dateTimeFormatter);
+        var saveName = JOptionPane.showInputDialog(this, "Wpisz nazwę save'a:");
+        
+        if (saveName == null) {
             var message = "Nie wpisano nazwy save'a!";
             JOptionPane.showMessageDialog(this, message);
             return;
         }
+        
         StringBuilder insertFields = new StringBuilder();
         StringBuilder insertNewGame = new StringBuilder();
 
         int colorValue = parseColorValue(Board.getCurrentColor());
-        insertNewGame.append(String.format(insertGame, colorValue, date, name));
+        insertNewGame.append(String.format(insertGame, colorValue, saveDate, saveName));
         getGameIDfromDB();
         Database.gameID++;
-        HashMap<Color, Integer> points = Board.getstartingPoints();
+        HashMap<Color, Integer> points = Board.getStartPoints();
 
-        String insertNewStartingPositions = "INSERT INTO startingPositions(gameID,position,color) VALUES"
+        String insertNewStartingPositions = "INSERT INTO startingPositions(gameID, position, color) VALUES"
                 + "(" + Database.gameID + "," + points.get(Color.BLACK) + "," + 0 + ");";
-        insertNewStartingPositions += "INSERT INTO startingPositions(gameID,position,color) VALUES"
+        insertNewStartingPositions += "INSERT INTO startingPositions(gameID, position, color) VALUES"
                 + "(" + Database.gameID + "," + points.get(Color.WHITE) + "," + 1 + ");";
 
         insertNewGame.append(insertNewStartingPositions);
 
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                Square square = Board.getSquare(row, col);
-                Piece piece = square.getPiece();
-                if (piece != null) {
-                    String selectPieceID = String.format(selectPiece, piece.getName(), parseColorValue(piece.color));
-                    insertFields.append(String.format(insertChessFields, row, col, selectPieceID, Database.gameID));
+        for (int index = 0; index < 64; index++) {
+            
+            var coord = new Coord(index);
+            
+            var square = Board.getSquare(coord);
+            var piece = square.getPiece();
+            
+            if (piece != null) {
+                String selectPieceID = String.format(selectPiece, piece.getName(), parseColorValue(piece.color));
+                insertFields.append(String.format(insertChessFields, coord.row, coord.col, selectPieceID, Database.gameID));
 
-                } else {
-                    insertFields.append(String.format(insertChessFields, row, col, "null", Database.gameID));
-                }
-            }
+            } else {
+                insertFields.append(String.format(insertChessFields, coord.row, coord.col, "null", Database.gameID));
+            }            
         }
         insertNewGame.append(insertFields);
+        
         Database.sqlConnection(insertNewGame.toString(), QueryType.OTHER);
-        RadioButton rb = new RadioButton(Database.gameID, date, name);
-        radioButtons.add(rb);
-        buttonGroup.add(rb);
-        add(rb);
+        
+        var radioButton = new RadioButton(Database.gameID, saveDate, saveName);
+        
+        radioButtons.add(radioButton);
+        buttonGroup.add(radioButton);
+        
+        add(radioButton);
         updateUI();        
     }
 
@@ -123,8 +146,9 @@ public class SavesPanel extends JPanel {
     public void deleteDatabaseRecord() throws Exception {        
         int gameId = getSelectedGameId();
         String deleteQuery = "DELETE FROM chessFields WHERE game =" + gameId + ";\n";
-        deleteQuery += "DELETE FROM games WHERE gameID =" + gameId + ";";
+        deleteQuery += "DELETE FROM games WHERE gameID =" + gameId + ";";        
         Database.sqlConnection(deleteQuery, QueryType.OTHER);
+        
         for (int i = 0; i < radioButtons.size(); i++) {
             if (radioButtons.get(i).isSelected()) {
                 remove(radioButtons.get(i));
@@ -133,38 +157,40 @@ public class SavesPanel extends JPanel {
                 break;
             }
         }
+        
         updateUI();        
     }
 
     public void updateDatabaseRecord() throws Exception {        
-        int gameID = getSelectedGameId();
+        
+        int gameID = getSelectedGameId();               
         var stringBuilder = new StringBuilder();
         var color = Board.getCurrentColor();
+        
         stringBuilder.append(String.format(updateColor, parseColorValue(color), gameID));
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                Square square = Board.getSquare(row, col);
-                Piece piece = square.getPiece();
-                if (piece != null) {
-                    stringBuilder.append(String.format(updatePieceValue, pieceIntValue(piece), row, col, gameID));
-                } else {
-                    stringBuilder.append(String.format(updatePieceValue, "null", row, col, gameID));
-                }
-            }
+        for (int index = 0; index < 64; index++) {            
+            
+            var coord = new Coord(index);
+            var square = Board.getSquare(coord);
+            var piece = square.getPiece();
+
+            var pieceValue = piece != null ? pieceIntValue(piece) : "null";
+
+            stringBuilder.append(String.format(updatePieceValue, pieceValue, coord.row, coord.col, gameID));                            
         }
         Database.sqlConnection(stringBuilder.toString(), QueryType.OTHER);        
     }
 
     private int getSelectedGameId() throws Exception {
-        for (int i = 0; i < radioButtons.size(); i++) {
-            if (radioButtons.get(i).isSelected()) {
-                return radioButtons.get(i).gameID;
+        for (var radioButton : radioButtons) {
+            if (radioButton.isSelected()) {
+                return radioButton.gameID;
             }
         }
         throw new Exception("Nie wybrano zapisu gry do usunięcia!");
     }
 
-    private int parseColorValue(final Color color) throws IllegalArgumentException {
+    private int parseColorValue(Color color) throws IllegalArgumentException {
                
         if (color == Color.BLACK) {
             return 0;
@@ -177,20 +203,20 @@ public class SavesPanel extends JPanel {
 
     }
 
-    private int pieceIntValue(Piece piece) throws IllegalArgumentException {
+    private Integer pieceIntValue(Piece piece) throws IllegalArgumentException {
        
         var color = piece.color;       
-        int i = color == Color.BLACK ? 0 : 7;
+        int colorIntValue = color == Color.BLACK ? 0 : 7;
         
         return switch (piece.getName()) {
             default -> throw new IllegalArgumentException("No such figure!");
-            case Pawn1 -> 0 + i;
-            case Pawn6 -> 1 + i;
-            case Rook -> 2 + i;
-            case Bishop -> 3 + i;
-            case Knight -> 4 + i;
-            case Queen -> 5 + i;
-            case King -> 6 + i;
+            case Pawn1 -> 0 + colorIntValue;
+            case Pawn6 -> 1 + colorIntValue;
+            case Rook -> 2 + colorIntValue;
+            case Bishop -> 3 + colorIntValue;
+            case Knight -> 4 + colorIntValue;
+            case Queen -> 5 + colorIntValue;
+            case King -> 6 + colorIntValue;
         };
     }
 
