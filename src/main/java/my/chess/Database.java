@@ -18,7 +18,6 @@ package my.chess;
 
 import java.awt.Color;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,7 +25,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Scanner;
 import my.chess.pieces.Bishop;
 import my.chess.pieces.Piece;
 import my.chess.pieces.King;
@@ -54,22 +52,6 @@ public class Database {
     public static ArrayList<String> names;
     public static int gameID = 1;
 
-    public static void createNewDatabase() {
-
-        String url = "jdbc:sqlite:db" + File.separator + "chess.db";
-
-        try (var connection = DriverManager.getConnection(url)) {
-            if (connection != null) {
-                var databaseMetaData = connection.getMetaData();
-                var driverName = databaseMetaData.getDriverName();
-                System.out.println("The driver name is " + driverName);
-                System.out.println("A new database has been created.");
-            }
-
-        } catch (SQLException exception) {
-            System.out.println(exception);
-        }
-    }
 
     private static void select(QueryType queryType, ResultSet resultSet) throws Exception {
         while (resultSet.next()) {
@@ -176,18 +158,4 @@ public class Database {
         };
     }
 
-    private String readSqlFile() {
-        String data = "";
-        try {
-            File file = new File("db" + File.separator + "base.sql");
-            Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()) {
-                data += scanner.nextLine() + "\n";
-            }
-            scanner.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred: " + e.toString());
-        }
-        return data;
-    }
 }
