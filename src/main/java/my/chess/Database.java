@@ -18,13 +18,12 @@ package my.chess;
 
 import java.awt.Color;
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.List;
 import my.chess.pieces.Bishop;
 import my.chess.pieces.Piece;
 import my.chess.pieces.King;
@@ -32,6 +31,7 @@ import my.chess.pieces.Knight;
 import my.chess.pieces.Pawn;
 import my.chess.pieces.Queen;
 import my.chess.pieces.Rook;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 /**
  *
@@ -41,40 +41,43 @@ public class Database {
 
     public static enum QueryType {
         OTHER, 
-        SELECT_CHESS_FIELDS,
+        SELECT_SQUARES,
         SELECT_MAX_GAME_ID,
         SELECT_GAME_COLOR,
         SELECT_GAMES,
         SELECT_POSITIONS
     };
-    public static ArrayList<Integer> games;
-    public static ArrayList<String> dates;
-    public static ArrayList<String> names;
-    public static int gameID = 1;
 
-
-    private static void select(QueryType queryType, ResultSet resultSet) throws Exception {
+    private static <R extends List> R getResult(QueryType queryType, ResultSet resultSet, R r) throws Exception {
         while (resultSet.next()) {
+            
             switch (queryType) {
-                case SELECT_POSITIONS -> {
-                    int colorIntValue = resultSet.getInt("color");
-                    int position = resultSet.getInt("position");
-                    Color color = parseIntToColor(colorIntValue);
-                    Board.setStartingPoints(color, position);
-                }
                 case SELECT_GAMES -> {
-                    games.add(resultSet.getInt("gameID"));
-                    dates.add(resultSet.getString("date"));
-                    names.add(resultSet.getString("name"));
+                    var id = resultSet.getInt("gameID");
+                    var date = resultSet.getString("date");
+                    var name = resultSet.getString("name");
+                    var radioButton = new RadioButton(id, date, name);
+                    r.add(radioButton);
                 }
-                case SELECT_CHESS_FIELDS -> {
+                case SELECT_SQUARES -> {
                     int row = resultSet.getInt("x");
                     int col = resultSet.getInt("y");
-                    String pieceID = resultSet.getString("piece");
-                    setLoadedPiece(pieceID, row, col);                    
+                    var coord = new Coord(row, col);
+                    
+                    var pieceId = resultSet.getString("piece");
+                    
+                    if (pieceId == null) {
+                        continue;
+                    }                    
+                    
+                    Piece piece = parseIntToPiece(Integer.valueOf(pieceId));                    
+                    var pair = new ImmutablePair<Coord, Piece>(coord, piece);
+                    r.add(pair);
                 }
-                case SELECT_MAX_GAME_ID ->
-                    gameID = resultSet.getInt("MAX(gameID)");                    
+                case SELECT_MAX_GAME_ID -> {
+                    int id = resultSet.getInt("MAX(gameID)");                    
+                    r.add(id);
+                }
                 case SELECT_GAME_COLOR -> {
                     int intColorValue = resultSet.getInt("currentColor");
                     Color color = parseIntToColor(intColorValue);
@@ -82,25 +85,25 @@ public class Database {
                 }
             }
         }
+        return r;
     }
 
-    public static void sqlConnection(String myQuery, QueryType queryType) {
-
-        games = new ArrayList();
-        dates = new ArrayList();
-        names = new ArrayList();
+    public static <R extends List> R sqlQuery(String query, QueryType queryType, R r) {
+        
         ResultSet resultSet;
         Connection connection = null;
         try {
+            
             String dbName = "jdbc:sqlite:db" + File.separator + "chess.db";
             connection = DriverManager.getConnection(dbName);
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
+            
             switch (queryType) {
-                case OTHER -> statement.executeUpdate(myQuery);                    
+                case OTHER -> statement.executeUpdate(query);                    
                 default -> {
-                    resultSet = statement.executeQuery(myQuery);
-                    select(queryType, resultSet);
+                    resultSet = statement.executeQuery(query);
+                    r = getResult(queryType, resultSet, r);
                 }
             }
         } catch (Exception exception) {
@@ -113,7 +116,8 @@ public class Database {
             } catch (SQLException exception) {
                 System.err.println(exception);
             }
-        }        
+        } 
+        return r;
     }
 
     private static Color parseIntToColor(int integer) {
@@ -127,20 +131,12 @@ public class Database {
         };
     }
 
-    private static void setLoadedPiece(String pieceID, int row, int col) throws IOException {
-        if (pieceID != null) {
-            int pieceIntValue = Integer.parseInt(pieceID);
-            Piece piece = parseIntToPiece(pieceIntValue);
-            Board.setPiece(row, col, piece);
-        }
-    }
-
     private static Piece parseIntToPiece(int num) throws IllegalArgumentException {        
         return switch (num) {
             default -> {
-                String message = "Piece ID value has to be between 0 and 11";
+                String message = "Piece ID value has to be between 1 and 14";
                 throw new IllegalArgumentException(message);
-            }
+            }            
             case 0 -> new Pawn(Color.BLACK, Piece.PieceName.Pawn1);
             case 1 -> new Pawn(Color.BLACK, Piece.PieceName.Pawn6);
             case 2 -> new Rook(Color.BLACK);
@@ -157,5 +153,4 @@ public class Database {
             case 13 -> new King(Color.WHITE);
         };
     }
-
 }

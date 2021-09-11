@@ -14,7 +14,6 @@
 -- along with this program. If not, see <https://www.gnu.org/licenses/>.
 -- 
 DROP TABLE IF EXISTS colors;
--- DROP TABLE IF EXISTS chessPlayers;
 DROP TABLE IF EXISTS chessPieces;
 DROP TABLE IF EXISTS startingPositions;
 DROP TABLE IF EXISTS games;
@@ -36,21 +35,6 @@ CREATE TABLE games(
         name TEXT,
         FOREIGN KEY (currentColor) REFERENCES colors(colorValue)
 );
-CREATE TABLE startingPositions(
-        positionID INTEGER PRIMARY KEY,
-        gameID INTEGER,
-        position INTEGER,        
-        color INTEGER,
-        FOREIGN KEY (color) REFERENCES colors(colorValue),
-        FOREIGN KEY (gameID) REFERENCES games(gameID)
-);
--- CREATE TABLE chessPlayers(
--- 	playerName TEXT PRIMARY KEY,
--- 	playerColor INTEGER NOT NULL,
--- 	gameID INTEGER,
--- 	FOREIGN KEY (playerColor) REFERENCES colors(colorValue),
--- 	FOREIGN KEY (gameID) REFERENCES games(gameID)
--- );
 CREATE TABLE chessFields(
 	chessFieldID INTEGER PRIMARY KEY,
 	x INTEGER CHECK (x<8),
@@ -76,5 +60,3 @@ INSERT INTO chessPieces VALUES (10, "Bishop", 1);
 INSERT INTO chessPieces VALUES (11, "Knight", 1);
 INSERT INTO chessPieces VALUES (12, "Queen", 1);
 INSERT INTO chessPieces VALUES (13, "King", 1);
---INSERT INTO games VALUES((SELECT MAX(gameID) FROM games)+1,0);
---INSERT INTO chessFields VALUES((SELECT MAX(chessFieldID) FROM chessFields)+1,x,y,piece,game);

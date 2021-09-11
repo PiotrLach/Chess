@@ -411,7 +411,6 @@ public class Board extends JPanel {
 
                 var isWhite = currentColor == Color.WHITE;
                 currentColor = isWhite ? Color.BLACK : Color.WHITE;
-                oppositeColor = !isWhite ? Color.BLACK : Color.WHITE;
 
                 repaint();                    
                 checkAndMate();                   
@@ -521,10 +520,7 @@ public class Board extends JPanel {
         
         Color color1 = draw == 1 ? Color.BLACK : Color.WHITE;
         Color color2 = color1 == Color.BLACK ? Color.WHITE : Color.BLACK;
-        
-        startPoints.put(color1, 1);
-        startPoints.put(color2, 6);
-        
+               
         for (int col = 0; col < 8; col++) {
             var topPawn = new Pawn(color1, Piece.PieceName.Pawn1);
             var bottomPawn = new Pawn(color2, Piece.PieceName.Pawn6);
@@ -554,12 +550,10 @@ public class Board extends JPanel {
 
     public static void clearBoard() {
         currentColor = Color.WHITE;
-        oppositeColor = Color.BLACK;
         isCheck = false;
         isMate = false;
         isCheckBlockPossible = false;
         selectedPiece = null;
-        startPoints = new HashMap<>();
         
         for (var square : squares) {
             square.setPiece(null);
@@ -593,10 +587,9 @@ public class Board extends JPanel {
         }
     }
 
-    public static void setPiece(int row, int col, Piece piece) throws IllegalArgumentException {
-        if (row < 8 && col < 8) {
-            int idx = row * 8 + col;
-            var square = squares.get(idx);
+    public static void setPiece(Coord coord, Piece piece) throws IllegalArgumentException {
+        if (!coord.isOutOfBounds()) {            
+            var square = squares.get(coord.index);
             square.setPiece(piece);
         } else {
             String message = "Columns and rows indices cannot exceed 7";
@@ -604,28 +597,13 @@ public class Board extends JPanel {
         }
     }
 
-    public static void setStartingPoints(Color color, Integer integer) throws Exception {
-        if (startPoints == null) {
-            startPoints = new HashMap();
-        }
-        startPoints.put(color, integer);
-        if (startPoints.size() > 2) {
-            throw new Exception("Too many starting points!");
-        }
-    }
-
-    public static HashMap<Color, Integer> getStartPoints() {
-        return startPoints;
-    }
     private static boolean isCheck = false; 
     private static boolean isMate = false; 
     private static boolean isCheckBlockPossible = false;
-    private static HashMap<Color, Integer> startPoints;
     private ArrayList<Square> enemySquares = new ArrayList<>();
     private ArrayList<Square> kingEscapeSquares = new ArrayList<>();
     private static final ArrayList<Square> squares = new ArrayList<>();
     private static Color currentColor;
-    private static Color oppositeColor;
     private Square sourceSquare = new Square(0, 0, 0, 0, new Coord(-1, -1));;
     private static Piece selectedPiece;
     private int squareSize = 80;

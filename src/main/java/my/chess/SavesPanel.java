@@ -21,14 +21,13 @@ import java.awt.GridLayout;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import lombok.val;
 import my.chess.Database.QueryType;
 import my.chess.pieces.Piece;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 /**
  *
@@ -46,13 +45,12 @@ public class SavesPanel extends JPanel {
         buttonGroup = new ButtonGroup();
         
         val selectGames = "SELECT gameID, name, date FROM games;";
-        Database.sqlConnection(selectGames, QueryType.SELECT_GAMES);
-        for (Integer id = 0; id < Database.games.size(); id++) {
-            
-            var radioButton = new RadioButton(Database.games.get(id), Database.dates.get(id), Database.names.get(id));            
-            radioButtons.add(radioButton);
-            buttonGroup.add(radioButtons.get(id));
-            add(radioButtons.get(id));
+        
+        radioButtons = Database.sqlQuery(selectGames, QueryType.SELECT_GAMES, radioButtons);
+        for (var radioButton : radioButtons) {
+                                    
+            buttonGroup.add(radioButton);
+            add(radioButton);
             
         }
     }
@@ -64,20 +62,27 @@ public class SavesPanel extends JPanel {
         getGameColorFromDB(id);
         
         var selectSquares = "SELECT x, y, piece FROM chessFields WHERE game = %d;";
-        var selectStartPositions = "SELECT color, position FROM startingpositions WHERE gameid = %d;";
         
         selectSquares = String.format(selectSquares, id);
-        selectStartPositions = String.format(selectStartPositions, id);
         
-        Database.sqlConnection(selectSquares, QueryType.SELECT_CHESS_FIELDS);
-        Database.sqlConnection(selectStartPositions, QueryType.SELECT_POSITIONS);        
+        ArrayList<ImmutablePair<Coord, Piece>> pairs = new ArrayList<>();
+        
+        pairs = Database.sqlQuery(selectSquares, QueryType.SELECT_SQUARES, pairs);  
+        
+        for (var pair : pairs) {
+            Board.setPiece(pair.left, pair.right);
+        }        
+        
     }
 
     private void getGameColorFromDB(Integer gameID) {
         
         var selectCurrentColor = "SELECT currentColor FROM games WHERE gameID = %d;";
         selectCurrentColor = String.format(selectCurrentColor, gameID);
-        Database.sqlConnection(selectCurrentColor, QueryType.SELECT_GAME_COLOR);
+        
+        ArrayList<Color> colors = new ArrayList<>();
+        
+        Database.sqlQuery(selectCurrentColor, QueryType.SELECT_GAME_COLOR, colors);
         
     }
 
@@ -100,15 +105,6 @@ public class SavesPanel extends JPanel {
         int colorValue = parseColorValue(Board.getCurrentColor());
         insertNewGame.append(String.format(insertGame, colorValue, saveDate, saveName));
         getGameIDfromDB();
-        Database.gameID++;
-        HashMap<Color, Integer> points = Board.getStartPoints();
-
-        String insertNewStartingPositions = "INSERT INTO startingPositions(gameID, position, color) VALUES"
-                + "(" + Database.gameID + "," + points.get(Color.BLACK) + "," + 0 + ");";
-        insertNewStartingPositions += "INSERT INTO startingPositions(gameID, position, color) VALUES"
-                + "(" + Database.gameID + "," + points.get(Color.WHITE) + "," + 1 + ");";
-
-        insertNewGame.append(insertNewStartingPositions);
 
         for (int index = 0; index < 64; index++) {
             
@@ -117,19 +113,15 @@ public class SavesPanel extends JPanel {
             var square = Board.getSquare(coord);
             var piece = square.getPiece();
             
-            if (piece != null) {
-                String selectPieceID = String.format(selectPiece, piece.getName(), parseColorValue(piece.color));
-                insertFields.append(String.format(insertChessFields, coord.row, coord.col, selectPieceID, Database.gameID));
-
-            } else {
-                insertFields.append(String.format(insertChessFields, coord.row, coord.col, "null", Database.gameID));
-            }            
+            var pieceIntValue = piece == null ? null : pieceIntValue(piece);
+                                    
+            insertFields.append(String.format(insertChessFields, coord.row, coord.col, pieceIntValue, maxId));                                         
         }
         insertNewGame.append(insertFields);
         
-        Database.sqlConnection(insertNewGame.toString(), QueryType.OTHER);
+        Database.sqlQuery(insertNewGame.toString(), QueryType.OTHER, null);
         
-        var radioButton = new RadioButton(Database.gameID, saveDate, saveName);
+        var radioButton = new RadioButton(maxId, saveDate, saveName);
         
         radioButtons.add(radioButton);
         buttonGroup.add(radioButton);
@@ -140,14 +132,17 @@ public class SavesPanel extends JPanel {
 
     private void getGameIDfromDB() {
         String selectMaxGameID = "SELECT MAX(gameID) FROM games;";
-        Database.sqlConnection(selectMaxGameID, QueryType.SELECT_MAX_GAME_ID);
+        ArrayList<Integer> number = new ArrayList<>();
+        number = Database.sqlQuery(selectMaxGameID, QueryType.SELECT_MAX_GAME_ID, number);
+        maxId = number.get(0);
+        maxId++;
     }
 
     public void deleteDatabaseRecord() throws Exception {        
         int gameId = getSelectedGameId();
         String deleteQuery = "DELETE FROM chessFields WHERE game =" + gameId + ";\n";
         deleteQuery += "DELETE FROM games WHERE gameID =" + gameId + ";";        
-        Database.sqlConnection(deleteQuery, QueryType.OTHER);
+        Database.sqlQuery(deleteQuery, QueryType.OTHER, null);
         
         for (int i = 0; i < radioButtons.size(); i++) {
             if (radioButtons.get(i).isSelected()) {
@@ -178,7 +173,7 @@ public class SavesPanel extends JPanel {
 
             stringBuilder.append(String.format(updatePieceValue, pieceValue, coord.row, coord.col, gameID));                            
         }
-        Database.sqlConnection(stringBuilder.toString(), QueryType.OTHER);        
+        Database.sqlQuery(stringBuilder.toString(), QueryType.OTHER, null);        
     }
 
     private int getSelectedGameId() throws Exception {
@@ -219,20 +214,11 @@ public class SavesPanel extends JPanel {
             case King -> 6 + colorIntValue;
         };
     }
-
-    private class RadioButton extends JRadioButton {
-
-        public RadioButton(int gameID, String date, String name) {
-            this.gameID = gameID;
-            setText(name + ", " + date);
-        }
-
-        public final int gameID;
-    }
+    
+    private int maxId = 0;
     private ArrayList<RadioButton> radioButtons;
     private ButtonGroup buttonGroup;
-    private final String selectPiece = "(SELECT pieceID FROM chessPieces WHERE pieceName = '%s' AND pieceColor = %d)",
-            updateColor = "UPDATE games SET currentColor = %d WHERE gameID = %d;",
+    private final String updateColor = "UPDATE games SET currentColor = %d WHERE gameID = %d;",
             updatePieceValue = "UPDATE chessFields SET piece = %s WHERE x = %d AND y = %d AND game = %d;",
             insertChessFields = "INSERT INTO chessFields(x, y, piece,game) VALUES (%d, %d, %s, %d);",
             insertGame = "INSERT INTO games(currentColor,date,name) VALUES(%d, '%s', '%s');";
