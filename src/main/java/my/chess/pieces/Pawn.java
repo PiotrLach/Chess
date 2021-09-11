@@ -29,31 +29,45 @@ public class Pawn extends Piece {
     public Pawn(Color color, PieceName pieceName) {
         super(pieceName, color, imageLoader.getPAWN(color));
 
-        startingRow = pieceName == PieceName.Pawn1 ? 1 : 6;
+        startRow = pieceName == PieceName.Pawn1 ? 1 : 6;
 
-        isOnBottomRow = startingRow == 1;
+        isMovingDown = startRow == 1;
     }
     
     
     @Override
-    public boolean isCorrectMovement(Square source, Square target) {        
+    public boolean isCorrectMovement(Square source, Square target) { 
         
-        boolean isOneForwardMovement = Math.abs(source.coord.row - target.coord.row) == 1, 
-                isTwoForwardMovements = Math.abs(source.coord.row - target.coord.row) == 2,
-                isVertical = (isOnBottomRow ? target.coord.row > source.coord.row : target.coord.row < source.coord.row),
-                isHorizontal = Math.abs(source.coord.col - target.coord.col) == 1,           
-                isNotHorizontal = Math.abs(source.coord.col - target.coord.col) == 0,           
-                isNullAhead = target.getPiece() == null,
-                isFoeDiagonal = !isNullAhead && this.isFoe(target.getPiece());
+        int verticalDiff, horizontalDiff; 
         
-        var availableMovements = List.of(
-            isVertical && isOneForwardMovement && isNotHorizontal && isNullAhead,
-            isVertical && source.coord.row == startingRow && isTwoForwardMovements && isNotHorizontal && isNullAhead,
-            isVertical && isOneForwardMovement && isHorizontal && isFoeDiagonal
+        verticalDiff = Math.abs(source.coord.row - target.coord.row);
+        horizontalDiff = Math.abs(source.coord.col - target.coord.col);
+        
+        var isOneVerticalMove = verticalDiff == 1;
+        var isTwoVerticalMoves = verticalDiff == 2;
+        
+        var isTargetRowHigher = target.coord.row > source.coord.row;
+        var isTargetRowLower = target.coord.row < source.coord.row; 
+        
+        var isForwardMove = (isMovingDown ? isTargetRowHigher : isTargetRowLower);
+        
+        var isHorizontal = horizontalDiff == 1;                   
+        var isNotHorizontal = horizontalDiff == 0;        
+        
+        var isOnStartRow = source.coord.row == startRow;        
+        
+        var isNullOnTarget = target.getPiece() == null;
+        var isFoeOnTarget = !isNullOnTarget && isFoe(target.getPiece());
+        
+        var possibleMovements = List.of(
+            isForwardMove && isOneVerticalMove && isNotHorizontal && isNullOnTarget,
+            isForwardMove && isOnStartRow && isTwoVerticalMoves && isNotHorizontal && isNullOnTarget,
+            isForwardMove && isOneVerticalMove && isHorizontal && isFoeOnTarget
         );
-        return availableMovements.contains(true);      
+        
+        return possibleMovements.contains(true);      
     }
-    private final boolean isOnBottomRow;
-    private final int startingRow;
+    private final boolean isMovingDown;
+    private final int startRow;
 
 }
