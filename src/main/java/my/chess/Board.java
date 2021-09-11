@@ -29,7 +29,6 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -474,8 +473,7 @@ public class Board extends JPanel {
      * Retrieves a list of squares in straight line between source 
      * and target squares
      * @param source
-     * @param target
-     * @param foe
+     * @param target     
      */    
     private ArrayList<Square> getPath(Square source, Square target) {          
         Fun<Coord, ArrayList<Square>> fun = (coord, path) -> {                        
@@ -494,7 +492,6 @@ public class Board extends JPanel {
      * Checks if there are pieces on the path between source and target squares
      * @param source
      * @param target
-     * @param foe
      */
     private boolean isPathFree(Square source, Square target) {               
         Fun<Coord, Integer> fun = (coord, nullCount) -> {

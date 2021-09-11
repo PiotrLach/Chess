@@ -82,7 +82,9 @@ public class SavesPanel extends JPanel {
         
         ArrayList<Color> colors = new ArrayList<>();
         
-        Database.sqlQuery(selectCurrentColor, QueryType.SELECT_GAME_COLOR, colors);
+        colors = Database.sqlQuery(selectCurrentColor, QueryType.SELECT_GAME_COLOR, colors);
+        
+        Board.setCurrentColor(colors.get(0));
         
     }
 
@@ -139,9 +141,13 @@ public class SavesPanel extends JPanel {
     }
 
     public void deleteDatabaseRecord() throws Exception {        
+        
         int gameId = getSelectedGameId();
-        String deleteQuery = "DELETE FROM chessFields WHERE game =" + gameId + ";\n";
-        deleteQuery += "DELETE FROM games WHERE gameID =" + gameId + ";";        
+        
+        var deleteQuery = "DELETE FROM chessFields WHERE game = %d;\n";        
+        deleteQuery += "DELETE FROM games WHERE gameID = %d;";              
+        deleteQuery = String.format(deleteQuery, gameId, gameId);
+        
         Database.sqlQuery(deleteQuery, QueryType.OTHER, null);
         
         for (int i = 0; i < radioButtons.size(); i++) {
@@ -172,7 +178,7 @@ public class SavesPanel extends JPanel {
             var pieceValue = piece != null ? pieceIntValue(piece) : "null";
 
             stringBuilder.append(String.format(updatePieceValue, pieceValue, coord.row, coord.col, gameID));                            
-        }
+        }        
         Database.sqlQuery(stringBuilder.toString(), QueryType.OTHER, null);        
     }
 
