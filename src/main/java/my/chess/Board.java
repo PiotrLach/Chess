@@ -27,7 +27,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.JOptionPane;
@@ -42,6 +41,7 @@ public class Board extends JPanel {
 
     public Board() {        
         createSquares();
+//        setNewGame();
     }
     
     /**
@@ -441,7 +441,7 @@ public class Board extends JPanel {
                                                     
     }
    
-    private <T> T traverse(Square source, Square target, T t, Fun<Coord, T> fun) {
+    private <T> T traverse(Square source, Square target, T t, Function<Coord, T> fun) {
 
         if (!(source.getPiece() instanceof Knight)) {
 
@@ -476,7 +476,7 @@ public class Board extends JPanel {
      * @param target     
      */    
     private ArrayList<Square> getPath(Square source, Square target) {          
-        Fun<Coord, ArrayList<Square>> fun = (coord, path) -> {                        
+        Function<Coord, ArrayList<Square>> fun = (coord, path) -> {                        
                         
             path.add(squares.get(coord.index));
             
@@ -494,7 +494,7 @@ public class Board extends JPanel {
      * @param target
      */
     private boolean isPathFree(Square source, Square target) {               
-        Fun<Coord, Integer> fun = (coord, nullCount) -> {
+        Function<Coord, Integer> fun = (coord, nullCount) -> {
                                     
             Square square = squares.get(coord.index);
             Piece piece = square.getPiece();
@@ -509,7 +509,7 @@ public class Board extends JPanel {
         return traverse(source, target, nullCount, fun) == 0;
     }
 
-    public void setNewGame() throws IOException {
+    public void setNewGame()  {
         
         clearBoard();
         
@@ -554,44 +554,13 @@ public class Board extends JPanel {
         
         for (var square : squares) {
             square.setPiece(null);
+            square.setHighlighted(false);
         }                
     }
-    
+                      
     @FunctionalInterface
-    private interface Fun <T, R> {
+    private interface Function <T, R> {
         R perform(T arg1, R arg2);
-    }
-
-    public static void setCurrentColor(Color color) throws IllegalArgumentException {
-        if (color == Color.BLACK || color == Color.WHITE) {
-            currentColor = color;
-        } else {
-            String message = "Current color can only be black or white";
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    public static Color getCurrentColor() {
-        return currentColor;
-    }
-
-    public static Square getSquare(Coord coord) throws IllegalArgumentException {
-        if (!coord.isOutOfBounds()) {            
-            return squares.get(coord.index);
-        } else {
-            String message = "Columns and rows indices cannot exceed 7";
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    public static void setPiece(Coord coord, Piece piece) throws IllegalArgumentException {
-        if (!coord.isOutOfBounds()) {            
-            var square = squares.get(coord.index);
-            square.setPiece(piece);
-        } else {
-            String message = "Columns and rows indices cannot exceed 7";
-            throw new IllegalArgumentException(message);
-        }
     }
 
     private static boolean isCheck = false; 
