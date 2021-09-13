@@ -28,6 +28,11 @@ public class Rook extends Piece {
     public Rook(Color pieceColor) {
         super(PieceName.Rook, pieceColor, imageLoader.getROOK(pieceColor));
     }
+    
+    @Override
+    public void setImage() {
+        image = imageLoader.getROOK(color);
+    }
 
     @Override
     public boolean isCorrectMovement(Square source, Square target) {

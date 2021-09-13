@@ -28,6 +28,11 @@ public class King extends Piece {
     public King(Color pieceColor) {
         super(PieceName.King, pieceColor, imageLoader.getKING(pieceColor));
     }
+    
+    @Override
+    public void setImage() {
+        image = imageLoader.getKING(color);
+    }
 
     @Override
     public boolean isCorrectMovement(Square source, Square target) {

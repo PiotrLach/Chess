@@ -35,7 +35,7 @@ public class PieceImageLoader {
         }
     }
     
-    public static final PieceImageLoader INSTANCE = new PieceImageLoader();           
+    public static final PieceImageLoader INSTANCE = new PieceImageLoader();
     
     private InputStream getResource(String fileName) throws Exception {        
         
@@ -66,7 +66,7 @@ public class PieceImageLoader {
     }   
 
     public Image getPAWN(Color color) {
-        if (color ==  Color.BLACK) {
+        if (color.equals(Color.BLACK)) {
             return PAWN_BLACK;
         } else {
             return PAWN_WHITE;
@@ -74,7 +74,7 @@ public class PieceImageLoader {
     }
 
     public Image getROOK(Color color) {
-        if (color ==  Color.BLACK) {
+        if (color.equals(Color.BLACK)) {
             return ROOK_BLACK;
         } else {
             return ROOK_WHITE;
@@ -82,7 +82,7 @@ public class PieceImageLoader {
     }
 
     public Image getBISHOP(Color color) {
-        if (color ==  Color.BLACK) {
+        if (color.equals(Color.BLACK)) {
             return BISHOP_BLACK;
         } else {
             return BISHOP_WHITE;
@@ -90,7 +90,7 @@ public class PieceImageLoader {
     }
 
     public Image getKNIGHT(Color color) {
-        if (color ==  Color.BLACK) {
+        if (color.equals(Color.BLACK)) {
             return KNIGHT_BLACK;
         } else {
             return KNIGHT_WHITE;
@@ -98,7 +98,7 @@ public class PieceImageLoader {
     }
 
     public Image getQUEEN(Color color) {
-        if (color ==  Color.BLACK) {
+        if (color.equals(Color.BLACK)) {
             return QUEEN_BLACK;
         } else {
             return QUEEN_WHITE;
@@ -106,7 +106,7 @@ public class PieceImageLoader {
     }
 
     public Image getKING(Color color) {
-        if (color ==  Color.BLACK) {
+        if (color.equals(Color.BLACK)) {
             return KING_BLACK;
         } else {
             return KING_WHITE;

@@ -16,6 +16,7 @@
 */
 package my.chess;
 
+import java.io.Serializable;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -25,7 +26,9 @@ import lombok.ToString;
  */
 @EqualsAndHashCode
 @ToString
-public class Coord {    
+public class Coord implements Serializable {     
+    
+    private static final long serialVersionUID = 5888462570748191830L;
 
     public Coord(int row, int col) {
         this.row = row;

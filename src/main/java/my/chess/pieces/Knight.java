@@ -28,6 +28,11 @@ public class Knight extends Piece {
     public Knight(Color pieceColor) {
         super(PieceName.Knight, pieceColor, imageLoader.getKNIGHT(pieceColor));
     }
+    
+    @Override
+    public void setImage() {
+        image = imageLoader.getKNIGHT(color);
+    }
 
     @Override
     public boolean isCorrectMovement(Square source, Square target) {

@@ -16,10 +16,7 @@
 */
 package my.chess;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentListener;
-import java.awt.event.MouseListener;
-import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -95,6 +92,11 @@ public class MainFrame extends javax.swing.JFrame {
         gameMenu.add(loadGameOption);
 
         saveGameOption.setText("Save game");
+        saveGameOption.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveGameOptionActionPerformed(evt);
+            }
+        });
         gameMenu.add(saveGameOption);
 
         menuBar.add(gameMenu);
@@ -131,8 +133,37 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_boardMouseClicked
 
     private void loadGameOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadGameOptionActionPerformed
-        JOptionPane.showMessageDialog(this, "It works!");
+        var fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(this);
+
+        if (!(result == JFileChooser.APPROVE_OPTION)) {
+            return;
+        }
+        
+        var file = fileChooser.getSelectedFile();                       
+        var fileName = file.getAbsolutePath();
+        
+        System.out.println(fileName);
+       
+        var save = new Save(board);
+        save.loadGame(fileName);
     }//GEN-LAST:event_loadGameOptionActionPerformed
+
+    private void saveGameOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveGameOptionActionPerformed
+       
+        var fileChooser = new JFileChooser();
+        int result = fileChooser.showSaveDialog(this);
+
+        if (!(result == JFileChooser.APPROVE_OPTION)) {
+            return;
+        }
+        
+        var file = fileChooser.getSelectedFile();                       
+        var fileName = file.getAbsolutePath();
+       
+        var save = new Save(board);
+        save.saveGame(fileName);
+    }//GEN-LAST:event_saveGameOptionActionPerformed
    
     /**
      * @param args the command line arguments

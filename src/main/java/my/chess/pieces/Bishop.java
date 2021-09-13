@@ -28,6 +28,11 @@ public class Bishop extends Piece {
     public Bishop(Color pieceColor) {
         super(PieceName.Bishop, pieceColor, imageLoader.getBISHOP(pieceColor));
     }
+    
+    @Override
+    public void setImage() {
+        image = imageLoader.getBISHOP(color);
+    }
 
     @Override
     public boolean isCorrectMovement(Square source, Square target) {

@@ -34,7 +34,11 @@ public class Pawn extends Piece {
         isMovingDown = startRow == 1;
     }
     
-    
+    @Override
+    public void setImage() {
+        image = imageLoader.getPAWN(color);
+    }
+        
     @Override
     public boolean isCorrectMovement(Square source, Square target) { 
         

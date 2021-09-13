@@ -30,6 +30,11 @@ public class Queen extends Piece {
     }
 
     @Override
+    public void setImage() {
+        image = imageLoader.getQUEEN(color);
+    }
+    
+    @Override
     public boolean isCorrectMovement(Square source, Square target) {
         
         int verticalDiff, horizontalDiff; 

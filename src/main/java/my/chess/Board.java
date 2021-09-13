@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 
 /**
@@ -117,7 +119,7 @@ public class Board extends JPanel {
             && square.contains(input)
             && !square.isHighlighted()
             && piece != null
-            && currentColor == piece.color
+            && currentColor.equals(piece.color)
             && check;
     }
     
@@ -141,7 +143,7 @@ public class Board extends JPanel {
             return false;
         }
         
-        if (!(currentColor == piece.color)) {
+        if (!(currentColor.equals(piece.color))) {
             var message = "Nie można wybrać bierki przeciwnika!";
             JOptionPane.showMessageDialog(this, message);
             return false;
@@ -196,7 +198,7 @@ public class Board extends JPanel {
             }
             
             var isKing = piece instanceof King;
-            var isCurrentColor = piece.color == currentColor;
+            var isCurrentColor = piece.color.equals(currentColor);
             
             if (isKing && isCurrentColor) {
                 return square;
@@ -248,7 +250,7 @@ public class Board extends JPanel {
 
             if (!source.coord.equals(kingSquare.coord)
                 && piece != null
-                && piece.color != currentColor
+                && !piece.color.equals(currentColor)
                 && piece.isCorrectMovement(source, kingSquare)
                 && isPathFree(source, kingSquare)) 
             {                                                                  
@@ -283,7 +285,7 @@ public class Board extends JPanel {
                 var square = squares.get(coord.index);                    
                 var piece = square.getPiece();                                        
                     
-                if (piece != null && piece.color == currentColor) {
+                if (piece != null && piece.color.equals(currentColor)) {
                     continue;              
                 }   
                 
@@ -302,7 +304,7 @@ public class Board extends JPanel {
 
                 if (piece != null
                     && !(piece instanceof King)
-                    && piece.color == currentColor
+                    && piece.color.equals(currentColor)
                     && piece.isCorrectMovement(source, target)
                     && isPathFree(source, target)) 
                 {                        
@@ -408,7 +410,7 @@ public class Board extends JPanel {
                 sourceSquare.setPiece(null);
                 sourceSquare.setHighlighted(false);
 
-                var isWhite = currentColor == Color.WHITE;
+                var isWhite = currentColor.equals(Color.WHITE);
                 currentColor = isWhite ? Color.BLACK : Color.WHITE;
 
                 repaint();                    
@@ -426,7 +428,7 @@ public class Board extends JPanel {
         for (var square : squares) {
             
             if (square.isHighlighted()) {
-                square.highlightSquare(graphics);
+                square.highlightSquare(graphics);                
             } else {
                 square.draw(graphics);
             }
@@ -516,7 +518,7 @@ public class Board extends JPanel {
         int draw = new Random().nextInt(2);       
         
         Color color1 = draw == 1 ? Color.BLACK : Color.WHITE;
-        Color color2 = color1 == Color.BLACK ? Color.WHITE : Color.BLACK;
+        Color color2 = color1.equals(Color.BLACK) ? Color.WHITE : Color.BLACK;
                
         for (int col = 0; col < 8; col++) {
             var topPawn = new Pawn(color1, Piece.PieceName.Pawn1);
@@ -545,7 +547,7 @@ public class Board extends JPanel {
         repaint();
     }
 
-    public static void clearBoard() {
+    public void clearBoard() {
         currentColor = Color.WHITE;
         isCheck = false;
         isMate = false;
@@ -562,16 +564,27 @@ public class Board extends JPanel {
     private interface Function <T, R> {
         R perform(T arg1, R arg2);
     }
+    
+    public void setPiece(Coord coord, Piece piece) {                
+        var square = squares.get(coord.index);
+        if (piece != null) {
+            piece.setImage();
+        }
+        square.setPiece(piece);
+    }
 
-    private static boolean isCheck = false; 
-    private static boolean isMate = false; 
-    private static boolean isCheckBlockPossible = false;
+    private boolean isCheck = false; 
+    private boolean isMate = false; 
+    private boolean isCheckBlockPossible = false;
     private ArrayList<Square> enemySquares = new ArrayList<>();
     private ArrayList<Square> kingEscapeSquares = new ArrayList<>();
-    private static final ArrayList<Square> squares = new ArrayList<>();
-    private static Color currentColor;
+    @Getter
+    private final ArrayList<Square> squares = new ArrayList<>();
+    @Getter
+    @Setter
+    private Color currentColor;
     private Square sourceSquare = new Square(0, 0, 0, 0, new Coord(-1, -1));;
-    private static Piece selectedPiece;
+    private Piece selectedPiece;
     private int squareSize = 80;
 
 }

@@ -21,6 +21,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 /**
  *
@@ -29,7 +32,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class Square extends Rectangle {
         
+    @Getter
+    @Setter
     private Piece piece;    
+    @Getter
+    @Setter
     private boolean highlighted = false;   
     @EqualsAndHashCode.Include
     public final Coord coord;
@@ -47,34 +54,22 @@ public class Square extends Rectangle {
         var isWhite = (isRowOdd && !isColOdd) || (!isRowOdd && isColOdd);
                 
         if (isWhite) {
-            graphics.setColor(myWhite);
+            graphics.setColor(MY_WHITE);
         } else {
-            graphics.setColor(myBrown);
+            graphics.setColor(MY_BROWN);
         }
         graphics.fillRect(x, y, width, height);
+    }
+    
+    public ImmutablePair<Coord, Piece> getPair() {
+        return new ImmutablePair<>(coord, piece);
     }
 
     public void highlightSquare(Graphics graphics) {
         graphics.setColor(Color.RED);
         graphics.fillRect(x, y, width, height);
     }
-
-    public boolean isHighlighted() {
-        return highlighted;
-    }
-
-    public void setHighlighted(boolean highlighted) {
-        this.highlighted = highlighted;
-    }
-
-    public Piece getPiece() {
-        return piece;
-    }
-
-    public void setPiece(Piece piece) {
-        this.piece = piece;
-    }    
-    private final Color myWhite = new Color(255, 255, 204);    
-    private final Color myBrown = new Color(153, 102, 0);
+    private static final Color MY_WHITE = new Color(255, 255, 204);    
+    private static final Color MY_BROWN = new Color(153, 102, 0);
 
 }
