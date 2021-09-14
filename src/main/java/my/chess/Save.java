@@ -64,14 +64,14 @@ public class Save {
     }
     
     public void saveGame(String fileName) {
-        var list = board.getSquares()
+        var coordPiecePairList = board.getSquares()
                 .stream()                
                 .map(square -> square.getPair())
                 .collect(Collectors.toList());
         
         var color = board.getCurrentColor();
         
-        var pair = new ImmutablePair<>(color, list);
+        var pair = new ImmutablePair<>(color, coordPiecePairList);
         
         writeObject(pair, fileName);
                 
