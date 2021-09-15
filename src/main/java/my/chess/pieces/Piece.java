@@ -49,6 +49,10 @@ abstract public class Piece implements Serializable {
     public boolean isFoe(Piece piece) {
         return !piece.color.equals(this.color);
     }
+    
+    public boolean isFoe(Color color) {
+        return !this.color.equals(color);
+    }
 
     public PieceName getName() {
         return name;

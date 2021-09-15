@@ -121,7 +121,7 @@ public class Board extends JPanel {
             return false;
         }
         
-        Piece piece = square.getPiece();
+        var piece = square.getPiece();
         
         if (piece == null) {
             var message = "Pole nie zawiera bierki!";
@@ -129,7 +129,7 @@ public class Board extends JPanel {
             return false;
         }
         
-        if (!(currentColor.equals(piece.color))) {
+        if (piece.isFoe(currentColor)) {
             var message = "Nie można wybrać bierki przeciwnika!";
             JOptionPane.showMessageDialog(this, message);
             return false;
@@ -183,10 +183,9 @@ public class Board extends JPanel {
                 continue;
             }
             
-            var isKing = piece instanceof King;
-            var isCurrentColor = piece.color.equals(currentColor);
+            var isKing = piece instanceof King;            
             
-            if (isKing && isCurrentColor) {
+            if (isKing && !piece.isFoe(currentColor)) {
                 return square;
             }
         }                                          
@@ -229,7 +228,7 @@ public class Board extends JPanel {
 
             if (!source.coord.equals(kingSquare.coord)
                 && piece != null
-                && !piece.color.equals(currentColor)
+                && piece.isFoe(currentColor)
                 && piece.isCorrectMovement(source, kingSquare)
                 && isPathFree(source, kingSquare)) 
             {                                                                  
@@ -264,7 +263,7 @@ public class Board extends JPanel {
                 var square = squares.get(coord.index);                    
                 var piece = square.getPiece();                                        
                     
-                if (piece != null && piece.color.equals(currentColor)) {
+                if (piece != null && !piece.isFoe(currentColor)) {
                     continue;              
                 }   
                 
@@ -288,7 +287,7 @@ public class Board extends JPanel {
 
                 if (piece != null
                     && !(piece instanceof King)
-                    && piece.color.equals(currentColor)
+                    && !piece.isFoe(currentColor)
                     && piece.isCorrectMovement(source, target)
                     && isPathFree(source, target)) 
                 {                        
