@@ -16,8 +16,21 @@
 */
 package my.chess;
 
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ResourceBundle;
+import javax.swing.GroupLayout;
 import javax.swing.JFileChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 
 /**
  *
@@ -41,60 +54,59 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        board = new my.chess.Board();
-        menuBar = new javax.swing.JMenuBar();
-        gameMenu = new javax.swing.JMenu();
-        newGameOption = new javax.swing.JMenuItem();
-        loadGameOption = new javax.swing.JMenuItem();
-        saveGameOption = new javax.swing.JMenuItem();
-        aboutMenu = new javax.swing.JMenu();
+        board = new Board();
+        menuBar = new JMenuBar();
+        gameMenu = new JMenu();
+        newGameOption = new JMenuItem();
+        loadGameOption = new JMenuItem();
+        saveGameOption = new JMenuItem();
+        aboutMenu = new JMenu();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(640, 640));
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentResized(java.awt.event.ComponentEvent evt) {
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new Dimension(640, 640));
+        addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent evt) {
                 formComponentResized(evt);
             }
         });
 
-        board.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+        board.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
                 boardMouseClicked(evt);
             }
         });
 
-        javax.swing.GroupLayout boardLayout = new javax.swing.GroupLayout(board);
+        GroupLayout boardLayout = new GroupLayout(board);
         board.setLayout(boardLayout);
-        boardLayout.setHorizontalGroup(
-            boardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        boardLayout.setHorizontalGroup(boardLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGap(0, 1036, Short.MAX_VALUE)
         );
-        boardLayout.setVerticalGroup(
-            boardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        boardLayout.setVerticalGroup(boardLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGap(0, 734, Short.MAX_VALUE)
         );
 
-        gameMenu.setText("Game");
+        ResourceBundle bundle = ResourceBundle.getBundle("my/chess/Bundle"); // NOI18N
+        gameMenu.setText(bundle.getString("MainFrame.gameMenu.text")); // NOI18N
 
-        newGameOption.setText("New game");
-        newGameOption.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        newGameOption.setText(bundle.getString("MainFrame.newGameOption.text")); // NOI18N
+        newGameOption.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 newGameOptionActionPerformed(evt);
             }
         });
         gameMenu.add(newGameOption);
 
-        loadGameOption.setText("Load game");
-        loadGameOption.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        loadGameOption.setText(bundle.getString("MainFrame.loadGameOption.text")); // NOI18N
+        loadGameOption.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 loadGameOptionActionPerformed(evt);
             }
         });
         gameMenu.add(loadGameOption);
 
-        saveGameOption.setText("Save game");
-        saveGameOption.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        saveGameOption.setText(bundle.getString("MainFrame.saveGameOption.text")); // NOI18N
+        saveGameOption.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 saveGameOptionActionPerformed(evt);
             }
         });
@@ -102,38 +114,36 @@ public class MainFrame extends javax.swing.JFrame {
 
         menuBar.add(gameMenu);
 
-        aboutMenu.setText("About");
+        aboutMenu.setText(bundle.getString("MainFrame.aboutMenu.text")); // NOI18N
         menuBar.add(aboutMenu);
 
         setJMenuBar(menuBar);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(board, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(board, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(board, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(board, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
    
-    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
+    private void formComponentResized(ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
         board.recalculateSize();
     }//GEN-LAST:event_formComponentResized
 
-    private void newGameOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGameOptionActionPerformed
+    private void newGameOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_newGameOptionActionPerformed
         board.setNewGame();
     }//GEN-LAST:event_newGameOptionActionPerformed
 
-    private void boardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boardMouseClicked
+    private void boardMouseClicked(MouseEvent evt) {//GEN-FIRST:event_boardMouseClicked
         board.selectAndMove(evt);
     }//GEN-LAST:event_boardMouseClicked
 
-    private void loadGameOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadGameOptionActionPerformed
+    private void loadGameOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_loadGameOptionActionPerformed
         var fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(this);
 
@@ -143,17 +153,15 @@ public class MainFrame extends javax.swing.JFrame {
         
         var file = fileChooser.getSelectedFile();                       
         var fileName = file.getAbsolutePath();
-        
-        System.out.println(fileName);
-       
+              
         var save = new Save(board);
         save.loadGame(fileName);
     }//GEN-LAST:event_loadGameOptionActionPerformed
 
-    private void saveGameOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveGameOptionActionPerformed
+    private void saveGameOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_saveGameOptionActionPerformed
        
         var fileChooser = new JFileChooser();
-        int result = fileChooser.showSaveDialog(this), chosen = -1;
+        int result = fileChooser.showSaveDialog(this), chosen = 0;
 
         if (!(result == JFileChooser.APPROVE_OPTION)) {
             return;
@@ -162,7 +170,8 @@ public class MainFrame extends javax.swing.JFrame {
         var file = fileChooser.getSelectedFile();
         
         if (file.exists()) {
-            var message = "Plik %s już istnieje! Czy na pewno chcesz go nadpisać?";
+            var bundle = ResourceBundle.getBundle("my/chess/Bundle");
+            var message = bundle.getString("MainFrame.fileExists.text");
             var formattedMessage = String.format(message, file.getName());
             chosen = JOptionPane.showConfirmDialog(fileChooser, formattedMessage);            
         }
@@ -211,12 +220,12 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu aboutMenu;
-    private my.chess.Board board;
-    private javax.swing.JMenu gameMenu;
-    private javax.swing.JMenuItem loadGameOption;
-    private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem newGameOption;
-    private javax.swing.JMenuItem saveGameOption;
+    private JMenu aboutMenu;
+    private Board board;
+    private JMenu gameMenu;
+    private JMenuItem loadGameOption;
+    private JMenuBar menuBar;
+    private JMenuItem newGameOption;
+    private JMenuItem saveGameOption;
     // End of variables declaration//GEN-END:variables
 }

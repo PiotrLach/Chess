@@ -29,6 +29,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import lombok.Getter;
@@ -116,7 +117,7 @@ public class Board extends JPanel {
         }        
         
         if (isMate()) {
-            var message = "Mat! Koniec gry!";
+            var message = bundle.getString("Board.isMate.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
@@ -124,25 +125,25 @@ public class Board extends JPanel {
         var piece = square.getPiece();
         
         if (piece == null) {
-            var message = "Pole nie zawiera bierki!";
+            var message = bundle.getString("Board.squareIsEmpty.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
         
         if (piece.isFoe(currentColor)) {
-            var message = "Nie można wybrać bierki przeciwnika!";
+            var message = bundle.getString("Board.enemyNotChoosable.text");            
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
         
         if (square.isHighlighted()) {
-            var message = "Bierka jest już wybrana!";
+            var message = bundle.getString("Board.pieceAlreadyChosen.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
         
         if (isCheck() && !isCheckBlockPossible() && !(piece instanceof King)) {
-            var message = "Trzeba zapobiec szachowi!";
+            var message = bundle.getString("Board.pieceGetOutOfCheck.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
@@ -153,16 +154,19 @@ public class Board extends JPanel {
     private void choosePiece(Point input) {                
                 
         for (var square : squares) {            
+            
             var piece = square.getPiece();
             
             if (isChoosable(square, input)) {                
+                
                 sourceSquare.setHighlighted(false);                
                 square.setHighlighted(true);                    
                 selectedPiece = piece;
 
                 sourceSquare = square;
 
-                repaint();                          
+                repaint();  
+                return;
             } 
             
         }       
@@ -303,13 +307,11 @@ public class Board extends JPanel {
      * @param target   
      */
     private boolean isSelfMadeCheck(Square targetSquare) {
-        
-        var kingCoord = findKing();                
-        
+                              
         sourceSquare.setPiece(null);
         targetSquare.setPiece(selectedPiece);
 
-        var isSelfMadeCheck = isCheck(kingCoord);        
+        var isSelfMadeCheck = isCheck();        
 
         sourceSquare.setPiece(selectedPiece);
         targetSquare.setPiece(null);
@@ -324,13 +326,13 @@ public class Board extends JPanel {
         }
                                                              
         if (selectedPiece == null) {
-            var message = "Nie wybrano bierki!";
+            var message = bundle.getString("Board.noSelectedPiece.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
         
         if (target.isHighlighted()) {
-            var message = "Nie można przenieść bierki w to samo miejsce!";
+            var message = bundle.getString("Board.sameSquareMove.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
@@ -338,31 +340,31 @@ public class Board extends JPanel {
         var piece = target.getPiece();   
         
         if (target.getPiece() != null && !selectedPiece.isFoe(piece)) {
-            var message = "Nie można zbić własnej bierki!";
+            var message = bundle.getString("Board.ownPieceCapture.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         } 
         
         if (!selectedPiece.isCorrectMovement(sourceSquare, target)) {
-            var message = "Niepoprawny ruch dla wybranej bierki!";
+            var message = bundle.getString("Board.wrongMove.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
         
         if (!isPathFree(sourceSquare, target)) {
-            var message = "Na drodze są inne bierki!";
+            var message = bundle.getString("Board.pathBlocked.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }                           
                
         if (isCheck() && !isCheckBlock(target) && !isKingEscape(target)) {
-            var message = "Szach! Trzeba mu zapobiec!";
+            var message = bundle.getString("Board.pieceGetOutOfCheck.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
         
         if (isSelfMadeCheck(target)) {
-            var message = "Ruch skutkowałby szachem króla!";
+            var message = bundle.getString("Board.selfMadeCheck.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
@@ -551,13 +553,14 @@ public class Board extends JPanel {
         piece.setImage();        
         square.setPiece(piece);
     }
-
+    
+    private ResourceBundle bundle = ResourceBundle.getBundle("my/chess/Bundle");
     @Getter
     private final ArrayList<Square> squares = new ArrayList<>();
     @Getter
     @Setter
     private Color currentColor;
-    private Square sourceSquare = new Square(0, 0, 0, 0, new Coord(-1, -1));;
+    private Square sourceSquare = new Square(0, 0, 0, 0, new Coord(-1, -1));
     private Piece selectedPiece;
     private int squareSize = 80;
 
