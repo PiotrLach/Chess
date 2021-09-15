@@ -32,6 +32,7 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.val;
 
@@ -88,8 +89,8 @@ public class Board extends JPanel {
         for (int x = a0, row = 0; x < a1; x += squareSize, row++) {
             for (int y = b0, col = 0; y < b1; y += squareSize, col++) {
                 
-                Coord coord = new Coord(row, col);                
-                Square square = new Square(y, x, 80, 80, coord);
+                var coord = new Coord(row, col);                
+                var square = new Square(y, x, 80, 80, coord);
                 squares.add(square);
             }            
         }        
@@ -152,7 +153,7 @@ public class Board extends JPanel {
     private void choosePiece(Point input) {                
                 
         for (var square : squares) {            
-            Piece piece = square.getPiece();
+            var piece = square.getPiece();
             
             if (isChoosable(square, input)) {                
                 sourceSquare.setHighlighted(false);                
@@ -176,7 +177,7 @@ public class Board extends JPanel {
         
         for (var square : squares) {
             
-            Piece piece = square.getPiece();
+            var piece = square.getPiece();
             
             if (piece == null) {
                 continue;
@@ -224,7 +225,7 @@ public class Board extends JPanel {
         ArrayList<Square> enemySquaresTemp = new ArrayList<>();        
         
         for (var source : squares) {
-            Piece piece = source.getPiece();             
+            var piece = source.getPiece();             
 
             if (!source.coord.equals(kingSquare.coord)
                 && piece != null
@@ -254,7 +255,7 @@ public class Board extends JPanel {
             
             for (int col = kingCol - 1; col <= kingCol + 1; col++) {
                 
-                Coord coord = new Coord(row, col);
+                var coord = new Coord(row, col);
                 
                 if (coord.isOutOfBounds()) {
                     continue;
@@ -283,7 +284,7 @@ public class Board extends JPanel {
         
         for (Square target : enemySquares) {                                    
             for (Square source : squares) {                    
-                Piece piece = source.getPiece();                
+                var piece = source.getPiece();                
 
                 if (piece != null
                     && !(piece instanceof King)
@@ -546,11 +547,9 @@ public class Board extends JPanel {
         R perform(T arg1, R arg2);
     }
     
-    public void setPiece(Coord coord, Piece piece) {                
-        var square = squares.get(coord.index);
-        if (piece != null) {
-            piece.setImage();
-        }
+    public void setPiece(@NonNull Coord coord, @NonNull Piece piece) {                
+        var square = squares.get(coord.index);        
+        piece.setImage();        
         square.setPiece(piece);
     }
 

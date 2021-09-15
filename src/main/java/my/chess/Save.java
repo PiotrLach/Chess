@@ -36,8 +36,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
  */
 @RequiredArgsConstructor
 public class Save {
-        
-    
+            
     public void loadGame(String filename) {
         var optional = readObject(filename);
         
@@ -48,12 +47,11 @@ public class Save {
         var colorListPair = optional.get();
         
         board.clearBoard();
-                
         board.setCurrentColor(colorListPair.left);
         
-        var list = colorListPair.right;
+        var coordPieceList = colorListPair.right;
         
-        for (var pair : list) {
+        for (var pair : coordPieceList) {
             var coord = pair.left;
             var piece = pair.right;
             board.setPiece(coord, piece);
@@ -65,12 +63,12 @@ public class Save {
     
     public void saveGame(String fileName) {
         var coordPiecePairList = board.getSquares()
-                .stream()                
+                .stream()
+                .filter(square -> square.getPiece() != null)
                 .map(square -> square.getPair())
                 .collect(Collectors.toList());
         
-        var color = board.getCurrentColor();
-        
+        var color = board.getCurrentColor();        
         var pair = new ImmutablePair<>(color, coordPiecePairList);
         
         writeObject(pair, fileName);

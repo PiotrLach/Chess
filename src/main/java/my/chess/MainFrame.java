@@ -17,6 +17,7 @@
 package my.chess;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -152,13 +153,24 @@ public class MainFrame extends javax.swing.JFrame {
     private void saveGameOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveGameOptionActionPerformed
        
         var fileChooser = new JFileChooser();
-        int result = fileChooser.showSaveDialog(this);
+        int result = fileChooser.showSaveDialog(this), chosen = -1;
 
         if (!(result == JFileChooser.APPROVE_OPTION)) {
             return;
         }
         
-        var file = fileChooser.getSelectedFile();                       
+        var file = fileChooser.getSelectedFile();
+        
+        if (file.exists()) {
+            var message = "Plik %s już istnieje! Czy na pewno chcesz go nadpisać?";
+            var formattedMessage = String.format(message, file.getName());
+            chosen = JOptionPane.showConfirmDialog(fileChooser, formattedMessage);            
+        }
+        
+        if (chosen != JOptionPane.OK_OPTION) {
+            return;
+        }
+        
         var fileName = file.getAbsolutePath();
        
         var save = new Save(board);
