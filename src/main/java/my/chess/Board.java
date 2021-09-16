@@ -319,7 +319,7 @@ public class Board extends JPanel {
         return isSelfMadeCheck;
     }
     
-    private boolean isMoveable(Point dest, Square target) {
+    private boolean isPlaceable(Square target, Point dest) {
         
         if (!target.contains(dest)) {
             return false;
@@ -388,11 +388,11 @@ public class Board extends JPanel {
 
     private void movePiece(Point dest) {        
 
-        for (var targetSquare : squares) {                                               
+        for (var square : squares) {                                               
 
-            if (isMoveable(dest, targetSquare)) {
+            if (isPlaceable(square, dest)) {
 
-                targetSquare.setPiece(selectedPiece);
+                square.setPiece(selectedPiece);
                 selectedPiece = null;                    
                 sourceSquare.setPiece(null);
                 sourceSquare.setHighlighted(false);
@@ -554,12 +554,12 @@ public class Board extends JPanel {
         square.setPiece(piece);
     }
     
-    private ResourceBundle bundle = ResourceBundle.getBundle("my/chess/Bundle");
+    private final ResourceBundle bundle = ResourceBundle.getBundle("my/chess/Bundle");
     @Getter
     private final ArrayList<Square> squares = new ArrayList<>();
     @Getter
     @Setter
-    private Color currentColor;
+    private Color currentColor = Color.WHITE;
     private Square sourceSquare = new Square(0, 0, 0, 0, new Coord(-1, -1));
     private Piece selectedPiece;
     private int squareSize = 80;
