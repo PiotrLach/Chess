@@ -28,6 +28,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
@@ -98,16 +99,28 @@ public class Board extends JPanel {
     }
 
     public void selectAndMove(MouseEvent mouseEvent) {
+               
+        var button = mouseEvent.getButton();        
+        if (!(button == MouseEvent.BUTTON1)) {
+            return;
+        }
         
-        var point = mouseEvent.getPoint();        
+        var point = mouseEvent.getPoint();                                
+        var optional = squares.stream()
+                .filter(square -> square.contains(point))
+                .findAny();        
+        if (optional.isEmpty()) {
+            return;
+        }
         
-        switch (mouseEvent.getButton()) {
-            
-            case MouseEvent.BUTTON3 -> choosePiece(point);            
-            
-            case MouseEvent.BUTTON1 -> movePiece(point);            
-            
-        }       
+        var square = optional.get();
+        var piece = square.getPiece();  
+        
+        if (piece != null && !piece.isFoe(currentColor)) {
+            choosePiece(point);
+        } else {
+            movePiece(point);
+        }     
     }
    
     private boolean isChoosable(Square square, Point input) {       
@@ -225,7 +238,7 @@ public class Board extends JPanel {
     
         
     private ArrayList<Square> findEnemySquares(Square kingSquare) {
-        ArrayList<Square> enemySquaresTemp = new ArrayList<>();        
+        ArrayList<Square> enemySquares = new ArrayList<>();        
         
         for (var source : squares) {
             var piece = source.getPiece();             
@@ -236,12 +249,12 @@ public class Board extends JPanel {
                 && piece.isCorrectMovement(source, kingSquare)
                 && isPathFree(source, kingSquare)) 
             {                                                                  
-                enemySquaresTemp.add(source);
+                enemySquares.add(source);
                 var path = getPath(source, kingSquare);
-                enemySquaresTemp.addAll(path);
+                enemySquares.addAll(path);
             }                                        
         }      
-        return enemySquaresTemp;                       
+        return enemySquares;                       
     }
         
     /**
@@ -285,7 +298,7 @@ public class Board extends JPanel {
         
         var enemySquares = findEnemySquares(kingSquare);        
         
-        for (Square target : enemySquares) {                                    
+        for (Square target : enemySquares) {
             for (Square source : squares) {                    
                 var piece = source.getPiece();                
 
