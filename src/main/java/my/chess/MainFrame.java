@@ -35,12 +35,13 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import javax.swing.UIManager;
 import java.awt.EventQueue;
+import javax.swing.JFrame;
 
 /**
  *
  * @author Piotr Lach
  */
-public class MainFrame extends javax.swing.JFrame {
+public class MainFrame extends JFrame {
 
     /**
      * Creates new form NewJFrame

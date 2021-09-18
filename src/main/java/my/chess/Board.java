@@ -56,29 +56,22 @@ public class Board extends JPanel {
     public void recalculateSize() {
         int height = getHeight(), width = getWidth();
         
-        int a1, a0, b0, b1;
+        int minWidth, maxWidth;                        
         
-        a0 = 0;
-        a1 = height;
-        
-        while (a1 % 8 != 0) {
-            a1--;
+        while (height % 8 != 0) {
+            height--;
         }
         
-        squareSize = a1 / 8;
-        b0 = (width - height) / 2;
-        b1 = b0 + height;
+        squareSize = height / 8;
+        minWidth = (width - height) / 2;
+        maxWidth = minWidth + height;        
         
-        while ((b1 - b0) % 8 != 0) {
-            b1--;
-        }
-        
-        for (int x = a0, row = 0; x < a1; x += squareSize, row++) {
-            for (int y = b0, col = 0; y < b1; y += squareSize, col++) {
+        for (int y = 0, row = 0; y < height; y += squareSize, row++) {
+            for (int x = minWidth, col = 0; x < maxWidth; x += squareSize, col++) {
                 
                 val idx = row * 8 + col;
                 
-                squares.get(idx).setLocation(y, x);
+                squares.get(idx).setLocation(x, y);
                 squares.get(idx).setSize(squareSize, squareSize);
             }
         }
@@ -87,12 +80,13 @@ public class Board extends JPanel {
 
     private void createSquares() { 
         squareSize = 80;
-        int a1 = 640, a0 = 0, b0 = 0, b1 = 640;
-        for (int x = a0, row = 0; x < a1; x += squareSize, row++) {
-            for (int y = b0, col = 0; y < b1; y += squareSize, col++) {
+        int width = 640, height = 640;
+        
+        for (int y = 0, row = 0; y < height; y += squareSize, row++) {
+            for (int x = 0, col = 0; x < width; x += squareSize, col++) {
                 
-                var coord = new Coord(row, col);                
-                var square = new Square(y, x, 80, 80, coord);
+                var coord = new Coord(row, col);                       
+                var square = new Square(x, y, 80, 80, coord);
                 squares.add(square);
             }            
         }        
