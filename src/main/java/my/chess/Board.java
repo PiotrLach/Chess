@@ -117,43 +117,27 @@ public class Board extends JPanel {
         var piece = square.getPiece();  
         
         if (piece != null && !piece.isFoe(currentColor)) {
-            choosePiece(point);
+            choosePiece(square);
         } else {
-            movePiece(point);
+            movePiece(square);
         }     
     }
    
-    private boolean isChoosable(Square square, Point input) {       
-        
-        if (!square.contains(input)) {
-            return false;
-        }        
-        
+    private boolean isChoosable(Square square) {       
+              
         if (isMate()) {
             var message = bundle.getString("Board.isMate.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
-        }
-        
-        var piece = square.getPiece();
-        
-        if (piece == null) {
-            var message = bundle.getString("Board.squareIsEmpty.text");
-            JOptionPane.showMessageDialog(this, message);
-            return false;
-        }
-        
-        if (piece.isFoe(currentColor)) {
-            var message = bundle.getString("Board.enemyNotChoosable.text");            
-            JOptionPane.showMessageDialog(this, message);
-            return false;
-        }
+        }                               
         
         if (square.isHighlighted()) {
             var message = bundle.getString("Board.pieceAlreadyChosen.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
+        
+        var piece = square.getPiece();
         
         if (isCheck() && !isCheckBlockPossible() && !(piece instanceof King)) {
             var message = bundle.getString("Board.pieceGetOutOfCheck.text");
@@ -164,25 +148,21 @@ public class Board extends JPanel {
         return true;
     }
     
-    private void choosePiece(Point input) {                
-                
-        for (var square : squares) {            
-            
-            var piece = square.getPiece();
-            
-            if (isChoosable(square, input)) {                
-                
-                sourceSquare.setHighlighted(false);                
-                square.setHighlighted(true);                    
-                selectedPiece = piece;
+    private void choosePiece(Square square) {                
+                                                                  
+        if (!isChoosable(square)) {                
+            return;
+        }
 
-                sourceSquare = square;
+        var piece = square.getPiece();
 
-                repaint();  
-                return;
-            } 
-            
-        }       
+        sourceSquare.setHighlighted(false);                
+        square.setHighlighted(true);                    
+        selectedPiece = piece;
+
+        sourceSquare = square;
+
+        repaint();                  
     }
     
     /**
@@ -332,31 +312,13 @@ public class Board extends JPanel {
         return isSelfMadeCheck;
     }
     
-    private boolean isPlaceable(Square target, Point dest) {
-        
-        if (!target.contains(dest)) {
-            return false;
-        }
-                                                             
+    private boolean isPlaceable(Square target) {
+                                                                           
         if (selectedPiece == null) {
             var message = bundle.getString("Board.noSelectedPiece.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
-        }
-        
-        if (target.isHighlighted()) {
-            var message = bundle.getString("Board.sameSquareMove.text");
-            JOptionPane.showMessageDialog(this, message);
-            return false;
-        }
-        
-        var piece = target.getPiece();   
-        
-        if (target.getPiece() != null && !selectedPiece.isFoe(piece)) {
-            var message = bundle.getString("Board.ownPieceCapture.text");
-            JOptionPane.showMessageDialog(this, message);
-            return false;
-        } 
+        }                                
         
         if (!selectedPiece.isCorrectMovement(sourceSquare, target)) {
             var message = bundle.getString("Board.wrongMove.text");
@@ -399,25 +361,21 @@ public class Board extends JPanel {
         return !(selectedPiece instanceof King) && enemySquares.contains(target);
     }
 
-    private void movePiece(Point dest) {        
-
-        for (var square : squares) {                                               
-
-            if (isPlaceable(square, dest)) {
-
-                square.setPiece(selectedPiece);
-                selectedPiece = null;                    
-                sourceSquare.setPiece(null);
-                sourceSquare.setHighlighted(false);
-
-                var isWhite = currentColor.equals(Color.WHITE);
-                currentColor = isWhite ? Color.BLACK : Color.WHITE;
-
-                repaint();                                      
-
-                return;                    
-            } 
+    private void movePiece(Square target) {        
+                                                   
+        if (!isPlaceable(target)) {
+            return;
         }
+
+        target.setPiece(selectedPiece);
+        selectedPiece = null;                    
+        sourceSquare.setPiece(null);
+        sourceSquare.setHighlighted(false);
+
+        var isWhite = currentColor.equals(Color.WHITE);
+        currentColor = isWhite ? Color.BLACK : Color.WHITE;
+
+        repaint();                                                  
     }
 
     @Override
