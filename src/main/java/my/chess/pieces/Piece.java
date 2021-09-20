@@ -58,6 +58,10 @@ abstract public class Piece implements Serializable {
         return name;
     }
     
+    /**
+     * Must be called for any deserialized piece, since images are not
+     * saved.
+     */
     abstract public void setImage();
 
     abstract public boolean isCorrectMovement(Square source, Square target);

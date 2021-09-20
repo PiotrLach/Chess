@@ -145,7 +145,7 @@ public class MainFrame extends JFrame {
     }//GEN-LAST:event_newGameOptionActionPerformed
 
     private void boardMouseClicked(MouseEvent evt) {//GEN-FIRST:event_boardMouseClicked
-        board.selectAndMove(evt);
+        board.chooseOrMove(evt);
     }//GEN-LAST:event_boardMouseClicked
 
     private void loadGameOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_loadGameOptionActionPerformed

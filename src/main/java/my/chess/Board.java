@@ -25,7 +25,6 @@ import my.chess.pieces.Bishop;
 import my.chess.pieces.Pawn;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,13 +61,11 @@ public class Board extends JPanel {
         int minWidth = dimensions.get(2);
         int maxWidth = dimensions.get(3);
                
-        for (int y = minHeight, row = 0; y < maxHeight; y += squareSize, row++) {
-            for (int x = minWidth, col = 0; x < maxWidth; x += squareSize, col++) {
+        for (int y = minHeight, index = 0; y < maxHeight; y += squareSize) {
+            for (int x = minWidth; x < maxWidth; x += squareSize, index++) {                                
                 
-                val idx = row * 8 + col;
-                
-                squares.get(idx).setLocation(x, y);
-                squares.get(idx).setSize(squareSize, squareSize);
+                squares.get(index).setLocation(x, y);
+                squares.get(index).setSize(squareSize, squareSize);
             }
         }
         repaint();
@@ -76,7 +73,7 @@ public class Board extends JPanel {
     
     /**
      * Calculates minimal and maximal height and width (start point and end point) 
-     * for the board, such that when applied, it remains a square, centred in the window. 
+     * for the board, such that when applied, it remains a square, centered in the window. 
      * @return list of dimensions 
      */
     private List<Integer> recalculateDimensions() {
@@ -106,19 +103,24 @@ public class Board extends JPanel {
 
     private void createSquares() { 
         squareSize = 80;
-        int width = 640, height = 640;
+        int width = 640, height = 640, index = 0;
         
-        for (int y = 0, row = 0; y < height; y += squareSize, row++) {
-            for (int x = 0, col = 0; x < width; x += squareSize, col++) {
+        for (int y = 0; y < height; y += squareSize) {
+            for (int x = 0; x < width; x += squareSize, index++) {
                 
-                var coord = new Coord(row, col);                       
+                var coord = new Coord(index);                       
                 var square = new Square(x, y, 80, 80, coord);
                 squares.add(square);
             }            
         }        
     }
 
-    public void selectAndMove(MouseEvent mouseEvent) {
+    /**
+     * Finds the square clicked on with the LMB and sets it as either 
+     * source or target, depending on present piece.
+     * @param mouseEvent 
+     */
+    public void chooseOrMove(MouseEvent mouseEvent) {
                
         var button = mouseEvent.getButton();        
         if (!(button == MouseEvent.BUTTON1)) {
@@ -187,7 +189,7 @@ public class Board extends JPanel {
     
     /**
      * Finds square holding current player's king.
-     * @return square holding current player's king
+     * @return square holding current player's king.
      * @throws IllegalStateException 
      */
     private Square findKing() throws IllegalStateException {     
@@ -209,12 +211,6 @@ public class Board extends JPanel {
         throw new IllegalStateException("King has not been found.");
     }
    
-    /**
-     * Tests if check occurs
-     *
-     * @param kingSquare     
-     * @return check value
-     */
     private boolean isCheck(Square kingSquare) {
         return findEnemySquares(kingSquare).size() > 0;
     }
@@ -237,8 +233,8 @@ public class Board extends JPanel {
     }
     
         
-    private ArrayList<Square> findEnemySquares(Square kingSquare) {
-        ArrayList<Square> enemySquares = new ArrayList<>();        
+    private List<Square> findEnemySquares(Square kingSquare) {
+        List<Square> enemySquares = new ArrayList<>();        
         
         for (var source : squares) {
             var piece = source.getPiece();             
@@ -258,17 +254,16 @@ public class Board extends JPanel {
     }
         
     /**
-     * Finds squares where king can escape to avoid check
+     * Finds squares where king can escape to avoid check.
      * @param kingSquare
      * @return list of escape squares
      */
-    private ArrayList<Square> findEscapeSquares(Square kingSquare) {
-        ArrayList<Square> escapeSquares = new ArrayList<>();
+    private List<Square> findEscapeSquares(Square kingSquare) {
+        List<Square> escapeSquares = new ArrayList<>();
         
         int kingRow = kingSquare.coord.row, kingCol = kingSquare.coord.col;                
         
-        for (int row = kingRow - 1; row <= kingRow + 1; row++) {
-            
+        for (int row = kingRow - 1; row <= kingRow + 1; row++) {            
             for (int col = kingCol - 1; col <= kingCol + 1; col++) {
                 
                 var coord = new Coord(row, col);
@@ -316,7 +311,7 @@ public class Board extends JPanel {
     }
     
     /**
-     * Tests if user's move will result in a check
+     * Tests if user's move will result in a check.
      * @param target   
      */
     private boolean isSelfMadeCheck(Square targetSquare) {
@@ -398,6 +393,10 @@ public class Board extends JPanel {
         repaint();                                                  
     }
 
+    /**
+     * Paints the board
+     * @param graphics 
+     */
     @Override
     public void paint(Graphics graphics) {
         super.paint(graphics);
@@ -420,31 +419,42 @@ public class Board extends JPanel {
                                                     
     }
    
-    private <T> T traverse(Square source, Square target, T t, Function<Coord, T> fun) {
+    /**
+     * Traverses the board in particular direction inferred from differences 
+     * between source and target squares.
+     * @param <T> type of object undergoing modification 
+     * @param source 
+     * @param target
+     * @param t object undergoing modification
+     * @param function
+     * @return result of applying the parameterized function to t.
+     */
+    private <T> T traverse(Square source, Square target, T t, Function<Coord, T> function) {
 
-        if (!(source.getPiece() instanceof Knight)) {
-
-            var isTargetSameRow = source.coord.row == target.coord.row;
-            var isTargetSameCol = source.coord.col == target.coord.col;
-            var isTargetRowLower = source.coord.row < target.coord.row;
-            var isTargetColLower = source.coord.col < target.coord.col;
-
-            int vDiff, hDiff; // vertical and horizontal difference
-
-            vDiff = isTargetSameRow ? 0 : (isTargetRowLower ? 1 : -1);
-            hDiff = isTargetSameCol ? 0 : (isTargetColLower ? 1 : -1);
-
-            int row = source.coord.row + vDiff;
-            int col = source.coord.col + hDiff;
-            var coord = new Coord(row, col);
-
-            for (; !coord.equals(target.coord); row += vDiff, col += hDiff) {
-
-                t = fun.perform(coord, t);
-                
-                coord = new Coord(row, col);
-            }
+        if (source.getPiece() instanceof Knight) {
+            return t;
         }
+
+        var isTargetSameRow = source.coord.row == target.coord.row;
+        var isTargetSameCol = source.coord.col == target.coord.col;
+        var isTargetRowLower = source.coord.row < target.coord.row;
+        var isTargetColLower = source.coord.col < target.coord.col;
+
+        int vDiff, hDiff; // vertical and horizontal difference
+
+        vDiff = isTargetSameRow ? 0 : (isTargetRowLower ? 1 : -1);
+        hDiff = isTargetSameCol ? 0 : (isTargetColLower ? 1 : -1);
+
+        int row = source.coord.row + vDiff;
+        int col = source.coord.col + hDiff;
+        var coord = new Coord(row, col);
+
+        for (; !coord.equals(target.coord); row += vDiff, col += hDiff) {
+
+            t = function.perform(coord, t);
+
+            coord = new Coord(row, col);
+        }        
         return t;
     }
     
@@ -454,17 +464,17 @@ public class Board extends JPanel {
      * @param source
      * @param target     
      */    
-    private ArrayList<Square> getPath(Square source, Square target) {          
-        Function<Coord, ArrayList<Square>> fun = (coord, path) -> {                        
+    private List<Square> getPath(Square source, Square target) {          
+        Function<Coord, List<Square>> function = (coord, path) -> {                        
                         
             path.add(squares.get(coord.index));
             
             return path;
         };
         
-        ArrayList<Square> path = new ArrayList<>();
+        List<Square> path = new ArrayList<>();
                         
-        return traverse(source, target, path, fun);
+        return traverse(source, target, path, function);
     }
     
     /**
@@ -473,10 +483,10 @@ public class Board extends JPanel {
      * @param target
      */
     private boolean isPathFree(Square source, Square target) {               
-        Function<Coord, Integer> fun = (coord, nullCount) -> {
+        Function<Coord, Integer> function = (coord, nullCount) -> {
                                     
-            Square square = squares.get(coord.index);
-            Piece piece = square.getPiece();
+            var square = squares.get(coord.index);
+            var piece = square.getPiece();
             
             nullCount += piece == null ? 0 : 1; 
             
@@ -485,7 +495,7 @@ public class Board extends JPanel {
         
         Integer nullCount = 0;
 
-        return traverse(source, target, nullCount, fun) == 0;
+        return traverse(source, target, nullCount, function) == 0;
     }
 
     public void setNewGame()  {
@@ -494,8 +504,8 @@ public class Board extends JPanel {
         
         int draw = new Random().nextInt(2);       
         
-        Color color1 = draw == 1 ? Color.BLACK : Color.WHITE;
-        Color color2 = color1.equals(Color.BLACK) ? Color.WHITE : Color.BLACK;
+        var color1 = draw == 1 ? Color.BLACK : Color.WHITE;
+        var color2 = color1.equals(Color.BLACK) ? Color.WHITE : Color.BLACK;
                
         for (int col = 0; col < 8; col++) {
             var topPawn = new Pawn(color1, Piece.PieceName.Pawn1);
@@ -507,7 +517,7 @@ public class Board extends JPanel {
         
         for (int row = 0; row <= 7; row += 7) {
             
-            Color color = row == 0 ? color1 : color2;
+            var color = row == 0 ? color1 : color2;
             
             val idx = row * 8;
             
@@ -547,7 +557,7 @@ public class Board extends JPanel {
     
     private final ResourceBundle bundle = ResourceBundle.getBundle("my/chess/Bundle");
     @Getter
-    private final ArrayList<Square> squares = new ArrayList<>();
+    private final List<Square> squares = new ArrayList<>();
     @Getter
     @Setter
     private Color currentColor = Color.WHITE;
