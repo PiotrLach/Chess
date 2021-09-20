@@ -50,23 +50,19 @@ public class Board extends JPanel {
     }
     
     /**
-     * Recalculates the size and location for each square, 
-     * so that the board scales with window
+     * Resets the size and location for each square, so that the board 
+     * scales with window.
      */
-    public void recalculateSize() {
-        int height = getHeight(), width = getWidth();
+    public void resizeBoard() {
         
-        int minWidth, maxWidth;                        
-        
-        while (height % 8 != 0) {
-            height--;
-        }
-        
-        squareSize = height / 8;
-        minWidth = (width - height) / 2;
-        maxWidth = minWidth + height;        
-        
-        for (int y = 0, row = 0; y < height; y += squareSize, row++) {
+        var dimensions = recalculateDimensions();
+
+        int minHeight = dimensions.get(0);
+        int maxHeight = dimensions.get(1);
+        int minWidth = dimensions.get(2);
+        int maxWidth = dimensions.get(3);
+               
+        for (int y = minHeight, row = 0; y < maxHeight; y += squareSize, row++) {
             for (int x = minWidth, col = 0; x < maxWidth; x += squareSize, col++) {
                 
                 val idx = row * 8 + col;
@@ -76,6 +72,36 @@ public class Board extends JPanel {
             }
         }
         repaint();
+    }
+    
+    /**
+     * Calculates minimal and maximal height and width (start point and end point) 
+     * for the board, such that when applied, it remains a square, centred in the window. 
+     * @return list of dimensions 
+     */
+    private List<Integer> recalculateDimensions() {
+        
+        int width = getWidth(), height = getHeight();
+        
+        int dim1 = height < width ? height : width;
+        int dim2 = width > height ? width : height;
+        
+        while (dim1 % 8 != 0) {
+            dim1--;
+        }
+        
+        squareSize = dim1 / 8;
+        
+        int minDim1 = 0;
+        int maxDim1 = dim1;
+        int minDim2 = (dim2 - dim1) / 2;
+        int maxDim2 = minDim2 + dim1;
+        
+        if (height < width) {        
+            return List.of(minDim1, maxDim1, minDim2, maxDim2);
+        } else {
+            return List.of(minDim2, maxDim2, minDim1, maxDim1);
+        }
     }
 
     private void createSquares() { 
@@ -160,7 +186,7 @@ public class Board extends JPanel {
     }
     
     /**
-     * Finds square holding current player's king 
+     * Finds square holding current player's king.
      * @return square holding current player's king
      * @throws IllegalStateException 
      */

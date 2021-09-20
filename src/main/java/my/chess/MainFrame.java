@@ -137,7 +137,7 @@ public class MainFrame extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
    
     private void formComponentResized(ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
-        board.recalculateSize();
+        board.resizeBoard();
     }//GEN-LAST:event_formComponentResized
 
     private void newGameOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_newGameOptionActionPerformed
