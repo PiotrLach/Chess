@@ -38,8 +38,8 @@ abstract public class Piece implements Serializable {
         this.image = image;
     }
 
-    public void drawImage(Graphics graphics, int x, int y, int width, int height) {
-        graphics.drawImage(image, x, y, width, height, null);
+    public void drawImage(Graphics graphics, int x, int y, int size) {
+        graphics.drawImage(image, x, y, size, size, null);
     }
 
     public enum PieceName {

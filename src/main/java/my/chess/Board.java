@@ -43,7 +43,7 @@ import lombok.val;
  */
 public class Board extends JPanel {
 
-    public Board() {        
+    public Board() {
         createSquares();
         setNewGame();
     }
@@ -117,7 +117,7 @@ public class Board extends JPanel {
 
     /**
      * Finds the square clicked on with the LMB and sets it as either 
-     * source or target, depending on present piece.
+     * source or target, depending on the piece it contains.
      * @param mouseEvent 
      */
     public void chooseOrMove(MouseEvent mouseEvent) {
@@ -175,11 +175,11 @@ public class Board extends JPanel {
         if (!isChoosable(square)) {                
             return;
         }
-
-        var piece = square.getPiece();
-
+        
         sourceSquare.setHighlighted(false);                
         square.setHighlighted(true);                    
+        
+        var piece = square.getPiece();
         selectedPiece = piece;
 
         sourceSquare = square;
@@ -212,12 +212,12 @@ public class Board extends JPanel {
     }
    
     private boolean isCheck(Square kingSquare) {
-        return findEnemySquares(kingSquare).size() > 0;
+        return findCheckingSquares(kingSquare).size() > 0;
     }
     
     private boolean isCheck() {                
         var kingSquare = findKing();
-        return findEnemySquares(kingSquare).size() > 0;                                    
+        return findCheckingSquares(kingSquare).size() > 0;                                    
     }
     
     private boolean isMate() {
@@ -232,31 +232,37 @@ public class Board extends JPanel {
         return !isCheckBlockPossible() && escapeSquares.isEmpty();        
     }
     
+    /**
+     * Retrieves a list of squares for each enemy piece that holds current 
+     * player’s king in check. Each list consists of the square containing the 
+     * enemy and the path that leads to the king.
+     */    
+    private List<List<Square>> findCheckingSquares(Square kingSquare) {
+        var allSquaresLists = new ArrayList<List<Square>>();        
         
-    private List<Square> findEnemySquares(Square kingSquare) {
-        List<Square> enemySquares = new ArrayList<>();        
-        
-        for (var source : squares) {
-            var piece = source.getPiece();             
+        for (var square : squares) {
+            var piece = square.getPiece();             
 
-            if (!source.coord.equals(kingSquare.coord)
+            if (!square.equals(kingSquare)
                 && piece != null
                 && piece.isFoe(currentColor)
-                && piece.isCorrectMovement(source, kingSquare)
-                && isPathFree(source, kingSquare)) 
-            {                                                                  
-                enemySquares.add(source);
-                var path = getPath(source, kingSquare);
-                enemySquares.addAll(path);
+                && piece.isCorrectMovement(square, kingSquare)
+                && isPathFree(square, kingSquare)) 
+            {
+                var singleSquaresList = new ArrayList<Square>();
+                var path = getPath(square, kingSquare);
+                
+                singleSquaresList.add(square);                
+                singleSquaresList.addAll(path);
+                
+                allSquaresLists.add(singleSquaresList);
             }                                        
         }      
-        return enemySquares;                       
+        return allSquaresLists;                       
     }
         
     /**
-     * Finds squares where king can escape to avoid check.
-     * @param kingSquare
-     * @return list of escape squares
+     * Finds squares for king to escape, in order to get out of check.
      */
     private List<Square> findEscapeSquares(Square kingSquare) {
         List<Square> escapeSquares = new ArrayList<>();
@@ -290,11 +296,16 @@ public class Board extends JPanel {
     private boolean isCheckBlockPossible() {
         
         var kingSquare = findKing();
+        var allSquaresLists = findCheckingSquares(kingSquare); 
+                
+        if (allSquaresLists.size() > 1) {
+            return false; /* This means an unblockable double check. */
+        }
         
-        var enemySquares = findEnemySquares(kingSquare);        
+        var singleSquaresList = allSquaresLists.get(0);
         
-        for (Square target : enemySquares) {
-            for (Square source : squares) {                    
+        for (var target : singleSquaresList) {
+            for (var source : squares) {                    
                 var piece = source.getPiece();                
 
                 if (piece != null
@@ -311,7 +322,7 @@ public class Board extends JPanel {
     }
     
     /**
-     * Tests if user's move will result in a check.
+     * Tests if player's move will result in a check.
      * @param target   
      */
     private boolean isSelfMadeCheck(Square targetSquare) {
@@ -371,9 +382,15 @@ public class Board extends JPanel {
     
     private boolean isCheckBlock(Square target) {
         var kingSquare = findKing();
-        var enemySquares = findEnemySquares(kingSquare);
+        var allSquaresLists = findCheckingSquares(kingSquare);
+                
+        if (allSquaresLists.size() > 1) {            
+            return false; /* This means an unblockable double check. */
+        }
         
-        return !(selectedPiece instanceof King) && enemySquares.contains(target);
+        var singleSquaresList = allSquaresLists.get(0);
+        
+        return !(selectedPiece instanceof King) && singleSquaresList.contains(target);
     }
 
     private void movePiece(Square target) {        
@@ -412,21 +429,18 @@ public class Board extends JPanel {
             if (square.getPiece() != null) {                                        
                 int x = (int) square.getX();
                 int y = (int) square.getY();
-                Piece piece = square.getPiece();
-                piece.drawImage(graphics, x, y, squareSize, squareSize);
+                var piece = square.getPiece();
+                piece.drawImage(graphics, x, y, squareSize);
             }        
         }                
                                                     
     }
    
     /**
-     * Traverses the board in particular direction inferred from differences 
-     * between source and target squares.
+     * Traverses the board in particular direction, inferred from differences 
+     * between source and target squares, and applies a function to t.
      * @param <T> type of object undergoing modification 
-     * @param source 
-     * @param target
-     * @param t object undergoing modification
-     * @param function
+     * @param t object undergoing modification     
      * @return result of applying the parameterized function to t.
      */
     private <T> T traverse(Square source, Square target, T t, Function<Coord, T> function) {
