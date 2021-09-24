@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
+import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import lombok.Getter;
@@ -148,13 +149,13 @@ public class Board extends JPanel {
     private boolean isChoosable(Square square) {       
               
         if (isMate()) {
-            var message = bundle.getString("Board.isMate.text");
+            var message = resourceBundle.getString("Board.isMate.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }                               
         
         if (square.isHighlighted()) {
-            var message = bundle.getString("Board.pieceAlreadyChosen.text");
+            var message = resourceBundle.getString("Board.pieceAlreadyChosen.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
@@ -162,7 +163,7 @@ public class Board extends JPanel {
         var piece = square.getPiece();
         
         if (isCheck() && !isCheckBlockPossible() && !(piece instanceof King)) {
-            var message = bundle.getString("Board.pieceGetOutOfCheck.text");
+            var message = resourceBundle.getString("Board.pieceGetOutOfCheck.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
@@ -341,31 +342,31 @@ public class Board extends JPanel {
     private boolean isPlaceable(Square target) {
                                                                            
         if (selectedPiece == null) {
-            var message = bundle.getString("Board.noSelectedPiece.text");
+            var message = resourceBundle.getString("Board.noSelectedPiece.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }                                
         
         if (!selectedPiece.isCorrectMovement(sourceSquare, target)) {
-            var message = bundle.getString("Board.wrongMove.text");
+            var message = resourceBundle.getString("Board.wrongMove.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
         
         if (!isPathFree(sourceSquare, target)) {
-            var message = bundle.getString("Board.pathBlocked.text");
+            var message = resourceBundle.getString("Board.pathBlocked.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }                           
                
         if (isCheck() && !isCheckBlock(target) && !isKingEscape(target)) {
-            var message = bundle.getString("Board.pieceGetOutOfCheck.text");
+            var message = resourceBundle.getString("Board.pieceGetOutOfCheck.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
         
         if (isSelfMadeCheck(target)) {
-            var message = bundle.getString("Board.selfMadeCheck.text");
+            var message = resourceBundle.getString("Board.selfMadeCheck.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
@@ -392,12 +393,63 @@ public class Board extends JPanel {
         
         return !(selectedPiece instanceof King) && singleSquaresList.contains(target);
     }
+    
+    private int showPromoteDialog() {
+        
+        var parentComponent = this; 
+        var message = resourceBundle.getString("Board.PromoteMessage");
+        var title = resourceBundle.getString("Board.PromoteMessageTitle");
+        int optionType = JOptionPane.YES_NO_OPTION;  
+        int messageType = JOptionPane.INFORMATION_MESSAGE;
+        Icon icon = null;                   
+        Object[] options = {
+            resourceBundle.getString("Board.QueenName"), 
+            resourceBundle.getString("Board.KnightName"),
+            resourceBundle.getString("Board.RookName"),
+            resourceBundle.getString("Board.BishopName")
+        };
+        var initialValue = resourceBundle.getString("Board.QueenName");            
+
+        int choice = JOptionPane.showOptionDialog(parentComponent,
+                message,
+                title, 
+                optionType,
+                messageType,
+                icon,
+                options,
+                initialValue
+        );
+        return choice;
+    }
+    
+    private void promote(Square target) {        
+                        
+        if (target.coord.row != 0 && target.coord.row != 7) {
+            return;
+        }
+        
+        if (!(selectedPiece instanceof Pawn)) {
+            return;
+        }
+                    
+        int choice = showPromoteDialog();        
+        var pawn = (Pawn) selectedPiece;    
+        
+        selectedPiece = switch(choice) {
+            default -> new Queen(pawn.color);                                    
+            case 1 -> new Knight(pawn.color);
+            case 2 -> new Rook(pawn.color);
+            case 3 -> new Bishop(pawn.color);            
+        };       
+    }
 
     private void movePiece(Square target) {        
                                                    
         if (!isPlaceable(target)) {
             return;
         }
+        
+        promote(target);
 
         target.setPiece(selectedPiece);
         selectedPiece = null;                    
@@ -569,7 +621,7 @@ public class Board extends JPanel {
         square.setPiece(piece);
     }
     
-    private final ResourceBundle bundle = ResourceBundle.getBundle("my/chess/Bundle");
+    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("my/chess/Bundle");
     @Getter
     private final List<Square> squares = new ArrayList<>();
     @Getter
