@@ -28,6 +28,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
 import javax.swing.Icon;
@@ -44,7 +45,7 @@ import lombok.val;
  */
 public class Board extends JPanel {
 
-    public Board() {
+    public Board() {        
         createSquares();
         setNewGame();
     }
@@ -140,9 +141,19 @@ public class Board extends JPanel {
         var piece = square.getPiece();  
         
         if (piece != null && !piece.isFoe(currentColor)) {
-            choosePiece(square);
+            
+            var source = square;
+            selectedSquare = choosePiece(source);
+            
+        } else if (selectedSquare.isEmpty()) {           
+            
+            var message = resourceBundle.getString("Board.noSelectedPiece.text");
+            JOptionPane.showMessageDialog(this, message);                            
+            
         } else {
-            movePiece(square);
+            
+            var target = square;
+            selectedSquare = movePiece(selectedSquare.get(), target);                                        
         }     
     }
    
@@ -171,21 +182,20 @@ public class Board extends JPanel {
         return true;
     }
     
-    private void choosePiece(Square square) {                
+    private Optional<Square> choosePiece(Square source) {                
                                                                   
-        if (!isChoosable(square)) {                
-            return;
+        if (!isChoosable(source)) {
+            return Optional.empty();
         }
         
-        sourceSquare.setHighlighted(false);                
-        square.setHighlighted(true);                    
+        if (selectedSquare.isPresent()) {
+            selectedSquare.get().setHighlighted(false);                            
+        }
         
-        var piece = square.getPiece();
-        selectedPiece = piece;
+        source.setHighlighted(true);        
 
-        sourceSquare = square;
-
-        repaint();                  
+        repaint();
+        return Optional.of(source);
     }
     
     /**
@@ -326,46 +336,44 @@ public class Board extends JPanel {
      * Tests if player's move will result in a check.
      * @param target   
      */
-    private boolean isSelfMadeCheck(Square targetSquare) {
-                              
-        sourceSquare.setPiece(null);
-        targetSquare.setPiece(selectedPiece);
+    private boolean isSelfMadeCheck(Square source, Square target) {
+
+        var sourcePiece = source.getPiece();        
+        
+        source.setPiece(null);
+        target.setPiece(sourcePiece);
 
         var isSelfMadeCheck = isCheck();        
 
-        sourceSquare.setPiece(selectedPiece);
-        targetSquare.setPiece(null);
+        source.setPiece(sourcePiece);
+        target.setPiece(null);
 
         return isSelfMadeCheck;
     }
     
-    private boolean isPlaceable(Square target) {
-                                                                           
-        if (selectedPiece == null) {
-            var message = resourceBundle.getString("Board.noSelectedPiece.text");
-            JOptionPane.showMessageDialog(this, message);
-            return false;
-        }                                
+    private boolean isPlaceable(Square source, Square target) {
+                                                                                          
+        var selectedPiece = source.getPiece();
         
-        if (!selectedPiece.isCorrectMovement(sourceSquare, target)) {
+        if (!selectedPiece.isCorrectMovement(source, target)) {
             var message = resourceBundle.getString("Board.wrongMove.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
         
-        if (!isPathFree(sourceSquare, target)) {
+        if (!isPathFree(source, target)) {
             var message = resourceBundle.getString("Board.pathBlocked.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }                           
                
-        if (isCheck() && !isCheckBlock(target) && !isKingEscape(target)) {
+        if (isCheck() && !isCheckBlock(source, target) && !isKingEscape(source, target)) {
             var message = resourceBundle.getString("Board.pieceGetOutOfCheck.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
         }
         
-        if (isSelfMadeCheck(target)) {
+        if (isSelfMadeCheck(source, target)) {
             var message = resourceBundle.getString("Board.selfMadeCheck.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
@@ -374,14 +382,14 @@ public class Board extends JPanel {
         return true;               
     }
     
-    private boolean isKingEscape(Square target) {
+    private boolean isKingEscape(Square source, Square target) {
         var kingSquare = findKing();
         var escapeSquares = findEscapeSquares(kingSquare);
         
-        return selectedPiece instanceof King && escapeSquares.contains(target);
+        return source.getPiece() instanceof King && escapeSquares.contains(target);
     }
     
-    private boolean isCheckBlock(Square target) {
+    private boolean isCheckBlock(Square source, Square target) {
         var kingSquare = findKing();
         var allSquaresLists = findCheckingSquares(kingSquare);
                 
@@ -391,7 +399,7 @@ public class Board extends JPanel {
         
         var singleSquaresList = allSquaresLists.get(0);
         
-        return !(selectedPiece instanceof King) && singleSquaresList.contains(target);
+        return !(source.getPiece() instanceof King) && singleSquaresList.contains(target);
     }
     
     private int showPromoteDialog() {
@@ -402,7 +410,7 @@ public class Board extends JPanel {
         int optionType = JOptionPane.YES_NO_OPTION;  
         int messageType = JOptionPane.INFORMATION_MESSAGE;
         Icon icon = null;                   
-        Object[] options = {
+        String[] options = {
             resourceBundle.getString("Board.QueenName"), 
             resourceBundle.getString("Board.KnightName"),
             resourceBundle.getString("Board.RookName"),
@@ -422,44 +430,46 @@ public class Board extends JPanel {
         return choice;
     }
     
-    private void promote(Square target) {        
-                        
-        if (target.coord.row != 0 && target.coord.row != 7) {
-            return;
-        }
+    private Piece promote(Square source, Square target) {        
+                
+        var sourcePiece = source.getPiece();
         
-        if (!(selectedPiece instanceof Pawn)) {
-            return;
+        if (target.coord.row != 0 && target.coord.row != 7) {
+            return sourcePiece;
+        }
+                        
+        if (!(sourcePiece instanceof Pawn)) {
+            return sourcePiece;
         }
                     
-        int choice = showPromoteDialog();        
-        var pawn = (Pawn) selectedPiece;    
+        int choice = showPromoteDialog();                    
         
-        selectedPiece = switch(choice) {
-            default -> new Queen(pawn.color);                                    
-            case 1 -> new Knight(pawn.color);
-            case 2 -> new Rook(pawn.color);
-            case 3 -> new Bishop(pawn.color);            
-        };       
+        return switch(choice) {
+            default -> new Queen(sourcePiece.color);                                    
+            case 1 -> new Knight(sourcePiece.color);
+            case 2 -> new Rook(sourcePiece.color);
+            case 3 -> new Bishop(sourcePiece.color);            
+        }; 
     }
 
-    private void movePiece(Square target) {        
+    private Optional<Square> movePiece(Square source, Square target) {        
                                                    
-        if (!isPlaceable(target)) {
-            return;
+        if (!isPlaceable(source, target)) {
+            return Optional.of(source);
         }
         
-        promote(target);
-
-        target.setPiece(selectedPiece);
-        selectedPiece = null;                    
-        sourceSquare.setPiece(null);
-        sourceSquare.setHighlighted(false);
-
+        var selectedPiece = promote(source, target);                       
+        
+        target.setPiece(selectedPiece);                           
+        source.setPiece(null);
+        source.setHighlighted(false);
+        
         var isWhite = currentColor.equals(Color.WHITE);
         currentColor = isWhite ? Color.BLACK : Color.WHITE;
 
-        repaint();                                                  
+        repaint();
+        
+        return Optional.empty();
     }
 
     /**
@@ -602,7 +612,7 @@ public class Board extends JPanel {
 
     public void clearBoard() {
         currentColor = Color.WHITE;
-        selectedPiece = null;
+        selectedSquare = Optional.empty();
         
         for (var square : squares) {
             square.setPiece(null);
@@ -627,8 +637,7 @@ public class Board extends JPanel {
     @Getter
     @Setter
     private Color currentColor = Color.WHITE;
-    private Square sourceSquare = new Square(0, 0, 0, 0, new Coord(-1, -1));
-    private Piece selectedPiece;
+    private Optional<Square> selectedSquare = Optional.empty();
     private int squareSize = 80;
 
 }
