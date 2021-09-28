@@ -25,7 +25,7 @@ import javax.imageio.ImageIO;
  *
  * @author Piotr Lach
  */
-public class PieceImageLoader {
+class PieceImageLoader {
 
     private PieceImageLoader() {
         try {
@@ -35,7 +35,7 @@ public class PieceImageLoader {
         }
     }
     
-    public static final PieceImageLoader INSTANCE = new PieceImageLoader();
+    static final PieceImageLoader INSTANCE = new PieceImageLoader();
     
     private InputStream getResource(String fileName) throws Exception {        
         
@@ -51,77 +51,77 @@ public class PieceImageLoader {
     }
     
     private void loadImages() throws Exception {
-        PAWN_BLACK = ImageIO.read(getResource("black/pawn.png"));
-        PAWN_WHITE = ImageIO.read(getResource("white/pawn.png"));
-        ROOK_BLACK = ImageIO.read(getResource("black/rook.png"));
-        ROOK_WHITE = ImageIO.read(getResource("white/rook.png"));
-        BISHOP_BLACK = ImageIO.read(getResource("black/bishop.png"));
-        BISHOP_WHITE = ImageIO.read(getResource("white/bishop.png"));
-        KNIGHT_BLACK = ImageIO.read(getResource("black/knight.png"));
-        KNIGHT_WHITE = ImageIO.read(getResource("white/knight.png"));
-        QUEEN_BLACK = ImageIO.read(getResource("black/queen.png"));
-        QUEEN_WHITE = ImageIO.read(getResource("white/queen.png"));
-        KING_BLACK = ImageIO.read(getResource("black/king.png"));
-        KING_WHITE = ImageIO.read(getResource("white/king.png"));
+        blackPawn = ImageIO.read(getResource("black/pawn.png"));
+        whitePawn = ImageIO.read(getResource("white/pawn.png"));
+        blackRook = ImageIO.read(getResource("black/rook.png"));
+        whiteRook = ImageIO.read(getResource("white/rook.png"));
+        blackBisho = ImageIO.read(getResource("black/bishop.png"));
+        whiteBishop = ImageIO.read(getResource("white/bishop.png"));
+        blackKnight = ImageIO.read(getResource("black/knight.png"));
+        whiteKnight = ImageIO.read(getResource("white/knight.png"));
+        blackQueen = ImageIO.read(getResource("black/queen.png"));
+        whiteQueen = ImageIO.read(getResource("white/queen.png"));
+        blackKing = ImageIO.read(getResource("black/king.png"));
+        whiteKing = ImageIO.read(getResource("white/king.png"));
     }   
 
-    public Image getPAWN(Color color) {
+    Image getPAWN(Color color) {
         if (color.equals(Color.BLACK)) {
-            return PAWN_BLACK;
+            return blackPawn;
         } else {
-            return PAWN_WHITE;
+            return whitePawn;
         }
     }
 
-    public Image getROOK(Color color) {
+    Image getROOK(Color color) {
         if (color.equals(Color.BLACK)) {
-            return ROOK_BLACK;
+            return blackRook;
         } else {
-            return ROOK_WHITE;
+            return whiteRook;
         }
     }
 
-    public Image getBISHOP(Color color) {
+    Image getBISHOP(Color color) {
         if (color.equals(Color.BLACK)) {
-            return BISHOP_BLACK;
+            return blackBisho;
         } else {
-            return BISHOP_WHITE;
+            return whiteBishop;
         }
     }
 
-    public Image getKNIGHT(Color color) {
+    Image getKNIGHT(Color color) {
         if (color.equals(Color.BLACK)) {
-            return KNIGHT_BLACK;
+            return blackKnight;
         } else {
-            return KNIGHT_WHITE;
+            return whiteKnight;
         }
     }
 
-    public Image getQUEEN(Color color) {
+    Image getQUEEN(Color color) {
         if (color.equals(Color.BLACK)) {
-            return QUEEN_BLACK;
+            return blackQueen;
         } else {
-            return QUEEN_WHITE;
+            return whiteQueen;
         }
     }
 
-    public Image getKING(Color color) {
+    Image getKING(Color color) {
         if (color.equals(Color.BLACK)) {
-            return KING_BLACK;
+            return blackKing;
         } else {
-            return KING_WHITE;
+            return whiteKing;
         }
     }
-    private Image PAWN_BLACK;
-    private Image PAWN_WHITE;
-    private Image ROOK_BLACK;
-    private Image ROOK_WHITE;
-    private Image BISHOP_BLACK;
-    private Image BISHOP_WHITE;
-    private Image KNIGHT_BLACK;
-    private Image KNIGHT_WHITE;
-    private Image QUEEN_BLACK;
-    private Image QUEEN_WHITE;
-    private Image KING_BLACK;
-    private Image KING_WHITE;
+    private Image blackPawn;
+    private Image whitePawn;
+    private Image blackRook;
+    private Image whiteRook;
+    private Image blackBisho;
+    private Image whiteBishop;
+    private Image blackKnight;
+    private Image whiteKnight;
+    private Image blackQueen;
+    private Image whiteQueen;
+    private Image blackKing;
+    private Image whiteKing;
 }
