@@ -358,6 +358,8 @@ public class Board extends JPanel {
             return false;
         }
         
+        lastMove.setEmpty();
+        
         if (!isPathFree(source, target)) {
             var message = resourceBundle.getString("Board.pathBlocked.text");
             JOptionPane.showMessageDialog(this, message);
@@ -454,6 +456,8 @@ public class Board extends JPanel {
         target.setPiece(selectedPiece);                           
         source.setPiece(null);
         source.setHighlighted(false);
+        
+        lastMove.setLastMove(source, target);
         
         var isWhite = currentColor.equals(Color.WHITE);
         currentColor = isWhite ? Color.BLACK : Color.WHITE;
@@ -575,8 +579,8 @@ public class Board extends JPanel {
         var color2 = color1.equals(Color.BLACK) ? Color.WHITE : Color.BLACK;
                
         for (int col = 0; col < 8; col++) {
-            var topPawn = new Pawn(color1, Piece.PieceName.Pawn1);
-            var bottomPawn = new Pawn(color2, Piece.PieceName.Pawn6);
+            var topPawn = new Pawn(color1, Piece.PieceName.Pawn1, lastMove);
+            var bottomPawn = new Pawn(color2, Piece.PieceName.Pawn6, lastMove);
             
             squares.get(1 * 8 + col).setPiece(topPawn);
             squares.get(6 * 8 + col).setPiece(bottomPawn);
@@ -622,6 +626,7 @@ public class Board extends JPanel {
         square.setPiece(piece);
     }
     
+    private final LastMove lastMove = new LastMove();
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("my/chess/Bundle");
     @Getter
     private final List<Square> squares = new ArrayList<>();

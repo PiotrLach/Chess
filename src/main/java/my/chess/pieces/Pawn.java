@@ -18,6 +18,7 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import java.util.List;
+import my.chess.LastMove;
 import my.chess.Square;
 
 /**
@@ -26,17 +27,45 @@ import my.chess.Square;
  */
 public class Pawn extends Piece {
 
-    public Pawn(Color color, PieceName pieceName) {
+    public Pawn(Color color, PieceName pieceName, LastMove lastMove) {
         super(pieceName, color, imageLoader.getPAWN(color));
+        this.lastMove = lastMove;
 
         startRow = pieceName == PieceName.Pawn1 ? 1 : 6;
 
-        isMovingDown = startRow == 1;
+        isMovingDown = startRow == 1;        
     }
 
     @Override
     public void setImage() {
         image = imageLoader.getPAWN(color);
+    }
+    
+    private boolean isEnPassant(Square source, Square target) {       
+        if (!lastMove.isTwoSquaresAdvancedEnemyPawn(this.color)) {
+            return false;
+        }
+        
+        var lastMoveTarget = lastMove.getTarget();
+        
+        var isSourceOnSameRow = source.coord.row == lastMoveTarget.coord.row;
+        var isSourceOnLeft = lastMoveTarget.coord.col == source.coord.col - 1;
+        var isSourceOnRight = lastMoveTarget.coord.col == source.coord.col + 1;
+        
+        var isSourceNeighbor = isSourceOnSameRow && (isSourceOnLeft || isSourceOnRight); 
+        
+        var isTargetAbove = lastMoveTarget.coord.row - 1 == target.coord.row;        
+        var isTargetSameCol = lastMoveTarget.coord.col == target.coord.col; 
+        var isTargetBelow = lastMoveTarget.coord.row + 1 == target.coord.row;                
+        
+        var opt1 = isSourceNeighbor && isMovingDown && isTargetBelow && isTargetSameCol;
+        var opt2 = isSourceNeighbor && !isMovingDown && isTargetAbove && isTargetSameCol;                
+        
+        if (opt1 || opt2) {
+            lastMoveTarget.setPiece(null);
+            return true;
+        } 
+        return false;
     }
         
     @Override
@@ -66,11 +95,13 @@ public class Pawn extends Piece {
         var possibleMovements = List.of(
             isForwardMove && isOneVerticalMove && isNotHorizontal && isNullOnTarget,
             isForwardMove && isOnStartRow && isTwoVerticalMoves && isNotHorizontal && isNullOnTarget,
-            isForwardMove && isOneVerticalMove && isHorizontal && isFoeOnTarget
+            isForwardMove && isOneVerticalMove && isHorizontal && isFoeOnTarget,
+            isEnPassant(source, target)
         );
         
         return possibleMovements.contains(true);      
     }
+    private final LastMove lastMove;
     private final boolean isMovingDown;
     private final int startRow;
 
