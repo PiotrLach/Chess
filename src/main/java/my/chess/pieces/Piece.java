@@ -22,6 +22,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.io.Serializable;
 import lombok.ToString;
+import lombok.Getter;
 
 /**
  *
@@ -57,7 +58,7 @@ abstract public class Piece implements Serializable {
     public PieceName getName() {
         return name;
     }
-    
+        
     /**
      * Must be called for any deserialized piece, since images are not
      * saved.
@@ -66,9 +67,10 @@ abstract public class Piece implements Serializable {
 
     abstract public boolean isCorrectMovement(Square source, Square target);
 
-    public final Color color;
+    public final Color color;    
     @ToString.Exclude
     protected transient Image image;
-    protected PieceName name;
+    protected PieceName name;    
+    protected boolean wasMoved = false;
     protected static PieceImageLoader imageLoader = PieceImageLoader.INSTANCE; 
 }

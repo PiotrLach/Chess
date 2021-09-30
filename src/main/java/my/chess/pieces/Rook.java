@@ -36,7 +36,7 @@ public class Rook extends Piece {
 
     @Override
     public boolean isCorrectMovement(Square source, Square target) {
-        
+                        
         int vDiff, hDiff; // vertical and horizontal difference;
         vDiff = Math.abs(source.coord.row - target.coord.row);
         hDiff = Math.abs(source.coord.col - target.coord.col);
@@ -44,7 +44,11 @@ public class Rook extends Piece {
         var isVerticalMov = vDiff > 0;
         var isHorizontalMov = hDiff > 0;        
         
-        return (isVerticalMov && !isHorizontalMov) || (isHorizontalMov && !isVerticalMov);
+        if ((isVerticalMov && !isHorizontalMov) || (isHorizontalMov && !isVerticalMov)) {
+            wasMoved = true;
+            return true;
+        }
+        return false;
     }
 
 }

@@ -17,6 +17,8 @@
 package my.chess.pieces;
 
 import java.awt.Color;
+import java.util.List;
+import java.util.stream.Collectors;
 import my.chess.Square;
 
 /**
@@ -25,18 +27,80 @@ import my.chess.Square;
  */
 public class King extends Piece {
 
-    public King(Color pieceColor) {
+    public King(Color pieceColor, final List<Square> squares) {
         super(PieceName.King, pieceColor, imageLoader.getKING(pieceColor));
+        this.squares = squares;
     }
     
     @Override
     public void setImage() {
         image = imageLoader.getKING(color);
     }
+       
+    private boolean isCastling(Square source, Square target) {
+        
+        var isSameRow = source.coord.row == target.coord.row;        
+        
+        if (this.wasMoved /*|| isInCheck(source)*/ || !isSameRow) {
+            return false;
+        }                
+        
+        List<Square> sideSquares;
+        var isQueenSide = target.coord.col == source.coord.col - 2;
+        var isKingSide = target.coord.col == source.coord.col + 2;
+                
+        if (isQueenSide) {
+            sideSquares = squares.stream()                    
+                    .filter(square -> square.coord.row == source.coord.row)
+                    .filter(square -> square.coord.col < source.coord.col)
+                    .collect(Collectors.toList());                                                
+        } else if (isKingSide) {
+            sideSquares = squares.stream()                    
+                    .filter(square -> square.coord.row == source.coord.row)
+                    .filter(square -> square.coord.col > source.coord.col)
+                    .collect(Collectors.toList());            
+        } else {
+            return false;
+        }
+        
+        var optionalRookSquare = sideSquares.stream()              
+            .filter(square -> square.getPiece() != null)                    
+            .filter(square -> !square.getPiece().wasMoved)
+            .filter(square -> square.getPiece() instanceof Rook)                    
+            .filter(square -> {
+                if (isKingSide) {
+                    return square.coord.col == 7;
+                } else if (isQueenSide) {
+                    return square.coord.col == 0;
+                } else {
+                    return false;
+                }
+            }).findAny();
+            
+        if (optionalRookSquare.isEmpty()) {
+            return false;
+        }
+                        
+        var rookSquare = optionalRookSquare.get();       
+        sideSquares.removeIf(square -> square.equals(rookSquare));
+        
+        for (var square : sideSquares) {                        
+            
+            if (square.getPiece() != null) {
+                return false;
+            }
+            
+            if (square.coord.col <= target.coord.col /*isInCheck(square)*/) {
+                return false;
+            }
+        }
+               
+        return true;
+    }
 
     @Override
-    public boolean isCorrectMovement(Square source, Square target) {
-        
+    public boolean isCorrectMovement(Square source, Square target) {                
+                        
         int verticalDiff, horizontalDiff; 
         
         verticalDiff = Math.abs(source.coord.row - target.coord.row);
@@ -52,8 +116,12 @@ public class King extends Piece {
         var isOneHorizontalMove = isOneHorizontalDiff && isZeroVerticalDiff;
         
         
-        return isOneDiagonalMove || isOneVerticalMove || isOneHorizontalMove;
-               
+        if (isOneDiagonalMove || isOneVerticalMove || isOneHorizontalMove /*|| isCastling(source, target)*/) {
+            wasMoved = true;
+            return true;
+        };
+        return false;              
     }
+    private final transient List<Square> squares;
 
 }

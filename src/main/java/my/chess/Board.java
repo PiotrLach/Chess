@@ -596,7 +596,7 @@ public class Board extends JPanel {
             squares.get(idx + 1).setPiece(new Knight(color));
             squares.get(idx + 2).setPiece(new Bishop(color));
             squares.get(idx + 3).setPiece(new Queen(color));
-            squares.get(idx + 4).setPiece(new King(color));
+            squares.get(idx + 4).setPiece(new King(color, squares));
             squares.get(idx + 5).setPiece(new Bishop(color));
             squares.get(idx + 6).setPiece(new Knight(color));
             squares.get(idx + 7).setPiece(new Rook(color));
