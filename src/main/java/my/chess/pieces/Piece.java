@@ -28,15 +28,26 @@ import lombok.Getter;
  *
  * @author Piotr Lach
  */
-@ToString
+@ToString(onlyExplicitlyIncluded = true)
 abstract public class Piece implements Serializable {
     
-    private static final long serialVersionUID = -4958749740116233564L;
+//    private static final long serialVersionUID = -4958749740116233564L;
 
     public Piece(PieceName pieceName, Color color, Image image) {
         this.name = pieceName;
         this.color = color;
         this.image = image;
+    }
+    
+    public void movePiece(Square source, Square target) {                
+        if (!(source.getPiece() == this)) {
+            return;
+        }
+        
+        target.setPiece(this);
+        source.setPiece(null);
+        source.setHighlighted(false);
+        isOnStartPosition = false;
     }
 
     public void drawImage(Graphics graphics, int x, int y, int size) {
@@ -54,11 +65,7 @@ abstract public class Piece implements Serializable {
     public boolean isFoe(Color color) {
         return !this.color.equals(color);
     }
-
-    public PieceName getName() {
-        return name;
-    }
-        
+           
     /**
      * Must be called for any deserialized piece, since images are not
      * saved.
@@ -67,10 +74,11 @@ abstract public class Piece implements Serializable {
 
     abstract public boolean isCorrectMovement(Square source, Square target);
 
-    public final Color color;    
-    @ToString.Exclude
+    public final Color color;        
     protected transient Image image;
-    protected PieceName name;    
-    protected boolean wasMoved = false;
-    protected static PieceImageLoader imageLoader = PieceImageLoader.INSTANCE; 
+    protected PieceName name;  
+    @Getter
+    @ToString.Include
+    protected boolean isOnStartPosition = true;    
+    static final PieceImageLoader imageLoader = PieceImageLoader.INSTANCE; 
 }

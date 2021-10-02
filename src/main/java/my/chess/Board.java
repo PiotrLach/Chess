@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -219,8 +220,8 @@ public class Board extends JPanel {
         throw new IllegalStateException("King has not been found.");
     }
    
-    private boolean isCheck(Square kingSquare) {
-        return findCheckingSquares(kingSquare).size() > 0;
+    public boolean isAttacked(Square square) {
+        return findCheckingSquares(square).size() > 0;
     }
     
     private boolean isCheck() {                
@@ -293,7 +294,7 @@ public class Board extends JPanel {
                     continue;              
                 }   
                 
-                if (!isCheck(square)) {                            
+                if (!isAttacked(square)) {                            
                     escapeSquares.add(square);
                 }
             }
@@ -453,9 +454,11 @@ public class Board extends JPanel {
             selectedPiece = promote(selectedPiece, target);
         }                                    
         
-        target.setPiece(selectedPiece);                           
-        source.setPiece(null);
-        source.setHighlighted(false);
+        selectedPiece.movePiece(source, target);
+        
+//        target.setPiece(selectedPiece);                           
+//        source.setPiece(null);
+//        source.setHighlighted(false);
         
         lastMove.setLastMove(source, target);
         
@@ -466,7 +469,7 @@ public class Board extends JPanel {
         
         return Optional.empty();
     }
-
+    
     /**
      * Paints the board
      * @param graphics 
@@ -596,11 +599,11 @@ public class Board extends JPanel {
             squares.get(idx + 1).setPiece(new Knight(color));
             squares.get(idx + 2).setPiece(new Bishop(color));
             squares.get(idx + 3).setPiece(new Queen(color));
-            squares.get(idx + 4).setPiece(new King(color, squares));
+            squares.get(idx + 4).setPiece(new King(color, this));
             squares.get(idx + 5).setPiece(new Bishop(color));
             squares.get(idx + 6).setPiece(new Knight(color));
             squares.get(idx + 7).setPiece(new Rook(color));
-        }
+        }                
         
         repaint();
     }

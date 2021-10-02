@@ -27,13 +27,13 @@ public class Rook extends Piece {
 
     public Rook(Color pieceColor) {
         super(PieceName.Rook, pieceColor, imageLoader.getROOK(pieceColor));
-    }
+    }        
     
     @Override
     public void setImage() {
         image = imageLoader.getROOK(color);
     }
-
+    
     @Override
     public boolean isCorrectMovement(Square source, Square target) {
                         
@@ -44,11 +44,7 @@ public class Rook extends Piece {
         var isVerticalMov = vDiff > 0;
         var isHorizontalMov = hDiff > 0;        
         
-        if ((isVerticalMov && !isHorizontalMov) || (isHorizontalMov && !isVerticalMov)) {
-            wasMoved = true;
-            return true;
-        }
-        return false;
+        return (isVerticalMov && !isHorizontalMov) || (isHorizontalMov && !isVerticalMov);        
     }
 
 }

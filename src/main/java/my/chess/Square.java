@@ -23,22 +23,26 @@ import java.awt.Rectangle;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 /**
  *
  * @author Piotr Lach
  */
+@ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class Square extends Rectangle {
         
     @Getter
     @Setter
+    @ToString.Include
     private Piece piece;    
     @Getter
     @Setter
     private boolean highlighted = false;   
     @EqualsAndHashCode.Include
+    @ToString.Include
     public final Coord coord;
 
     public Square(int x, int y, int width, int height, Coord coord) {
