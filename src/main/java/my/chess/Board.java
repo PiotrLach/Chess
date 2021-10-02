@@ -221,12 +221,12 @@ public class Board extends JPanel {
     }
    
     public boolean isAttacked(Square square) {
-        return findCheckingSquares(square).size() > 0;
+        return findAttackingSquares(square).size() > 0;
     }
     
     private boolean isCheck() {                
         var kingSquare = findKing();
-        return findCheckingSquares(kingSquare).size() > 0;                                    
+        return findAttackingSquares(kingSquare).size() > 0;                                    
     }
     
     private boolean isMate() {
@@ -246,7 +246,7 @@ public class Board extends JPanel {
      * player’s king in check. Each list consists of the square containing the 
      * enemy and the path that leads to the king.
      */    
-    private List<List<Square>> findCheckingSquares(Square kingSquare) {
+    private List<List<Square>> findAttackingSquares(Square kingSquare) {
         var allSquaresLists = new ArrayList<List<Square>>();        
         
         for (var square : squares) {
@@ -305,7 +305,7 @@ public class Board extends JPanel {
     private boolean isCheckBlockPossible() {
         
         var kingSquare = findKing();
-        var allSquaresLists = findCheckingSquares(kingSquare); 
+        var allSquaresLists = findAttackingSquares(kingSquare); 
                 
         if (allSquaresLists.size() > 1) {
             return false; /* This means an unblockable double check. */
@@ -357,9 +357,7 @@ public class Board extends JPanel {
             var message = resourceBundle.getString("Board.wrongMove.text");
             JOptionPane.showMessageDialog(this, message);
             return false;
-        }
-        
-        lastMove.setEmpty();
+        }        
         
         if (!isPathFree(source, target)) {
             var message = resourceBundle.getString("Board.pathBlocked.text");
@@ -391,7 +389,7 @@ public class Board extends JPanel {
     
     private boolean isCheckBlock(Square source, Square target) {
         var kingSquare = findKing();
-        var allSquaresLists = findCheckingSquares(kingSquare);
+        var allSquaresLists = findAttackingSquares(kingSquare);
                 
         if (allSquaresLists.size() > 1) {            
             return false; /* This means an unblockable double check. */
@@ -402,63 +400,13 @@ public class Board extends JPanel {
         return !(source.getPiece() instanceof King) && singleSquaresList.contains(target);
     }
     
-    private int showPromoteDialog() {
-        
-        var parentComponent = this; 
-        var message = resourceBundle.getString("Board.PromoteMessage");
-        var title = resourceBundle.getString("Board.PromoteMessageTitle");
-        int optionType = JOptionPane.YES_NO_OPTION;  
-        int messageType = JOptionPane.INFORMATION_MESSAGE;
-        Icon icon = null;                   
-        String[] options = {
-            resourceBundle.getString("Board.QueenName"), 
-            resourceBundle.getString("Board.KnightName"),
-            resourceBundle.getString("Board.RookName"),
-            resourceBundle.getString("Board.BishopName")
-        };
-        var initialValue = resourceBundle.getString("Board.QueenName");            
-
-        int choice = JOptionPane.showOptionDialog(parentComponent,
-                message,
-                title, 
-                optionType,
-                messageType,
-                icon,
-                options,
-                initialValue
-        );
-        return choice;
-    }
-    
-    private Piece promote(Piece piece, Square target) {                                
-        
-        if (target.coord.row != 0 && target.coord.row != 7) {
-            return piece;
-        }                                
-                    
-        int choice = showPromoteDialog();                    
-        
-        return switch(choice) {
-            default -> new Queen(piece.color);                                    
-            case 1 -> new Knight(piece.color);
-            case 2 -> new Rook(piece.color);
-            case 3 -> new Bishop(piece.color);            
-        }; 
-    }
+            
 
     private Optional<Square> placePiece(Square source, Square target) {        
                                                           
-        var selectedPiece = source.getPiece();
+        var selectedPiece = source.getPiece();                                        
         
-        if (selectedPiece instanceof Pawn) {
-            selectedPiece = promote(selectedPiece, target);
-        }                                    
-        
-        selectedPiece.movePiece(source, target);
-        
-//        target.setPiece(selectedPiece);                           
-//        source.setPiece(null);
-//        source.setHighlighted(false);
+        selectedPiece.movePiece(source, target);        
         
         lastMove.setLastMove(source, target);
         
@@ -582,8 +530,8 @@ public class Board extends JPanel {
         var color2 = color1.equals(Color.BLACK) ? Color.WHITE : Color.BLACK;
                
         for (int col = 0; col < 8; col++) {
-            var topPawn = new Pawn(color1, Piece.PieceName.Pawn1, lastMove);
-            var bottomPawn = new Pawn(color2, Piece.PieceName.Pawn6, lastMove);
+            var topPawn = new Pawn(color1, Piece.PieceName.Pawn1, this);
+            var bottomPawn = new Pawn(color2, Piece.PieceName.Pawn6, this);
             
             squares.get(1 * 8 + col).setPiece(topPawn);
             squares.get(6 * 8 + col).setPiece(bottomPawn);
@@ -628,8 +576,9 @@ public class Board extends JPanel {
         piece.setImage();        
         square.setPiece(piece);
     }
-    
+    @Getter
     private final LastMove lastMove = new LastMove();
+    @Getter
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("my/chess/Bundle");
     @Getter
     private final List<Square> squares = new ArrayList<>();

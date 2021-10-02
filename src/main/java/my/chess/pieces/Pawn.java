@@ -18,6 +18,9 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import java.util.List;
+import javax.swing.Icon;
+import javax.swing.JOptionPane;
+import my.chess.Board;
 import my.chess.LastMove;
 import my.chess.Square;
 
@@ -27,9 +30,10 @@ import my.chess.Square;
  */
 public class Pawn extends Piece {
 
-    public Pawn(Color color, PieceName pieceName, LastMove lastMove) {
+    public Pawn(Color color, PieceName pieceName, Board board) {
         super(pieceName, color, imageLoader.getPAWN(color));
-        this.lastMove = lastMove;
+        this.lastMove = board.getLastMove();
+        this.board = board;
 
         startRow = pieceName == PieceName.Pawn1 ? 1 : 6;
 
@@ -41,6 +45,68 @@ public class Pawn extends Piece {
         image = imageLoader.getPAWN(color);
     }
     
+    private int showPromoteDialog() {
+        
+        var parentComponent = board; 
+        var message = board.getResourceBundle().getString("Board.PromoteMessage");
+        var title = board.getResourceBundle().getString("Board.PromoteMessageTitle");
+        int optionType = JOptionPane.YES_NO_OPTION;  
+        int messageType = JOptionPane.INFORMATION_MESSAGE;
+        Icon icon = null;                   
+        String[] options = {
+            board.getResourceBundle().getString("Board.QueenName"), 
+            board.getResourceBundle().getString("Board.KnightName"),
+            board.getResourceBundle().getString("Board.RookName"),
+            board.getResourceBundle().getString("Board.BishopName")
+        };
+        var initialValue = board.getResourceBundle().getString("Board.QueenName");            
+
+        int choice = JOptionPane.showOptionDialog(null,
+                message,
+                title, 
+                optionType,
+                messageType,
+                icon,
+                options,
+                initialValue
+        );
+        return choice;
+    }
+    
+    @Override
+    public void movePiece(Square source, Square target) {          
+        if (!(source.getPiece() == this)) {
+            return;
+        }
+        
+        if (isEnPassant(source, target)) {            
+            lastMove.getTarget().setPiece(null);            
+        } 
+        
+        Piece piece = this;
+        
+        if (target.coord.row == 0 || target.coord.row == 7) {       
+            piece = promote(piece);
+        }
+        
+        target.setPiece(piece);
+        source.setPiece(null);
+        source.setHighlighted(false);
+        isOnStartPosition = false;
+    }
+    
+    private Piece promote(Piece piece) {                                                          
+                    
+        int choice = showPromoteDialog();                    
+        
+        return switch(choice) {
+            default -> new Queen(piece.color);                                    
+            case 1 -> new Knight(piece.color);
+            case 2 -> new Rook(piece.color);
+            case 3 -> new Bishop(piece.color);            
+        }; 
+    }
+    
     private boolean isEnPassant(Square source, Square target) {       
         if (!lastMove.isTwoSquaresAdvancedEnemyPawn(this.color)) {
             return false;
@@ -49,23 +115,19 @@ public class Pawn extends Piece {
         var lastMoveTarget = lastMove.getTarget();
         
         var isSourceOnSameRow = source.coord.row == lastMoveTarget.coord.row;
-        var isSourceOnLeft = lastMoveTarget.coord.col == source.coord.col - 1;
-        var isSourceOnRight = lastMoveTarget.coord.col == source.coord.col + 1;
+        var isLastMoveTargetLeft = lastMoveTarget.coord.col == source.coord.col - 1;
+        var isLastMoveTargetRight = lastMoveTarget.coord.col == source.coord.col + 1;
         
-        var isSourceNeighbor = isSourceOnSameRow && (isSourceOnLeft || isSourceOnRight); 
+        var isSourceNeighbor = isSourceOnSameRow && (isLastMoveTargetLeft || isLastMoveTargetRight); 
         
         var isTargetAbove = lastMoveTarget.coord.row - 1 == target.coord.row;        
         var isTargetSameCol = lastMoveTarget.coord.col == target.coord.col; 
         var isTargetBelow = lastMoveTarget.coord.row + 1 == target.coord.row;                
         
         var opt1 = isSourceNeighbor && isMovingDown && isTargetBelow && isTargetSameCol;
-        var opt2 = isSourceNeighbor && !isMovingDown && isTargetAbove && isTargetSameCol;                
+        var opt2 = isSourceNeighbor && !isMovingDown && isTargetAbove && isTargetSameCol;      
         
-        if (opt1 || opt2) {
-            lastMoveTarget.setPiece(null);
-            return true;
-        } 
-        return false;
+        return opt1 || opt2;
     }
         
     @Override
@@ -101,6 +163,7 @@ public class Pawn extends Piece {
         
         return possibleMovements.contains(true);      
     }
+    private final Board board;
     private final LastMove lastMove;
     private final boolean isMovingDown;
     private final int startRow;
