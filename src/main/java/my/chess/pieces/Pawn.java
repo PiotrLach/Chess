@@ -61,7 +61,7 @@ public class Pawn extends Piece {
         };
         var initialValue = board.getResourceBundle().getString("Board.QueenName");            
 
-        int choice = JOptionPane.showOptionDialog(null,
+        int choice = JOptionPane.showOptionDialog(parentComponent,
                 message,
                 title, 
                 optionType,

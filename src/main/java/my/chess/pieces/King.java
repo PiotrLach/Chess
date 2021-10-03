@@ -18,6 +18,7 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import my.chess.Board;
 import my.chess.Coord;
@@ -39,114 +40,148 @@ public class King extends Piece {
         image = imageLoader.getKING(color);
     }
     
+    private void moveRook(Square source, Square target) {
+        
+        CastlingSide side = determineSide(source, target).get();        
+        int rookCol, offset;
+                
+        switch (side) {
+            case QUEEN:
+                rookCol = 0; offset = 1;
+                break;
+            case KING:
+                rookCol = 7; offset = -1;
+                break;
+            default: return;
+        }
+        
+        var rookSquare = board.getSquares().get(source.coord.row * 8 + rookCol);            
+        var rook = rookSquare.getPiece();
+
+        int row = target.coord.row;
+        int col = target.coord.col + offset;            
+        var coord = new Coord(row, col);
+        var square = board.getSquares().get(coord.index);
+
+        rook.movePiece(rookSquare, square); 
+    }
+    
     @Override
     public void movePiece(Square source, Square target) {
-        if (!(source.getPiece() == this)) {
+        var piece = source.getPiece();
+        if (piece == null || !(piece == this)) {
             return;
-        }                        
-                
-        final var isQueenSide = target.coord.col == (source.coord.col - 2);
-        final var isKingSide = target.coord.col == (source.coord.col + 2);                
+        }                                                
         
-        if (isCastlingPossible(source, target) && isQueenSide) {            
-            var rookSquare = board.getSquares().get(source.coord.row * 8 + 0);            
-            var rook = rookSquare.getPiece();
-            
-            int row = target.coord.row;
-            int col = target.coord.col + 1;            
-            var coord = new Coord(row, col);
-            var square = board.getSquares().get(coord.index);
-            
-            rook.movePiece(rookSquare, square);            
-        } else if (isCastlingPossible(source, target) && isKingSide) {            
-            var rookSquare = board.getSquares().get(source.coord.row * 8 + 7);
-            var rook = rookSquare.getPiece();
-            
-            int row = target.coord.row;
-            int col = target.coord.col - 1;          
-            var coord = new Coord(row, col);            
-            var square = board.getSquares().get(coord.index);
-            
-            rook.movePiece(rookSquare, square);
-            
+        if (isCastling(source, target)) {
+            moveRook(source, target);
         }
+        
         target.setPiece(this);        
         source.setPiece(null);
         source.setHighlighted(false);
         isOnStartPosition = false;
     }
     
-    private boolean isCastlingPossible(Square source, Square target) {
-        
-        var piece = source.getPiece();                
-        
-        if (piece == null || !(piece instanceof King)) {
-            return false;
-        }                
-        
-        var isTargetSameRow = source.coord.row == target.coord.row;        
-        
-        if (!piece.isOnStartPosition() || board.isAttacked(source) || !isTargetSameRow) {
-            return false;
-        }                     
-        
-        List<Square> sideSquares;
-        final var isQueenSide = target.coord.col == source.coord.col - 2;
-        final var isKingSide = target.coord.col == source.coord.col + 2;
-                
-        if (isQueenSide) {
-            sideSquares = board.getSquares().stream()                    
-                    .filter(square -> square.coord.row == source.coord.row)
-                    .filter(square -> square.coord.col < source.coord.col)
-                    .collect(Collectors.toList());                                                
-        } else if (isKingSide) {
-            sideSquares = board.getSquares().stream()                    
-                    .filter(square -> square.coord.row == source.coord.row)
-                    .filter(square -> square.coord.col > source.coord.col)
-                    .collect(Collectors.toList());            
-        } else {
-            return false;
-        }                             
-        
+    private Optional<Square> findSideRookSquare(List<Square> sideSquares, CastlingSide castlingSide) {
+               
         var optionalRookSquare = sideSquares.stream()              
             .filter(square -> square.getPiece() != null)                    
             .filter(square -> square.getPiece().isOnStartPosition())
             .filter(square -> square.getPiece() instanceof Rook)                    
-            .filter(square -> {
-                if (isKingSide) {
-                    return square.coord.col == 7;
-                } else if (isQueenSide) {
-                    return square.coord.col == 0;
-                } else {
-                    return false;
+            .filter(square -> 
+                switch (castlingSide) {
+                    case KING -> square.coord.col == 7;
+                    case QUEEN -> square.coord.col == 0;
+                    default -> false;
                 }
-            }).findAny();
-                
+            ).findAny();
+                        
+        return optionalRookSquare;
+    }
+    
+    private Optional<List<Square>> getSideSquares(CastlingSide castlingSide, Square source) {
+
+        List<Square> sideSquares;  
+        
+        return switch (castlingSide) {
+            case QUEEN -> Optional.of(
+                    board.getSquares().stream()                    
+                    .filter(square -> square.coord.row == source.coord.row)
+                    .filter(square -> square.coord.col < source.coord.col)
+                    .collect(Collectors.toList())
+            );
+            case KING -> Optional.of(board.getSquares().stream()                    
+                    .filter(square -> square.coord.row == source.coord.row)
+                    .filter(square -> square.coord.col > source.coord.col)
+                    .collect(Collectors.toList())
+            );
+            default -> Optional.empty();
+        };
+    
+    }
+    
+    private boolean isCastling(Square source, Square target) {
+              
+        var optionalCastlingSide = determineSide(source, target);                
+        
+        if (!this.isOnStartPosition() 
+                || board.isAttacked(source)
+                || optionalCastlingSide.isEmpty()) {
+            return false;
+        }                
+        
+        var castlingSide = optionalCastlingSide.get();                
+        var optionalSideSquares = getSideSquares(castlingSide, source);
+        
+        if (optionalSideSquares.isEmpty()) {
+            return false;
+        }
+        
+        var sideSquares = optionalSideSquares.get();        
+        var optionalRookSquare = findSideRookSquare(sideSquares, castlingSide);
         
         if (optionalRookSquare.isEmpty()) {
             return false;
-        }                
+        }
                         
         var rookSquare = optionalRookSquare.get();       
-        sideSquares.removeIf(square -> square.equals(rookSquare));        
+        sideSquares.removeIf(square -> square.equals(rookSquare));                
+                       
+        return isSidePathEmptyAndSafe(sideSquares, castlingSide);
+    }
+    
+    private Optional<CastlingSide> determineSide(Square source, Square target) {
         
+        if (!(source.coord.row == target.coord.row)) {
+            return Optional.empty();
+        }        
+        
+        if (target.coord.col == (source.coord.col + 2)) {
+            return Optional.of(CastlingSide.KING);            
+        } else if (target.coord.col == (source.coord.col - 2)) {
+            return Optional.of(CastlingSide.QUEEN);
+        }
+        return Optional.empty();
+    }
+    
+    private boolean isSidePathEmptyAndSafe(List<Square> sideSquares, CastlingSide side) {
         for (var square : sideSquares) {                        
             
             if (square.getPiece() != null) {
                 return false;
             }                        
-            if (isKingSide
-                && square.coord.col <= target.coord.col
+            if (side.equals(CastlingSide.KING)
+                && square.coord.col <= 6
                 && board.isAttacked(square)) {
                 return false;
             }
-            if (isQueenSide
-                && square.coord.col >= target.coord.col
+            if (side.equals(CastlingSide.QUEEN)
+                && square.coord.col >= 2
                 && board.isAttacked(square)) {
                 return false;
             }
         }
-               
         return true;
     }
            
@@ -171,8 +206,12 @@ public class King extends Piece {
         return isOneDiagonalMove 
                 || isOneVerticalMove 
                 || isOneHorizontalMove 
-                || isCastlingPossible(source, target);        
+                || isCastling(source, target);        
     }    
     private final Board board;    
+    private enum CastlingSide {
+        KING,
+        QUEEN
+    }
 
 }
