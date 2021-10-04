@@ -194,7 +194,7 @@ public class King extends Piece {
                 || isOneHorizontalMove 
                 || isCastling(source, target);        
     }    
-    private final Board board;    
+    private transient final Board board;    
     private enum CastlingSide {
         KING,
         QUEEN,

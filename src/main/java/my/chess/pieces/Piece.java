@@ -31,7 +31,7 @@ import lombok.Getter;
 @ToString(onlyExplicitlyIncluded = true)
 abstract public class Piece implements Serializable {
     
-//    private static final long serialVersionUID = -4958749740116233564L;
+    private static final long serialVersionUID = 4232331441720820159L;
 
     public Piece(PieceName pieceName, Color color, Image image) {
         this.name = pieceName;

@@ -234,9 +234,8 @@ public class Board extends JPanel {
         if (!isCheck()) {
             return false;
         }
-        
-        var kingSquare = findKing();
-        var escapeSquares = findEscapeSquares(kingSquare);
+                
+        var escapeSquares = findEscapeSquares();
         
         return !isCheckBlockPossible() && escapeSquares.isEmpty();        
     }
@@ -273,7 +272,10 @@ public class Board extends JPanel {
     /**
      * Finds squares for king to escape, in order to get out of check.
      */
-    private List<Square> findEscapeSquares(Square kingSquare) {
+    private List<Square> findEscapeSquares() {
+        
+        var kingSquare = findKing();
+        
         List<Square> escapeSquares = new ArrayList<>();
         
         int kingRow = kingSquare.coord.row, kingCol = kingSquare.coord.col;                
@@ -380,9 +382,8 @@ public class Board extends JPanel {
         return true;               
     }
     
-    private boolean isKingEscape(Square source, Square target) {
-        var kingSquare = findKing();
-        var escapeSquares = findEscapeSquares(kingSquare);
+    private boolean isKingEscape(Square source, Square target) {        
+        var escapeSquares = findEscapeSquares();
         
         return source.getPiece() instanceof King && escapeSquares.contains(target);
     }
@@ -398,9 +399,7 @@ public class Board extends JPanel {
         var singleSquaresList = allSquaresLists.get(0);
         
         return !(source.getPiece() instanceof King) && singleSquaresList.contains(target);
-    }
-    
-            
+    }               
 
     private Optional<Square> placePiece(Square source, Square target) {        
                                                           

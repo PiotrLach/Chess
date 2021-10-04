@@ -163,7 +163,7 @@ public class Pawn extends Piece {
         
         return possibleMovements.contains(true);      
     }
-    private final Board board;
+    private transient final Board board;
     private final LastMove lastMove;
     private final boolean isMovingDown;
     private final int startRow;
