@@ -275,33 +275,13 @@ public class Board extends JPanel {
     private List<Square> findEscapeSquares() {
         
         var kingSquare = findKing();
+        var king = kingSquare.getPiece();
         
-        List<Square> escapeSquares = new ArrayList<>();
-        
-        int kingRow = kingSquare.coord.row, kingCol = kingSquare.coord.col;                
-        
-        for (int row = kingRow - 1; row <= kingRow + 1; row++) {            
-            for (int col = kingCol - 1; col <= kingCol + 1; col++) {
-                
-                var coord = new Coord(row, col);
-                
-                if (coord.isOutOfBounds()) {
-                    continue;
-                } 
-                                       
-                var square = squares.get(coord.index);                    
-                var piece = square.getPiece();                                        
-                    
-                if (piece != null && !piece.isFoe(currentColor)) {
-                    continue;              
-                }   
-                
-                if (!isAttacked(square)) {                            
-                    escapeSquares.add(square);
-                }
-            }
-        }
-        return escapeSquares;
+        return squares.stream()
+            .filter(square -> king.isCorrectMovement(kingSquare, square))
+            .filter(square -> square.getPiece() == null ? true : square.getPiece().isFoe(currentColor))
+            .filter(square -> !isAttacked(square))
+            .collect(Collectors.toList());
     }
 
     private boolean isCheckBlockPossible() {
