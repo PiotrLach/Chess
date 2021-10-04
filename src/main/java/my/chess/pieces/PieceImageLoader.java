@@ -27,6 +27,8 @@ import javax.imageio.ImageIO;
  */
 class PieceImageLoader {
 
+    static final PieceImageLoader INSTANCE = new PieceImageLoader();
+
     private PieceImageLoader() {
         try {
             loadImages();
@@ -34,22 +36,7 @@ class PieceImageLoader {
             ex.printStackTrace();
         }
     }
-    
-    static final PieceImageLoader INSTANCE = new PieceImageLoader();
-    
-    private InputStream getResource(String fileName) throws Exception {        
-        
-        var classLoader = getClass().getClassLoader();
-        
-        var inputStream = classLoader.getResourceAsStream(fileName);
-        
-        if (inputStream == null) {
-            throw new Exception("file not found! " + fileName);
-        } else {
-            return inputStream;
-        }
-    }
-    
+
     private void loadImages() throws Exception {
         blackPawn = ImageIO.read(getResource("black/pawn.png"));
         whitePawn = ImageIO.read(getResource("white/pawn.png"));
@@ -63,7 +50,20 @@ class PieceImageLoader {
         whiteQueen = ImageIO.read(getResource("white/queen.png"));
         blackKing = ImageIO.read(getResource("black/king.png"));
         whiteKing = ImageIO.read(getResource("white/king.png"));
-    }   
+    }
+
+    private InputStream getResource(String fileName) throws Exception {
+
+        var classLoader = getClass().getClassLoader();
+
+        var inputStream = classLoader.getResourceAsStream(fileName);
+
+        if (inputStream == null) {
+            throw new Exception("file not found! " + fileName);
+        } else {
+            return inputStream;
+        }
+    }
 
     Image getPAWN(Color color) {
         if (color.equals(Color.BLACK)) {
