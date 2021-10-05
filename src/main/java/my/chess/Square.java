@@ -22,8 +22,10 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+import my.chess.pieces.Empty;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 /**
@@ -37,6 +39,7 @@ public class Square extends Rectangle {
     @Getter
     @Setter
     @ToString.Include
+    @NonNull
     private Piece piece;    
     @Getter
     @Setter
@@ -48,6 +51,7 @@ public class Square extends Rectangle {
     public Square(int x, int y, int width, int height, Coord coord) {
         super(x, y, width, height);       
         this.coord = coord;
+        this.piece = Empty.INSTANCE;
     }
 
     public void draw(Graphics graphics) {        

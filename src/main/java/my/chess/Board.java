@@ -39,6 +39,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.val;
+import my.chess.pieces.Empty;
 
 /**
  *
@@ -159,7 +160,7 @@ public class Board extends JPanel {
         
         var piece = square.getPiece();
         
-        if (piece == null || piece.isFoe(currentColor)) {
+        if (piece.isFoe(currentColor)) {
             return false;
         }        
               
@@ -207,10 +208,6 @@ public class Board extends JPanel {
             
             var piece = square.getPiece();
             
-            if (piece == null) {
-                continue;
-            }
-            
             var isKing = piece instanceof King;            
             
             if (isKing && !piece.isFoe(currentColor)) {
@@ -252,7 +249,6 @@ public class Board extends JPanel {
             var piece = square.getPiece();             
 
             if (!square.equals(kingSquare)
-                && piece != null
                 && piece.isFoe(currentColor)
                 && piece.isCorrectMovement(square, kingSquare)
                 && isPathFree(square, kingSquare)) 
@@ -279,7 +275,7 @@ public class Board extends JPanel {
         
         return squares.stream()
             .filter(square -> king.isCorrectMovement(kingSquare, square))
-            .filter(square -> square.getPiece() == null ? true : square.getPiece().isFoe(currentColor))
+            .filter(square -> square.getPiece().isFoe(currentColor))
             .filter(square -> !isAttacked(square))
             .collect(Collectors.toList());
     }
@@ -297,10 +293,9 @@ public class Board extends JPanel {
         
         for (var target : singleSquaresList) {
             for (var source : squares) {                    
-                var piece = source.getPiece();                
+                var piece = source.getPiece();
 
-                if (piece != null
-                    && !(piece instanceof King)
+                if (!(piece instanceof King)
                     && !piece.isFoe(currentColor)
                     && piece.isCorrectMovement(source, target)
                     && isPathFree(source, target)) 
@@ -320,13 +315,13 @@ public class Board extends JPanel {
 
         var sourcePiece = source.getPiece();        
         
-        source.setPiece(null);
+        source.setPiece(Empty.INSTANCE);
         target.setPiece(sourcePiece);
 
         var isSelfMadeCheck = isCheck();        
 
         source.setPiece(sourcePiece);
-        target.setPiece(null);
+        target.setPiece(Empty.INSTANCE);
 
         return isSelfMadeCheck;
     }
@@ -412,13 +407,12 @@ public class Board extends JPanel {
             } else {
                 square.draw(graphics);
             }
+
+            int x = (int) square.getX();
+            int y = (int) square.getY();
+            var piece = square.getPiece();
+            piece.drawImage(graphics, x, y, squareSize);
             
-            if (square.getPiece() != null) {                                        
-                int x = (int) square.getX();
-                int y = (int) square.getY();
-                var piece = square.getPiece();
-                piece.drawImage(graphics, x, y, squareSize);
-            }        
         }                
                                                     
     }
@@ -484,14 +478,14 @@ public class Board extends JPanel {
      * @param target
      */
     private boolean isPathFree(Square source, Square target) {               
-        Function<Coord, Integer> function = (coord, nullCount) -> {
+        Function<Coord, Integer> function = (coord, emptyCount) -> {
                                     
             var square = squares.get(coord.index);
             var piece = square.getPiece();
             
-            nullCount += piece == null ? 0 : 1; 
+            emptyCount += piece instanceof Empty ? 0 : 1; 
             
-            return nullCount;
+            return emptyCount;
         };
         
         Integer nullCount = 0;
@@ -540,7 +534,7 @@ public class Board extends JPanel {
         sourceSquare = Optional.empty();
         
         for (var square : squares) {
-            square.setPiece(null);
+            square.setPiece(Empty.INSTANCE);
             square.setHighlighted(false);
         }                
     }

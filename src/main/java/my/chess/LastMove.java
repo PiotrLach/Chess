@@ -47,10 +47,7 @@ public class LastMove {
             return false;
         }
         
-        var piece = target.getPiece();        
-        if (piece == null) {
-            return false;
-        }
+        var piece = target.getPiece();
         
         if (!(piece instanceof Pawn)) {
             return false;

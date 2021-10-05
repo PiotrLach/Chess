@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import lombok.RequiredArgsConstructor;
+import my.chess.pieces.Empty;
 import my.chess.pieces.Piece;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -63,7 +64,7 @@ public class Save {
     public void saveGame(String fileName) {
         var coordPiecePairList = board.getSquares()
                 .stream()
-                .filter(square -> square.getPiece() != null)
+                .filter(square -> !(square.getPiece() instanceof Empty))
                 .map(square -> square.getPair())
                 .collect(Collectors.toList());
         

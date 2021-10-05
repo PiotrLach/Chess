@@ -45,7 +45,7 @@ abstract public class Piece implements Serializable {
         }
         
         target.setPiece(this);
-        source.setPiece(null);
+        source.setPiece(Empty.INSTANCE);
         source.setHighlighted(false);
         isOnStartPosition = false;
     }
@@ -55,7 +55,7 @@ abstract public class Piece implements Serializable {
     }
 
     public enum PieceName {
-        Pawn1, Pawn6, Bishop, Knight, Rook, King, Queen
+        Pawn1, Pawn6, Bishop, Knight, Rook, King, Queen, Empty
     }
 
     public boolean isFoe(Piece piece) {

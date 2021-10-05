@@ -55,7 +55,7 @@ public class Pawn extends Piece {
         }
 
         if (isEnPassant(source, target)) {
-            lastMove.getTarget().setPiece(null);
+            lastMove.getTarget().setPiece(Empty.INSTANCE);
         }
 
         Piece piece = this;
@@ -65,7 +65,7 @@ public class Pawn extends Piece {
         }
 
         target.setPiece(piece);
-        source.setPiece(null);
+        source.setPiece(Empty.INSTANCE);
         source.setHighlighted(false);
         isOnStartPosition = false;
     }
@@ -158,12 +158,12 @@ public class Pawn extends Piece {
         
         var isOnStartRow = source.coord.row == startRow;        
         
-        var isNullOnTarget = target.getPiece() == null;
-        var isFoeOnTarget = !isNullOnTarget && isFoe(target.getPiece());
+        var isTargetEmpty = target.getPiece() instanceof Empty;
+        var isFoeOnTarget = !isTargetEmpty && isFoe(target.getPiece());
         
         var possibleMovements = List.of(
-            isForwardMove && isOneVerticalMove && isNotHorizontal && isNullOnTarget,
-            isForwardMove && isOnStartRow && isTwoVerticalMoves && isNotHorizontal && isNullOnTarget,
+            isForwardMove && isOneVerticalMove && isNotHorizontal && isTargetEmpty,
+            isForwardMove && isOnStartRow && isTwoVerticalMoves && isNotHorizontal && isTargetEmpty,
             isForwardMove && isOneVerticalMove && isHorizontal && isFoeOnTarget,
             isEnPassant(source, target)
         );

@@ -56,7 +56,7 @@ public class King extends Piece {
         }
 
         target.setPiece(this);
-        source.setPiece(null);
+        source.setPiece(Empty.INSTANCE);
         source.setHighlighted(false);
         isOnStartPosition = false;
     }
@@ -83,10 +83,10 @@ public class King extends Piece {
 
     private void moveRook(Square source, Square target) {
 
-        CastlingSide side = determineSide(source, target);
+        var castlingSide = determineSide(source, target);
         int rookCol, offset;
 
-        switch (side) {
+        switch (castlingSide) {
             case QUEEN -> {
                 rookCol = 0; offset = 1;
             }
@@ -141,7 +141,7 @@ public class King extends Piece {
     private Optional<Square> findSideRookSquare(List<Square> sideSquares, CastlingSide castlingSide) {
 
         return sideSquares.stream()
-                .filter(square -> square.getPiece() != null)
+                .filter(square -> !(square.getPiece() instanceof Empty))
                 .filter(square -> square.getPiece().isOnStartPosition())
                 .filter(square -> square.getPiece() instanceof Rook)
                 .filter(square ->
@@ -155,7 +155,7 @@ public class King extends Piece {
 
     private boolean isSidePathEmptyAndSafe(List<Square> sideSquares, CastlingSide side) {
         for (var square : sideSquares) {
-            if (square.getPiece() != null) {
+            if (!(square.getPiece() instanceof Empty)) {
                 return false;
             }
             if (side.equals(CastlingSide.KING)
