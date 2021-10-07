@@ -141,17 +141,18 @@ public class Board extends JPanel {
 
         if (isChoosable(selectedSquare)) {
 
-            sourceSquare = choosePiece(selectedSquare);
+            selectedSquare.setHighlighted(true);
+            optionalSourceSquare = Optional.of(selectedSquare);
 
-        } else if (!sourceSquare.isPresent()) {
+        } else if (isTargetable(selectedSquare)) {
 
-            var message = resourceBundle.getString("Board.noSelectedPiece.text");
-            JOptionPane.showMessageDialog(this, message);
-
-        } else if (isPlaceable(sourceSquare.get(), selectedSquare)) {
-
-            sourceSquare = placePiece(sourceSquare.get(), selectedSquare);
+            var source = optionalSourceSquare.get();
+            var selectedPiece = optionalSourceSquare.get().getPiece();
+            selectedPiece.movePiece(source, selectedSquare);
+            optionalSourceSquare = Optional.empty();
         }
+
+        repaint();
     }
 
     private boolean isChoosable(Square square) {
@@ -180,19 +181,11 @@ public class Board extends JPanel {
             return false;
         }
 
-        return true;
-    }
-
-    private Optional<Square> choosePiece(Square source) {
-
-        if (sourceSquare.isPresent()) {
-            sourceSquare.get().setHighlighted(false);
+        if (optionalSourceSquare.isPresent()) {
+            optionalSourceSquare.get().setHighlighted(false);
         }
 
-        source.setHighlighted(true);
-
-        repaint();
-        return Optional.of(source);
+        return true;
     }
 
     /**
@@ -324,8 +317,15 @@ public class Board extends JPanel {
         return isSelfMadeCheck;
     }
 
-    private boolean isPlaceable(Square source, Square target) {
+    private boolean isTargetable(Square target) {
 
+        if (optionalSourceSquare.isEmpty()) {
+            var message = resourceBundle.getString("Board.noSelectedPiece.text");
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }
+
+        var source = optionalSourceSquare.get();
         var selectedPiece = source.getPiece();
 
         if (!selectedPiece.isCorrectMovement(source, target)) {
@@ -372,17 +372,6 @@ public class Board extends JPanel {
         var singleSquaresList = allSquaresLists.get(0);
 
         return !(source.getPiece() instanceof King) && singleSquaresList.contains(target);
-    }
-
-    private Optional<Square> placePiece(Square source, Square target) {
-
-        var selectedPiece = source.getPiece();
-
-        selectedPiece.movePiece(source, target);
-
-        repaint();
-
-        return Optional.empty();
     }
 
     /**
@@ -522,7 +511,7 @@ public class Board extends JPanel {
 
     private void clearBoard() {
         currentColor = Color.WHITE;
-        sourceSquare = Optional.empty();
+        optionalSourceSquare = Optional.empty();
 
         for (var square : squares) {
             square.setPiece(Empty.INSTANCE);
@@ -566,7 +555,7 @@ public class Board extends JPanel {
     @Getter
     private final List<Square> squares = new ArrayList<>();
     private Color currentColor = Color.WHITE;
-    private Optional<Square> sourceSquare = Optional.empty();
+    private Optional<Square> optionalSourceSquare = Optional.empty();
     private int squareSize = 80;
 
 }
