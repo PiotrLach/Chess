@@ -14,39 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package my.chess.pieces;
+package my.chess;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import my.chess.Square;
+import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.ToString;
 
 /**
  *
  * @author Piotr Lach
  */
-public class Empty extends Piece {
-
-    public static final Empty INSTANCE = new Empty();
-
-    private static final BufferedImage EMPTY_IMAGE = new BufferedImage(1, 1, 1);
-
-    private Empty() {
-        super(PieceName.Empty, Color.GRAY, EMPTY_IMAGE, null);
-    }
-
-    @Override
-    public void movePiece(Square source, Square target) {}
-
-    @Override
-    public void drawImage(Graphics graphics, int x, int y, int size) {}
-
-    @Override
-    public void setImage() {}
-
-    @Override
-    public boolean isCorrectMovement(Square source, Square target) {
-        return false;
-    }
-
+@AllArgsConstructor
+@ToString
+public class Move implements Serializable {
+       
+    private static final long serialVersionUID = -5610296767681737878L;
+    
+    public final Coord source;
+    public final Coord target;
 }

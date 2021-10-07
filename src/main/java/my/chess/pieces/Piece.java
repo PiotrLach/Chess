@@ -1,4 +1,4 @@
-/* 
+/*
  * Java chess game implementation
  * Copyright (C) 2021 Piotr Lach
  * This program is free software: you can redistribute it and/or modify
@@ -23,6 +23,8 @@ import java.awt.Image;
 import java.io.Serializable;
 import lombok.ToString;
 import lombok.Getter;
+import my.chess.Board;
+import my.chess.Move;
 
 /**
  *
@@ -30,24 +32,30 @@ import lombok.Getter;
  */
 @ToString(onlyExplicitlyIncluded = true)
 abstract public class Piece implements Serializable {
-    
+
     private static final long serialVersionUID = 4232331441720820159L;
 
-    public Piece(PieceName pieceName, Color color, Image image) {
+    public Piece(PieceName pieceName, Color color, Image image, Board board) {
         this.name = pieceName;
         this.color = color;
         this.image = image;
+        this.board = board;
     }
-    
-    public void movePiece(Square source, Square target) {                
+
+    public void movePiece(Square source, Square target) {
         if (!(source.getPiece() == this)) {
             return;
         }
-        
+
         target.setPiece(this);
         source.setPiece(Empty.INSTANCE);
         source.setHighlighted(false);
         isOnStartPosition = false;
+
+        var move = new Move(source.coord, target.coord);
+        board.getMoves().add(move);
+
+        board.changeCurrentColor();
     }
 
     public void drawImage(Graphics graphics, int x, int y, int size) {
@@ -61,11 +69,11 @@ abstract public class Piece implements Serializable {
     public boolean isFoe(Piece piece) {
         return !piece.color.equals(this.color);
     }
-    
+
     public boolean isFoe(Color color) {
         return !this.color.equals(color);
     }
-           
+
     /**
      * Must be called for any deserialized piece, since images are not
      * saved.
@@ -74,11 +82,12 @@ abstract public class Piece implements Serializable {
 
     abstract public boolean isCorrectMovement(Square source, Square target);
 
-    public final Color color;        
+    protected final Board board;
+    public final Color color;
     protected transient Image image;
-    protected PieceName name;  
+    protected PieceName name;
     @Getter
     @ToString.Include
-    protected boolean isOnStartPosition = true;    
-    static final PieceImageLoader imageLoader = PieceImageLoader.INSTANCE; 
+    protected boolean isOnStartPosition = true;
+    static final PieceImageLoader imageLoader = PieceImageLoader.INSTANCE;
 }

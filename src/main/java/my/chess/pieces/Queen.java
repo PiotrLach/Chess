@@ -1,4 +1,4 @@
-/* 
+/*
  * Java chess game implementation
  * Copyright (C) 2021 Piotr Lach
  * This program is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
+import my.chess.Board;
 import my.chess.Square;
 
 /**
@@ -25,29 +26,29 @@ import my.chess.Square;
  */
 public class Queen extends Piece {
 
-    public Queen(Color pieceColor) {        
-        super(PieceName.Queen, pieceColor, imageLoader.getQUEEN(pieceColor));
+    public Queen(Color pieceColor, Board board) {
+        super(PieceName.Queen, pieceColor, imageLoader.getQUEEN(pieceColor), board);
     }
 
     @Override
     public void setImage() {
         image = imageLoader.getQUEEN(color);
     }
-    
+
     @Override
     public boolean isCorrectMovement(Square source, Square target) {
-        
-        int verticalDiff, horizontalDiff; 
-        
+
+        int verticalDiff, horizontalDiff;
+
         verticalDiff = Math.abs(source.coord.row - target.coord.row);
         horizontalDiff = Math.abs(source.coord.col - target.coord.col);
-        
+
         var isVerticalMove = verticalDiff > 0;
         var isHorizontalMove = horizontalDiff > 0;
         var isDiagonalMove = verticalDiff == horizontalDiff;
-        
+
         return isDiagonalMove || (isVerticalMove && !isHorizontalMove) || (isHorizontalMove && !isVerticalMove);
-                              
+
     }
 
 }

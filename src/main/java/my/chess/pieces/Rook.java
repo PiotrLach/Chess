@@ -1,4 +1,4 @@
-/* 
+/*
  * Java chess game implementation
  * Copyright (C) 2021 Piotr Lach
  * This program is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
+import my.chess.Board;
 import my.chess.Square;
 
 /**
@@ -25,26 +26,26 @@ import my.chess.Square;
  */
 public class Rook extends Piece {
 
-    public Rook(Color pieceColor) {
-        super(PieceName.Rook, pieceColor, imageLoader.getROOK(pieceColor));
-    }        
-    
+    public Rook(Color pieceColor, Board board) {
+        super(PieceName.Rook, pieceColor, imageLoader.getROOK(pieceColor), board);
+    }
+
     @Override
     public void setImage() {
         image = imageLoader.getROOK(color);
     }
-    
+
     @Override
     public boolean isCorrectMovement(Square source, Square target) {
-                        
+
         int vDiff, hDiff; // vertical and horizontal difference;
         vDiff = Math.abs(source.coord.row - target.coord.row);
         hDiff = Math.abs(source.coord.col - target.coord.col);
-        
+
         var isVerticalMov = vDiff > 0;
-        var isHorizontalMov = hDiff > 0;        
-        
-        return (isVerticalMov && !isHorizontalMov) || (isHorizontalMov && !isVerticalMov);        
+        var isHorizontalMov = hDiff > 0;
+
+        return (isVerticalMov && !isHorizontalMov) || (isHorizontalMov && !isVerticalMov);
     }
 
 }

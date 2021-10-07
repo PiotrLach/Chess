@@ -1,4 +1,4 @@
-/* 
+/*
  * Java chess game implementation
  * Copyright (C) 2021 Piotr Lach
  * This program is free software: you can redistribute it and/or modify
@@ -26,8 +26,6 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import my.chess.pieces.Empty;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
 /**
  *
  * @author Piotr Lach
@@ -35,32 +33,32 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class Square extends Rectangle {
-        
+
     @Getter
     @Setter
     @ToString.Include
     @NonNull
-    private Piece piece;    
+    private Piece piece;
     @Getter
     @Setter
-    private boolean highlighted = false;   
+    private boolean highlighted = false;
     @EqualsAndHashCode.Include
     @ToString.Include
     public final Coord coord;
 
     public Square(int x, int y, int width, int height, Coord coord) {
-        super(x, y, width, height);       
+        super(x, y, width, height);
         this.coord = coord;
         this.piece = Empty.INSTANCE;
     }
 
-    public void draw(Graphics graphics) {        
-        
+    public void draw(Graphics graphics) {
+
         var isRowOdd = coord.row % 2 == 1;
         var isColOdd = coord.col % 2 == 1;
-        
+
         var isWhite = (isRowOdd && !isColOdd) || (!isRowOdd && isColOdd);
-                
+
         if (isWhite) {
             graphics.setColor(MY_WHITE);
         } else {
@@ -68,16 +66,12 @@ public class Square extends Rectangle {
         }
         graphics.fillRect(x, y, width, height);
     }
-    
-    public ImmutablePair<Coord, Piece> getPair() {
-        return new ImmutablePair<>(coord, piece);
-    }
 
     public void highlightSquare(Graphics graphics) {
         graphics.setColor(Color.RED);
         graphics.fillRect(x, y, width, height);
     }
-    private static final Color MY_WHITE = new Color(255, 255, 204);    
+    private static final Color MY_WHITE = new Color(255, 255, 204);
     private static final Color MY_BROWN = new Color(153, 102, 0);
 
 }

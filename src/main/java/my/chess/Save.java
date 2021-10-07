@@ -1,4 +1,4 @@
-/* 
+/*
  * Java chess game implementation
  * Copyright (C) 2021 Piotr Lach
  * This program is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import lombok.RequiredArgsConstructor;
-import my.chess.pieces.Empty;
-import my.chess.pieces.Piece;
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import java.util.Collections;
+import java.util.LinkedList;
 
 /**
  *
@@ -36,66 +36,46 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
  */
 @RequiredArgsConstructor
 public class Save {
-            
+
+    private final Board board;
+
     public void loadGame(String filename) {
-        var optional = readObject(filename);
-        
-        if (!optional.isPresent()) {
+        var deque = readObject(filename);
+
+        if (deque.isEmpty()) {
             return;
         }
-        
-        var colorListPair = optional.get();
-        
-        board.clearBoard();
-        board.setCurrentColor(colorListPair.left);
-        
-        var coordPieceList = colorListPair.right;
-        
-        for (var pair : coordPieceList) {
-            var coord = pair.left;
-            var piece = pair.right;
-            board.setPiece(coord, piece);
-        }
-        
-        board.repaint();
-        
+
+        board.loadGame(deque);
     }
-    
+
     public void saveGame(String fileName) {
-        var coordPiecePairList = board.getSquares()
-                .stream()
-                .filter(square -> !(square.getPiece() instanceof Empty))
-                .map(square -> square.getPair())
-                .collect(Collectors.toList());
-        
-        var color = board.getCurrentColor();        
-        var pair = new ImmutablePair<>(color, coordPiecePairList);
-        
-        writeObject(pair, fileName);
-                
-    }   
-    
+
+        var moves = board.getMoves();
+
+        writeObject(moves, fileName);
+
+    }
+
     @SuppressWarnings("unchecked")
-    private Optional<ImmutablePair<Color, List<ImmutablePair<Coord,Piece>>>> readObject(String filename) {
+    private Deque<Move> readObject(String filename) {
         try {
 
             var fileInputStream = new FileInputStream(filename);
             var objectInputStream = new ObjectInputStream(fileInputStream);
-            
+
             var object = objectInputStream.readObject();
-                        
+
             objectInputStream.close();
             fileInputStream.close();
-            
-            var pair = (ImmutablePair<Color, List<ImmutablePair<Coord,Piece>>>) object;
-            
-            return Optional.of(pair);
+
+            return (Deque<Move>) object;
 
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(board, exception.getMessage());
             exception.printStackTrace();
         }
-        return Optional.empty();
+        return new LinkedList<>();
     }
 
     private <T> void writeObject(T t, String filename) {
@@ -103,11 +83,11 @@ public class Save {
 
             var fileOutputStream = new FileOutputStream(filename);
             var objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            
+
             objectOutputStream.writeObject(t);
             objectOutputStream.flush();
             objectOutputStream.close();
-            
+
             fileOutputStream.flush();
             fileOutputStream.close();
 
@@ -116,6 +96,5 @@ public class Save {
             exception.printStackTrace();
         }
     }
-    private final Board board;
-    
+
 }

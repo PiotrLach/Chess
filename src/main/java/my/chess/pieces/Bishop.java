@@ -1,4 +1,4 @@
-/* 
+/*
  * Java chess game implementation
  * Copyright (C) 2021 Piotr Lach
  * This program is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
+import my.chess.Board;
 import my.chess.Square;
 
 /**
@@ -25,10 +26,10 @@ import my.chess.Square;
  */
 public class Bishop extends Piece {
 
-    public Bishop(Color pieceColor) {
-        super(PieceName.Bishop, pieceColor, imageLoader.getBISHOP(pieceColor));
+    public Bishop(Color pieceColor, Board board) {
+        super(PieceName.Bishop, pieceColor, imageLoader.getBISHOP(pieceColor), board);
     }
-    
+
     @Override
     public void setImage() {
         image = imageLoader.getBISHOP(color);
@@ -36,14 +37,14 @@ public class Bishop extends Piece {
 
     @Override
     public boolean isCorrectMovement(Square source, Square target) {
-        
-        int verticalDiff, horizontalDiff; 
-        
+
+        int verticalDiff, horizontalDiff;
+
         verticalDiff = Math.abs(source.coord.row - target.coord.row);
         horizontalDiff = Math.abs(source.coord.col - target.coord.col);
-        
+
         var isDiagonalMove = verticalDiff == horizontalDiff;
-                
+
         return isDiagonalMove;
     }
 

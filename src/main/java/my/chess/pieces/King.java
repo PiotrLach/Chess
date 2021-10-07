@@ -1,4 +1,4 @@
-/* 
+/*
  * Java chess game implementation
  * Copyright (C) 2021 Piotr Lach
  * This program is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import my.chess.Board;
 import my.chess.Coord;
+import my.chess.Move;
 import my.chess.Square;
 
 /**
@@ -37,11 +38,8 @@ public class King extends Piece {
         WRONG
     }
 
-    private transient final Board board;
-
-    public King(Color pieceColor, final Board board) {
-        super(PieceName.King, pieceColor, imageLoader.getKING(pieceColor));
-        this.board = board;
+    public King(Color pieceColor, Board board) {
+        super(PieceName.King, pieceColor, imageLoader.getKING(pieceColor), board);
     }
 
     @Override
@@ -59,6 +57,11 @@ public class King extends Piece {
         source.setPiece(Empty.INSTANCE);
         source.setHighlighted(false);
         isOnStartPosition = false;
+
+        var move = new Move(source.coord, target.coord);
+        board.getMoves().add(move);
+
+        board.changeCurrentColor();
     }
 
     private boolean isCastling(Square source, Square target) {
@@ -176,27 +179,27 @@ public class King extends Piece {
         image = imageLoader.getKING(color);
     }
     @Override
-    public boolean isCorrectMovement(Square source, Square target) {    
-                                       
-        int verticalDiff, horizontalDiff; 
-        
+    public boolean isCorrectMovement(Square source, Square target) {
+
+        int verticalDiff, horizontalDiff;
+
         verticalDiff = Math.abs(source.coord.row - target.coord.row);
         horizontalDiff = Math.abs(source.coord.col - target.coord.col);
-        
+
         var isOneVerticalDiff = verticalDiff == 1;
-        var isZeroVerticalDiff = verticalDiff == 0;        
+        var isZeroVerticalDiff = verticalDiff == 0;
         var isOneHorizontalDiff = horizontalDiff == 1;
         var isZeroHorizontalDiff = horizontalDiff == 0;
-        
+
         var isOneDiagonalMove = isOneHorizontalDiff && isOneVerticalDiff;
         var isOneVerticalMove = isOneVerticalDiff && isZeroHorizontalDiff;
         var isOneHorizontalMove = isOneHorizontalDiff && isZeroVerticalDiff;
-        
-        
-        return isOneDiagonalMove 
-                || isOneVerticalMove 
-                || isOneHorizontalMove 
-                || isCastling(source, target);        
-    }    
+
+
+        return isOneDiagonalMove
+                || isOneVerticalMove
+                || isOneHorizontalMove
+                || isCastling(source, target);
+    }
 
 }

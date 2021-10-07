@@ -1,4 +1,4 @@
-/* 
+/*
  * Java chess game implementation
  * Copyright (C) 2021 Piotr Lach
  * This program is free software: you can redistribute it and/or modify
@@ -17,11 +17,12 @@
 package my.chess.pieces;
 
 import java.awt.Color;
+import java.util.Deque;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import my.chess.Board;
-import my.chess.LastMove;
+import my.chess.Move;
 import my.chess.Square;
 
 /**
@@ -30,18 +31,15 @@ import my.chess.Square;
  */
 public class Pawn extends Piece {
 
-    private transient final Board board;
-
-    private final LastMove lastMove;
+    private final Deque<Move> moves;
 
     private final boolean isMovingDown;
 
     private final int startRow;
 
     public Pawn(Color color, PieceName pieceName, Board board) {
-        super(pieceName, color, imageLoader.getPAWN(color));
-        this.lastMove = board.getLastMove();
-        this.board = board;
+        super(pieceName, color, imageLoader.getPAWN(color), board);
+        this.moves = board.getMoves();
 
         startRow = pieceName == PieceName.Pawn1 ? 1 : 6;
 
@@ -55,7 +53,9 @@ public class Pawn extends Piece {
         }
 
         if (isEnPassant(source, target)) {
-            lastMove.getTarget().setPiece(Empty.INSTANCE);
+            var coord = moves.getLast().target;
+            var square = board.getSquares().get(coord.index);
+            square.setPiece(Empty.INSTANCE);
         }
 
         Piece piece = this;
@@ -68,6 +68,11 @@ public class Pawn extends Piece {
         source.setPiece(Empty.INSTANCE);
         source.setHighlighted(false);
         isOnStartPosition = false;
+
+        var move = new Move(source.coord, target.coord);
+        board.getMoves().add(move);
+
+        board.changeCurrentColor();
     }
 
     private Piece promote(Piece piece) {
@@ -75,10 +80,10 @@ public class Pawn extends Piece {
         int choice = showPromoteDialog();
 
         return switch(choice) {
-            default -> new Queen(piece.color);
-            case 1 -> new Knight(piece.color);
-            case 2 -> new Rook(piece.color);
-            case 3 -> new Bishop(piece.color);
+            default -> new Queen(piece.color, board);
+            case 1 -> new Knight(piece.color, board);
+            case 2 -> new Rook(piece.color, board);
+            case 3 -> new Bishop(piece.color, board);
         };
     }
 
@@ -111,11 +116,19 @@ public class Pawn extends Piece {
     }
 
     private boolean isEnPassant(Square source, Square target) {
-        if (!lastMove.isTwoSquaresAdvancedEnemyPawn(this.color)) {
+
+        if (moves.isEmpty()) {
             return false;
         }
 
-        var lastMoveTarget = lastMove.getTarget();
+        var lastMove = moves.getLast();
+
+        if (!isTwoSquaresAdvancedEnemyPawn(lastMove)) {
+            return false;
+        }
+        var coord = lastMove.target;
+
+        var lastMoveTarget = board.getSquares().get(coord.index);
 
         var isSourceOnSameRow = source.coord.row == lastMoveTarget.coord.row;
         var isLastMoveTargetLeft = lastMoveTarget.coord.col == source.coord.col - 1;
@@ -133,42 +146,52 @@ public class Pawn extends Piece {
         return opt1 || opt2;
     }
 
+    private boolean isTwoSquaresAdvancedEnemyPawn(Move lastMove) {
+
+        int vDiff; // vertical difference
+        vDiff = Math.abs(lastMove.source.row - lastMove.target.row);
+        var lastMoveTargetSquare = board.getSquares().get(lastMove.target.index);
+        var piece = lastMoveTargetSquare.getPiece();
+
+        return piece instanceof Pawn && vDiff == 2 && piece.isFoe(this.color);
+    }
+
     @Override
     public void setImage() {
         image = imageLoader.getPAWN(color);
     }
     @Override
-    public boolean isCorrectMovement(Square source, Square target) { 
-        
-        int verticalDiff, horizontalDiff; 
-        
+    public boolean isCorrectMovement(Square source, Square target) {
+
+        int verticalDiff, horizontalDiff;
+
         verticalDiff = Math.abs(source.coord.row - target.coord.row);
         horizontalDiff = Math.abs(source.coord.col - target.coord.col);
-        
+
         var isOneVerticalMove = verticalDiff == 1;
         var isTwoVerticalMoves = verticalDiff == 2;
-        
+
         var isTargetRowHigher = target.coord.row > source.coord.row;
-        var isTargetRowLower = target.coord.row < source.coord.row; 
-        
+        var isTargetRowLower = target.coord.row < source.coord.row;
+
         var isForwardMove = (isMovingDown ? isTargetRowHigher : isTargetRowLower);
-        
-        var isHorizontal = horizontalDiff == 1;                   
-        var isNotHorizontal = horizontalDiff == 0;        
-        
-        var isOnStartRow = source.coord.row == startRow;        
-        
+
+        var isHorizontal = horizontalDiff == 1;
+        var isNotHorizontal = horizontalDiff == 0;
+
+        var isOnStartRow = source.coord.row == startRow;
+
         var isTargetEmpty = target.getPiece() instanceof Empty;
         var isFoeOnTarget = !isTargetEmpty && isFoe(target.getPiece());
-        
+
         var possibleMovements = List.of(
             isForwardMove && isOneVerticalMove && isNotHorizontal && isTargetEmpty,
             isForwardMove && isOnStartRow && isTwoVerticalMoves && isNotHorizontal && isTargetEmpty,
             isForwardMove && isOneVerticalMove && isHorizontal && isFoeOnTarget,
             isEnPassant(source, target)
         );
-        
-        return possibleMovements.contains(true);      
+
+        return possibleMovements.contains(true);
     }
 
 }
