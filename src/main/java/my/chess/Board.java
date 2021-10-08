@@ -45,62 +45,19 @@ import my.chess.pieces.Empty;
  */
 public class Board extends JPanel {
 
+    @Getter
+    private final Deque<Move> moves = new LinkedList<>();
+    @Getter
+    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("my/chess/Bundle");
+    @Getter
+    private final List<Square> squares = new ArrayList<>();
+    private Color currentColor = Color.WHITE;
+    private Optional<Square> optionalSourceSquare = Optional.empty();
+    private int squareSize = 80;
+
     public Board() {
         createSquares();
         setNewGame();
-    }
-
-    /**
-     * Resets the size and location for each square, so that the board
-     * scales with window.
-     */
-    public void resizeBoard() {
-
-        var dimensions = recalculateDimensions();
-
-        int minHeight = dimensions.get(0);
-        int maxHeight = dimensions.get(1);
-        int minWidth = dimensions.get(2);
-        int maxWidth = dimensions.get(3);
-
-        for (int y = minHeight, index = 0; y < maxHeight; y += squareSize) {
-            for (int x = minWidth; x < maxWidth; x += squareSize, index++) {
-
-                squares.get(index).setLocation(x, y);
-                squares.get(index).setSize(squareSize, squareSize);
-            }
-        }
-        repaint();
-    }
-
-    /**
-     * Calculates minimal and maximal height and width (start point and end point)
-     * for the board, such that when applied, it remains a square, centered in the window.
-     * @return list of dimensions
-     */
-    private List<Integer> recalculateDimensions() {
-
-        int width = getWidth(), height = getHeight();
-
-        int dim1 = height < width ? height : width;
-        int dim2 = width > height ? width : height;
-
-        while (dim1 % 8 != 0) {
-            dim1--;
-        }
-
-        squareSize = dim1 / 8;
-
-        int minDim1 = 0;
-        int maxDim1 = dim1;
-        int minDim2 = (dim2 - dim1) / 2;
-        int maxDim2 = minDim2 + dim1;
-
-        if (height < width) {
-            return List.of(minDim1, maxDim1, minDim2, maxDim2);
-        } else {
-            return List.of(minDim2, maxDim2, minDim1, maxDim1);
-        }
     }
 
     private void createSquares() {
@@ -117,10 +74,72 @@ public class Board extends JPanel {
         }
     }
 
+    public void setNewGame()  {
+
+        clearBoard();
+
+        var color1 = Color.WHITE;
+        var color2 = Color.BLACK;
+
+        for (int col = 0; col < 8; col++) {
+            var topPawn = new Pawn(color1, Piece.PieceName.Pawn1, this);
+            var bottomPawn = new Pawn(color2, Piece.PieceName.Pawn6, this);
+
+            squares.get(1 * 8 + col).setPiece(topPawn);
+            squares.get(6 * 8 + col).setPiece(bottomPawn);
+        }
+
+        for (int row = 0; row <= 7; row += 7) {
+
+            var color = row == 0 ? color1 : color2;
+
+            val idx = row * 8;
+
+            squares.get(idx + 0).setPiece(new Rook(color, this));
+            squares.get(idx + 1).setPiece(new Knight(color, this));
+            squares.get(idx + 2).setPiece(new Bishop(color, this));
+            squares.get(idx + 3).setPiece(new Queen(color, this));
+            squares.get(idx + 4).setPiece(new King(color, this));
+            squares.get(idx + 5).setPiece(new Bishop(color, this));
+            squares.get(idx + 6).setPiece(new Knight(color, this));
+            squares.get(idx + 7).setPiece(new Rook(color, this));
+        }
+
+        repaint();
+    }
+
+    private void clearBoard() {
+        currentColor = Color.WHITE;
+        optionalSourceSquare = Optional.empty();
+
+        for (var square : squares) {
+            square.setPiece(Empty.INSTANCE);
+            square.setHighlighted(false);
+        }
+
+        moves.clear();
+    }
+
+    public void loadGame(final Deque<Move> moves) {
+
+        setNewGame();
+
+        for (var move : moves) {
+            var from = move.source;
+            var to = move.target;
+
+            var source = squares.get(from.index);
+            var target = squares.get(to.index);
+            var piece = source.getPiece();
+            piece.movePiece(source, target);
+        }
+
+        repaint();
+    }
+
     /**
      * Finds the square clicked on with the LMB and sets it as either
      * source or target, depending on the piece it contains.
-     * @param mouseEvent
      */
     public void chooseOrMove(MouseEvent mouseEvent) {
 
@@ -139,12 +158,12 @@ public class Board extends JPanel {
 
         var selectedSquare = optional.get();
 
-        if (isChoosable(selectedSquare)) {
+        if (isValidSource(selectedSquare)) {
 
             selectedSquare.setHighlighted(true);
             optionalSourceSquare = Optional.of(selectedSquare);
 
-        } else if (isTargetable(selectedSquare)) {
+        } else if (isValidTarget(selectedSquare)) {
 
             var source = optionalSourceSquare.get();
             var selectedPiece = optionalSourceSquare.get().getPiece();
@@ -155,7 +174,7 @@ public class Board extends JPanel {
         repaint();
     }
 
-    private boolean isChoosable(Square square) {
+    private boolean isValidSource(Square square) {
 
         var piece = square.getPiece();
 
@@ -188,24 +207,42 @@ public class Board extends JPanel {
         return true;
     }
 
-    /**
-     * Finds square holding current player's king.
-     * @return square holding current player's king.
-     * @throws IllegalStateException
-     */
-    private Square findKing() throws IllegalStateException {
+    private boolean isValidTarget(Square target) {
 
-        for (var square : squares) {
-
-            var piece = square.getPiece();
-
-            var isKing = piece instanceof King;
-
-            if (isKing && !piece.isFoe(currentColor)) {
-                return square;
-            }
+        if (optionalSourceSquare.isEmpty()) {
+            var message = resourceBundle.getString("Board.noSelectedPiece.text");
+            JOptionPane.showMessageDialog(this, message);
+            return false;
         }
-        throw new IllegalStateException("King has not been found.");
+
+        var source = optionalSourceSquare.get();
+        var selectedPiece = source.getPiece();
+
+        if (!selectedPiece.isCorrectMovement(source, target)) {
+            var message = resourceBundle.getString("Board.wrongMove.text");
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }
+
+        if (!isPathFree(source, target)) {
+            var message = resourceBundle.getString("Board.pathBlocked.text");
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }
+
+        if (isCheck() && !isCheckBlock(source, target) && !isKingEscape(source, target)) {
+            var message = resourceBundle.getString("Board.pieceGetOutOfCheck.text");
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }
+
+        if (isSelfMadeCheck(source, target)) {
+            var message = resourceBundle.getString("Board.selfMadeCheck.text");
+            JOptionPane.showMessageDialog(this, message);
+            return false;
+        }
+
+        return true;
     }
 
     public boolean isAttacked(Square square) {
@@ -228,24 +265,39 @@ public class Board extends JPanel {
         return !isCheckBlockPossible() && escapeSquares.isEmpty();
     }
 
+    private Square findKing() throws IllegalStateException {
+
+        for (var square : squares) {
+
+            var piece = square.getPiece();
+
+            var isKing = piece instanceof King;
+
+            if (isKing && !piece.isFoe(currentColor)) {
+                return square;
+            }
+        }
+        throw new IllegalStateException("King has not been found.");
+    }
+
     /**
-     * Retrieves a list of squares for each enemy piece that holds current
-     * player’s king in check. Each list consists of the square containing the
-     * enemy and the path that leads to the king.
+     * Retrieves a list of squares for each enemy piece that attacks the square
+     * passed as the parameter. Each list consists of the square containing the
+     * enemy piece and the path that leads input square.
      */
-    private List<List<Square>> findAttackingSquares(Square kingSquare) {
+    private List<List<Square>> findAttackingSquares(Square input) {
         var allSquaresLists = new ArrayList<List<Square>>();
 
         for (var square : squares) {
             var piece = square.getPiece();
 
-            if (!square.equals(kingSquare)
+            if (!square.equals(input)
                 && piece.isFoe(currentColor)
-                && piece.isCorrectMovement(square, kingSquare)
-                && isPathFree(square, kingSquare))
+                && piece.isCorrectMovement(square, input)
+                && isPathFree(square, input))
             {
                 var singleSquaresList = new ArrayList<Square>();
-                var path = getPath(square, kingSquare);
+                var path = getPath(square, input);
 
                 singleSquaresList.add(square);
                 singleSquaresList.addAll(path);
@@ -298,10 +350,6 @@ public class Board extends JPanel {
         return false;
     }
 
-    /**
-     * Tests if player's move will result in a check.
-     * @param target
-     */
     private boolean isSelfMadeCheck(Square source, Square target) {
 
         var sourcePiece = source.getPiece();
@@ -315,44 +363,6 @@ public class Board extends JPanel {
         target.setPiece(Empty.INSTANCE);
 
         return isSelfMadeCheck;
-    }
-
-    private boolean isTargetable(Square target) {
-
-        if (optionalSourceSquare.isEmpty()) {
-            var message = resourceBundle.getString("Board.noSelectedPiece.text");
-            JOptionPane.showMessageDialog(this, message);
-            return false;
-        }
-
-        var source = optionalSourceSquare.get();
-        var selectedPiece = source.getPiece();
-
-        if (!selectedPiece.isCorrectMovement(source, target)) {
-            var message = resourceBundle.getString("Board.wrongMove.text");
-            JOptionPane.showMessageDialog(this, message);
-            return false;
-        }
-
-        if (!isPathFree(source, target)) {
-            var message = resourceBundle.getString("Board.pathBlocked.text");
-            JOptionPane.showMessageDialog(this, message);
-            return false;
-        }
-
-        if (isCheck() && !isCheckBlock(source, target) && !isKingEscape(source, target)) {
-            var message = resourceBundle.getString("Board.pieceGetOutOfCheck.text");
-            JOptionPane.showMessageDialog(this, message);
-            return false;
-        }
-
-        if (isSelfMadeCheck(source, target)) {
-            var message = resourceBundle.getString("Board.selfMadeCheck.text");
-            JOptionPane.showMessageDialog(this, message);
-            return false;
-        }
-
-        return true;
     }
 
     private boolean isKingEscape(Square source, Square target) {
@@ -375,28 +385,39 @@ public class Board extends JPanel {
     }
 
     /**
-     * Paints the board
-     * @param graphics
+     * Retrieves a list of squares in straight line between source
+     * and target squares
      */
-    @Override
-    public void paint(Graphics graphics) {
-        super.paint(graphics);
+    private List<Square> getPath(Square source, Square target) {
+        Function<Coord, List<Square>> function = (coord, path) -> {
 
-        for (var square : squares) {
+            path.add(squares.get(coord.index));
 
-            if (square.isHighlighted()) {
-                square.highlightSquare(graphics);
-            } else {
-                square.draw(graphics);
-            }
+            return path;
+        };
 
-            int x = (int) square.getX();
-            int y = (int) square.getY();
+        List<Square> path = new ArrayList<>();
+
+        return traverse(source, target, path, function);
+    }
+
+    /**
+     * Checks if there are pieces on the path between source and target squares
+     */
+    private boolean isPathFree(Square source, Square target) {
+        Function<Coord, Integer> function = (coord, emptyCount) -> {
+
+            var square = squares.get(coord.index);
             var piece = square.getPiece();
-            piece.drawImage(graphics, x, y, squareSize);
 
-        }
+            emptyCount += piece instanceof Empty ? 0 : 1;
 
+            return emptyCount;
+        };
+
+        Integer nullCount = 0;
+
+        return traverse(source, target, nullCount, function) == 0;
     }
 
     /**
@@ -436,89 +457,80 @@ public class Board extends JPanel {
     }
 
     /**
-     * Retrieves a list of squares in straight line between source
-     * and target squares
-     * @param source
-     * @param target
+     * Paints the board
      */
-    private List<Square> getPath(Square source, Square target) {
-        Function<Coord, List<Square>> function = (coord, path) -> {
+    @Override
+    public void paint(Graphics graphics) {
+        super.paint(graphics);
 
-            path.add(squares.get(coord.index));
+        for (var square : squares) {
 
-            return path;
-        };
+            if (square.isHighlighted()) {
+                square.highlightSquare(graphics);
+            } else {
+                square.draw(graphics);
+            }
 
-        List<Square> path = new ArrayList<>();
+            int x = (int) square.getX();
+            int y = (int) square.getY();
+            var piece = square.getPiece();
+            piece.drawImage(graphics, x, y, squareSize);
 
-        return traverse(source, target, path, function);
+        }
+
     }
 
     /**
-     * Checks if there are pieces on the path between source and target squares
-     * @param source
-     * @param target
+     * Resets the size and location for each square, so that the board
+     * scales with window.
      */
-    private boolean isPathFree(Square source, Square target) {
-        Function<Coord, Integer> function = (coord, emptyCount) -> {
+    public void resizeBoard() {
 
-            var square = squares.get(coord.index);
-            var piece = square.getPiece();
+        var dimensions = recalculateDimensions();
 
-            emptyCount += piece instanceof Empty ? 0 : 1;
+        int minHeight = dimensions.get(0);
+        int maxHeight = dimensions.get(1);
+        int minWidth = dimensions.get(2);
+        int maxWidth = dimensions.get(3);
 
-            return emptyCount;
-        };
+        for (int y = minHeight, index = 0; y < maxHeight; y += squareSize) {
+            for (int x = minWidth; x < maxWidth; x += squareSize, index++) {
 
-        Integer nullCount = 0;
-
-        return traverse(source, target, nullCount, function) == 0;
-    }
-
-    public void setNewGame()  {
-
-        clearBoard();
-
-        var color1 = Color.WHITE;
-        var color2 = Color.BLACK;
-
-        for (int col = 0; col < 8; col++) {
-            var topPawn = new Pawn(color1, Piece.PieceName.Pawn1, this);
-            var bottomPawn = new Pawn(color2, Piece.PieceName.Pawn6, this);
-
-            squares.get(1 * 8 + col).setPiece(topPawn);
-            squares.get(6 * 8 + col).setPiece(bottomPawn);
+                squares.get(index).setLocation(x, y);
+                squares.get(index).setSize(squareSize, squareSize);
+            }
         }
-
-        for (int row = 0; row <= 7; row += 7) {
-
-            var color = row == 0 ? color1 : color2;
-
-            val idx = row * 8;
-
-            squares.get(idx + 0).setPiece(new Rook(color, this));
-            squares.get(idx + 1).setPiece(new Knight(color, this));
-            squares.get(idx + 2).setPiece(new Bishop(color, this));
-            squares.get(idx + 3).setPiece(new Queen(color, this));
-            squares.get(idx + 4).setPiece(new King(color, this));
-            squares.get(idx + 5).setPiece(new Bishop(color, this));
-            squares.get(idx + 6).setPiece(new Knight(color, this));
-            squares.get(idx + 7).setPiece(new Rook(color, this));
-        }
-
         repaint();
     }
 
-    private void clearBoard() {
-        currentColor = Color.WHITE;
-        optionalSourceSquare = Optional.empty();
+    /**
+     * Calculates minimal and maximal height and width (start point and end point)
+     * for the board, such that when applied, it remains a square, centered in the window.
+     * @return list of dimensions
+     */
+    private List<Integer> recalculateDimensions() {
 
-        for (var square : squares) {
-            square.setPiece(Empty.INSTANCE);
-            square.setHighlighted(false);
+        int width = getWidth(), height = getHeight();
+
+        int dim1 = Math.min(width, height);
+        int dim2 = Math.max(width, height);
+
+        while (dim1 % 8 != 0) {
+            dim1--;
         }
 
-        moves.clear();
+        squareSize = dim1 / 8;
+
+        int minDim1 = 0;
+        int maxDim1 = dim1;
+        int minDim2 = (dim2 - dim1) / 2;
+        int maxDim2 = minDim2 + dim1;
+
+        if (height < width) {
+            return List.of(minDim1, maxDim1, minDim2, maxDim2);
+        } else {
+            return List.of(minDim2, maxDim2, minDim1, maxDim1);
+        }
     }
 
     @FunctionalInterface
@@ -526,36 +538,9 @@ public class Board extends JPanel {
         R perform(T arg1, R arg2);
     }
 
-    public void loadGame(final Deque<Move> moves) {
-
-        setNewGame();
-
-        for (var move : moves) {
-            var from = move.source;
-            var to = move.target;
-
-            var source = squares.get(from.index);
-            var target = squares.get(to.index);
-            var piece = source.getPiece();
-            piece.movePiece(source, target);
-        }
-
-        repaint();
-    }
-
     public void changeCurrentColor() {
         var isWhite = currentColor.equals(Color.WHITE);
         currentColor = isWhite ? Color.BLACK : Color.WHITE;
     }
-
-    @Getter
-    private final Deque<Move> moves = new LinkedList<>();
-    @Getter
-    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("my/chess/Bundle");
-    @Getter
-    private final List<Square> squares = new ArrayList<>();
-    private Color currentColor = Color.WHITE;
-    private Optional<Square> optionalSourceSquare = Optional.empty();
-    private int squareSize = 80;
 
 }
