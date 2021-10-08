@@ -18,18 +18,25 @@ package my.chess;
 
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import my.chess.pieces.Piece;
+import my.chess.pieces.Empty;
 
 /**
  *
  * @author Piotr Lach
  */
 @AllArgsConstructor
+@RequiredArgsConstructor
 @ToString
 public class Move implements Serializable {
-       
+
     private static final long serialVersionUID = -5610296767681737878L;
-    
+
     public final Coord source;
     public final Coord target;
+    @Getter
+    private Piece promotedPiece = Empty.INSTANCE;
 }

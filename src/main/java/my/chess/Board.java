@@ -120,18 +120,31 @@ public class Board extends JPanel {
         moves.clear();
     }
 
-    public void loadGame(final Deque<Move> moves) {
+    public void loadGame(Deque<Move> moves) {
 
         setNewGame();
 
         for (var move : moves) {
-            var from = move.source;
-            var to = move.target;
+            Coord from = move.source;
+            Coord to = move.target;
 
-            var source = squares.get(from.index);
-            var target = squares.get(to.index);
-            var piece = source.getPiece();
-            piece.movePiece(source, target);
+            Square source = squares.get(from.index);
+            Square target = squares.get(to.index);
+
+            Piece piece;
+            /* Necessary for promoted pawns */
+            if (!((piece = move.getPromotedPiece()) instanceof Empty)) {
+                piece.setBoard(this);
+                piece.setImage();
+
+                source.setPiece(Empty.INSTANCE);
+                target.setPiece(piece);
+
+                changeCurrentColor();
+            } else {
+                piece = source.getPiece();
+                piece.movePiece(source, target);
+            }
         }
 
         repaint();
@@ -166,7 +179,7 @@ public class Board extends JPanel {
         } else if (isValidTarget(selectedSquare)) {
 
             var source = optionalSourceSquare.get();
-            var selectedPiece = optionalSourceSquare.get().getPiece();
+            var selectedPiece = source.getPiece();
             selectedPiece.movePiece(source, selectedSquare);
             optionalSourceSquare = Optional.empty();
         }

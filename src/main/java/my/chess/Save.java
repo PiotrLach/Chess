@@ -16,18 +16,13 @@
 */
 package my.chess;
 
-import java.awt.Color;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Deque;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import lombok.RequiredArgsConstructor;
-import java.util.Collections;
 import java.util.LinkedList;
 
 /**

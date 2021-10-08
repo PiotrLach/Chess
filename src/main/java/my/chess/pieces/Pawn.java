@@ -59,20 +59,22 @@ public class Pawn extends Piece {
         }
 
         Piece piece = this;
+        Move move;
 
         if (target.coord.row == 0 || target.coord.row == 7) {
             piece = promote(piece);
+            move = new Move(source.coord, target.coord, piece);
+        } else {
+            move = new Move(source.coord, target.coord);
         }
+
+        board.getMoves().add(move);
+        board.changeCurrentColor();
 
         target.setPiece(piece);
         source.setPiece(Empty.INSTANCE);
         source.setHighlighted(false);
         isOnStartPosition = false;
-
-        var move = new Move(source.coord, target.coord);
-        board.getMoves().add(move);
-
-        board.changeCurrentColor();
     }
 
     private Piece promote(Piece piece) {

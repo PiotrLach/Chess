@@ -23,6 +23,7 @@ import java.awt.Image;
 import java.io.Serializable;
 import lombok.ToString;
 import lombok.Getter;
+import lombok.Setter;
 import my.chess.Board;
 import my.chess.Move;
 
@@ -82,7 +83,8 @@ abstract public class Piece implements Serializable {
 
     abstract public boolean isCorrectMovement(Square source, Square target);
 
-    protected final Board board;
+    @Setter
+    protected transient Board board;
     public final Color color;
     protected transient Image image;
     protected PieceName name;
