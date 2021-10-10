@@ -13,13 +13,16 @@
 
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 package my.chess.pieces;
 
 import java.awt.Color;
+
 import my.chess.Square;
+
 import java.awt.Graphics;
 import java.awt.Image;
+import java.io.Serial;
 import java.io.Serializable;
 import lombok.ToString;
 import lombok.Getter;
@@ -28,14 +31,24 @@ import my.chess.Board;
 import my.chess.Move;
 
 /**
- *
  * @author Piotr Lach
  */
 @ToString(onlyExplicitlyIncluded = true)
 abstract public class Piece implements Serializable {
 
-    private static final long serialVersionUID = 4232331441720820159L;
+    @Setter
+    protected transient Board board;
+    public final Color color;
+    protected transient Image image;
+    protected PieceName name;
+    @Getter
+    @ToString.Include
+    protected boolean isOnStartPosition = true;
 
+    static final PieceImageLoader imageLoader = PieceImageLoader.INSTANCE;
+    @Serial
+    private static final long serialVersionUID = 4232331441720820159L;
+    
     public Piece(PieceName pieceName, Color color, Image image, Board board) {
         this.name = pieceName;
         this.color = color;
@@ -76,20 +89,9 @@ abstract public class Piece implements Serializable {
     }
 
     /**
-     * Must be called for any deserialized piece, since images are not
-     * saved.
+     * Must be called for any deserialized piece, since images are not serialized.
      */
     abstract public void setImage();
 
     abstract public boolean isCorrectMovement(Square source, Square target);
-
-    @Setter
-    protected transient Board board;
-    public final Color color;
-    protected transient Image image;
-    protected PieceName name;
-    @Getter
-    @ToString.Include
-    protected boolean isOnStartPosition = true;
-    static final PieceImageLoader imageLoader = PieceImageLoader.INSTANCE;
 }
