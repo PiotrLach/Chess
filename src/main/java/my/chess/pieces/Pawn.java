@@ -17,7 +17,6 @@
 package my.chess.pieces;
 
 import java.awt.Color;
-import java.util.Deque;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
@@ -31,15 +30,12 @@ import my.chess.Square;
  */
 public class Pawn extends Piece {
 
-    private final Deque<Move> moves;
-
     private final boolean isMovingDown;
 
     private final int startRow;
 
     public Pawn(Color color, PieceName pieceName, Board board) {
         super(pieceName, color, imageLoader.getPAWN(color), board);
-        this.moves = board.getMoves();
 
         startRow = pieceName == PieceName.Pawn1 ? 1 : 6;
 
@@ -53,6 +49,7 @@ public class Pawn extends Piece {
         }
 
         if (isEnPassant(source, target)) {
+            var moves = board.getMoves();
             var coord = moves.getLast().target;
             var square = board.getSquares().get(coord.index);
             square.setPiece(Empty.INSTANCE);
@@ -118,6 +115,8 @@ public class Pawn extends Piece {
     }
 
     private boolean isEnPassant(Square source, Square target) {
+
+        var moves = board.getMoves();
 
         if (moves.isEmpty()) {
             return false;
