@@ -16,6 +16,7 @@
  */
 package my.chess;
 
+import java.io.Serial;
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +34,7 @@ import my.chess.pieces.Empty;
 @ToString
 public class Move implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -5610296767681737878L;
 
     public final Coord source;
