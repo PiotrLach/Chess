@@ -42,7 +42,7 @@ class PieceImageLoader {
         whitePawn = ImageIO.read(getResource("white/pawn.png"));
         blackRook = ImageIO.read(getResource("black/rook.png"));
         whiteRook = ImageIO.read(getResource("white/rook.png"));
-        blackBisho = ImageIO.read(getResource("black/bishop.png"));
+        blackBishop = ImageIO.read(getResource("black/bishop.png"));
         whiteBishop = ImageIO.read(getResource("white/bishop.png"));
         blackKnight = ImageIO.read(getResource("black/knight.png"));
         whiteKnight = ImageIO.read(getResource("white/knight.png"));
@@ -83,7 +83,7 @@ class PieceImageLoader {
 
     Image getBISHOP(Color color) {
         if (color.equals(Color.BLACK)) {
-            return blackBisho;
+            return blackBishop;
         } else {
             return whiteBishop;
         }
@@ -116,7 +116,7 @@ class PieceImageLoader {
     private Image whitePawn;
     private Image blackRook;
     private Image whiteRook;
-    private Image blackBisho;
+    private Image blackBishop;
     private Image whiteBishop;
     private Image blackKnight;
     private Image whiteKnight;
