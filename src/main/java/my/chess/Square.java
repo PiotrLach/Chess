@@ -46,6 +46,9 @@ public class Square extends Rectangle {
     @ToString.Include
     public final Coord coord;
 
+    private static final Color MY_WHITE = new Color(255, 255, 204);
+    private static final Color MY_BROWN = new Color(153, 102, 0);
+
     public Square(int x, int y, int width, int height, Coord coord) {
         super(x, y, width, height);
         this.coord = coord;
@@ -66,12 +69,9 @@ public class Square extends Rectangle {
         }
         graphics.fillRect(x, y, width, height);
     }
-
-    public void highlightSquare(Graphics graphics) {
+    public void drawHighlighted(Graphics graphics) {
         graphics.setColor(Color.RED);
         graphics.fillRect(x, y, width, height);
     }
-    private static final Color MY_WHITE = new Color(255, 255, 204);
-    private static final Color MY_BROWN = new Color(153, 102, 0);
 
 }

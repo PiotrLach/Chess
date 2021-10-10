@@ -479,7 +479,7 @@ public class Board extends JPanel {
         for (var square : squares) {
 
             if (square.isHighlighted()) {
-                square.highlightSquare(graphics);
+                square.drawHighlighted(graphics);
             } else {
                 square.draw(graphics);
             }
