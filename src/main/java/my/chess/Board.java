@@ -157,9 +157,6 @@ public class Board extends JPanel {
     public void chooseOrMove(MouseEvent mouseEvent) {
 
         var button = mouseEvent.getButton();
-        if (!(button == MouseEvent.BUTTON1)) {
-            return;
-        }
 
         var point = mouseEvent.getPoint();
         var optional = squares.stream()

@@ -16,14 +16,12 @@
 */
 package my.chess;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.Deque;
 import javax.swing.JOptionPane;
 import lombok.RequiredArgsConstructor;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -33,6 +31,7 @@ import java.util.LinkedList;
 public class Save {
 
     private final Board board;
+    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("my/chess/Bundle");
 
     public void loadGame(String filename) {
         var deque = readObject(filename);
@@ -66,9 +65,16 @@ public class Save {
 
             return (Deque<Move>) object;
 
-        } catch (Exception exception) {
-            JOptionPane.showMessageDialog(board, exception.getMessage());
-            exception.printStackTrace();
+        } catch (IOException exception) {
+
+            var message = resourceBundle.getString("Save.loadError");
+            JOptionPane.showMessageDialog(board, message);
+
+        } catch (ClassNotFoundException exception) {
+
+            var message = resourceBundle.getString("Save.wrongFormat");
+            JOptionPane.showMessageDialog(board, message);
+
         }
         return new LinkedList<>();
     }
@@ -86,9 +92,11 @@ public class Save {
             fileOutputStream.flush();
             fileOutputStream.close();
 
-        } catch (Exception exception) {
-            JOptionPane.showMessageDialog(board, exception.getMessage());
-            exception.printStackTrace();
+        } catch (IOException exception) {
+
+            var message = resourceBundle.getString("Save.saveError");
+            JOptionPane.showMessageDialog(board, message);
+            
         }
     }
 
