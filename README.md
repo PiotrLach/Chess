@@ -40,7 +40,7 @@ Currently, it’s only possible to play against a human opponent. An AI could be
 
 # Installation
 
-Java 15 is required to use the application. The project is built with Apache Maven. The repository includes the required `pom.xml` file. Download the repository and run `mvn install` inside the project’s main directory. To launch the game, go to `target` folder and run `java -jar Chess-1.0-jar-with-dependencies`.
+Java 15 is required to use the application. The project is built with Apache Maven. The repository includes the required `pom.xml` file. Download the repository and run `mvn install` inside the project’s main directory. To launch the game, go to `target` folder and run `java -jar Chess-1.0-jar-with-dependencies.jar`.
 
 # Usage
 
