@@ -1,0 +1,7 @@
+Obrazki bierek użyte w programie zostały utworzone przez użytkownika Wikipedii o nicku „Cburnett”. 
+Są dostępne na stronie Wikipedia Commons pod adresem https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces.  
+Podlegają licencji CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0/legalcode).
+
+Pliki binarne podlegają licencji GPL 3.0. Treść licencji dostępna jest na stronie https://www.gnu.org/licenses/gpl-3.0.html. 
+Kod źródłowy aplikacji jest w repozytorium https://github.com/PiotrLach/Chess.
+

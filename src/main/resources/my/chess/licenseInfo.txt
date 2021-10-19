@@ -1,0 +1,6 @@
+The piece images used in the program were created by Wikipedia user “Cburnett”.  
+They're available at the Wikimedia Commons website (https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces).  
+They're licensed under CC BY-SA 3.0 license (https://creativecommons.org/licenses/by-sa/3.0/legalcode).
+
+The binaries are licensed under GPL 3.0. License text is available at https://www.gnu.org/licenses/gpl-3.0.html.
+The app's source code is available at https://github.com/PiotrLach/Chess.

@@ -1,4 +1,4 @@
-/* 
+/*
  * Java chess game implementation
  * Copyright (C) 2021 Piotr Lach
  * This program is free software: you can redistribute it and/or modify
@@ -35,6 +35,8 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import javax.swing.UIManager;
 import java.awt.EventQueue;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import javax.swing.JFrame;
 
 /**
@@ -66,6 +68,7 @@ public class MainFrame extends JFrame {
         loadGameOption = new JMenuItem();
         saveGameOption = new JMenuItem();
         aboutMenu = new JMenu();
+        licenseOption = new JMenuItem();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(640, 640));
@@ -120,6 +123,15 @@ public class MainFrame extends JFrame {
         menuBar.add(gameMenu);
 
         aboutMenu.setText(bundle.getString("MainFrame.aboutMenu.text")); // NOI18N
+
+        licenseOption.setText(bundle.getString("MainFrame.licenseOption.text")); // NOI18N
+        licenseOption.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                licenseOptionActionPerformed(evt);
+            }
+        });
+        aboutMenu.add(licenseOption);
+
         menuBar.add(aboutMenu);
 
         setJMenuBar(menuBar);
@@ -135,7 +147,7 @@ public class MainFrame extends JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-   
+
     private void formComponentResized(ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
         board.resizeBoard();
     }//GEN-LAST:event_formComponentResized
@@ -155,42 +167,66 @@ public class MainFrame extends JFrame {
         if (!(result == JFileChooser.APPROVE_OPTION)) {
             return;
         }
-        
-        var file = fileChooser.getSelectedFile();                       
+
+        var file = fileChooser.getSelectedFile();
         var fileName = file.getAbsolutePath();
-              
+
         var save = new Save(board);
         save.loadGame(fileName);
     }//GEN-LAST:event_loadGameOptionActionPerformed
 
     private void saveGameOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_saveGameOptionActionPerformed
-       
+
         var fileChooser = new JFileChooser();
         int result = fileChooser.showSaveDialog(this), chosen = 0;
 
         if (!(result == JFileChooser.APPROVE_OPTION)) {
             return;
         }
-        
+
         var file = fileChooser.getSelectedFile();
-        
+
         if (file.exists()) {
             var bundle = ResourceBundle.getBundle("my/chess/Bundle");
             var message = bundle.getString("MainFrame.fileExists.text");
             var formattedMessage = String.format(message, file.getName());
-            chosen = JOptionPane.showConfirmDialog(fileChooser, formattedMessage);            
+            chosen = JOptionPane.showConfirmDialog(fileChooser, formattedMessage);
         }
-        
+
         if (chosen != JOptionPane.OK_OPTION) {
             return;
         }
-        
+
         var fileName = file.getAbsolutePath();
-       
+
         var save = new Save(board);
         save.saveGame(fileName);
     }//GEN-LAST:event_saveGameOptionActionPerformed
-   
+
+    private void licenseOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_licenseOptionActionPerformed
+
+        var bundle = ResourceBundle.getBundle("my/chess/Bundle");
+        var fileName = bundle.getString("MainFrame.licenseFile");
+
+        var classLoader = getClass().getClassLoader();
+        var inputStream = classLoader.getResourceAsStream(fileName);
+        var stringBuilder = new StringBuilder();
+
+        try {
+            var inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+            int char1 = 0;
+            while ((char1 = inputStreamReader.read()) > -1) {
+                stringBuilder.append((char) char1);
+            }
+        } catch (IOException exception) {
+            var errorMessage = bundle.getString("MainFrame.errorReadingLicense");
+            JOptionPane.showMessageDialog(this, errorMessage);
+            return;
+        }
+
+        JOptionPane.showMessageDialog(this, stringBuilder.toString());
+    }//GEN-LAST:event_licenseOptionActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -198,7 +234,7 @@ public class MainFrame extends JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         var className = MainFrame.class.getName();
         try {
@@ -210,10 +246,10 @@ public class MainFrame extends JFrame {
             }
         } catch (Exception exception) {
             Logger.getLogger(className).log(Level.SEVERE, null, exception);
-        } 
+        }
         //</editor-fold>
         //</editor-fold>
-        /* Create and display the form */                
+        /* Create and display the form */
         EventQueue.invokeLater(() -> {
             new MainFrame().setVisible(true);
         });
@@ -223,6 +259,7 @@ public class MainFrame extends JFrame {
     private JMenu aboutMenu;
     private Board board;
     private JMenu gameMenu;
+    private JMenuItem licenseOption;
     private JMenuItem loadGameOption;
     private JMenuBar menuBar;
     private JMenuItem newGameOption;
