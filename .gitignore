@@ -5,3 +5,5 @@
 !pom.xml
 !.gitignore
 !README.md
+!/example
+!/example/example.png

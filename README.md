@@ -1,4 +1,8 @@
-# About the program
+# Chess
+
+![Screenshot](./example/example.png)
+
+## About the program
 
 The program is my own implementation of chess in Java. Originally, I developed the game as a course assignment during my studies. The project underwent a lot of changes since then. A great deal of code has been refactored, since I intended to improve its readability and reduce its complexity.
 
@@ -12,7 +16,7 @@ The code takes advantage of some of more recent (Java 8+) features, namely:
 * the `var` keyword (local variable type inference),
 * switch expressions.
 
-# Code overview
+## Code overview
 
 The program consists of two packages: `my.chess` and `my.chess.pieces`.
 
@@ -34,15 +38,15 @@ User interface was developed with the help of Swing library and NetBeans IDE. Th
 
 GUI strings are included in English and Polish versions in respective `bundle.properties` files — there are no hardcoded strings.
 
-# Areas of improvement
+## Areas of improvement
 
 Currently, it’s only possible to play against a human opponent. An AI could be implemented to allow single-player gameplay.
 
-# Installation
+## Installation
 
 Java 15 is required to use the application. The project is built with Apache Maven. The repository includes the required `pom.xml` file. Download the repository and run `mvn install` inside the project’s main directory. To launch the game, go to `target` folder and run `java -jar Chess-1.0-jar-with-dependencies.jar`.
 
-# Usage
+## Usage
 
 After launching the game, you can start playing immediately. First off, select the piece you want to move with the mouse. It will be highlighted. Point to any desired spot. The piece will be moved, provided all conditions are met; otherwise, a message will appear, stating the reason why the move is illegal. Capturing works the same way. When you're done with the move, it’s next player’s turn, who plays with black pieces. 
 
