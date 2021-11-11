@@ -61,15 +61,6 @@ public class MainFrame extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        board = new Board();
-        menuBar = new JMenuBar();
-        gameMenu = new JMenu();
-        newGameOption = new JMenuItem();
-        loadGameOption = new JMenuItem();
-        saveGameOption = new JMenuItem();
-        aboutMenu = new JMenu();
-        licenseOption = new JMenuItem();
-
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(640, 640));
         addComponentListener(new ComponentAdapter() {
@@ -84,7 +75,7 @@ public class MainFrame extends JFrame {
             }
         });
 
-        GroupLayout boardLayout = new GroupLayout(board);
+        var boardLayout = new GroupLayout(board);
         board.setLayout(boardLayout);
         boardLayout.setHorizontalGroup(boardLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGap(0, 1036, Short.MAX_VALUE)
@@ -93,50 +84,9 @@ public class MainFrame extends JFrame {
             .addGap(0, 734, Short.MAX_VALUE)
         );
 
-        ResourceBundle bundle = ResourceBundle.getBundle("my/chess/Bundle"); // NOI18N
-        gameMenu.setText(bundle.getString("MainFrame.gameMenu.text")); // NOI18N
+        setMenuOptions();
 
-        newGameOption.setText(bundle.getString("MainFrame.newGameOption.text")); // NOI18N
-        newGameOption.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                newGameOptionActionPerformed(evt);
-            }
-        });
-        gameMenu.add(newGameOption);
-
-        loadGameOption.setText(bundle.getString("MainFrame.loadGameOption.text")); // NOI18N
-        loadGameOption.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                loadGameOptionActionPerformed(evt);
-            }
-        });
-        gameMenu.add(loadGameOption);
-
-        saveGameOption.setText(bundle.getString("MainFrame.saveGameOption.text")); // NOI18N
-        saveGameOption.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                saveGameOptionActionPerformed(evt);
-            }
-        });
-        gameMenu.add(saveGameOption);
-
-        menuBar.add(gameMenu);
-
-        aboutMenu.setText(bundle.getString("MainFrame.aboutMenu.text")); // NOI18N
-
-        licenseOption.setText(bundle.getString("MainFrame.licenseOption.text")); // NOI18N
-        licenseOption.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                licenseOptionActionPerformed(evt);
-            }
-        });
-        aboutMenu.add(licenseOption);
-
-        menuBar.add(aboutMenu);
-
-        setJMenuBar(menuBar);
-
-        GroupLayout layout = new GroupLayout(getContentPane());
+        var layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addComponent(board, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -147,6 +97,34 @@ public class MainFrame extends JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void setMenuOptions() {
+        gameMenu.setText(bundle.getString("MainFrame.gameMenu.text"));
+
+        newGameOption.setText(bundle.getString("MainFrame.newGameOption.text"));
+        newGameOption.addActionListener(this::newGameOptionActionPerformed);
+        gameMenu.add(newGameOption);
+
+        loadGameOption.setText(bundle.getString("MainFrame.loadGameOption.text"));
+        loadGameOption.addActionListener(this::loadGameOptionActionPerformed);
+        gameMenu.add(loadGameOption);
+
+        saveGameOption.setText(bundle.getString("MainFrame.saveGameOption.text"));
+        saveGameOption.addActionListener(this::saveGameOptionActionPerformed);
+        gameMenu.add(saveGameOption);
+
+        menuBar.add(gameMenu);
+
+        aboutMenu.setText(bundle.getString("MainFrame.aboutMenu.text"));
+
+        licenseOption.setText(bundle.getString("MainFrame.licenseOption.text"));
+        licenseOption.addActionListener(this::licenseOptionActionPerformed);
+        aboutMenu.add(licenseOption);
+
+        menuBar.add(aboutMenu);
+
+        setJMenuBar(menuBar);
+    }
 
     private void formComponentResized(ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
         board.resizeBoard();
@@ -178,22 +156,22 @@ public class MainFrame extends JFrame {
     private void saveGameOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_saveGameOptionActionPerformed
 
         var fileChooser = new JFileChooser();
-        int result = fileChooser.showSaveDialog(this), chosen = 0;
+        int saveOption = fileChooser.showSaveDialog(this);
 
-        if (!(result == JFileChooser.APPROVE_OPTION)) {
+        if (!(saveOption == JFileChooser.APPROVE_OPTION)) {
             return;
         }
 
         var file = fileChooser.getSelectedFile();
+        int confirmationOption = 0;
 
         if (file.exists()) {
-            var bundle = ResourceBundle.getBundle("my/chess/Bundle");
             var message = bundle.getString("MainFrame.fileExists.text");
             var formattedMessage = String.format(message, file.getName());
-            chosen = JOptionPane.showConfirmDialog(fileChooser, formattedMessage);
+            confirmationOption = JOptionPane.showConfirmDialog(fileChooser, formattedMessage);
         }
 
-        if (chosen != JOptionPane.OK_OPTION) {
+        if (confirmationOption != JOptionPane.OK_OPTION) {
             return;
         }
 
@@ -205,7 +183,6 @@ public class MainFrame extends JFrame {
 
     private void licenseOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_licenseOptionActionPerformed
 
-        var bundle = ResourceBundle.getBundle("my/chess/Bundle");
         var fileName = bundle.getString("MainFrame.licenseFile");
 
         var classLoader = getClass().getClassLoader();
@@ -256,13 +233,15 @@ public class MainFrame extends JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JMenu aboutMenu;
-    private Board board;
-    private JMenu gameMenu;
-    private JMenuItem licenseOption;
-    private JMenuItem loadGameOption;
-    private JMenuBar menuBar;
-    private JMenuItem newGameOption;
-    private JMenuItem saveGameOption;
+    private final JMenu aboutMenu = new JMenu();
+    private final Board board = new Board();
+    private final JMenu gameMenu = new JMenu();
+    private final JMenuItem licenseOption = new JMenuItem();
+    private final JMenuItem loadGameOption = new JMenuItem();
+    private final JMenuBar menuBar = new JMenuBar();
+    private final JMenuItem newGameOption = new JMenuItem();
+    private final JMenuItem saveGameOption = new JMenuItem();
     // End of variables declaration//GEN-END:variables
+    private final ResourceBundle bundle = ResourceBundle.getBundle("my/chess/Bundle");
+
 }
