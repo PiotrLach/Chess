@@ -18,11 +18,6 @@ package my.chess;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ResourceBundle;
 import javax.swing.GroupLayout;
 import javax.swing.JFileChooser;
@@ -63,17 +58,6 @@ public class MainFrame extends JFrame {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(640, 640));
-        addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent evt) {
-                formComponentResized(evt);
-            }
-        });
-
-        board.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                boardMouseClicked(evt);
-            }
-        });
 
         var boardLayout = new GroupLayout(board);
         board.setLayout(boardLayout);
@@ -126,17 +110,9 @@ public class MainFrame extends JFrame {
         setJMenuBar(menuBar);
     }
 
-    private void formComponentResized(ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
-        board.resizeBoard();
-    }//GEN-LAST:event_formComponentResized
-
     private void newGameOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_newGameOptionActionPerformed
         board.setNewGame();
     }//GEN-LAST:event_newGameOptionActionPerformed
-
-    private void boardMouseClicked(MouseEvent evt) {//GEN-FIRST:event_boardMouseClicked
-        board.chooseOrMove(evt);
-    }//GEN-LAST:event_boardMouseClicked
 
     private void loadGameOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_loadGameOptionActionPerformed
         var fileChooser = new JFileChooser();

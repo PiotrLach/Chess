@@ -25,6 +25,9 @@ import my.chess.pieces.Bishop;
 import my.chess.pieces.Pawn;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -58,6 +61,20 @@ public class Board extends JPanel {
     public Board() {
         createSquares();
         setNewGame();
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent evt) {
+                resizeBoard();
+            }
+        });
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                chooseOrMove(evt);
+            }
+        });
+
     }
 
     private void createSquares() {
@@ -154,9 +171,7 @@ public class Board extends JPanel {
      * Finds the square clicked on with the LMB and sets it as either
      * source or target, depending on the piece it contains.
      */
-    public void chooseOrMove(MouseEvent mouseEvent) {
-
-        var button = mouseEvent.getButton();
+    private void chooseOrMove(MouseEvent mouseEvent) {
 
         var point = mouseEvent.getPoint();
         var optional = squares.stream()
@@ -494,7 +509,7 @@ public class Board extends JPanel {
      * Resets the size and location for each square, so that the board
      * scales with window.
      */
-    public void resizeBoard() {
+    private void resizeBoard() {
 
         var dimensions = recalculateDimensions();
 
