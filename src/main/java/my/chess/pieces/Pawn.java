@@ -58,7 +58,7 @@ public class Pawn extends Piece {
         Piece piece = this;
         Move move;
 
-        if (target.coord.row == 0 || target.coord.row == 7) {
+        if (target.isInBorderRow()) {
             piece = promote(piece);
             move = new Move(source.coord, target.coord, piece);
         } else {
@@ -88,19 +88,20 @@ public class Pawn extends Piece {
 
     private int showPromoteDialog() {
 
+        var bundle = board.getResourceBundle();
         var parentComponent = board;
-        var message = board.getResourceBundle().getString("Board.PromoteMessage");
-        var title = board.getResourceBundle().getString("Board.PromoteMessageTitle");
+        var message = bundle.getString("Board.PromoteMessage");
+        var title = bundle.getString("Board.PromoteMessageTitle");
         int optionType = JOptionPane.YES_NO_OPTION;
         int messageType = JOptionPane.INFORMATION_MESSAGE;
         Icon icon = null;
         String[] options = {
-                board.getResourceBundle().getString("Board.QueenName"),
-                board.getResourceBundle().getString("Board.KnightName"),
-                board.getResourceBundle().getString("Board.RookName"),
-                board.getResourceBundle().getString("Board.BishopName")
+                bundle.getString("Board.QueenName"),
+                bundle.getString("Board.KnightName"),
+                bundle.getString("Board.RookName"),
+                bundle.getString("Board.BishopName")
         };
-        var initialValue = board.getResourceBundle().getString("Board.QueenName");
+        var initialValue = bundle.getString("Board.QueenName");
 
         int choice = JOptionPane.showOptionDialog(parentComponent,
                 message,
@@ -129,7 +130,8 @@ public class Pawn extends Piece {
         }
         var coord = lastMove.target;
 
-        var lastMoveTarget = board.getSquares().get(coord.index);
+        var squares = board.getSquares();
+        var lastMoveTarget = squares.get(coord.index);
 
         var isSourceOnSameRow = source.coord.row == lastMoveTarget.coord.row;
         var isLastMoveTargetLeft = lastMoveTarget.coord.col == source.coord.col - 1;

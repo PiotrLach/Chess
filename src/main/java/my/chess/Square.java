@@ -74,4 +74,8 @@ public class Square extends Rectangle {
         graphics.fillRect(x, y, width, height);
     }
 
+    public boolean isInBorderRow() {
+        return coord.row == 0 || coord.row == 7;
+    }
+
 }

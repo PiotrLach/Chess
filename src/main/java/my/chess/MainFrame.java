@@ -39,6 +39,29 @@ import javax.swing.JFrame;
  */
 public class MainFrame extends JFrame {
 
+    public static void main(String args[]) {
+        setNimbusLookAndFeel();
+
+        EventQueue.invokeLater(() -> {
+            new MainFrame().setVisible(true);
+        });
+    }
+
+
+    private static void setNimbusLookAndFeel() {
+        var className = MainFrame.class.getName();
+        try {
+            for (var lookAndFeelInfo : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(lookAndFeelInfo.getName())) {
+                    UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception exception) {
+            Logger.getLogger(className).log(Level.SEVERE, null, exception);
+        }
+    }
+
     public MainFrame() {
         initComponents();
     }
@@ -153,31 +176,6 @@ public class MainFrame extends JFrame {
 
         JOptionPane.showMessageDialog(this, stringBuilder.toString());
     }//GEN-LAST:event_licenseOptionActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        setNimbusLookAndFeel();
-
-        EventQueue.invokeLater(() -> {
-            new MainFrame().setVisible(true);
-        });
-    }
-
-    private static void setNimbusLookAndFeel() {
-        var className = MainFrame.class.getName();
-        try {
-            for (var lookAndFeelInfo : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(lookAndFeelInfo.getName())) {
-                    UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception exception) {
-            Logger.getLogger(className).log(Level.SEVERE, null, exception);
-        }
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private final JMenu aboutMenu = new JMenu();
