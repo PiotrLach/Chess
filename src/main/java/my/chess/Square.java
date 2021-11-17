@@ -55,6 +55,12 @@ public class Square extends Rectangle {
         this.piece = Empty.INSTANCE;
     }
 
+    public Square(Coord coord) {
+        super(0, 0, 0, 0);
+        this.coord = coord;
+        this.piece = Empty.INSTANCE;
+    }
+
     public void draw(Graphics graphics) {
 
         var isRowOdd = coord.row % 2 == 1;
@@ -76,6 +82,18 @@ public class Square extends Rectangle {
 
     public boolean isInBorderRow() {
         return coord.row == 0 || coord.row == 7;
+    }
+
+    public boolean isInSameRow(Square square) {
+        return coord.row == square.coord.row;
+    }
+
+    public boolean isOnLeft(Square square) {
+        return coord.col < square.coord.col;
+    }
+
+    public boolean isOnRight(Square square) {
+        return coord.col > square.coord.col;
     }
 
 }

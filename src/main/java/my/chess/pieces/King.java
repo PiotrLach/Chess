@@ -79,7 +79,7 @@ public class King extends Piece {
         }
 
         var rookSquare = optionalRookSquare.get();
-        sideSquares.removeIf(square -> square.equals(rookSquare));
+        sideSquares.removeIf(rookSquare::equals);
 
         return isSidePathEmptyAndSafe(sideSquares, castlingSide);
     }
@@ -91,30 +91,35 @@ public class King extends Piece {
 
         switch (castlingSide) {
             case QUEEN -> {
-                rookCol = 0; offset = 1;
+                rookCol = 0;
+                offset = 1;
             }
             case KING -> {
-                rookCol = 7; offset = -1;
+                rookCol = 7;
+                offset = -1;
             }
             default -> {
                 return;
             }
         }
 
-        var rookSquare = board.getSquares().get(source.coord.row * 8 + rookCol);
+        var squares = board.getSquares();
+
+        var rookSquare = squares.get(source.coord.row * 8 + rookCol);
         var rook = rookSquare.getPiece();
 
         int row = target.coord.row;
         int col = target.coord.col + offset;
         var coord = new Coord(row, col);
-        var square = board.getSquares().get(coord.index);
+        var square = squares.get(coord.index);
 
         rook.movePiece(rookSquare, square);
+        board.changeCurrentColor();
     }
 
     private CastlingSide determineSide(Square source, Square target) {
 
-        if (!(source.coord.row == target.coord.row)) {
+        if (!(source.isInSameRow(target))) {
             return CastlingSide.WRONG;
         }
         if (target.coord.col == (source.coord.col + 2)) {
@@ -127,15 +132,19 @@ public class King extends Piece {
 
     private List<Square> getSideSquares(CastlingSide castlingSide, Square source) {
 
+        var squares = board.getSquares();
+
         return switch (castlingSide) {
-            case QUEEN -> board.getSquares().stream()
-                    .filter(square -> square.coord.row == source.coord.row)
-                    .filter(square -> square.coord.col < source.coord.col)
+            case QUEEN -> squares.stream()
+                    .filter(source::isInSameRow)
+                    .filter(source::isOnRight)
                     .collect(Collectors.toList());
-            case KING -> board.getSquares().stream()
-                    .filter(square -> square.coord.row == source.coord.row)
-                    .filter(square -> square.coord.col > source.coord.col)
+
+            case KING -> squares.stream()
+                    .filter(source::isInSameRow)
+                    .filter(source::isOnLeft)
                     .collect(Collectors.toList());
+
             default -> Collections.emptyList();
         };
 
