@@ -43,22 +43,29 @@ public class MainFrame extends JFrame {
         setNimbusLookAndFeel();
 
         EventQueue.invokeLater(() -> {
-            new MainFrame().setVisible(true);
+            var mainFrame = new MainFrame();
+            mainFrame.setVisible(true);
         });
     }
 
 
     private static void setNimbusLookAndFeel() {
+
         var className = MainFrame.class.getName();
+        var lookAndFeels = UIManager.getInstalledLookAndFeels();
+
         try {
-            for (var lookAndFeelInfo : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(lookAndFeelInfo.getName())) {
-                    UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
-                    break;
+            for (var lookAndFeel : lookAndFeels) {
+                var lookAndFeelName = lookAndFeel.getName();
+                if ("Nimbus".equals(lookAndFeelName)) {
+                    UIManager.setLookAndFeel(lookAndFeel.getClassName());
+                    return;
                 }
             }
         } catch (Exception exception) {
-            Logger.getLogger(className).log(Level.SEVERE, null, exception);
+            var logger = Logger.getLogger(className);
+            var message = exception.getMessage();
+            logger.log(Level.SEVERE, message, exception);
         }
     }
 

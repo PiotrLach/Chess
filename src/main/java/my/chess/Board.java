@@ -558,11 +558,6 @@ public class Board extends JPanel {
         }
     }
 
-    @FunctionalInterface
-    private interface Function <T, R> {
-        R perform(T arg1, R arg2);
-    }
-
     public void changeCurrentColor() {
         var isWhite = currentColor.equals(Color.WHITE);
         currentColor = isWhite ? Color.BLACK : Color.WHITE;
