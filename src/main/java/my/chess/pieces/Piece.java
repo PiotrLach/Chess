@@ -24,6 +24,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.io.Serial;
 import java.io.Serializable;
+import lombok.AllArgsConstructor;
 import lombok.ToString;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +36,19 @@ import my.chess.Move;
  */
 @ToString(onlyExplicitlyIncluded = true)
 abstract public class Piece implements Serializable {
+
+    @AllArgsConstructor
+    public enum PieceName {
+        Pawn1(0),
+        Pawn6(0),
+        Bishop(1),
+        Knight(2),
+        Rook(3),
+        King(4),
+        Queen(5),
+        Empty(6);
+        public final int id;
+    }
 
     @Setter
     protected transient Board board;
@@ -48,12 +62,12 @@ abstract public class Piece implements Serializable {
     static final PieceImageLoader imageLoader = PieceImageLoader.INSTANCE;
     @Serial
     private static final long serialVersionUID = 4232331441720820159L;
-    
-    public Piece(PieceName pieceName, Color color, Image image, Board board) {
+
+    public Piece(PieceName pieceName, Color color, Board board) {
         this.name = pieceName;
         this.color = color;
-        this.image = image;
         this.board = board;
+        this.image = imageLoader.getImage(name, color);
     }
 
     public void movePiece(Square source, Square target) {
@@ -76,10 +90,6 @@ abstract public class Piece implements Serializable {
         graphics.drawImage(image, x, y, size, size, null);
     }
 
-    public enum PieceName {
-        Pawn1, Pawn6, Bishop, Knight, Rook, King, Queen, Empty
-    }
-
     public boolean isFoe(Piece piece) {
         return !piece.color.equals(this.color);
     }
@@ -91,7 +101,9 @@ abstract public class Piece implements Serializable {
     /**
      * Must be called for any deserialized piece, since images are not serialized.
      */
-    abstract public void setImage();
+    public void setImage() {
+        image = imageLoader.getImage(name, color);
+    }
 
     abstract public boolean isCorrectMovement(Square source, Square target);
 }

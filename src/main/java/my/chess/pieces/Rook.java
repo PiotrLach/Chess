@@ -27,12 +27,7 @@ import my.chess.Square;
 public class Rook extends Piece {
 
     public Rook(Color pieceColor, Board board) {
-        super(PieceName.Rook, pieceColor, imageLoader.getROOK(pieceColor), board);
-    }
-
-    @Override
-    public void setImage() {
-        image = imageLoader.getROOK(color);
+        super(PieceName.Rook, pieceColor, board);
     }
 
     @Override

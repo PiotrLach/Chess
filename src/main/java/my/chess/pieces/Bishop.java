@@ -27,12 +27,7 @@ import my.chess.Square;
 public class Bishop extends Piece {
 
     public Bishop(Color pieceColor, Board board) {
-        super(PieceName.Bishop, pieceColor, imageLoader.getBISHOP(pieceColor), board);
-    }
-
-    @Override
-    public void setImage() {
-        image = imageLoader.getBISHOP(color);
+        super(PieceName.Bishop, pieceColor, board);
     }
 
     @Override

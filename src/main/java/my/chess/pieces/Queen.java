@@ -27,12 +27,7 @@ import my.chess.Square;
 public class Queen extends Piece {
 
     public Queen(Color pieceColor, Board board) {
-        super(PieceName.Queen, pieceColor, imageLoader.getQUEEN(pieceColor), board);
-    }
-
-    @Override
-    public void setImage() {
-        image = imageLoader.getQUEEN(color);
+        super(PieceName.Queen, pieceColor, board);
     }
 
     @Override

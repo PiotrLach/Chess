@@ -39,7 +39,7 @@ public class King extends Piece {
     }
 
     public King(Color pieceColor, Board board) {
-        super(PieceName.King, pieceColor, imageLoader.getKING(pieceColor), board);
+        super(PieceName.King, pieceColor, board);
     }
 
     @Override
@@ -182,10 +182,6 @@ public class King extends Piece {
             }
         }
         return true;
-    }
-    @Override
-    public void setImage() {
-        image = imageLoader.getKING(color);
     }
     @Override
     public boolean isCorrectMovement(Square source, Square target) {

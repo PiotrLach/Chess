@@ -35,7 +35,7 @@ public class Pawn extends Piece {
     private final int startRow;
 
     public Pawn(Color color, PieceName pieceName, Board board) {
-        super(pieceName, color, imageLoader.getPAWN(color), board);
+        super(pieceName, color, board);
 
         startRow = pieceName == PieceName.Pawn1 ? 1 : 6;
 
@@ -157,11 +157,6 @@ public class Pawn extends Piece {
         var piece = lastMoveTargetSquare.getPiece();
 
         return piece instanceof Pawn && vDiff == 2 && piece.isFoe(this.color);
-    }
-
-    @Override
-    public void setImage() {
-        image = imageLoader.getPAWN(color);
     }
     @Override
     public boolean isCorrectMovement(Square source, Square target) {

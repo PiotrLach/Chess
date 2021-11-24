@@ -29,10 +29,8 @@ public class Empty extends Piece {
 
     public static final Empty INSTANCE = new Empty();
 
-    private static final BufferedImage EMPTY_IMAGE = new BufferedImage(1, 1, 1);
-
     private Empty() {
-        super(PieceName.Empty, Color.GRAY, EMPTY_IMAGE, null);
+        super(PieceName.Empty, Color.GRAY, null);
     }
 
     @Override

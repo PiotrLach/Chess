@@ -27,12 +27,7 @@ import my.chess.Square;
 public class Knight extends Piece {
 
     public Knight(Color pieceColor, Board board) {
-        super(PieceName.Knight, pieceColor, imageLoader.getKNIGHT(pieceColor), board);
-    }
-
-    @Override
-    public void setImage() {
-        image = imageLoader.getKNIGHT(color);
+        super(PieceName.Knight, pieceColor, board);
     }
 
     @Override

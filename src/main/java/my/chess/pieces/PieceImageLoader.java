@@ -1,4 +1,4 @@
-/* 
+/*
  * Java chess game implementation
  * Copyright (C) 2021 Piotr Lach
  * This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,9 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.InputStream;
+import java.util.List;
 import javax.imageio.ImageIO;
 
 /**
@@ -29,27 +31,38 @@ class PieceImageLoader {
 
     static final PieceImageLoader INSTANCE = new PieceImageLoader();
 
+    private List<Image> whitePieces;
+    private List<Image> blackPieces;
+
     private PieceImageLoader() {
         try {
             loadImages();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 
     private void loadImages() throws Exception {
-        blackPawn = ImageIO.read(getResource("black/pawn.png"));
-        whitePawn = ImageIO.read(getResource("white/pawn.png"));
-        blackRook = ImageIO.read(getResource("black/rook.png"));
-        whiteRook = ImageIO.read(getResource("white/rook.png"));
-        blackBishop = ImageIO.read(getResource("black/bishop.png"));
-        whiteBishop = ImageIO.read(getResource("white/bishop.png"));
-        blackKnight = ImageIO.read(getResource("black/knight.png"));
-        whiteKnight = ImageIO.read(getResource("white/knight.png"));
-        blackQueen = ImageIO.read(getResource("black/queen.png"));
-        whiteQueen = ImageIO.read(getResource("white/queen.png"));
-        blackKing = ImageIO.read(getResource("black/king.png"));
-        whiteKing = ImageIO.read(getResource("white/king.png"));
+
+        blackPieces = List.of(
+            ImageIO.read(getResource("black/pawn.png")),
+            ImageIO.read(getResource("black/bishop.png")),
+            ImageIO.read(getResource("black/knight.png")),
+            ImageIO.read(getResource("black/rook.png")),
+            ImageIO.read(getResource("black/king.png")),
+            ImageIO.read(getResource("black/queen.png")),
+            new BufferedImage(1, 1, 1)
+        );
+
+        whitePieces = List.of(
+            ImageIO.read(getResource("white/pawn.png")),
+            ImageIO.read(getResource("white/bishop.png")),
+            ImageIO.read(getResource("white/knight.png")),
+            ImageIO.read(getResource("white/rook.png")),
+            ImageIO.read(getResource("white/king.png")),
+            ImageIO.read(getResource("white/queen.png")),
+            new BufferedImage(1, 1, 1)
+        );
     }
 
     private InputStream getResource(String fileName) throws Exception {
@@ -59,69 +72,18 @@ class PieceImageLoader {
         var inputStream = classLoader.getResourceAsStream(fileName);
 
         if (inputStream == null) {
-            throw new Exception("file not found! " + fileName);
+            throw new Exception("File not found! " + fileName);
         } else {
             return inputStream;
         }
     }
 
-    Image getPAWN(Color color) {
-        if (color.equals(Color.BLACK)) {
-            return blackPawn;
-        } else {
-            return whitePawn;
-        }
-    }
+    Image getImage(Piece.PieceName pieceName, Color color) {
 
-    Image getROOK(Color color) {
         if (color.equals(Color.BLACK)) {
-            return blackRook;
+            return blackPieces.get(pieceName.id);
         } else {
-            return whiteRook;
+            return whitePieces.get(pieceName.id);
         }
     }
-
-    Image getBISHOP(Color color) {
-        if (color.equals(Color.BLACK)) {
-            return blackBishop;
-        } else {
-            return whiteBishop;
-        }
-    }
-
-    Image getKNIGHT(Color color) {
-        if (color.equals(Color.BLACK)) {
-            return blackKnight;
-        } else {
-            return whiteKnight;
-        }
-    }
-
-    Image getQUEEN(Color color) {
-        if (color.equals(Color.BLACK)) {
-            return blackQueen;
-        } else {
-            return whiteQueen;
-        }
-    }
-
-    Image getKING(Color color) {
-        if (color.equals(Color.BLACK)) {
-            return blackKing;
-        } else {
-            return whiteKing;
-        }
-    }
-    private Image blackPawn;
-    private Image whitePawn;
-    private Image blackRook;
-    private Image whiteRook;
-    private Image blackBishop;
-    private Image whiteBishop;
-    private Image blackKnight;
-    private Image whiteKnight;
-    private Image blackQueen;
-    private Image whiteQueen;
-    private Image blackKing;
-    private Image whiteKing;
 }
