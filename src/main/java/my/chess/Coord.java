@@ -1,4 +1,4 @@
-/* 
+/*
  * Java chess game implementation
  * Copyright (C) 2021 Piotr Lach
  * This program is free software: you can redistribute it and/or modify
@@ -36,11 +36,18 @@ public class Coord implements Serializable {
     public final int row;
     public final int col;
 
+    public Coord(int rank, char file) {
+        this.row = rank - 1;
+        this.col = file - 65;
+        index = row * 8 + col;
+    }
+
     public Coord(int row, int col) {
         this.row = row;
         this.col = col;
         index = row * 8 + col;
     }
+
     public Coord(int index) {
         this.index = index;
         col = index % 8;

@@ -79,13 +79,13 @@ public class Board extends JPanel {
 
     private void createSquares() {
         squareSize = 80;
-        int width = 640, height = 640, index = 0;
+        int index = 0;
 
-        for (int y = 0; y < height; y += squareSize) {
-            for (int x = 0; x < width; x += squareSize, index++) {
+        for (int y = 640; y > 0; y -= squareSize) {
+            for (int x = 0; x < 640; x += squareSize, index++) {
 
                 var coord = new Coord(index);
-                var square = new Square(x, y, 80, 80, coord);
+                var square = new Square(x, y, squareSize, coord);
                 squares.add(square);
             }
         }
@@ -495,12 +495,6 @@ public class Board extends JPanel {
             } else {
                 square.draw(graphics);
             }
-
-            int x = (int) square.getX();
-            int y = (int) square.getY();
-            var piece = square.getPiece();
-            piece.drawImage(graphics, x, y, squareSize);
-
         }
 
     }
@@ -513,12 +507,12 @@ public class Board extends JPanel {
 
         var dimensions = recalculateDimensions();
 
-        int minHeight = dimensions.get(0);
-        int maxHeight = dimensions.get(1);
-        int minWidth = dimensions.get(2);
-        int maxWidth = dimensions.get(3);
+        int minHeight = dimensions.get(0) - squareSize;
+        int maxHeight = dimensions.get(1) - squareSize;
+        int minWidth  = dimensions.get(2);
+        int maxWidth  = dimensions.get(3);
 
-        for (int y = minHeight, index = 0; y < maxHeight; y += squareSize) {
+        for (int y = maxHeight, index = 0; y > minHeight; y -= squareSize) {
             for (int x = minWidth; x < maxWidth; x += squareSize, index++) {
 
                 squares.get(index).setLocation(x, y);

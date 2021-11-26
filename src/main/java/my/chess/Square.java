@@ -49,8 +49,8 @@ public class Square extends Rectangle {
     private static final Color MY_WHITE = new Color(255, 255, 204);
     private static final Color MY_BROWN = new Color(153, 102, 0);
 
-    public Square(int x, int y, int width, int height, Coord coord) {
-        super(x, y, width, height);
+    public Square(int x, int y, int size, Coord coord) {
+        super(x, y, size, size);
         this.coord = coord;
         this.piece = Empty.INSTANCE;
     }
@@ -73,11 +73,14 @@ public class Square extends Rectangle {
         } else {
             graphics.setColor(MY_BROWN);
         }
+        
         graphics.fillRect(x, y, width, height);
+        piece.drawImage(graphics, x, y, width);
     }
     public void drawHighlighted(Graphics graphics) {
         graphics.setColor(Color.RED);
         graphics.fillRect(x, y, width, height);
+        piece.drawImage(graphics, x, y, width);
     }
 
     public boolean isInBorderRow() {

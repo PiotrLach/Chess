@@ -18,6 +18,7 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import java.util.List;
+import my.chess.Board;
 import my.chess.Coord;
 import my.chess.Square;
 import org.junit.Test;
@@ -29,17 +30,18 @@ import static org.junit.Assert.*;
  */
 public class RookTest {
 
-    private final Rook rook = new Rook(Color.BLACK, null);
-    private final Coord from = new Coord(3,3);
+    private final Board board = new Board();
+    private final Rook rook = new Rook(Color.BLACK, board);
+    private final Coord from = new Coord(3, 'C');
     private final Square source = new Square(from);
 
     @Test
     public void testIsCorrectMovement() {
         var correctCases = List.of(
-                new Coord(3, 1),
-                new Coord(1, 3),
-                new Coord(3, 6),
-                new Coord(6, 3)
+                new Coord(3, 'A'),
+                new Coord(1, 'C'),
+                new Coord(3, 'F'),
+                new Coord(6, 'C')
         );
         for (var to : correctCases) {
             var target = new Square(to);
@@ -52,10 +54,10 @@ public class RookTest {
     @Test
     public void testIsIncorrectMovement() {
         var incorrectCases = List.of(
-                new Coord(1, 1),
-                new Coord(7, 7),
-                new Coord(2, 2),
-                new Coord(4, 5)
+                new Coord(1, 'A'),
+                new Coord(7, 'H'),
+                new Coord(2, 'B'),
+                new Coord(4, 'E')
         );
 
         for (var to : incorrectCases) {

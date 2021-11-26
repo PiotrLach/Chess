@@ -18,6 +18,7 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import java.util.List;
+import my.chess.Board;
 import my.chess.Square;
 import my.chess.Coord;
 import org.junit.Test;
@@ -29,17 +30,18 @@ import static org.junit.Assert.assertTrue;
  */
 public class BishopTest {
 
-    private final Bishop bishop = new Bishop(Color.BLACK, null);
-    private final Coord from = new Coord(3,3);
+    private final Board board = new Board();
+    private final Bishop bishop = new Bishop(Color.BLACK, board);
+    private final Coord from = new Coord(3, 'C');
     private final Square source = new Square(from);
 
     @Test
     public void testIsCorrectMovement() {
         var correctCases = List.of(
-                new Coord(4, 4),
-                new Coord(2, 2),
-                new Coord(4, 2),
-                new Coord(2, 4)
+                new Coord(4, 'D'),
+                new Coord(2, 'B'),
+                new Coord(4, 'B'),
+                new Coord(2, 'D')
         );
         for (var to : correctCases) {
             var target = new Square(to);
@@ -52,10 +54,10 @@ public class BishopTest {
     @Test
     public void testIsIncorrectMovement() {
         var incorrectCases = List.of(
-                new Coord(4, 5),
-                new Coord(3, 5),
-                new Coord(3, 1),
-                new Coord(4, 3)
+                new Coord(4, 'E'),
+                new Coord(3, 'E'),
+                new Coord(3, 'A'),
+                new Coord(4, 'C')
         );
 
         for (var to : incorrectCases) {
