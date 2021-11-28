@@ -28,25 +28,29 @@ import static org.junit.Assert.*;
  *
  * @author Piotr Lach
  */
-public class KnightTest {
+public class KingTest {
 
     private final Board board = new Board();
-    private final Knight knight = new Knight(Color.BLACK, board);
+    private final King king = new King(Color.WHITE, board);
     private final Coord from = new Coord(3, 'C');
     private final Square source = new Square(from);
 
     @Test
     public void testIsCorrectMovement() {
         var correctCases = List.of(
-                new Coord(4, 'E'),
-                new Coord(4, 'A'),
-                new Coord(2, 'A'),
-                new Coord(2, 'E')
+                new Coord(2, 'B'),
+                new Coord(2, 'C'),
+                new Coord(2, 'D'),
+                new Coord(3, 'B'),
+                new Coord(3, 'D'),
+                new Coord(4, 'B'),
+                new Coord(4, 'C'),
+                new Coord(4, 'D')
         );
         for (var to : correctCases) {
             var target = new Square(to);
 
-            var isCorrect = knight.isCorrectMovement(source, target);
+            var isCorrect = king.isCorrectMovement(source, target);
             assertTrue(isCorrect);
         }
     }
@@ -54,24 +58,22 @@ public class KnightTest {
     @Test
     public void testIsIncorrectMovement() {
         var incorrectCases = List.of(
-                new Coord(4, 'D'),
-                new Coord(2, 'B'),
-                new Coord(4, 'B'),
-                new Coord(2, 'D'),
-                new Coord(3, 'A'),
+                new Coord(1, 'B'),
                 new Coord(1, 'C'),
-                new Coord(3, 'F'),
-                new Coord(6, 'C'),
-                new Coord(1, 'B')
+                new Coord(1, 'D'),
+                new Coord(3, 'A'),
+                new Coord(3, 'E'),
+                new Coord(5, 'B'),
+                new Coord(5, 'C'),
+                new Coord(5, 'D')
         );
 
         for (var to : incorrectCases) {
             var target = new Square(to);
 
-            var isIncorrect = !knight.isCorrectMovement(source, target);
+            var isIncorrect = !king.isCorrectMovement(source, target);
             assertTrue(isIncorrect);
         }
     }
-
 
 }
