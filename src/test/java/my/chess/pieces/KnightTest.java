@@ -41,7 +41,11 @@ public class KnightTest {
                 new Coord(4, 'E'),
                 new Coord(4, 'A'),
                 new Coord(2, 'A'),
-                new Coord(2, 'E')
+                new Coord(2, 'E'),
+                new Coord(1, 'B'),
+                new Coord(1, 'D'),
+                new Coord(5, 'B'),
+                new Coord(5, 'D')
         );
         for (var to : correctCases) {
             var target = new Square(to);
@@ -61,8 +65,7 @@ public class KnightTest {
                 new Coord(3, 'A'),
                 new Coord(1, 'C'),
                 new Coord(3, 'F'),
-                new Coord(6, 'C'),
-                new Coord(1, 'B')
+                new Coord(6, 'C')
         );
 
         for (var to : incorrectCases) {
