@@ -60,7 +60,7 @@ public class Board extends JPanel {
 
     public Board() {
         createSquares();
-        setNewGame();
+        setGame(this::defaultLayout);
 
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -74,7 +74,6 @@ public class Board extends JPanel {
                 chooseOrMove(evt);
             }
         });
-
     }
 
     private void createSquares() {
@@ -91,10 +90,16 @@ public class Board extends JPanel {
         }
     }
 
-    public void setNewGame()  {
+    public void setGame(LayoutDefinition layoutDefinition)  {
 
         clearBoard();
 
+        layoutDefinition.setLayout(squares);
+
+        repaint();
+    }
+
+    public void defaultLayout(List<Square> squares) {
         var color1 = Color.WHITE;
         var color2 = Color.BLACK;
 
@@ -121,8 +126,6 @@ public class Board extends JPanel {
             squares.get(idx + 6).setPiece(new Knight(color, this));
             squares.get(idx + 7).setPiece(new Rook(color, this));
         }
-
-        repaint();
     }
 
     private void clearBoard() {
@@ -139,7 +142,7 @@ public class Board extends JPanel {
 
     public void loadGame(Deque<Move> moves) {
 
-        setNewGame();
+        setGame(this::defaultLayout);
 
         for (var move : moves) {
             Coord from = move.source;

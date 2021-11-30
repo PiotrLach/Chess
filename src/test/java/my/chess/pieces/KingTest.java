@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.util.List;
 import my.chess.Board;
 import my.chess.Coord;
+import my.chess.LayoutDefinition;
 import my.chess.Square;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -30,13 +31,14 @@ import static org.junit.Assert.*;
  */
 public class KingTest {
 
-    private final Board board = new Board();
-    private final King king = new King(Color.WHITE, board);
-    private final Coord from = new Coord(3, 'C');
-    private final Square source = new Square(from);
-
     @Test
     public void testIsCorrectMovement() {
+
+        var board = new Board();
+        var king = new King(Color.WHITE, board);
+        var from = new Coord(3, 'C');
+        var source = new Square(from);
+
         var correctCases = List.of(
                 new Coord(2, 'B'),
                 new Coord(2, 'C'),
@@ -47,6 +49,7 @@ public class KingTest {
                 new Coord(4, 'C'),
                 new Coord(4, 'D')
         );
+
         for (var to : correctCases) {
             var target = new Square(to);
 
@@ -57,6 +60,12 @@ public class KingTest {
 
     @Test
     public void testIsIncorrectMovement() {
+
+        var board = new Board();
+        var king = new King(Color.WHITE, board);
+        var from = new Coord(3, 'C');
+        var source = new Square(from);
+
         var incorrectCases = List.of(
                 new Coord(1, 'B'),
                 new Coord(1, 'C'),
@@ -74,6 +83,34 @@ public class KingTest {
             var isIncorrect = !king.isCorrectMovement(source, target);
             assertTrue(isIncorrect);
         }
+    }
+
+    @Test
+    public void castlingTest() {
+        final var board = new Board();
+
+        LayoutDefinition layoutDefinition = (squares) -> {
+            squares.get(0).setPiece(new Rook  (Color.WHITE, board));
+            squares.get(4).setPiece(new King  (Color.WHITE, board));
+            squares.get(7).setPiece(new Rook  (Color.WHITE, board));
+            squares.get(7 * 8 + 6).setPiece(new Rook  (Color.BLACK, board));
+        };
+
+        board.setGame(layoutDefinition);
+
+        var squares = board.getSquares();
+
+        var source = squares.get(4);
+        var target1 = squares.get(2);
+        var target2 = squares.get(6);
+        var king = source.getPiece();
+
+        var isCorrect = king.isCorrectMovement(source, target1);
+        var isIncorrect = !king.isCorrectMovement(source, target2);
+
+        assertTrue(isCorrect);
+        assertTrue(isIncorrect);
+
     }
 
 }
