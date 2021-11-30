@@ -26,8 +26,8 @@ import my.chess.Square;
  */
 public class Bishop extends Piece {
 
-    public Bishop(Color pieceColor, Board board) {
-        super(PieceName.Bishop, pieceColor, board);
+    public Bishop(Color color, Board board) {
+        super(Name.Bishop, color, board);
     }
 
     @Override

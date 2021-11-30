@@ -30,7 +30,7 @@ public class Empty extends Piece {
     public static final Empty INSTANCE = new Empty();
 
     private Empty() {
-        super(PieceName.Empty, Color.GRAY, null);
+        super(Name.Empty, Color.GRAY, null);
     }
 
     @Override

@@ -38,8 +38,8 @@ public class King extends Piece {
         WRONG
     }
 
-    public King(Color pieceColor, Board board) {
-        super(PieceName.King, pieceColor, board);
+    public King(Color color, Board board) {
+        super(Name.King, color, board);
     }
 
     @Override

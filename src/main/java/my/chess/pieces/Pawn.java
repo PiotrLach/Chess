@@ -34,10 +34,10 @@ public class Pawn extends Piece {
 
     private final int startRow;
 
-    public Pawn(Color color, PieceName pieceName, Board board) {
-        super(pieceName, color, board);
+    public Pawn(Color color, Name name, Board board) {
+        super(name, color, board);
 
-        startRow = pieceName == PieceName.Pawn1 ? 1 : 6;
+        startRow = name == Name.Pawn1 ? 1 : 6;
 
         isMovingDown = startRow == 1;
     }

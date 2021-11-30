@@ -26,8 +26,8 @@ import my.chess.Square;
  */
 public class Knight extends Piece {
 
-    public Knight(Color pieceColor, Board board) {
-        super(PieceName.Knight, pieceColor, board);
+    public Knight(Color color, Board board) {
+        super(Name.Knight, color, board);
     }
 
     @Override

@@ -104,8 +104,8 @@ public class Board extends JPanel {
         var color2 = Color.BLACK;
 
         for (int col = 0; col < 8; col++) {
-            var topPawn = new Pawn(color1, Piece.PieceName.Pawn1, this);
-            var bottomPawn = new Pawn(color2, Piece.PieceName.Pawn6, this);
+            var topPawn = new Pawn(color1, Piece.Name.Pawn1, this);
+            var bottomPawn = new Pawn(color2, Piece.Name.Pawn6, this);
 
             squares.get(1 * 8 + col).setPiece(topPawn);
             squares.get(6 * 8 + col).setPiece(bottomPawn);

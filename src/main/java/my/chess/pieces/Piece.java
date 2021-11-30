@@ -38,7 +38,7 @@ import my.chess.Move;
 abstract public class Piece implements Serializable {
 
     @AllArgsConstructor
-    public enum PieceName {
+    public enum Name {
         Pawn1(0),
         Pawn6(0),
         Bishop(1),
@@ -54,7 +54,7 @@ abstract public class Piece implements Serializable {
     protected transient Board board;
     public final Color color;
     protected transient Image image;
-    protected PieceName name;
+    protected Name name;
     @Getter
     @ToString.Include
     protected boolean isOnStartPosition = true;
@@ -63,8 +63,8 @@ abstract public class Piece implements Serializable {
     @Serial
     private static final long serialVersionUID = 4232331441720820159L;
 
-    public Piece(PieceName pieceName, Color color, Board board) {
-        this.name = pieceName;
+    public Piece(Name name, Color color, Board board) {
+        this.name = name;
         this.color = color;
         this.board = board;
         this.image = imageLoader.getImage(name, color);
