@@ -432,7 +432,7 @@ public class Board extends JPanel {
     /**
      * Checks if there are pieces on the path between source and target squares
      */
-    private boolean isPathFree(Square source, Square target) {
+    public boolean isPathFree(Square source, Square target) {
         Function<Coord, Integer> function = (coord, emptyCount) -> {
 
             var square = squares.get(coord.index);
