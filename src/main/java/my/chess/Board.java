@@ -30,6 +30,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -413,53 +414,35 @@ public class Board extends JPanel {
     }
 
     /**
-     * Retrieves a list of squares in straight line between source
-     * and target squares
-     */
-    private List<Square> getPath(Square source, Square target) {
-        Function<Coord, List<Square>> function = (coord, path) -> {
-
-            path.add(squares.get(coord.index));
-
-            return path;
-        };
-
-        List<Square> path = new ArrayList<>();
-
-        return traverse(source, target, path, function);
-    }
-
-    /**
      * Checks if there are pieces on the path between source and target squares
      */
     public boolean isPathFree(Square source, Square target) {
-        Function<Coord, Integer> function = (coord, emptyCount) -> {
 
-            var square = squares.get(coord.index);
-            var piece = square.getPiece();
+        var path = getPath(source, target);
 
-            emptyCount += piece instanceof Empty ? 0 : 1;
+        return path.stream()
+            .filter(this::isNotEmptySquare)
+            .count() == 0;
+    }
 
-            return emptyCount;
-        };
-
-        Integer nullCount = 0;
-
-        return traverse(source, target, nullCount, function) == 0;
+    private boolean isNotEmptySquare(Square square) {
+        return !(square.getPiece() instanceof Empty);
     }
 
     /**
      * Traverses the board in particular direction, inferred from differences
-     * between source and target squares, and applies a function to t.
-     * @param <T> type of object undergoing modification
-     * @param t object undergoing modification
-     * @return result of applying the parameterized function to t.
+     * between source and target squares. Retrieves a list of squares in
+     * straight line between source and target squares.
      */
-    private <T> T traverse(Square source, Square target, T t, Function<Coord, T> function) {
+    public List<Square> getPath(Square source, Square target) {
 
-        if (source.getPiece() instanceof Knight) {
-            return t;
+        var piece = source.getPiece();
+
+        if (piece instanceof Knight) {
+            return Collections.emptyList();
         }
+
+        List<Square> path = new ArrayList<>();
 
         var isTargetSameRow = source.coord.row == target.coord.row;
         var isTargetSameCol = source.coord.col == target.coord.col;
@@ -475,13 +458,17 @@ public class Board extends JPanel {
         int col = source.coord.col + hDiff;
         var coord = new Coord(row, col);
 
-        for (; !coord.equals(target.coord); row += vDiff, col += hDiff) {
+        while (!coord.equals(target.coord)) {
 
-            t = function.perform(coord, t);
+            path.add(squares.get(coord.index));
+
+            row += vDiff;
+            col += hDiff;
 
             coord = new Coord(row, col);
         }
-        return t;
+        
+        return path;
     }
 
     /**
@@ -503,7 +490,7 @@ public class Board extends JPanel {
     }
 
     /**
-     * Resets the size and location for each square, so that the board
+     * Resets the size and location for each square, so that board
      * scales with window.
      */
     private void resizeBoard() {
