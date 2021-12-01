@@ -16,6 +16,7 @@
  */
 package my.chess;
 
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -29,9 +30,29 @@ public class BoardTest {
     public void isPathFreeTest() {
         var board = new Board();
         var squares = board.getSquares();
-        var source = squares.get(0);
-        var target = squares.get(8 * 2);
+        var source = squares.get(new Coord(1, 'A').index);
+        var target = squares.get(new Coord(6, 'A').index);
 
         assertFalse(board.isPathFree(source, target));
+    }
+
+    @Test
+    public void getPathTest() {
+        System.out.println("getPathTest");
+        var board = new Board();
+        var squares = board.getSquares();
+        var source = squares.get(new Coord(1, 'A').index);
+        var target = squares.get(new Coord(6, 'A').index);
+
+        var path = board.getPath(source, target);
+
+        var expected = List.of(
+            squares.get(new Coord(2, 'A').index),
+            squares.get(new Coord(3, 'A').index),
+            squares.get(new Coord(4, 'A').index),
+            squares.get(new Coord(5, 'A').index)
+        );
+
+        assertEquals(path, expected);
     }
 }
