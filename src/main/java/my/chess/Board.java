@@ -55,9 +55,10 @@ public class Board extends JPanel {
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("my/chess/Bundle");
     @Getter
     private final List<Square> squares = new ArrayList<>();
+    private final List<Drawable> drawables = new ArrayList<>();
     private Color currentColor = Color.WHITE;
     private Optional<Square> optionalSourceSquare = Optional.empty();
-    private int squareSize = 80;
+    private int squareSize = 100;
 
     public Board() {
         createSquares();
@@ -78,15 +79,23 @@ public class Board extends JPanel {
     }
 
     private void createSquares() {
-        squareSize = 80;
-        int index = 0;
+        squareSize = 100;
+        int squareIndex = 0;
 
-        for (int y = 640; y > 0; y -= squareSize) {
-            for (int x = 0; x < 640; x += squareSize, index++) {
+        for (int y = 1000; y > 0; y -= squareSize) {
+            for (int x = 0; x < 1000; x += squareSize) {
 
-                var coord = new Coord(index);
-                var square = new Square(x, y, squareSize, coord);
-                squares.add(square);
+                Drawable drawable;
+                if (x == 0 || y == 1000 || x == 900 || y == 100) {
+                    drawable = new Index(x, y, squareSize);
+                } else {
+                    var coord = new Coord(squareIndex);
+                    var square = new Square(x, y, squareSize, coord);
+                    squares.add(square);
+                    drawable = square;
+                    squareIndex++;
+                }
+                drawables.add(drawable);
             }
         }
     }
@@ -467,7 +476,7 @@ public class Board extends JPanel {
 
             coord = new Coord(row, col);
         }
-        
+
         return path;
     }
 
@@ -478,12 +487,12 @@ public class Board extends JPanel {
     public void paint(Graphics graphics) {
         super.paint(graphics);
 
-        for (var square : squares) {
+        for (var drawable : drawables) {
 
-            if (square.isHighlighted()) {
-                square.drawHighlighted(graphics);
+            if (drawable.isHighlighted()) {
+                drawable.drawHighlighted(graphics);
             } else {
-                square.draw(graphics);
+                drawable.draw(graphics);
             }
         }
 
@@ -505,8 +514,8 @@ public class Board extends JPanel {
         for (int y = maxHeight, index = 0; y > minHeight; y -= squareSize) {
             for (int x = minWidth; x < maxWidth; x += squareSize, index++) {
 
-                squares.get(index).setLocation(x, y);
-                squares.get(index).setSize(squareSize, squareSize);
+                drawables.get(index).setPosition(x, y);
+                drawables.get(index).setDimension(squareSize);
             }
         }
         repaint();
@@ -524,11 +533,11 @@ public class Board extends JPanel {
         int dim1 = Math.min(width, height);
         int dim2 = Math.max(width, height);
 
-        while (dim1 % 8 != 0) {
+        while (dim1 % 10 != 0) {
             dim1--;
         }
 
-        squareSize = dim1 / 8;
+        squareSize = dim1 / 10;
 
         int minDim1 = 0;
         int maxDim1 = dim1;

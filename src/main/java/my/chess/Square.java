@@ -32,7 +32,7 @@ import my.chess.pieces.Empty;
  */
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-public class Square extends Rectangle {
+public class Square extends Rectangle implements Drawable {
 
     @Getter
     @Setter
@@ -61,6 +61,17 @@ public class Square extends Rectangle {
         this.piece = Empty.INSTANCE;
     }
 
+    @Override
+    public void setDimension(int size) {
+        setSize(size, size);
+    }
+
+    @Override
+    public void setPosition(int x, int y) {
+        setLocation(x, y);
+    }
+
+    @Override
     public void draw(Graphics graphics) {
 
         var isRowOdd = coord.row % 2 == 1;
@@ -73,10 +84,12 @@ public class Square extends Rectangle {
         } else {
             graphics.setColor(MY_BROWN);
         }
-        
+
         graphics.fillRect(x, y, width, height);
         piece.drawImage(graphics, x, y, width);
     }
+
+    @Override
     public void drawHighlighted(Graphics graphics) {
         graphics.setColor(Color.RED);
         graphics.fillRect(x, y, width, height);
@@ -98,5 +111,4 @@ public class Square extends Rectangle {
     public boolean isOnRight(Square square) {
         return coord.col > square.coord.col;
     }
-
 }
