@@ -40,40 +40,21 @@ public class Index extends Rectangle implements Drawable {
         this.symbol = chooseSymbol();
     }
 
-    @Override
-    public void setDimension(int size) {
-        setSize(size, size);
-    }
-
-    @Override
-    public void setPosition(int x, int y) {
-        setLocation(x, y);
-    }
-
-    @Override
-    public void drawHighlighted(Graphics graphics) {
-
-    }
-
-    private boolean isBlank() {
-        return List.of(0, 9, 26, 35).contains(idx);
-    }
-
     private String chooseSymbol() {
         var values = List.of(
-            isInBottomRow(),
-            isInTopRow(),
-            isInLeftColumn(),
-            isInRightColumn()
+                isInBottomRow(),
+                isInTopRow(),
+                isInLeftColumn(),
+                isInRightColumn()
         );
 
         var value = values.indexOf(true);
 
         var chars = List.of(
-            (char) (idx + 64),
-            (char) (idx + 38),
-            (char) (idx / 2 + 44),
-            (char) ((idx - 1) / 2 + 44)
+                (char) (idx + 64), /* A, B, C, ... */
+                (char) (idx + 38),
+                (char) (idx / 2 + 44), /* 1, 2, 3, ... */
+                (char) ((idx - 1) / 2 + 44)
         );
 
         return chars.get(value).toString();
@@ -110,6 +91,25 @@ public class Index extends Rectangle implements Drawable {
         int a = x + (int) (height * 0.2);
         int b = y + (int) (height * 0.8);
         graphics.drawString(symbol, a, b);
+    }
+
+    private boolean isBlank() {
+        return List.of(0, 9, 26, 35).contains(idx);
+    }
+
+    @Override
+    public void setDimension(int size) {
+        setSize(size, size);
+    }
+
+    @Override
+    public void setPosition(int x, int y) {
+        setLocation(x, y);
+    }
+
+    @Override
+    public void drawHighlighted(Graphics graphics) {
+
     }
 
     @Override
