@@ -81,13 +81,15 @@ public class Board extends JPanel {
     private void createSquares() {
         squareSize = 100;
         int squareIndex = 0;
+        int indexIndex = 0;
 
         for (int y = 1000; y > 0; y -= squareSize) {
             for (int x = 0; x < 1000; x += squareSize) {
 
                 Drawable drawable;
                 if (x == 0 || y == 1000 || x == 900 || y == 100) {
-                    drawable = new Index(x, y, squareSize);
+                    drawable = new Index(x, y, squareSize, indexIndex);
+                    indexIndex++;
                 } else {
                     var coord = new Coord(squareIndex);
                     var square = new Square(x, y, squareSize, coord);
@@ -246,6 +248,10 @@ public class Board extends JPanel {
     }
 
     private boolean isValidTarget(Square target) {
+
+        if (target.isHighlighted()) {
+            return false;
+        }
 
         if (optionalSourceSquare.isEmpty()) {
             var message = resourceBundle.getString("Board.noSelectedPiece.text");

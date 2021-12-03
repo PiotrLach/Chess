@@ -20,15 +20,24 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.List;
+import lombok.ToString;
 
 /**
  *
  * @author Piotr Lach
  */
+@ToString
 public class Index extends Rectangle implements Drawable {
 
-    public Index(int x, int y, int size) {
+    private final int idx;
+    private final String symbol;
+    private static final Color FONT_COLOR = Color.LIGHT_GRAY;
+
+    public Index(int x, int y, int size, int idx) {
         super(x, y, size, size);
+        this.idx = idx;
+        this.symbol = chooseSymbol();
     }
 
     @Override
@@ -46,10 +55,61 @@ public class Index extends Rectangle implements Drawable {
 
     }
 
+    private boolean isBlank() {
+        return List.of(0, 9, 26, 35).contains(idx);
+    }
+
+    private String chooseSymbol() {
+        var values = List.of(
+            isInBottomRow(),
+            isInTopRow(),
+            isInLeftColumn(),
+            isInRightColumn()
+        );
+
+        var value = values.indexOf(true);
+
+        var chars = List.of(
+            (char) (idx + 64),
+            (char) (idx + 38),
+            (char) (idx / 2 + 44),
+            (char) ((idx - 1) / 2 + 44)
+        );
+
+        return chars.get(value).toString();
+    }
+
+    private boolean isInBottomRow() {
+        return idx >= 0 && idx <= 9;
+    }
+
+    private boolean isInTopRow() {
+        return idx >= 26 && idx <= 35;
+    }
+
+    private boolean isInLeftColumn() {
+        return idx >= 10 && idx <= 25 && idx % 2 == 0;
+    }
+
+    private boolean isInRightColumn() {
+        return idx >= 10 && idx <= 25 && idx % 2 == 1;
+    }
+
     @Override
     public void draw(Graphics graphics) {
-        graphics.setColor(Color.LIGHT_GRAY);
-        graphics.fillRect(x, y, width, height);
+
+        if (isBlank()) {
+            return;
+        }
+
+        var font = new Font("Liberation Mono", Font.BOLD, width);
+
+        graphics.setColor(FONT_COLOR);
+        graphics.setFont(font);
+
+        int a = x + (int) (height * 0.2);
+        int b = y + (int) (height * 0.8);
+        graphics.drawString(symbol, a, b);
     }
 
     @Override
