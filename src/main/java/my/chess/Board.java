@@ -80,26 +80,30 @@ public class Board extends JPanel {
 
     private void createSquares() {
         squareSize = 100;
-        int squareIndex = 0;
-        int indexIndex = 0;
+        int squareCounter = 0;
+        int indexCounter = 0;
 
         for (int y = 1000; y > 0; y -= squareSize) {
             for (int x = 0; x < 1000; x += squareSize) {
 
                 Drawable drawable;
-                if (x == 0 || y == 1000 || x == 900 || y == 100) {
-                    drawable = new Index(x, y, squareSize, indexIndex);
-                    indexIndex++;
+                if (isInBorder(x, y)) {
+                    drawable = new Index(x, y, squareSize, indexCounter);
+                    indexCounter++;
                 } else {
-                    var coord = new Coord(squareIndex);
+                    var coord = new Coord(squareCounter);
                     var square = new Square(x, y, squareSize, coord);
                     squares.add(square);
                     drawable = square;
-                    squareIndex++;
+                    squareCounter++;
                 }
                 drawables.add(drawable);
             }
         }
+    }
+
+    private boolean isInBorder(int x, int y) {
+        return x == 0 || y == 1000 || x == 900 || y == 100;
     }
 
     public void setGame(LayoutDefinition layoutDefinition)  {
