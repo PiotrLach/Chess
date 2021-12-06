@@ -498,12 +498,7 @@ public class Board extends JPanel {
         super.paint(graphics);
 
         for (var drawable : drawables) {
-
-            if (drawable.isHighlighted()) {
-                drawable.drawHighlighted(graphics);
-            } else {
-                drawable.draw(graphics);
-            }
+            drawable.draw(graphics);
         }
 
     }

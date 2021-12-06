@@ -107,18 +107,4 @@ public class Index extends Rectangle implements Drawable {
         setLocation(x, y);
     }
 
-    @Override
-    public void drawHighlighted(Graphics graphics) {
-
-    }
-
-    @Override
-    public boolean isHighlighted() {
-        return false;
-    }
-
-    @Override
-    public void setHighlighted(boolean highlighted) {
-    }
-
 }

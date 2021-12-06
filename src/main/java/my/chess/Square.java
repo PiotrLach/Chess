@@ -13,7 +13,7 @@
 
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 package my.chess;
 
 import my.chess.pieces.Piece;
@@ -26,6 +26,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import my.chess.pieces.Empty;
+
 /**
  *
  * @author Piotr Lach
@@ -74,26 +75,26 @@ public class Square extends Rectangle implements Drawable {
     @Override
     public void draw(Graphics graphics) {
 
-        var isRowOdd = coord.row % 2 == 1;
-        var isColOdd = coord.col % 2 == 1;
-
-        var isWhite = (isRowOdd && !isColOdd) || (!isRowOdd && isColOdd);
-
-        if (isWhite) {
+        if (isWhite()) {
             graphics.setColor(MY_WHITE);
         } else {
             graphics.setColor(MY_BROWN);
+        }
+
+        if (isHighlighted()) {
+            graphics.setColor(Color.RED);
         }
 
         graphics.fillRect(x, y, width, height);
         piece.drawImage(graphics, x, y, width);
     }
 
-    @Override
-    public void drawHighlighted(Graphics graphics) {
-        graphics.setColor(Color.RED);
-        graphics.fillRect(x, y, width, height);
-        piece.drawImage(graphics, x, y, width);
+    private boolean isWhite() {
+
+        var isRowOdd = coord.row % 2 == 1;
+        var isColOdd = coord.col % 2 == 1;
+
+        return (isRowOdd && !isColOdd) || (!isRowOdd && isColOdd);
     }
 
     public boolean isInBorderRow() {

@@ -23,10 +23,10 @@ import java.awt.Graphics;
  * @author Piotr Lach
  */
 public interface Drawable {
-    boolean isHighlighted();
-    void setHighlighted(boolean highlighted);
+
     void setDimension(int size);
+
     void setPosition(int x, int y);
-    void drawHighlighted(Graphics graphics);
+
     void draw(Graphics graphics);
 }
