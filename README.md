@@ -12,8 +12,7 @@ The code takes advantage of some of more recent language features, namely:
 
 * for each loops,
 * Stream API,
-* the `Optional` class
-* generic functions,
+* the `Optional` class,
 * functional interfaces,
 * the `var` keyword (local variable type inference),
 * switch expressions.
@@ -24,6 +23,7 @@ The program consists of two packages: `my.chess` and `my.chess.pieces`.
 * `MainFrame` — displays the window which contains the menu bar and the board; contains the `main` method. 
 * `Board` — displays the board, processes player’s input, enforces game rules.
 * `Square` — represents a single board square, containing a piece.
+* `Index` — displays algebraic notation.
 * `Coord` — a pair of constant row and column coordinates, indicating a square’s position in the board.
 * `Move` — records player's move.
 * `Save` — used for saving and loading games via serialization and deserialization, respectively.
