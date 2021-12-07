@@ -490,12 +490,9 @@ public class Board extends JPanel {
         return path;
     }
 
-    /**
-     * Paints the board
-     */
     @Override
-    public void paint(Graphics graphics) {
-        super.paint(graphics);
+    protected void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
 
         for (var drawable : drawables) {
             drawable.draw(graphics);
