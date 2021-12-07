@@ -79,21 +79,21 @@ public class Index extends Rectangle implements Drawable {
     @Override
     public void draw(Graphics graphics) {
 
-        if (isBlank()) {
+        if (isInCorner()) {
             return;
         }
 
-        var font = new Font("Liberation Mono", Font.BOLD, width);
+        var font = new Font("Liberation Mono", Font.BOLD, width * 3 / 4);
 
         graphics.setColor(FONT_COLOR);
         graphics.setFont(font);
 
-        int a = x + (int) (height * 0.2);
-        int b = y + (int) (height * 0.8);
+        int a = x + height * 2 / 7;
+        int b = y + height * 3 / 4;
         graphics.drawString(symbol, a, b);
     }
 
-    private boolean isBlank() {
+    private boolean isInCorner() {
         return List.of(0, 9, 26, 35).contains(idx);
     }
 
