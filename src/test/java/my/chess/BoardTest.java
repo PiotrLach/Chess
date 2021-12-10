@@ -29,9 +29,8 @@ public class BoardTest {
     @Test
     public void isPathFreeTest() {
         var board = new Board();
-        var squares = board.getSquares();
-        var source = squares.get(new Coord(1, 'A').index);
-        var target = squares.get(new Coord(6, 'A').index);
+        var source = board.getSquare(new Coord(1, 'A'));
+        var target = board.getSquare(new Coord(6, 'A'));
 
         assertFalse(board.isPathFree(source, target));
     }
@@ -40,17 +39,16 @@ public class BoardTest {
     public void getPathTest() {
         System.out.println("getPathTest");
         var board = new Board();
-        var squares = board.getSquares();
-        var source = squares.get(new Coord(1, 'A').index);
-        var target = squares.get(new Coord(6, 'A').index);
+        var source = board.getSquare(new Coord(1, 'A'));
+        var target = board.getSquare(new Coord(6, 'A'));
 
         var path = board.getPath(source, target);
 
         var expected = List.of(
-            squares.get(new Coord(2, 'A').index),
-            squares.get(new Coord(3, 'A').index),
-            squares.get(new Coord(4, 'A').index),
-            squares.get(new Coord(5, 'A').index)
+            board.getSquare(new Coord(2, 'A')),
+            board.getSquare(new Coord(3, 'A')),
+            board.getSquare(new Coord(4, 'A')),
+            board.getSquare(new Coord(5, 'A'))
         );
 
         assertEquals(path, expected);

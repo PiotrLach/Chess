@@ -81,7 +81,7 @@ abstract public class Piece implements Serializable {
         isOnStartPosition = false;
 
         var move = new Move(source.coord, target.coord);
-        board.getMoves().add(move);
+        board.addMove(move);
 
         board.changeCurrentColor();
     }

@@ -59,7 +59,7 @@ public class King extends Piece {
         isOnStartPosition = false;
 
         var move = new Move(source.coord, target.coord);
-        board.getMoves().add(move);
+        board.addMove(move);
 
         board.changeCurrentColor();
     }
@@ -103,15 +103,14 @@ public class King extends Piece {
             }
         }
 
-        var squares = board.getSquares();
-
-        var rookSquare = squares.get(source.coord.row * 8 + rookCol);
+        var rookCoord = new Coord(source.coord.row, rookCol);
+        var rookSquare = board.getSquare(rookCoord);
         var rook = rookSquare.getPiece();
 
         int row = target.coord.row;
         int col = target.coord.col + offset;
         var coord = new Coord(row, col);
-        var square = squares.get(coord.index);
+        var square = board.getSquare(coord);
 
         rook.movePiece(rookSquare, square);
         board.changeCurrentColor();

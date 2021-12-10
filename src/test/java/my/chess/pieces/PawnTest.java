@@ -57,8 +57,7 @@ public class PawnTest {
         squares.get(toEnemy.index).setPiece(enemy);
     };
 
-    final List<Square> squares = board.getSquares();
-    final Square source = squares.get(from.index);
+    final Square source = board.getSquare(from);
 
     @Before
     public void setUp() {
@@ -69,7 +68,7 @@ public class PawnTest {
     public void isCorrectMovement() {
 
         for (var to : correctCases) {
-            var target = squares.get(to.index);
+            var target = board.getSquare(to);
 
             var isCorrect = pawn.isCorrectMovement(source, target);
             assertTrue(isCorrect);
@@ -79,7 +78,7 @@ public class PawnTest {
     @Test
     public void isIncorrectMovement() {
         for (var to : incorrectCases) {
-            var target = squares.get(to.index);
+            var target = board.getSquare(to);
 
             var isIncorrect = !pawn.isCorrectMovement(source, target);
             assertTrue(isIncorrect);

@@ -51,7 +51,7 @@ public class Pawn extends Piece {
         if (isEnPassant(source, target)) {
             var moves = board.getMoves();
             var coord = moves.getLast().target;
-            var square = board.getSquares().get(coord.index);
+            var square = board.getSquare(coord);
             square.setPiece(Empty.INSTANCE);
         }
 
@@ -65,7 +65,7 @@ public class Pawn extends Piece {
             move = new Move(source.coord, target.coord);
         }
 
-        board.getMoves().add(move);
+        board.addMove(move);
         board.changeCurrentColor();
 
         target.setPiece(piece);
@@ -130,8 +130,7 @@ public class Pawn extends Piece {
         }
         var coord = lastMove.target;
 
-        var squares = board.getSquares();
-        var lastMoveTarget = squares.get(coord.index);
+        var lastMoveTarget = board.getSquare(coord);
 
         var isSourceOnSameRow = source.coord.row == lastMoveTarget.coord.row;
         var isLastMoveTargetLeft = lastMoveTarget.coord.col == source.coord.col - 1;
@@ -153,7 +152,7 @@ public class Pawn extends Piece {
 
         int vDiff; // vertical difference
         vDiff = Math.abs(lastMove.source.row - lastMove.target.row);
-        var lastMoveTargetSquare = board.getSquares().get(lastMove.target.index);
+        var lastMoveTargetSquare = board.getSquare(lastMove.target);
         var piece = lastMoveTargetSquare.getPiece();
 
         return piece instanceof Pawn && vDiff == 2 && piece.isFoe(this.color);

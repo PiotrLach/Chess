@@ -558,4 +558,12 @@ public class Board extends JPanel {
         currentColor = isWhite ? Color.BLACK : Color.WHITE;
     }
 
+    public void addMove(Move move) {
+        moves.add(move);
+    }
+
+    public Square getSquare(Coord coord) {
+        return squares.get(coord.index);
+    }
+
 }

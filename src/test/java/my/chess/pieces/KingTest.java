@@ -98,11 +98,9 @@ public class KingTest {
 
         board.setGame(layoutDefinition);
 
-        var squares = board.getSquares();
-
-        var source = squares.get(4);
-        var target1 = squares.get(2);
-        var target2 = squares.get(6);
+        var source =  board.getSquare(new Coord(4));
+        var target1 = board.getSquare(new Coord(2));
+        var target2 = board.getSquare(new Coord(6));
         var king = source.getPiece();
 
         var isCorrect = king.isCorrectMovement(source, target1);
