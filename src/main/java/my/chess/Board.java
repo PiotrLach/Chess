@@ -227,20 +227,17 @@ public class Board extends JPanel {
         }
 
         if (isMate()) {
-            var message = resourceBundle.getString("Board.isMate.text");
-            JOptionPane.showMessageDialog(this, message);
+            displayMessage(Message.isMate);
             return false;
         }
 
         if (square.isHighlighted()) {
-            var message = resourceBundle.getString("Board.pieceAlreadyChosen.text");
-            JOptionPane.showMessageDialog(this, message);
+            displayMessage(Message.pieceAlreadyChosen);
             return false;
         }
 
         if (isCheck() && !isCheckBlockPossible() && !(piece instanceof King)) {
-            var message = resourceBundle.getString("Board.pieceGetOutOfCheck.text");
-            JOptionPane.showMessageDialog(this, message);
+            displayMessage(Message.getOutOfCheck);
             return false;
         }
 
@@ -258,8 +255,7 @@ public class Board extends JPanel {
         }
 
         if (optionalSourceSquare.isEmpty()) {
-            var message = resourceBundle.getString("Board.noSelectedPiece.text");
-            JOptionPane.showMessageDialog(this, message);
+            displayMessage(Message.noSelectedPiece);
             return false;
         }
 
@@ -267,30 +263,31 @@ public class Board extends JPanel {
         var selectedPiece = source.getPiece();
 
         if (!selectedPiece.isCorrectMovement(source, target)) {
-            var message = resourceBundle.getString("Board.wrongMove.text");
-            JOptionPane.showMessageDialog(this, message);
+            displayMessage(Message.wrongMove);
             return false;
         }
 
         if (!isPathFree(source, target)) {
-            var message = resourceBundle.getString("Board.pathBlocked.text");
-            JOptionPane.showMessageDialog(this, message);
+            displayMessage(Message.pathBlocked);
             return false;
         }
 
         if (isCheck() && !isCheckBlock(source, target) && !isKingEscape(source, target)) {
-            var message = resourceBundle.getString("Board.pieceGetOutOfCheck.text");
-            JOptionPane.showMessageDialog(this, message);
+            displayMessage(Message.getOutOfCheck);
             return false;
         }
 
         if (isSelfMadeCheck(source, target)) {
-            var message = resourceBundle.getString("Board.selfMadeCheck.text");
-            JOptionPane.showMessageDialog(this, message);
+            displayMessage(Message.selfMadeCheck);
             return false;
         }
 
         return true;
+    }
+    
+    private void displayMessage(Message message) {
+        var messageText = resourceBundle.getString(message.string);
+        JOptionPane.showMessageDialog(this, messageText);
     }
 
     public boolean isAttacked(Square square) {
