@@ -284,7 +284,7 @@ public class Board extends JPanel {
 
         return true;
     }
-    
+
     private void displayMessage(Message message) {
         var messageText = resourceBundle.getString(message.string);
         JOptionPane.showMessageDialog(this, messageText);
@@ -328,29 +328,33 @@ public class Board extends JPanel {
     /**
      * Retrieves a list of squares for each enemy piece that attacks the square
      * passed as the parameter. Each list consists of the square containing the
-     * enemy piece and the path that leads input square.
+     * enemy piece and the path that leads to the target square.
      */
-    private List<List<Square>> findAttackingSquares(Square input) {
+    private List<List<Square>> findAttackingSquares(Square target) {
         var allSquaresLists = new ArrayList<List<Square>>();
 
-        for (var square : squares) {
-            var piece = square.getPiece();
+        for (var source : squares) {
 
-            if (!square.equals(input)
-                && piece.isFoe(currentColor)
-                && piece.isCorrectMovement(square, input)
-                && isPathFree(square, input))
-            {
+            if (isAttack(source, target)) {
                 var singleSquaresList = new ArrayList<Square>();
-                var path = getPath(square, input);
+                var path = getPath(source, target);
 
-                singleSquaresList.add(square);
+                singleSquaresList.add(source);
                 singleSquaresList.addAll(path);
 
                 allSquaresLists.add(singleSquaresList);
             }
         }
         return allSquaresLists;
+    }
+
+    private boolean isAttack(Square source, Square target) {
+        var piece = source.getPiece();
+
+        return !source.equals(target)
+                && piece.isFoe(currentColor)
+                && piece.isCorrectMovement(source, target)
+                && isPathFree(source, target);
     }
 
     /**
@@ -381,18 +385,23 @@ public class Board extends JPanel {
 
         for (var target : singleSquaresList) {
             for (var source : squares) {
-                var piece = source.getPiece();
 
-                if (!(piece instanceof King)
-                    && !piece.isFoe(currentColor)
-                    && piece.isCorrectMovement(source, target)
-                    && isPathFree(source, target))
+                if (isBlock(source, target))
                 {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    private boolean isBlock(Square source, Square target) {
+        var piece = source.getPiece();
+
+        return !(piece instanceof King)
+                && !piece.isFoe(currentColor)
+                && piece.isCorrectMovement(source, target)
+                && isPathFree(source, target);
     }
 
     private boolean isSelfMadeCheck(Square source, Square target) {
@@ -513,8 +522,10 @@ public class Board extends JPanel {
         for (int y = maxHeight, index = 0; y > minHeight; y -= squareSize) {
             for (int x = minWidth; x < maxWidth; x += squareSize, index++) {
 
-                drawables.get(index).setPosition(x, y);
-                drawables.get(index).setDimension(squareSize);
+                var drawable = drawables.get(index);
+
+                drawable.setPosition(x, y);
+                drawable.setDimension(squareSize);
             }
         }
         repaint();
