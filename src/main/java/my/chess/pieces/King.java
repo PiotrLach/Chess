@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import my.chess.Board;
-import my.chess.Coord;
 import my.chess.Move;
 import my.chess.Square;
 
@@ -68,7 +67,7 @@ public class King extends Piece {
 
         var castlingSide = determineSide(source, target);
         var sideSquares = getSideSquares(castlingSide, source);
-        var optionalRookSquare = findSideRookSquare(sideSquares, castlingSide);
+        var optionalRookSquare = getSideRookSquare(sideSquares, castlingSide);
 
         if (!this.isOnStartPosition()
                 || board.isAttacked(source)
@@ -87,32 +86,30 @@ public class King extends Piece {
     private void moveRook(Square source, Square target) {
 
         var castlingSide = determineSide(source, target);
-        int rookCol, offset;
+        int sCol, tCol;
 
         switch (castlingSide) {
             case QUEEN -> {
-                rookCol = 0;
-                offset = 1;
+                sCol = 0;
+                tCol = 3;
             }
             case KING -> {
-                rookCol = 7;
-                offset = -1;
+                sCol = 7;
+                tCol = 5;
             }
             default -> {
                 return;
             }
         }
 
-        var rookCoord = new Coord(source.coord.row, rookCol);
-        var rookSquare = board.getSquare(rookCoord);
-        var rook = rookSquare.getPiece();
+        int row = source.coord.row;
 
-        int row = target.coord.row;
-        int col = target.coord.col + offset;
-        var coord = new Coord(row, col);
-        var square = board.getSquare(coord);
+        var rookSource = board.getSquare(row, sCol);
+        var rookTarget = board.getSquare(row, tCol);
 
-        rook.movePiece(rookSquare, square);
+        var rook = rookSource.getPiece();
+        rook.movePiece(rookSource, rookTarget);
+
         board.changeCurrentColor();
     }
 
@@ -121,9 +118,9 @@ public class King extends Piece {
         if (!(source.isInSameRow(target))) {
             return CastlingSide.WRONG;
         }
-        if (target.coord.col == (source.coord.col + 2)) {
+        if (target.coord.col == 6) {
             return CastlingSide.KING;
-        } else if (target.coord.col == (source.coord.col - 2)) {
+        } else if (target.coord.col == 2) {
             return CastlingSide.QUEEN;
         }
         return CastlingSide.WRONG;
@@ -149,12 +146,11 @@ public class King extends Piece {
 
     }
 
-    private Optional<Square> findSideRookSquare(List<Square> sideSquares, CastlingSide castlingSide) {
+    private Optional<Square> getSideRookSquare(List<Square> sideSquares, CastlingSide castlingSide) {
 
         return sideSquares.stream()
-                .filter(square -> !(square.getPiece() instanceof Empty))
-                .filter(square -> square.getPiece().isOnStartPosition())
                 .filter(square -> square.getPiece() instanceof Rook)
+                .filter(square -> square.getPiece().isOnStartPosition())
                 .filter(square ->
                         switch (castlingSide) {
                             case KING -> square.coord.col == 7;

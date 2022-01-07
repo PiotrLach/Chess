@@ -574,4 +574,9 @@ public class Board extends JPanel {
         return squares.get(coord.index);
     }
 
+    public Square getSquare(int row, int col) {
+        var coord = new Coord(row, col);
+        return squares.get(coord.index);
+    }
+
 }
