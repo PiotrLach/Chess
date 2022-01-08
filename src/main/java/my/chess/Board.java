@@ -62,7 +62,7 @@ public class Board extends JPanel {
 
     public Board() {
         createSquares();
-        setGame(this::defaultLayout);
+        setDefaultGame();
 
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -106,7 +106,7 @@ public class Board extends JPanel {
         return x == 0 || y == 1000 || x == 900 || y == 100;
     }
 
-    public void setGame(LayoutDefinition layoutDefinition)  {
+    public void setGame(LayoutDefinition layoutDefinition) {
 
         clearBoard();
 
@@ -115,7 +115,16 @@ public class Board extends JPanel {
         repaint();
     }
 
-    public void defaultLayout(List<Square> squares) {
+    public final void setDefaultGame() {
+
+        clearBoard();
+
+        setDefaultLayout(squares);
+
+        repaint();
+    }
+
+    private void setDefaultLayout(List<Square> squares) {
         var color1 = Color.WHITE;
         var color2 = Color.BLACK;
 
@@ -158,7 +167,7 @@ public class Board extends JPanel {
 
     public void loadGame(Deque<Move> moves) {
 
-        setGame(this::defaultLayout);
+        setDefaultGame();
 
         for (var move : moves) {
             Coord from = move.source;
@@ -291,12 +300,12 @@ public class Board extends JPanel {
     }
 
     public boolean isAttacked(Square square) {
-        return findAttackingSquares(square).size() > 0;
+        return getAttackingSquares(square).size() > 0;
     }
 
     private boolean isCheck() {
         var kingSquare = findKing();
-        return findAttackingSquares(kingSquare).size() > 0;
+        return getAttackingSquares(kingSquare).size() > 0;
     }
 
     private boolean isMate() {
@@ -305,7 +314,7 @@ public class Board extends JPanel {
             return false;
         }
 
-        var escapeSquares = findEscapeSquares();
+        var escapeSquares = getEscapeSquares();
 
         return !isCheckBlockPossible() && escapeSquares.isEmpty();
     }
@@ -330,7 +339,7 @@ public class Board extends JPanel {
      * passed as the parameter. Each list consists of the square containing the
      * enemy piece and the path that leads to the target square.
      */
-    private List<List<Square>> findAttackingSquares(Square target) {
+    private List<List<Square>> getAttackingSquares(Square target) {
         var allSquaresLists = new ArrayList<List<Square>>();
 
         for (var source : squares) {
@@ -360,7 +369,7 @@ public class Board extends JPanel {
     /**
      * Finds squares for king to escape, in order to get out of check.
      */
-    private List<Square> findEscapeSquares() {
+    private List<Square> getEscapeSquares() {
 
         var kingSquare = findKing();
         var king = kingSquare.getPiece();
@@ -375,7 +384,7 @@ public class Board extends JPanel {
     private boolean isCheckBlockPossible() {
 
         var kingSquare = findKing();
-        var allSquaresLists = findAttackingSquares(kingSquare);
+        var allSquaresLists = getAttackingSquares(kingSquare);
 
         if (allSquaresLists.size() > 1) {
             return false; /* This means an unblockable double check. */
@@ -420,14 +429,14 @@ public class Board extends JPanel {
     }
 
     private boolean isKingEscape(Square source, Square target) {
-        var escapeSquares = findEscapeSquares();
+        var escapeSquares = getEscapeSquares();
 
         return source.getPiece() instanceof King && escapeSquares.contains(target);
     }
 
     private boolean isCheckBlock(Square source, Square target) {
         var kingSquare = findKing();
-        var allSquaresLists = findAttackingSquares(kingSquare);
+        var allSquaresLists = getAttackingSquares(kingSquare);
 
         if (allSquaresLists.size() > 1) {
             return false; /* This means an unblockable double check. */
@@ -441,7 +450,7 @@ public class Board extends JPanel {
     /**
      * Checks if there are pieces on the path between source and target squares
      */
-    public boolean isPathFree(Square source, Square target) {
+    private boolean isPathFree(Square source, Square target) {
 
         var path = getPath(source, target);
 
@@ -459,7 +468,7 @@ public class Board extends JPanel {
      * between source and target squares. Retrieves a list of squares in
      * straight line between source and target squares.
      */
-    public List<Square> getPath(Square source, Square target) {
+    private List<Square> getPath(Square source, Square target) {
 
         var piece = source.getPiece();
 

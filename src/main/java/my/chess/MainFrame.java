@@ -116,7 +116,7 @@ public class MainFrame extends JFrame {
     }
 
     private void newGameOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_newGameOptionActionPerformed
-        board.setGame(board::defaultLayout);
+        board.setDefaultGame();
     }//GEN-LAST:event_newGameOptionActionPerformed
 
     private void loadGameOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_loadGameOptionActionPerformed

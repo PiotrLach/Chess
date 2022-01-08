@@ -103,6 +103,7 @@
   </Layout>
   <SubComponents>
     <Container class="my.chess.Board" name="board">
+
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
