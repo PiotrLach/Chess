@@ -75,6 +75,10 @@ abstract public class Piece implements Serializable {
             return;
         }
 
+        if (!board.isValidMove(source, target)) {
+            return;
+        }
+
         target.setPiece(this);
         source.setPiece(Empty.INSTANCE);
         source.setHighlighted(false);
@@ -84,6 +88,7 @@ abstract public class Piece implements Serializable {
         board.addMove(move);
 
         board.changeCurrentColor();
+        board.setOptionalSourceEmpty();
     }
 
     public void drawImage(Graphics graphics, int x, int y, int size) {

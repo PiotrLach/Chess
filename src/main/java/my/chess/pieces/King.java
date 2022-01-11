@@ -48,6 +48,10 @@ public class King extends Piece {
             return;
         }
 
+        if (!board.isValidMove(source, target)) {
+            return;
+        }
+
         if (isCastling(source, target)) {
             moveRook(source, target);
         }
@@ -61,6 +65,7 @@ public class King extends Piece {
         board.addMove(move);
 
         board.changeCurrentColor();
+        board.setOptionalSourceEmpty();
     }
 
     private boolean isCastling(Square source, Square target) {

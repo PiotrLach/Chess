@@ -48,6 +48,10 @@ public class Pawn extends Piece {
             return;
         }
 
+        if (!board.isValidMove(source, target)) {
+            return;
+        }
+
         if (isEnPassant(source, target)) {
             var moves = board.getMoves();
             var coord = moves.getLast().target;
@@ -67,6 +71,7 @@ public class Pawn extends Piece {
 
         board.addMove(move);
         board.changeCurrentColor();
+        board.setOptionalSourceEmpty();
 
         target.setPiece(piece);
         source.setPiece(Empty.INSTANCE);

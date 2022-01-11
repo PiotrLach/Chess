@@ -219,9 +219,10 @@ public class Board extends JPanel {
         } else if (isValidTarget(selectedSquare)) {
 
             var source = optionalSourceSquare.get();
+            var target = selectedSquare;
+
             var selectedPiece = source.getPiece();
-            selectedPiece.movePiece(source, selectedSquare);
-            optionalSourceSquare = Optional.empty();
+            selectedPiece.movePiece(source, target);
         }
 
         repaint();
@@ -235,18 +236,7 @@ public class Board extends JPanel {
             return false;
         }
 
-        if (isMate()) {
-            displayMessage(Message.isMate);
-            return false;
-        }
-
         if (square.isHighlighted()) {
-            displayMessage(Message.pieceAlreadyChosen);
-            return false;
-        }
-
-        if (isCheck() && !isCheckBlockPossible() && !(piece instanceof King)) {
-            displayMessage(Message.getOutOfCheck);
             return false;
         }
 
@@ -257,9 +247,9 @@ public class Board extends JPanel {
         return true;
     }
 
-    private boolean isValidTarget(Square target) {
+    private boolean isValidTarget(Square square) {
 
-        if (target.isHighlighted()) {
+        if (square.isHighlighted()) {
             return false;
         }
 
@@ -268,10 +258,24 @@ public class Board extends JPanel {
             return false;
         }
 
-        var source = optionalSourceSquare.get();
-        var selectedPiece = source.getPiece();
+        return true;
+    }
 
-        if (!selectedPiece.isCorrectMovement(source, target)) {
+    public boolean isValidMove(Square source, Square target) {
+
+        if (isMate()) {
+            displayMessage(Message.isMate);
+            return false;
+        }
+
+        var sPiece = source.getPiece();
+        var tPiece = target.getPiece();
+
+        if (!sPiece.isFoe(tPiece)) {
+            return false;
+        }
+
+        if (!sPiece.isCorrectMovement(source, target)) {
             displayMessage(Message.wrongMove);
             return false;
         }
@@ -588,4 +592,7 @@ public class Board extends JPanel {
         return squares.get(coord.index);
     }
 
+    public void setOptionalSourceEmpty() {
+        optionalSourceSquare = Optional.empty();
+    }
 }
