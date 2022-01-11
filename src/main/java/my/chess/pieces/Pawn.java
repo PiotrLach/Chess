@@ -43,7 +43,7 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public void movePiece(Square source, Square target) {
+    public void move(Square source, Square target) {
         if (!(source.getPiece() == this)) {
             return;
         }

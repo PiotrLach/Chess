@@ -188,7 +188,7 @@ public class Board extends JPanel {
                 changeCurrentColor();
             } else {
                 piece = source.getPiece();
-                piece.movePiece(source, target);
+                piece.move(source, target);
             }
         }
 
@@ -222,7 +222,7 @@ public class Board extends JPanel {
             var target = selectedSquare;
 
             var selectedPiece = source.getPiece();
-            selectedPiece.movePiece(source, target);
+            selectedPiece.move(source, target);
         }
 
         repaint();

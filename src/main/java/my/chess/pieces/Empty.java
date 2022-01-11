@@ -18,7 +18,6 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import my.chess.Square;
 
 /**
@@ -34,7 +33,7 @@ public class Empty extends Piece {
     }
 
     @Override
-    public void movePiece(Square source, Square target) {}
+    public void move(Square source, Square target) {}
 
     @Override
     public void drawImage(Graphics graphics, int x, int y, int size) {}

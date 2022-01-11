@@ -42,7 +42,7 @@ public class King extends Piece {
     }
 
     @Override
-    public void movePiece(Square source, Square target) {
+    public void move(Square source, Square target) {
         var piece = source.getPiece();
         if (!(piece == this)) {
             return;
@@ -113,7 +113,7 @@ public class King extends Piece {
         var rookTarget = board.getSquare(row, tCol);
 
         var rook = rookSource.getPiece();
-        rook.movePiece(rookSource, rookTarget);
+        rook.move(rookSource, rookTarget);
 
         board.changeCurrentColor();
     }
