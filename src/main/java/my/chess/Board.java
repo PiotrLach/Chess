@@ -448,7 +448,9 @@ public class Board extends JPanel {
 
         var singleSquaresList = allSquaresLists.get(0);
 
-        return !(source.getPiece() instanceof King) && singleSquaresList.contains(target);
+        var isKing = source.getPiece() instanceof King;
+
+        return !isKing && singleSquaresList.contains(target);
     }
 
     /**
@@ -480,33 +482,42 @@ public class Board extends JPanel {
             return Collections.emptyList();
         }
 
-        List<Square> path = new ArrayList<>();
+        int verticalDiff = calcVerticalDiff(source, target);
+        int horizontalDiff = calcHorizontalDiff(source, target);
 
-        var isTargetSameRow = source.coord.row == target.coord.row;
-        var isTargetSameCol = source.coord.col == target.coord.col;
-        var isTargetRowLower = source.coord.row < target.coord.row;
-        var isTargetColLower = source.coord.col < target.coord.col;
-
-        int vDiff, hDiff; // vertical and horizontal difference
-
-        vDiff = isTargetSameRow ? 0 : (isTargetRowLower ? 1 : -1);
-        hDiff = isTargetSameCol ? 0 : (isTargetColLower ? 1 : -1);
-
-        int row = source.coord.row + vDiff;
-        int col = source.coord.col + hDiff;
+        int row = source.coord.row + verticalDiff;
+        int col = source.coord.col + horizontalDiff;
         var coord = new Coord(row, col);
+
+        List<Square> path = new ArrayList<>();
 
         while (!coord.equals(target.coord)) {
 
             path.add(squares.get(coord.index));
 
-            row += vDiff;
-            col += hDiff;
+            row += verticalDiff;
+            col += horizontalDiff;
 
             coord = new Coord(row, col);
         }
 
         return path;
+    }
+
+    private int calcVerticalDiff(Square source, Square target) {
+
+        var isTargetSameRow = source.coord.row == target.coord.row;
+        var isTargetRowLower = source.coord.row < target.coord.row;
+
+        return isTargetSameRow ? 0 : (isTargetRowLower ? 1 : -1);
+    }
+
+    private int calcHorizontalDiff(Square source, Square target) {
+
+        var isTargetSameCol = source.coord.col == target.coord.col;
+        var isTargetColLower = source.coord.col < target.coord.col;
+
+        return isTargetSameCol ? 0 : (isTargetColLower ? 1 : -1);
     }
 
     @Override
