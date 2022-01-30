@@ -81,9 +81,9 @@ class PieceImageLoader {
     Image getImage(Piece.Name name, Color color) {
 
         if (color.equals(Color.BLACK)) {
-            return blackPieces.get(name.id);
+            return blackPieces.get(name.imageId);
         } else {
-            return whitePieces.get(name.id);
+            return whitePieces.get(name.imageId);
         }
     }
 }

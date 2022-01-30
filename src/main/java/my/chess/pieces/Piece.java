@@ -25,6 +25,7 @@ import java.awt.Image;
 import java.io.Serial;
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,20 +35,23 @@ import my.chess.Move;
 /**
  * @author Piotr Lach
  */
+@EqualsAndHashCode
 @ToString(onlyExplicitlyIncluded = true)
 abstract public class Piece implements Serializable {
 
     @AllArgsConstructor
     public enum Name {
-        Pawn1(0),
-        Pawn6(0),
-        Bishop(1),
-        Knight(2),
-        Rook(3),
-        King(4),
-        Queen(5),
-        Empty(6);
-        public final int id;
+        Pawn1   (0, "L", 0),
+        Pawn6   (0, "H", 1),
+        Bishop  (1, "B", 2),
+        Knight  (2, "N", 3),
+        Rook    (3, "R", 4),
+        King    (4, "K", 5),
+        Queen   (5, "Q", 6),
+        Empty   (6, " ", 7) ;
+        public final int imageId;
+        public final String symbol;
+        public final int pieceId;
     }
 
     @Setter
