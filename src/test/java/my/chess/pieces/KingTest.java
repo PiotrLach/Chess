@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.util.List;
 import my.chess.Board;
 import my.chess.Coord;
-import my.chess.LayoutDefinition;
 import my.chess.Square;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -87,27 +86,23 @@ public class KingTest {
 
     @Test
     public void castlingTest() {
-        final var board = new Board();
+        var board = new Board();
 
-        LayoutDefinition layoutDefinition = (squares) -> {
-            squares.get(0).setPiece(new Rook  (Color.WHITE, board));
-            squares.get(4).setPiece(new King  (Color.WHITE, board));
-            squares.get(7).setPiece(new Rook  (Color.WHITE, board));
-            squares.get(7 * 8 + 6).setPiece(new Rook  (Color.BLACK, board));
+        String[] layout = {
+            " ; "," ; "," ; "," ; "," ; "," ; ","R;B"," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            "R;W"," ; "," ; "," ; ","K;W"," ; "," ; ","R;W"
         };
 
-        board.setGame(layoutDefinition);
+        board.setGame(layout);
 
-        var source =  board.getSquare(new Coord(4));
-        var target1 = board.getSquare(new Coord(2));
-        var target2 = board.getSquare(new Coord(6));
-        var king = source.getPiece();
-
-        var isCorrect = king.isCorrectMovement(source, target1);
-        var isIncorrect = !king.isCorrectMovement(source, target2);
-
-        assertTrue(isCorrect);
-        assertTrue(isIncorrect);
+        assertFalse(board.isCorrectMovement(0, 4, 0, 6));
+        assertTrue(board.isCorrectMovement(0, 4, 0, 2));
 
     }
 

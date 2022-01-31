@@ -16,12 +16,9 @@
  */
 package my.chess.pieces;
 
-import java.awt.Color;
 import java.util.List;
 import my.chess.Board;
 import my.chess.Coord;
-import my.chess.LayoutDefinition;
-import my.chess.Square;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -32,55 +29,55 @@ import org.junit.Before;
  */
 public class PawnTest {
 
-    final List<Coord> correctCases = List.of(
-        new Coord(3, 'B'),
-        new Coord(3, 'C'),
-        new Coord(4, 'C')
-    );
-
-    final List<Coord> incorrectCases = List.of(
-            new Coord(1, 'C'),
-            new Coord(1, 'B'),
-            new Coord(1, 'D'),
-            new Coord(2, 'D'),
-            new Coord(2, 'B'),
-            new Coord(3, 'D')
-    );
-
-    final Board board = new Board();
-    final Pawn pawn = new Pawn(Color.BLACK, Piece.Name.Pawn1, board);
-    final Coord from = new Coord(2, 'C');
-    final Coord toEnemy = new Coord(3, 'B');
-    final Rook enemy = new Rook(Color.WHITE, board);
-    final LayoutDefinition layoutDefinition = (squares) -> {
-        squares.get(from.index).setPiece(pawn);
-        squares.get(toEnemy.index).setPiece(enemy);
-    };
-
-    final Square source = board.getSquare(from);
+    Board board = new Board();
+    Coord from = new Coord(2, 'C');
 
     @Before
     public void setUp() {
-        board.setGame(layoutDefinition);
+        String[] layout = {
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; ","R;W"," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; ","L;B"," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; "
+        };
+        board.setGame(layout);
     }
 
     @Test
     public void isCorrectMovement() {
 
-        for (var to : correctCases) {
-            var target = board.getSquare(to);
+        List<Coord> correctCases = List.of(
+            new Coord(3, 'B'),
+            new Coord(3, 'C'),
+            new Coord(4, 'C')
+        );
 
-            var isCorrect = pawn.isCorrectMovement(source, target);
+        for (var to : correctCases) {
+
+            var isCorrect = board.isCorrectMovement(from, to);
             assertTrue(isCorrect);
         }
     }
 
     @Test
     public void isIncorrectMovement() {
-        for (var to : incorrectCases) {
-            var target = board.getSquare(to);
 
-            var isIncorrect = !pawn.isCorrectMovement(source, target);
+        List<Coord> incorrectCases = List.of(
+                new Coord(1, 'C'),
+                new Coord(1, 'B'),
+                new Coord(1, 'D'),
+                new Coord(2, 'D'),
+                new Coord(2, 'B'),
+                new Coord(3, 'D')
+        );
+
+        for (var to : incorrectCases) {
+
+            var isIncorrect = !board.isCorrectMovement(from, to);
             assertTrue(isIncorrect);
         }
     }

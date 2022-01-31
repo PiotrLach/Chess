@@ -16,13 +16,9 @@
 */
 package my.chess;
 
-import my.chess.pieces.Rook;
 import my.chess.pieces.Knight;
 import my.chess.pieces.King;
 import my.chess.pieces.Piece;
-import my.chess.pieces.Queen;
-import my.chess.pieces.Bishop;
-import my.chess.pieces.Pawn;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
@@ -40,8 +36,8 @@ import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import lombok.Getter;
-import lombok.val;
 import my.chess.pieces.Empty;
+import my.chess.pieces.PieceFactory;
 
 /**
  *
@@ -59,6 +55,7 @@ public class Board extends JPanel {
     private Color currentColor = Color.WHITE;
     private Optional<Square> optionalSourceSquare = Optional.empty();
     private int squareSize = 100;
+    private final PieceFactory pieceFactory = new PieceFactory(this);
 
     public Board() {
         createSquares();
@@ -106,50 +103,50 @@ public class Board extends JPanel {
         return x == 0 || y == 1000 || x == 900 || y == 100;
     }
 
-    public void setGame(LayoutDefinition layoutDefinition) {
+    public void setGame(String[] layout) {
 
         clearBoard();
 
-        layoutDefinition.setLayout(squares);
+        setLayout(layout);
 
         repaint();
     }
 
     public final void setDefaultGame() {
 
-        clearBoard();
+        String[] layout = {
+            "R;B","N;B","B;B","Q;B","K;B","B;B","N;B","R;B",
+            "H;B","H;B","H;B","H;B","H;B","H;B","H;B","H;B",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            "L;W","L;W","L;W","L;W","L;W","L;W","L;W","L;W",
+            "R;W","N;W","B;W","Q;W","K;W","B;W","N;W","R;W"
+        };
 
-        setDefaultLayout(squares);
-
-        repaint();
+        setGame(layout);
     }
 
-    private void setDefaultLayout(List<Square> squares) {
-        var color1 = Color.WHITE;
-        var color2 = Color.BLACK;
+    private void setLayout(String[] layout) {
 
-        for (int col = 0; col < 8; col++) {
-            var topPawn = new Pawn(color1, Piece.Name.Pawn1, this);
-            var bottomPawn = new Pawn(color2, Piece.Name.Pawn6, this);
-
-            squares.get(1 * 8 + col).setPiece(topPawn);
-            squares.get(6 * 8 + col).setPiece(bottomPawn);
+        if (layout.length != 64) {
+            throw new IllegalArgumentException("Layout lacks squares!");
         }
 
-        for (int row = 0; row <= 7; row += 7) {
+        for (int row1 = 7, row2 = 0; row1 >= 0; row1--, row2++) {
+            for (int col = 0; col < 8; col++) {
 
-            var color = row == 0 ? color1 : color2;
+                var layoutCoord = new Coord(row1, col);
 
-            val idx = row * 8;
+                var string = layout[layoutCoord.index];
+                var piece = pieceFactory.getPiece(string);
 
-            squares.get(idx + 0).setPiece(new Rook(color, this));
-            squares.get(idx + 1).setPiece(new Knight(color, this));
-            squares.get(idx + 2).setPiece(new Bishop(color, this));
-            squares.get(idx + 3).setPiece(new Queen(color, this));
-            squares.get(idx + 4).setPiece(new King(color, this));
-            squares.get(idx + 5).setPiece(new Bishop(color, this));
-            squares.get(idx + 6).setPiece(new Knight(color, this));
-            squares.get(idx + 7).setPiece(new Rook(color, this));
+                var squareCoord = new Coord(row2, col);
+
+                var square = squares.get(squareCoord.index);
+                square.setPiece(piece);
+            }
         }
     }
 
@@ -543,13 +540,17 @@ public class Board extends JPanel {
         int minWidth  = dimensions.get(2);
         int maxWidth  = dimensions.get(3);
 
-        for (int y = maxHeight, index = 0; y > minHeight; y -= squareSize) {
-            for (int x = minWidth; x < maxWidth; x += squareSize, index++) {
+        int index = 0;
+
+        for (int y = maxHeight; y > minHeight; y -= squareSize) {
+            for (int x = minWidth; x < maxWidth; x += squareSize) {
 
                 var drawable = drawables.get(index);
 
                 drawable.setPosition(x, y);
                 drawable.setDimension(squareSize);
+
+                index++;
             }
         }
         repaint();
@@ -605,5 +606,36 @@ public class Board extends JPanel {
 
     public void setOptionalSourceEmpty() {
         optionalSourceSquare = Optional.empty();
+    }
+
+    public void movePiece(int row1, int col1, int row2, int col2) {
+
+        var from = new Coord(row1, col1);
+        var to = new Coord(row2, col2);
+
+        var source = squares.get(from.index);
+        var target = squares.get(to.index);
+
+        var attacker = source.getPiece();
+
+        attacker.move(source, target);
+    }
+
+    public boolean isCorrectMovement(int row1, int col1, int row2, int col2) {
+
+        var from = new Coord(row1, col1);
+        var to = new Coord(row2, col2);
+
+        return isCorrectMovement(from, to);
+    }
+
+    public boolean isCorrectMovement(Coord from, Coord to) {
+
+        var source = squares.get(from.index);
+        var target = squares.get(to.index);
+
+        var attacker = source.getPiece();
+
+        return attacker.isCorrectMovement(source, target);
     }
 }
