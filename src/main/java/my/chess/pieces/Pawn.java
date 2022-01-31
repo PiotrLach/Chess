@@ -18,8 +18,6 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import java.util.List;
-import javax.swing.Icon;
-import javax.swing.JOptionPane;
 import my.chess.Board;
 import my.chess.Move;
 import my.chess.Square;
@@ -81,7 +79,7 @@ public class Pawn extends Piece {
 
     private Piece promote(Piece piece) {
 
-        int choice = showPromoteDialog();
+        int choice = board.showPromoteDialog();
 
         return switch(choice) {
             default -> new Queen(piece.color, board);
@@ -89,35 +87,6 @@ public class Pawn extends Piece {
             case 2 -> new Rook(piece.color, board);
             case 3 -> new Bishop(piece.color, board);
         };
-    }
-
-    private int showPromoteDialog() {
-
-        var bundle = board.getResourceBundle();
-        var parentComponent = board;
-        var message = bundle.getString("Board.PromoteMessage");
-        var title = bundle.getString("Board.PromoteMessageTitle");
-        int optionType = JOptionPane.YES_NO_OPTION;
-        int messageType = JOptionPane.INFORMATION_MESSAGE;
-        Icon icon = null;
-        String[] options = {
-                bundle.getString("Board.QueenName"),
-                bundle.getString("Board.KnightName"),
-                bundle.getString("Board.RookName"),
-                bundle.getString("Board.BishopName")
-        };
-        var initialValue = bundle.getString("Board.QueenName");
-
-        int choice = JOptionPane.showOptionDialog(parentComponent,
-                message,
-                title,
-                optionType,
-                messageType,
-                icon,
-                options,
-                initialValue
-        );
-        return choice;
     }
 
     private boolean isEnPassant(Square source, Square target) {

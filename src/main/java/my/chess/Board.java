@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import lombok.Getter;
@@ -293,6 +294,34 @@ public class Board extends JPanel {
         }
 
         return true;
+    }
+
+    public int showPromoteDialog() {
+
+        var parentComponent = this;
+        var message = resourceBundle.getString("Board.PromoteMessage");
+        var title = resourceBundle.getString("Board.PromoteMessageTitle");
+        int optionType = JOptionPane.YES_NO_OPTION;
+        int messageType = JOptionPane.INFORMATION_MESSAGE;
+        Icon icon = null;
+        String[] options = {
+                resourceBundle.getString("Board.QueenName"),
+                resourceBundle.getString("Board.KnightName"),
+                resourceBundle.getString("Board.RookName"),
+                resourceBundle.getString("Board.BishopName")
+        };
+        var initialValue = resourceBundle.getString("Board.QueenName");
+
+        int choice = JOptionPane.showOptionDialog(parentComponent,
+                message,
+                title,
+                optionType,
+                messageType,
+                icon,
+                options,
+                initialValue
+        );
+        return choice;
     }
 
     private void displayMessage(Message message) {
