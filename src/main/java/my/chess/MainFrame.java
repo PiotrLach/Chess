@@ -130,8 +130,7 @@ public class MainFrame extends JFrame {
         var file = fileChooser.getSelectedFile();
         var fileName = file.getAbsolutePath();
 
-        var save = new Save(board);
-        save.loadGame(fileName);
+        board.loadGame(fileName);
     }//GEN-LAST:event_loadGameOptionActionPerformed
 
     private void saveGameOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_saveGameOptionActionPerformed
@@ -157,8 +156,7 @@ public class MainFrame extends JFrame {
         }
 
         var fileName = file.getAbsolutePath();
-        var save = new Save(board);
-        save.saveGame(fileName);
+        board.saveGame(fileName);
     }//GEN-LAST:event_saveGameOptionActionPerformed
 
     private void licenseOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_licenseOptionActionPerformed

@@ -21,7 +21,10 @@ import java.util.Deque;
 import javax.swing.JOptionPane;
 import lombok.RequiredArgsConstructor;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
+import my.chess.pieces.Empty;
+import my.chess.pieces.Piece;
 
 /**
  *
@@ -31,16 +34,42 @@ import java.util.ResourceBundle;
 public class Save {
 
     private final Board board;
+    private final List<Square> squares;
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("my/chess/Bundle");
 
     public void loadGame(String filename) {
-        var deque = readObject(filename);
+        var moves = readObject(filename);
 
-        if (deque.isEmpty()) {
+        if (moves.isEmpty()) {
             return;
         }
 
-        board.loadGame(deque);
+        board.setDefaultGame();
+
+        for (var move : moves) {
+            Coord from = move.source;
+            Coord to = move.target;
+
+            Square source = squares.get(from.index);
+            Square target = squares.get(to.index);
+
+            Piece piece;
+            /* Necessary for promoted pawns */
+            if (!((piece = move.getPromotedPiece()) instanceof Empty)) {
+                piece.setBoard(board);
+                piece.setImage();
+
+                source.setPiece(Empty.INSTANCE);
+                target.setPiece(piece);
+
+                board.changeCurrentColor();
+            } else {
+                piece = source.getPiece();
+                piece.move(source, target);
+            }
+        }
+
+        board.repaint();
     }
 
     public void saveGame(String fileName) {
@@ -96,7 +125,7 @@ public class Save {
 
             var message = resourceBundle.getString("Save.saveError");
             JOptionPane.showMessageDialog(board, message);
-            
+
         }
     }
 

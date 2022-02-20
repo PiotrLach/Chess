@@ -16,7 +16,6 @@
 */
 package my.chess;
 
-import my.chess.pieces.Piece;
 import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -32,7 +31,6 @@ import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import lombok.Getter;
-import my.chess.pieces.Empty;
 
 /**
  *
@@ -46,10 +44,11 @@ public class Board extends JPanel {
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("my/chess/Bundle");
     @Getter
     private final List<Square> squares = new ArrayList<>();
-    private final Logic logic = new Logic(this, squares);
     private final List<Drawable> drawables = new ArrayList<>();
+    private final Logic logic = new Logic(this, squares);
     private Optional<Square> optionalSourceSquare = Optional.empty();
     private int squareSize = 100;
+    private final Save save = new Save(this, squares);
 
     public Board() {
         setListeners();
@@ -131,36 +130,6 @@ public class Board extends JPanel {
     public void displayMessage(Message message) {
         var messageText = resourceBundle.getString(message.string);
         JOptionPane.showMessageDialog(this, messageText);
-    }
-
-    public void loadGame(Deque<Move> moves) {
-
-        setDefaultGame();
-
-        for (var move : moves) {
-            Coord from = move.source;
-            Coord to = move.target;
-
-            Square source = squares.get(from.index);
-            Square target = squares.get(to.index);
-
-            Piece piece;
-            /* Necessary for promoted pawns */
-            if (!((piece = move.getPromotedPiece()) instanceof Empty)) {
-                piece.setBoard(this);
-                piece.setImage();
-
-                source.setPiece(Empty.INSTANCE);
-                target.setPiece(piece);
-
-                logic.changeCurrentColor();
-            } else {
-                piece = source.getPiece();
-                piece.move(source, target);
-            }
-        }
-
-        repaint();
     }
 
     public final void setDefaultGame() {
@@ -384,5 +353,13 @@ public class Board extends JPanel {
 
     public boolean isAttacked(Square square) {
         return logic.isAttacked(square);
+    }
+
+    public void loadGame(String filename) {
+        save.loadGame(filename);
+    }
+
+    public void saveGame(String filename) {
+        save.saveGame(filename);
     }
 }
