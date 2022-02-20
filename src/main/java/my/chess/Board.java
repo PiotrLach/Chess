@@ -16,29 +16,23 @@
 */
 package my.chess;
 
-import my.chess.pieces.Knight;
-import my.chess.pieces.King;
 import my.chess.pieces.Piece;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import lombok.Getter;
 import my.chess.pieces.Empty;
-import my.chess.pieces.PieceFactory;
 
 /**
  *
@@ -52,16 +46,18 @@ public class Board extends JPanel {
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("my/chess/Bundle");
     @Getter
     private final List<Square> squares = new ArrayList<>();
+    private final Logic logic = new Logic(this, squares);
     private final List<Drawable> drawables = new ArrayList<>();
-    private Color currentColor = Color.WHITE;
     private Optional<Square> optionalSourceSquare = Optional.empty();
     private int squareSize = 100;
-    private final PieceFactory pieceFactory = new PieceFactory(this);
 
     public Board() {
+        setListeners();
         createSquares();
         setDefaultGame();
+    }
 
+    private void setListeners() {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent evt) {
@@ -104,63 +100,37 @@ public class Board extends JPanel {
         return x == 0 || y == 1000 || x == 900 || y == 100;
     }
 
-    public void setGame(String[] layout) {
+    public int showPromoteDialog() {
 
-        clearBoard();
-
-        setLayout(layout);
-
-        repaint();
-    }
-
-    public final void setDefaultGame() {
-
-        String[] layout = {
-            "R;B","N;B","B;B","Q;B","K;B","B;B","N;B","R;B",
-            "H;B","H;B","H;B","H;B","H;B","H;B","H;B","H;B",
-            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
-            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
-            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
-            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
-            "L;W","L;W","L;W","L;W","L;W","L;W","L;W","L;W",
-            "R;W","N;W","B;W","Q;W","K;W","B;W","N;W","R;W"
+        var parentComponent = this;
+        var message = resourceBundle.getString("Board.PromoteMessage");
+        var title = resourceBundle.getString("Board.PromoteMessageTitle");
+        int optionType = JOptionPane.YES_NO_OPTION;
+        int messageType = JOptionPane.INFORMATION_MESSAGE;
+        Icon icon = null;
+        String[] options = {
+                resourceBundle.getString("Board.QueenName"),
+                resourceBundle.getString("Board.KnightName"),
+                resourceBundle.getString("Board.RookName"),
+                resourceBundle.getString("Board.BishopName")
         };
+        var initialValue = resourceBundle.getString("Board.QueenName");
 
-        setGame(layout);
+        int choice = JOptionPane.showOptionDialog(parentComponent,
+                message,
+                title,
+                optionType,
+                messageType,
+                icon,
+                options,
+                initialValue
+        );
+        return choice;
     }
 
-    private void setLayout(String[] layout) {
-
-        if (layout.length != 64) {
-            throw new IllegalArgumentException("Layout lacks squares!");
-        }
-
-        for (int row1 = 7, row2 = 0; row1 >= 0; row1--, row2++) {
-            for (int col = 0; col < 8; col++) {
-
-                var layoutCoord = new Coord(row1, col);
-
-                var string = layout[layoutCoord.index];
-                var piece = pieceFactory.getPiece(string);
-
-                var squareCoord = new Coord(row2, col);
-
-                var square = squares.get(squareCoord.index);
-                square.setPiece(piece);
-            }
-        }
-    }
-
-    private void clearBoard() {
-        currentColor = Color.WHITE;
-        optionalSourceSquare = Optional.empty();
-
-        for (var square : squares) {
-            square.setPiece(Empty.INSTANCE);
-            square.setHighlighted(false);
-        }
-
-        moves.clear();
+    public void displayMessage(Message message) {
+        var messageText = resourceBundle.getString(message.string);
+        JOptionPane.showMessageDialog(this, messageText);
     }
 
     public void loadGame(Deque<Move> moves) {
@@ -183,12 +153,36 @@ public class Board extends JPanel {
                 source.setPiece(Empty.INSTANCE);
                 target.setPiece(piece);
 
-                changeCurrentColor();
+                logic.changeCurrentColor();
             } else {
                 piece = source.getPiece();
                 piece.move(source, target);
             }
         }
+
+        repaint();
+    }
+
+    public final void setDefaultGame() {
+
+        String[] layout = {
+            "R;B","N;B","B;B","Q;B","K;B","B;B","N;B","R;B",
+            "H;B","H;B","H;B","H;B","H;B","H;B","H;B","H;B",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+            "L;W","L;W","L;W","L;W","L;W","L;W","L;W","L;W",
+            "R;W","N;W","B;W","Q;W","K;W","B;W","N;W","R;W"
+        };
+
+        setGame(layout);
+    }
+
+
+    public void setGame(String[] layout) {
+
+        logic.setLayout(layout);
 
         repaint();
     }
@@ -230,7 +224,7 @@ public class Board extends JPanel {
 
         var piece = square.getPiece();
 
-        if (piece.isFoe(currentColor)) {
+        if (piece.isFoe(logic.getCurrentColor())) {
             return false;
         }
 
@@ -257,293 +251,6 @@ public class Board extends JPanel {
         }
 
         return true;
-    }
-
-    public boolean isValidMove(Square source, Square target) {
-
-        if (isMate()) {
-            displayMessage(Message.isMate);
-            return false;
-        }
-
-        var sPiece = source.getPiece();
-        var tPiece = target.getPiece();
-
-        if (!sPiece.isFoe(tPiece)) {
-            return false;
-        }
-
-        if (!sPiece.isCorrectMovement(source, target)) {
-            displayMessage(Message.wrongMove);
-            return false;
-        }
-
-        if (!isPathFree(source, target)) {
-            displayMessage(Message.pathBlocked);
-            return false;
-        }
-
-        if (isCheck() && !isCheckBlock(source, target) && !isKingEscape(source, target)) {
-            displayMessage(Message.getOutOfCheck);
-            return false;
-        }
-
-        if (isSelfMadeCheck(source, target)) {
-            displayMessage(Message.selfMadeCheck);
-            return false;
-        }
-
-        return true;
-    }
-
-    public int showPromoteDialog() {
-
-        var parentComponent = this;
-        var message = resourceBundle.getString("Board.PromoteMessage");
-        var title = resourceBundle.getString("Board.PromoteMessageTitle");
-        int optionType = JOptionPane.YES_NO_OPTION;
-        int messageType = JOptionPane.INFORMATION_MESSAGE;
-        Icon icon = null;
-        String[] options = {
-                resourceBundle.getString("Board.QueenName"),
-                resourceBundle.getString("Board.KnightName"),
-                resourceBundle.getString("Board.RookName"),
-                resourceBundle.getString("Board.BishopName")
-        };
-        var initialValue = resourceBundle.getString("Board.QueenName");
-
-        int choice = JOptionPane.showOptionDialog(parentComponent,
-                message,
-                title,
-                optionType,
-                messageType,
-                icon,
-                options,
-                initialValue
-        );
-        return choice;
-    }
-
-    private void displayMessage(Message message) {
-        var messageText = resourceBundle.getString(message.string);
-        JOptionPane.showMessageDialog(this, messageText);
-    }
-
-    public boolean isAttacked(Square square) {
-        return getAttackingSquares(square).size() > 0;
-    }
-
-    private boolean isCheck() {
-        var kingSquare = findKing();
-        return getAttackingSquares(kingSquare).size() > 0;
-    }
-
-    private boolean isMate() {
-
-        if (!isCheck()) {
-            return false;
-        }
-
-        var escapeSquares = getEscapeSquares();
-
-        return !isCheckBlockPossible() && escapeSquares.isEmpty();
-    }
-
-    private Square findKing() throws IllegalStateException {
-
-        for (var square : squares) {
-
-            var piece = square.getPiece();
-
-            var isKing = piece instanceof King;
-
-            if (isKing && !piece.isFoe(currentColor)) {
-                return square;
-            }
-        }
-        throw new IllegalStateException("King has not been found.");
-    }
-
-    /**
-     * Retrieves a list of squares for each enemy piece that attacks the square
-     * passed as the parameter. Each list consists of the square containing the
-     * enemy piece and the path that leads to the target square.
-     */
-    private List<List<Square>> getAttackingSquares(Square target) {
-        var allSquaresLists = new ArrayList<List<Square>>();
-
-        for (var source : squares) {
-
-            if (isAttack(source, target)) {
-                var singleSquaresList = new ArrayList<Square>();
-                var path = getPath(source, target);
-
-                singleSquaresList.add(source);
-                singleSquaresList.addAll(path);
-
-                allSquaresLists.add(singleSquaresList);
-            }
-        }
-        return allSquaresLists;
-    }
-
-    private boolean isAttack(Square source, Square target) {
-        var piece = source.getPiece();
-
-        return !source.equals(target)
-                && piece.isFoe(currentColor)
-                && piece.isCorrectMovement(source, target)
-                && isPathFree(source, target);
-    }
-
-    /**
-     * Finds squares for king to escape, in order to get out of check.
-     */
-    private List<Square> getEscapeSquares() {
-
-        var kingSquare = findKing();
-        var king = kingSquare.getPiece();
-
-        return squares.stream()
-            .filter(square -> king.isCorrectMovement(kingSquare, square))
-            .filter(square -> square.getPiece().isFoe(currentColor))
-            .filter(square -> !isAttacked(square))
-            .collect(Collectors.toList());
-    }
-
-    private boolean isCheckBlockPossible() {
-
-        var kingSquare = findKing();
-        var allSquaresLists = getAttackingSquares(kingSquare);
-
-        if (allSquaresLists.size() > 1) {
-            return false; /* This means an unblockable double check. */
-        }
-
-        var singleSquaresList = allSquaresLists.get(0);
-
-        for (var target : singleSquaresList) {
-            for (var source : squares) {
-
-                if (isBlock(source, target))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean isBlock(Square source, Square target) {
-        var piece = source.getPiece();
-
-        return !(piece instanceof King)
-                && !piece.isFoe(currentColor)
-                && piece.isCorrectMovement(source, target)
-                && isPathFree(source, target);
-    }
-
-    private boolean isSelfMadeCheck(Square source, Square target) {
-
-        var sourcePiece = source.getPiece();
-
-        source.setPiece(Empty.INSTANCE);
-        target.setPiece(sourcePiece);
-
-        var isSelfMadeCheck = isCheck();
-
-        source.setPiece(sourcePiece);
-        target.setPiece(Empty.INSTANCE);
-
-        return isSelfMadeCheck;
-    }
-
-    private boolean isKingEscape(Square source, Square target) {
-        var escapeSquares = getEscapeSquares();
-
-        return source.getPiece() instanceof King && escapeSquares.contains(target);
-    }
-
-    private boolean isCheckBlock(Square source, Square target) {
-        var kingSquare = findKing();
-        var allSquaresLists = getAttackingSquares(kingSquare);
-
-        if (allSquaresLists.size() > 1) {
-            return false; /* This means an unblockable double check. */
-        }
-
-        var singleSquaresList = allSquaresLists.get(0);
-
-        var isKing = source.getPiece() instanceof King;
-
-        return !isKing && singleSquaresList.contains(target);
-    }
-
-    /**
-     * Checks if there are pieces on the path between source and target squares
-     */
-    private boolean isPathFree(Square source, Square target) {
-
-        var path = getPath(source, target);
-
-        return path.stream()
-            .filter(this::isNotEmptySquare)
-            .count() == 0;
-    }
-
-    private boolean isNotEmptySquare(Square square) {
-        return !(square.getPiece() instanceof Empty);
-    }
-
-    /**
-     * Traverses the board in particular direction, inferred from differences
-     * between source and target squares. Retrieves a list of squares in
-     * straight line between source and target squares.
-     */
-    private List<Square> getPath(Square source, Square target) {
-
-        var piece = source.getPiece();
-
-        if (piece instanceof Knight) {
-            return Collections.emptyList();
-        }
-
-        int verticalDiff = calcVerticalDiff(source, target);
-        int horizontalDiff = calcHorizontalDiff(source, target);
-
-        int row = source.coord.row + verticalDiff;
-        int col = source.coord.col + horizontalDiff;
-        var coord = new Coord(row, col);
-
-        List<Square> path = new ArrayList<>();
-
-        while (!coord.equals(target.coord)) {
-
-            path.add(squares.get(coord.index));
-
-            row += verticalDiff;
-            col += horizontalDiff;
-
-            coord = new Coord(row, col);
-        }
-
-        return path;
-    }
-
-    private int calcVerticalDiff(Square source, Square target) {
-
-        var isTargetSameRow = source.coord.row == target.coord.row;
-        var isTargetRowLower = source.coord.row < target.coord.row;
-
-        return isTargetSameRow ? 0 : (isTargetRowLower ? 1 : -1);
-    }
-
-    private int calcHorizontalDiff(Square source, Square target) {
-
-        var isTargetSameCol = source.coord.col == target.coord.col;
-        var isTargetColLower = source.coord.col < target.coord.col;
-
-        return isTargetSameCol ? 0 : (isTargetColLower ? 1 : -1);
     }
 
     @Override
@@ -615,11 +322,6 @@ public class Board extends JPanel {
         }
     }
 
-    public void changeCurrentColor() {
-        var isWhite = currentColor.equals(Color.WHITE);
-        currentColor = isWhite ? Color.BLACK : Color.WHITE;
-    }
-
     public void addMove(Move move) {
         moves.add(move);
     }
@@ -666,5 +368,21 @@ public class Board extends JPanel {
         var attacker = source.getPiece();
 
         return attacker.isCorrectMovement(source, target);
+    }
+
+    public void clearMoves() {
+        moves.clear();
+    }
+
+    public boolean isValidMove(Square source, Square target) {
+        return logic.isValidMove(source, target);
+    }
+
+    public void changeCurrentColor() {
+        logic.changeCurrentColor();
+    }
+
+    public boolean isAttacked(Square square) {
+        return logic.isAttacked(square);
     }
 }
