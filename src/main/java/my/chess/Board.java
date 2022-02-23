@@ -316,9 +316,7 @@ public class Board extends JPanel {
         var source = squares.get(from.index);
         var target = squares.get(to.index);
 
-        var attacker = source.getPiece();
-
-        attacker.move(source, target);
+        source.movePiece(target);
     }
 
     public boolean isCorrectMovement(int row1, int col1, int row2, int col2) {
@@ -334,9 +332,7 @@ public class Board extends JPanel {
         var source = squares.get(from.index);
         var target = squares.get(to.index);
 
-        var attacker = source.getPiece();
-
-        return attacker.isCorrectMovement(source, target);
+        return source.isCorrectMovement(target);
     }
 
     public void clearMoves() {
