@@ -30,7 +30,6 @@ import lombok.ToString;
 import lombok.Getter;
 import lombok.Setter;
 import my.chess.Board;
-import my.chess.Move;
 
 /**
  * @author Piotr Lach
@@ -88,8 +87,7 @@ abstract public class Piece implements Serializable {
         source.setHighlighted(false);
         isOnStartPosition = false;
 
-        var move = new Move(source.coord, target.coord);
-        board.addMove(move);
+        board.addMove(source, target);
 
         board.changeCurrentColor();
         board.setOptionalSourceEmpty();

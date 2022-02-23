@@ -31,6 +31,7 @@ import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import lombok.Getter;
+import my.chess.pieces.Piece;
 
 /**
  *
@@ -292,6 +293,16 @@ public class Board extends JPanel {
     }
 
     public void addMove(Move move) {
+        moves.add(move);
+    }
+
+    public void addMove(Square source, Square target) {
+        var move = new Move(source.coord, target.coord);
+        moves.add(move);
+    }
+
+    public void addMove(Square source, Square target, Piece piece) {
+        var move = new Move(source.coord, target.coord, piece);
         moves.add(move);
     }
 

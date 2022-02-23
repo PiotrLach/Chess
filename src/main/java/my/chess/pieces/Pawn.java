@@ -58,16 +58,14 @@ public class Pawn extends Piece {
         }
 
         Piece piece = this;
-        Move move;
 
         if (target.isInBorderRow()) {
             piece = promote(piece);
-            move = new Move(source.coord, target.coord, piece);
+            board.addMove(source, target, piece);
         } else {
-            move = new Move(source.coord, target.coord);
+            board.addMove(source, target);
         }
 
-        board.addMove(move);
         board.changeCurrentColor();
         board.setOptionalSourceEmpty();
 

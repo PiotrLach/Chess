@@ -61,8 +61,7 @@ public class King extends Piece {
         source.setHighlighted(false);
         isOnStartPosition = false;
 
-        var move = new Move(source.coord, target.coord);
-        board.addMove(move);
+        board.addMove(source, target);
 
         board.changeCurrentColor();
         board.setOptionalSourceEmpty();
