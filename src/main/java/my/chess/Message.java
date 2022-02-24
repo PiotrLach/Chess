@@ -31,6 +31,9 @@ public enum Message {
     noSelectedPiece("Board.noSelectedPiece.text"),
     wrongMove("Board.wrongMove.text"),
     pathBlocked("Board.pathBlocked.text"),
-    selfMadeCheck("Board.selfMadeCheck.text");
+    selfMadeCheck("Board.selfMadeCheck.text"),
+    loadError("Save.loadError"),
+    saveError("Save.saveError"),
+    wrongFormat("Save.wrongFormat");
     public final String string;
 }

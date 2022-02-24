@@ -18,7 +18,6 @@ package my.chess;
 
 import java.io.*;
 import java.util.Deque;
-import javax.swing.JOptionPane;
 import lombok.RequiredArgsConstructor;
 import java.util.LinkedList;
 import java.util.List;
@@ -96,13 +95,11 @@ public class Save {
 
         } catch (IOException exception) {
 
-            var message = resourceBundle.getString("Save.loadError");
-            JOptionPane.showMessageDialog(board, message);
+            board.displayMessage(Message.loadError);
 
         } catch (ClassNotFoundException exception) {
 
-            var message = resourceBundle.getString("Save.wrongFormat");
-            JOptionPane.showMessageDialog(board, message);
+            board.displayMessage(Message.wrongFormat);
 
         }
         return new LinkedList<>();
@@ -123,8 +120,7 @@ public class Save {
 
         } catch (IOException exception) {
 
-            var message = resourceBundle.getString("Save.saveError");
-            JOptionPane.showMessageDialog(board, message);
+            board.displayMessage(Message.saveError);
 
         }
     }
