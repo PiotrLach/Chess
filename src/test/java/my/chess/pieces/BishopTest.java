@@ -21,8 +21,8 @@ import java.util.List;
 import my.chess.Board;
 import my.chess.Square;
 import my.chess.Coord;
-import org.junit.Test;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -47,7 +47,7 @@ public class BishopTest {
             var target = new Square(to);
 
             var isCorrect = bishop.isCorrectMovement(source, target);
-            assertTrue(isCorrect);
+            Assertions.assertTrue(isCorrect);
         }
     }
 
@@ -64,7 +64,7 @@ public class BishopTest {
             var target = new Square(to);
 
             var isIncorrect = !bishop.isCorrectMovement(source, target);
-            assertTrue(isIncorrect);
+            Assertions.assertTrue(isIncorrect);
         }
     }
 }

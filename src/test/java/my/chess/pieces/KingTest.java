@@ -21,8 +21,8 @@ import java.util.List;
 import my.chess.Board;
 import my.chess.Coord;
 import my.chess.Square;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -53,7 +53,7 @@ public class KingTest {
             var target = new Square(to);
 
             var isCorrect = king.isCorrectMovement(source, target);
-            assertTrue(isCorrect);
+            Assertions.assertTrue(isCorrect);
         }
     }
 
@@ -80,7 +80,7 @@ public class KingTest {
             var target = new Square(to);
 
             var isIncorrect = !king.isCorrectMovement(source, target);
-            assertTrue(isIncorrect);
+            Assertions.assertTrue(isIncorrect);
         }
     }
 
@@ -101,8 +101,8 @@ public class KingTest {
 
         board.setGame(layout);
 
-        assertFalse(board.isCorrectMovement(0, 4, 0, 6));
-        assertTrue(board.isCorrectMovement(0, 4, 0, 2));
+        Assertions.assertFalse(board.isCorrectMovement(0, 4, 0, 6));
+        Assertions.assertTrue(board.isCorrectMovement(0, 4, 0, 2));
 
     }
 

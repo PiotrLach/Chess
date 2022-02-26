@@ -21,8 +21,8 @@ import java.util.List;
 import my.chess.Board;
 import my.chess.Coord;
 import my.chess.Square;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -47,7 +47,7 @@ public class RookTest {
             var target = new Square(to);
 
             var isCorrect = rook.isCorrectMovement(source, target);
-            assertTrue(isCorrect);
+            Assertions.assertTrue(isCorrect);
         }
     }
 
@@ -64,7 +64,7 @@ public class RookTest {
             var target = new Square(to);
 
             var isIncorrect = !rook.isCorrectMovement(source, target);
-            assertTrue(isIncorrect);
+            Assertions.assertTrue(isIncorrect);
         }
     }
 }

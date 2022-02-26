@@ -20,8 +20,8 @@ import java.awt.Color;
 import my.chess.pieces.Empty;
 import my.chess.pieces.PieceFactory;
 import my.chess.pieces.Rook;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -35,11 +35,11 @@ public class PieceFactoryTest {
     public void testPieceFactory() {
         var rook1 = new Rook(Color.WHITE, board);
         var rook2 = pieceFactory.getPiece("R;W");
-        assertEquals(rook1, rook2);
+        Assertions.assertEquals(rook1, rook2);
 
         var empty1 = Empty.INSTANCE;
         var empty2 = pieceFactory.getPiece(" ; ");
 
-        assertEquals(empty1, empty2);
+        Assertions.assertEquals(empty1, empty2);
     }
 }

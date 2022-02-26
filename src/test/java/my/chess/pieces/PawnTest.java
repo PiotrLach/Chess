@@ -19,9 +19,9 @@ package my.chess.pieces;
 import java.util.List;
 import my.chess.Board;
 import my.chess.Coord;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Before;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -32,7 +32,7 @@ public class PawnTest {
     Board board = new Board();
     Coord from = new Coord(2, 'C');
 
-    @Before
+    @BeforeAll
     public void setUp() {
         String[] layout = {
             " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
@@ -59,7 +59,7 @@ public class PawnTest {
         for (var to : correctCases) {
 
             var isCorrect = board.isCorrectMovement(from, to);
-            assertTrue(isCorrect);
+            Assertions.assertTrue(isCorrect);
         }
     }
 
@@ -78,7 +78,7 @@ public class PawnTest {
         for (var to : incorrectCases) {
 
             var isIncorrect = !board.isCorrectMovement(from, to);
-            assertTrue(isIncorrect);
+            Assertions.assertTrue(isIncorrect);
         }
     }
 }
