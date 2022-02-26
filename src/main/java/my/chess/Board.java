@@ -129,7 +129,7 @@ public class Board extends JPanel {
     }
 
     public void displayMessage(Message message) {
-        var messageText = resourceBundle.getString(message.string);
+        var messageText = resourceBundle.getString(message.key);
         JOptionPane.showMessageDialog(this, messageText);
     }
 

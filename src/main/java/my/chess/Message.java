@@ -35,5 +35,5 @@ public enum Message {
     loadError("Save.loadError"),
     saveError("Save.saveError"),
     wrongFormat("Save.wrongFormat");
-    public final String string;
+    public final String key;
 }
