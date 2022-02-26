@@ -320,30 +320,15 @@ public class Board extends JPanel {
     }
 
     public void movePiece(int row1, int col1, int row2, int col2) {
-
-        var from = new Coord(row1, col1);
-        var to = new Coord(row2, col2);
-
-        var source = squares.get(from.index);
-        var target = squares.get(to.index);
-
-        source.movePiece(target);
+        logic.movePiece(row1, col1, row2, col2);
     }
 
     public boolean isCorrectMovement(int row1, int col1, int row2, int col2) {
-
-        var from = new Coord(row1, col1);
-        var to = new Coord(row2, col2);
-
-        return isCorrectMovement(from, to);
+        return logic.isCorrectMovement(row1, col1, row2, col2);
     }
 
     public boolean isCorrectMovement(Coord from, Coord to) {
-
-        var source = squares.get(from.index);
-        var target = squares.get(to.index);
-
-        return source.isCorrectMovement(target);
+        return logic.isCorrectMovement(from, to);
     }
 
     public void clearMoves() {

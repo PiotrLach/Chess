@@ -340,4 +340,31 @@ public class Logic {
         var isWhite = currentColor.equals(Color.WHITE);
         currentColor = isWhite ? Color.BLACK : Color.WHITE;
     }
+
+    public void movePiece(int row1, int col1, int row2, int col2) {
+
+        var from = new Coord(row1, col1);
+        var to = new Coord(row2, col2);
+
+        var source = squares.get(from.index);
+        var target = squares.get(to.index);
+
+        source.movePiece(target);
+    }
+
+    public boolean isCorrectMovement(int row1, int col1, int row2, int col2) {
+
+        var from = new Coord(row1, col1);
+        var to = new Coord(row2, col2);
+
+        return isCorrectMovement(from, to);
+    }
+
+    public boolean isCorrectMovement(Coord from, Coord to) {
+
+        var source = squares.get(from.index);
+        var target = squares.get(to.index);
+
+        return source.isCorrectMovement(target);
+    }
 }
