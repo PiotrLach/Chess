@@ -20,7 +20,6 @@ import java.util.List;
 import my.chess.Board;
 import my.chess.Coord;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -32,8 +31,7 @@ public class PawnTest {
     Board board = new Board();
     Coord from = new Coord(2, 'C');
 
-    @BeforeEach
-    public void setUp() {
+    private void setBoardLayout() {
         String[] layout = {
             " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
             " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
@@ -49,6 +47,8 @@ public class PawnTest {
 
     @Test
     public void isCorrectMovement() {
+
+        setBoardLayout();
 
         List<Coord> correctCases = List.of(
             new Coord(3, 'B'),
@@ -66,6 +66,8 @@ public class PawnTest {
     @Test
     public void isIncorrectMovement() {
 
+        setBoardLayout();
+
         List<Coord> incorrectCases = List.of(
                 new Coord(1, 'C'),
                 new Coord(1, 'B'),
@@ -80,5 +82,24 @@ public class PawnTest {
             var isIncorrect = !board.isCorrectMovement(from, to);
             Assertions.assertTrue(isIncorrect);
         }
+    }
+
+    @Test
+    public void enPassantTest() {
+        String[] layout = {
+           /* A     B     C     D     E     F     G     H  */
+    /* 8 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; ","K;B", /* 8 */
+    /* 7 */ " ; "," ; "," ; ","H;B"," ; "," ; "," ; "," ; ", /* 7 */
+    /* 6 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ", /* 6 */
+    /* 5 */ " ; "," ; ","L;W"," ; "," ; "," ; "," ; "," ; ", /* 5 */
+    /* 4 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ", /* 4 */
+    /* 3 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ", /* 3 */
+    /* 2 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ", /* 2 */
+    /* 1 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; ","K;W"  /* 1 */
+           /* A     B     C     D     E     F     G     H  */
+        };
+        board.setGame(layout);
+        Assertions.assertDoesNotThrow(() -> board.movePiece(6, 3, 4, 3));
+        Assertions.assertTrue(board.isValidMove(4, 2, 5, 3));
     }
 }

@@ -344,6 +344,10 @@ public class Board extends JPanel {
         moves.clear();
     }
 
+    public boolean isValidMove(int row1, int col1, int row2, int col2) {
+        return logic.isValidMove(row1, col1, row2, col2);
+    }
+
     public boolean isValidMove(Square source, Square target) {
         return logic.isValidMove(source, target);
     }

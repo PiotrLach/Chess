@@ -119,6 +119,16 @@ public class Logic {
         return true;
     }
 
+    public boolean isValidMove(int row1, int col1, int row2, int col2) {
+        var from = new Coord(row1, col1);
+        var to = new Coord(row2, col2);
+
+        var source = squares.get(from.index);
+        var target = squares.get(to.index);
+
+        return isValidMove(source, target);
+    }
+
     public boolean isAttacked(Square square) {
         return getAttackingSquares(square).size() > 0;
     }
