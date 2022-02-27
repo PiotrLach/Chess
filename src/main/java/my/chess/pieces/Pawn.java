@@ -51,10 +51,10 @@ public class Pawn extends Piece {
         }
 
         if (isEnPassant(source, target)) {
-            var moves = board.getMoves();
-            var coord = moves.getLast().target;
-            var square = board.getSquare(coord);
-            square.setPiece(Empty.INSTANCE);
+            var optional = board.getLastMove();
+            var coord = optional.get().target;
+
+            board.setPiece(coord, Empty.INSTANCE);
         }
 
         Piece piece = this;
@@ -89,13 +89,13 @@ public class Pawn extends Piece {
 
     private boolean isEnPassant(Square source, Square target) {
 
-        var moves = board.getMoves();
+        var optional = board.getLastMove();
 
-        if (moves.isEmpty()) {
+        if (optional.isEmpty()) {
             return false;
         }
 
-        var lastMove = moves.getLast();
+        var lastMove = optional.get();
 
         if (!isTwoSquaresAdvancedEnemyPawn(lastMove)) {
             return false;

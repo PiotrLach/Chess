@@ -292,6 +292,10 @@ public class Board extends JPanel {
         }
     }
 
+    public Optional<Move> getLastMove() {
+        return Optional.ofNullable(moves.peekLast());
+    }
+
     public void addMove(Move move) {
         moves.add(move);
     }
@@ -321,6 +325,11 @@ public class Board extends JPanel {
 
     public void movePiece(int row1, int col1, int row2, int col2) {
         logic.movePiece(row1, col1, row2, col2);
+    }
+
+    public void setPiece(Coord coord, Piece piece) {
+        var square = squares.get(coord.index);
+        square.setPiece(piece);
     }
 
     public boolean isCorrectMovement(int row1, int col1, int row2, int col2) {

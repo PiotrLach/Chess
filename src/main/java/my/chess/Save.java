@@ -34,7 +34,6 @@ public class Save {
 
     private final Board board;
     private final List<Square> squares;
-    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("my/chess/Bundle");
 
     public void loadGame(String filename) {
         var moves = readObject(filename);
