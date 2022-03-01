@@ -102,7 +102,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="my.chess.Board" name="board">
+    <Container class="my.chess.GameBoard" name="board">
 
       <Layout>
         <DimensionLayout dim="0">

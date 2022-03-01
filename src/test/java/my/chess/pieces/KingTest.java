@@ -18,8 +18,9 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import java.util.List;
-import my.chess.Board;
+
 import my.chess.Coord;
+import my.chess.MockBoard;
 import my.chess.Square;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ public class KingTest {
     @Test
     public void testIsCorrectMovement() {
 
-        var board = new Board();
+        var board = new MockBoard();
         var king = new King(Color.WHITE, board);
         var from = new Coord(3, 'C');
         var source = new Square(from);
@@ -60,7 +61,7 @@ public class KingTest {
     @Test
     public void testIsIncorrectMovement() {
 
-        var board = new Board();
+        var board = new MockBoard();
         var king = new King(Color.WHITE, board);
         var from = new Coord(3, 'C');
         var source = new Square(from);
@@ -86,7 +87,7 @@ public class KingTest {
 
     @Test
     public void castlingTest() {
-        var board = new Board();
+        var board = new MockBoard();
 
         String[] layout = {
             " ; "," ; "," ; "," ; "," ; "," ; ","R;B"," ; ",

@@ -19,6 +19,7 @@ package my.chess.pieces;
 import java.util.List;
 import my.chess.Board;
 import my.chess.Coord;
+import my.chess.MockBoard;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -28,22 +29,8 @@ import org.junit.jupiter.api.Test;
  */
 public class PawnTest {
 
-    Board board = new Board();
+    Board board = new MockBoard();
     Coord from = new Coord(2, 'C');
-
-    private void setBoardLayout() {
-        String[] layout = {
-            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
-            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
-            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
-            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
-            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
-            " ; ","R;W"," ; "," ; "," ; "," ; "," ; "," ; ",
-            " ; "," ; ","L;B"," ; "," ; "," ; "," ; "," ; ",
-            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; "
-        };
-        board.setGame(layout);
-    }
 
     @Test
     public void isCorrectMovement() {
@@ -82,6 +69,20 @@ public class PawnTest {
             var isIncorrect = !board.isCorrectMovement(from, to);
             Assertions.assertTrue(isIncorrect);
         }
+    }
+
+    private void setBoardLayout() {
+        String[] layout = {
+                " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+                " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+                " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+                " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+                " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+                " ; ","R;W"," ; "," ; "," ; "," ; "," ; "," ; ",
+                " ; "," ; ","L;B"," ; "," ; "," ; "," ; "," ; ",
+                " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; "
+        };
+        board.setGame(layout);
     }
 
     @Test

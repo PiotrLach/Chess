@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.util.List;
 import my.chess.Board;
 import my.chess.Coord;
+import my.chess.MockBoard;
 import my.chess.Square;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ import org.junit.jupiter.api.Test;
  */
 public class QueenTest {
 
-    private final Board board = new Board();
+    private final Board board = new MockBoard();
     private final Queen queen = new Queen(Color.BLACK, board);
     private final Coord from = new Coord(3, 'C');
     private final Square source = new Square(from);

@@ -19,6 +19,7 @@ package my.chess.pieces;
 import java.awt.Color;
 import java.util.List;
 import my.chess.Board;
+import my.chess.MockBoard;
 import my.chess.Square;
 import my.chess.Coord;
 import org.junit.jupiter.api.Assertions;
@@ -30,7 +31,7 @@ import org.junit.jupiter.api.Test;
  */
 public class BishopTest {
 
-    private final Board board = new Board();
+    private final Board board = new MockBoard();
     private final Bishop bishop = new Bishop(Color.BLACK, board);
     private final Coord from = new Coord(3, 'C');
     private final Square source = new Square(from);

@@ -77,7 +77,7 @@ public class Pawn extends Piece {
 
     private Piece promote(Piece piece) {
 
-        int choice = board.showPromoteDialog();
+        int choice = board.getPromotionChoice();
 
         return switch(choice) {
             default -> new Queen(piece.color, board);

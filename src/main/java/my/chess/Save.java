@@ -21,7 +21,7 @@ import java.util.Deque;
 import lombok.RequiredArgsConstructor;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ResourceBundle;
+
 import my.chess.pieces.Empty;
 import my.chess.pieces.Piece;
 

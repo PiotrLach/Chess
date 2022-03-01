@@ -17,15 +17,10 @@
 package my.chess;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.Getter;
-import my.chess.pieces.Empty;
-import my.chess.pieces.King;
-import my.chess.pieces.Knight;
-import my.chess.pieces.PieceFactory;
+import my.chess.pieces.*;
 
 /**
  *
@@ -36,14 +31,16 @@ public class Logic {
     private final Board board;
     private final List<Square> squares;
     private final PieceFactory pieceFactory;
+    private final Deque<Move> moves;
     @Getter
     private Color currentColor = Color.WHITE;
 
 
-    public Logic(Board board, List<Square> squares) {
+    public Logic(Board board, List<Square> squares, Deque<Move> moves) {
         this.board = board;
         this.squares = squares;
         pieceFactory = new PieceFactory(board);
+        this.moves = moves;
     }
 
     public void setLayout(String[] layout) {
@@ -68,6 +65,8 @@ public class Logic {
                 square.setPiece(piece);
             }
         }
+
+        board.repaint();
     }
 
     private void clearBoard() {
@@ -79,7 +78,7 @@ public class Logic {
             square.setHighlighted(false);
         }
 
-        board.clearMoves();
+        clearMoves();
     }
 
     public boolean isValidMove(Square source, Square target) {
@@ -376,5 +375,41 @@ public class Logic {
         var target = squares.get(to.index);
 
         return source.isCorrectMovement(target);
+    }
+
+    public void addMove(Move move) {
+        moves.add(move);
+    }
+
+    public void addMove(Square source, Square target) {
+        var move = new Move(source.coord, target.coord);
+        moves.add(move);
+    }
+
+    public void addMove(Square source, Square target, Piece piece) {
+        var move = new Move(source.coord, target.coord, piece);
+        moves.add(move);
+    }
+
+    public Optional<Move> getLastMove() {
+        return Optional.ofNullable(moves.peekLast());
+    }
+
+    public Square getSquare(Coord coord) {
+        return squares.get(coord.index);
+    }
+
+    public Square getSquare(int row, int col) {
+        var coord = new Coord(row, col);
+        return squares.get(coord.index);
+    }
+
+    public void setPiece(Coord coord, Piece piece) {
+        var square = squares.get(coord.index);
+        square.setPiece(piece);
+    }
+
+    public void clearMoves() {
+        moves.clear();
     }
 }

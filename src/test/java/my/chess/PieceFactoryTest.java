@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
  * @author Piotr Lach
  */
 public class PieceFactoryTest {
-    private final Board board = new Board();
+    private final Board board = new MockBoard();
     private final PieceFactory pieceFactory = new PieceFactory(board);
 
     @Test

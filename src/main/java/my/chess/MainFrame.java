@@ -18,6 +18,7 @@ package my.chess;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -82,7 +83,7 @@ public class MainFrame extends JFrame {
 
         setMenuOptions();
 
-	add(board);
+	    add(board);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -168,7 +169,7 @@ public class MainFrame extends JFrame {
         var stringBuilder = new StringBuilder();
 
         try {
-            var inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+            var inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             int char1 = 0;
             while ((char1 = inputStreamReader.read()) > -1) {
                 stringBuilder.append((char) char1);
@@ -184,7 +185,7 @@ public class MainFrame extends JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private final JMenu aboutMenu = new JMenu();
-    private final Board board = new Board();
+    private final GameBoard board = new GameBoard();
     private final JMenu gameMenu = new JMenu();
     private final JMenuItem licenseOption = new JMenuItem();
     private final JMenuItem loadGameOption = new JMenuItem();
