@@ -17,7 +17,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
-import my.chess.Board;
+import my.chess.Logic;
 import my.chess.Square;
 
 /**
@@ -26,8 +26,8 @@ import my.chess.Square;
  */
 public class Rook extends Piece {
 
-    public Rook(Color color, Board board) {
-        super(Name.Rook, color, board);
+    public Rook(Color color, Logic logic) {
+        super(Name.Rook, color, logic);
     }
 
     @Override

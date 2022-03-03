@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 public class RookTest {
 
     private final Board board = new MockBoard();
-    private final Rook rook = new Rook(Color.BLACK, board);
+    private final Rook rook = new Rook(Color.BLACK, board.getLogic());
     private final Coord from = new Coord(3, 'C');
     private final Square source = new Square(from);
 

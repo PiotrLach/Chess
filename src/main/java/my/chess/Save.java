@@ -54,7 +54,7 @@ public class Save {
             Piece piece;
             /* Necessary for promoted pawns */
             if (!((piece = move.getPromotedPiece()) instanceof Empty)) {
-                piece.setBoard(board);
+                piece.setLogic(board.getLogic());
                 piece.setImage();
 
                 source.setPiece(Empty.INSTANCE);

@@ -21,8 +21,11 @@ import my.chess.pieces.Piece;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
+import my.chess.Logic;
 
 public interface Board {
+
+    Logic getLogic();
 
     void repaint();
 

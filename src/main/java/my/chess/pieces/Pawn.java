@@ -18,7 +18,7 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import java.util.List;
-import my.chess.Board;
+import my.chess.Logic;
 import my.chess.Move;
 import my.chess.Square;
 
@@ -32,8 +32,8 @@ public class Pawn extends Piece {
 
     private final int startRow;
 
-    public Pawn(Color color, Name name, Board board) {
-        super(name, color, board);
+    public Pawn(Color color, Name name, Logic logic) {
+        super(name, color, logic);
 
         startRow = name == Name.Pawn1 ? 1 : 6;
 
@@ -46,28 +46,28 @@ public class Pawn extends Piece {
             return;
         }
 
-        if (!board.isValidMove(source, target)) {
+        if (!logic.isValidMove(source, target)) {
             return;
         }
 
         if (isEnPassant(source, target)) {
-            var optional = board.getLastMove();
+            var optional = logic.getLastMove();
             var coord = optional.get().target;
 
-            board.setPiece(coord, Empty.INSTANCE);
+            logic.setPiece(coord, Empty.INSTANCE);
         }
 
         Piece piece = this;
 
         if (target.isInBorderRow()) {
             piece = promote(piece);
-            board.addMove(source, target, piece);
+            logic.addMove(source, target, piece);
         } else {
-            board.addMove(source, target);
+            logic.addMove(source, target);
         }
 
-        board.changeCurrentColor();
-        board.setOptionalSourceEmpty();
+        logic.changeCurrentColor();
+        logic.setOptionalSourceEmpty();
 
         target.setPiece(piece);
         source.setPiece(Empty.INSTANCE);
@@ -77,19 +77,19 @@ public class Pawn extends Piece {
 
     private Piece promote(Piece piece) {
 
-        int choice = board.getPromotionChoice();
+        int choice = logic.getPromotionChoice();
 
         return switch(choice) {
-            default -> new Queen(piece.color, board);
-            case 1 -> new Knight(piece.color, board);
-            case 2 -> new Rook(piece.color, board);
-            case 3 -> new Bishop(piece.color, board);
+            default -> new Queen(piece.color, logic);
+            case 1 -> new Knight(piece.color, logic);
+            case 2 -> new Rook(piece.color, logic);
+            case 3 -> new Bishop(piece.color, logic);
         };
     }
 
     private boolean isEnPassant(Square source, Square target) {
 
-        var optional = board.getLastMove();
+        var optional = logic.getLastMove();
 
         if (optional.isEmpty()) {
             return false;
@@ -102,7 +102,7 @@ public class Pawn extends Piece {
         }
         var coord = lastMove.target;
 
-        var lastMoveTarget = board.getSquare(coord);
+        var lastMoveTarget = logic.getSquare(coord);
 
         var isSourceOnSameRow = source.coord.row == lastMoveTarget.coord.row;
         var isLastMoveTargetLeft = lastMoveTarget.coord.col == source.coord.col - 1;
@@ -124,7 +124,7 @@ public class Pawn extends Piece {
 
         int vDiff; // vertical difference
         vDiff = Math.abs(lastMove.source.row - lastMove.target.row);
-        var lastMoveTargetSquare = board.getSquare(lastMove.target);
+        var lastMoveTargetSquare = logic.getSquare(lastMove.target);
         var piece = lastMoveTargetSquare.getPiece();
 
         return piece instanceof Pawn && vDiff == 2 && piece.isFoe(this.color);

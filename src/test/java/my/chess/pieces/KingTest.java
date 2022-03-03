@@ -35,7 +35,7 @@ public class KingTest {
     public void testIsCorrectMovement() {
 
         var board = new MockBoard();
-        var king = new King(Color.WHITE, board);
+        var king = new King(Color.WHITE, board.getLogic());
         var from = new Coord(3, 'C');
         var source = new Square(from);
 
@@ -62,7 +62,7 @@ public class KingTest {
     public void testIsIncorrectMovement() {
 
         var board = new MockBoard();
-        var king = new King(Color.WHITE, board);
+        var king = new King(Color.WHITE, board.getLogic());
         var from = new Coord(3, 'C');
         var source = new Square(from);
 

@@ -29,11 +29,12 @@ import org.junit.jupiter.api.Test;
  */
 public class PieceFactoryTest {
     private final Board board = new MockBoard();
-    private final PieceFactory pieceFactory = new PieceFactory(board);
+    private final Logic logic = board.getLogic();
+    private final PieceFactory pieceFactory = new PieceFactory(logic);
 
     @Test
     public void testPieceFactory() {
-        var rook1 = new Rook(Color.WHITE, board);
+        var rook1 = new Rook(Color.WHITE, logic);
         var rook2 = pieceFactory.getPiece("R;W");
         Assertions.assertEquals(rook1, rook2);
 

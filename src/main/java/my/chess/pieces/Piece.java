@@ -29,7 +29,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Getter;
 import lombok.Setter;
-import my.chess.Board;
+import my.chess.Logic;
 
 /**
  * @author Piotr Lach
@@ -54,7 +54,7 @@ abstract public class Piece implements Serializable {
     }
 
     @Setter
-    protected transient Board board;
+    protected transient Logic logic;
     public final Color color;
     protected transient Image image;
     protected Name name;
@@ -66,10 +66,10 @@ abstract public class Piece implements Serializable {
     @Serial
     private static final long serialVersionUID = 4232331441720820159L;
 
-    public Piece(Name name, Color color, Board board) {
+    public Piece(Name name, Color color, Logic logic) {
         this.name = name;
         this.color = color;
-        this.board = board;
+        this.logic = logic;
         this.image = imageLoader.getImage(name, color);
     }
 
@@ -78,7 +78,7 @@ abstract public class Piece implements Serializable {
             return;
         }
 
-        if (!board.isValidMove(source, target)) {
+        if (!logic.isValidMove(source, target)) {
             return;
         }
 
@@ -87,10 +87,10 @@ abstract public class Piece implements Serializable {
         source.setHighlighted(false);
         isOnStartPosition = false;
 
-        board.addMove(source, target);
+        logic.addMove(source, target);
 
-        board.changeCurrentColor();
-        board.setOptionalSourceEmpty();
+        logic.changeCurrentColor();
+        logic.setOptionalSourceEmpty();
     }
 
     public void drawImage(Graphics graphics, int x, int y, int size) {

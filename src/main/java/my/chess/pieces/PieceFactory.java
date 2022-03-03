@@ -19,7 +19,7 @@ package my.chess.pieces;
 import java.awt.Color;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import my.chess.Board;
+import my.chess.Logic;
 
 /**
  *
@@ -28,7 +28,7 @@ import my.chess.Board;
 @RequiredArgsConstructor
 public class PieceFactory {
 
-    private final Board board;
+    private final Logic logic;
 
     public Piece getPiece(String string) {
 
@@ -81,13 +81,13 @@ public class PieceFactory {
 
     private List<Piece> getPieces(Color color) {
         return List.of(
-            new Pawn(color, Piece.Name.Pawn1, board),
-            new Pawn(color, Piece.Name.Pawn6, board),
-            new Bishop(color, board),
-            new Knight(color, board),
-            new Rook(color, board),
-            new King(color, board),
-            new Queen(color, board),
+            new Pawn(color, Piece.Name.Pawn1, logic),
+            new Pawn(color, Piece.Name.Pawn6, logic),
+            new Bishop(color, logic),
+            new Knight(color, logic),
+            new Rook(color, logic),
+            new King(color, logic),
+            new Queen(color, logic),
             Empty.INSTANCE
         );
     }

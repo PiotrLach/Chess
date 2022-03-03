@@ -17,7 +17,7 @@
 package my.chess.pieces;
 
 import java.awt.Color;
-import my.chess.Board;
+import my.chess.Logic;
 import my.chess.Square;
 
 /**
@@ -26,8 +26,8 @@ import my.chess.Square;
  */
 public class Bishop extends Piece {
 
-    public Bishop(Color color, Board board) {
-        super(Name.Bishop, color, board);
+    public Bishop(Color color, Logic logic) {
+        super(Name.Bishop, color, logic);
     }
 
     @Override

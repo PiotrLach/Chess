@@ -45,6 +45,7 @@ public class GameBoard extends JPanel implements Board {
     @Getter
     private final List<Square> squares = new ArrayList<>();
     private final List<Drawable> drawables = new ArrayList<>();
+    @Getter
     private final Logic logic = new Logic(this, squares, moves);
     private Optional<Square> optionalSourceSquare = Optional.empty();
     private int squareSize = 100;

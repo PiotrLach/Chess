@@ -29,6 +29,7 @@ import my.chess.pieces.*;
 public class Logic {
 
     private final Board board;
+    @Getter
     private final List<Square> squares;
     private final PieceFactory pieceFactory;
     private final Deque<Move> moves;
@@ -39,7 +40,7 @@ public class Logic {
     public Logic(Board board, List<Square> squares, Deque<Move> moves) {
         this.board = board;
         this.squares = squares;
-        pieceFactory = new PieceFactory(board);
+        pieceFactory = new PieceFactory(this);
         this.moves = moves;
     }
 
@@ -411,5 +412,13 @@ public class Logic {
 
     public void clearMoves() {
         moves.clear();
+    }
+
+    public int getPromotionChoice() {
+        return board.getPromotionChoice();
+    }
+
+    public void setOptionalSourceEmpty() {
+        board.setOptionalSourceEmpty();
     }
 }

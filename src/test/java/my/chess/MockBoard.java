@@ -27,6 +27,7 @@ public class MockBoard implements Board {
     private final Deque<Move> moves = new LinkedList<>();
     @Getter
     private final List<Square> squares = new ArrayList<>();
+    @Getter
     private final Logic logic = new Logic(this, squares, moves);
 
     public MockBoard() {

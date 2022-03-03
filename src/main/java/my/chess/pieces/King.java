@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import my.chess.Board;
+import my.chess.Logic;
 import my.chess.Move;
 import my.chess.Square;
 
@@ -37,8 +37,8 @@ public class King extends Piece {
         WRONG
     }
 
-    public King(Color color, Board board) {
-        super(Name.King, color, board);
+    public King(Color color, Logic logic) {
+        super(Name.King, color, logic);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class King extends Piece {
             return;
         }
 
-        if (!board.isValidMove(source, target)) {
+        if (!logic.isValidMove(source, target)) {
             return;
         }
 
@@ -61,10 +61,10 @@ public class King extends Piece {
         source.setHighlighted(false);
         isOnStartPosition = false;
 
-        board.addMove(source, target);
+        logic.addMove(source, target);
 
-        board.changeCurrentColor();
-        board.setOptionalSourceEmpty();
+        logic.changeCurrentColor();
+        logic.setOptionalSourceEmpty();
     }
 
     private boolean isCastling(Square source, Square target) {
@@ -74,7 +74,7 @@ public class King extends Piece {
         var optionalRookSquare = getSideRookSquare(sideSquares, castlingSide);
 
         if (!this.isOnStartPosition()
-                || board.isAttacked(source)
+                || logic.isAttacked(source)
                 || castlingSide.equals(CastlingSide.WRONG)
                 || sideSquares.isEmpty()
                 || optionalRookSquare.isEmpty()) {
@@ -108,13 +108,13 @@ public class King extends Piece {
 
         int row = source.coord.row;
 
-        var rookSource = board.getSquare(row, sCol);
-        var rookTarget = board.getSquare(row, tCol);
+        var rookSource = logic.getSquare(row, sCol);
+        var rookTarget = logic.getSquare(row, tCol);
 
         var rook = rookSource.getPiece();
         rook.move(rookSource, rookTarget);
 
-        board.changeCurrentColor();
+        logic.changeCurrentColor();
     }
 
     private CastlingSide determineSide(Square source, Square target) {
@@ -132,7 +132,7 @@ public class King extends Piece {
 
     private List<Square> getSideSquares(CastlingSide castlingSide, Square source) {
 
-        var squares = board.getSquares();
+        var squares = logic.getSquares();
 
         return switch (castlingSide) {
             case QUEEN -> squares.stream()
@@ -171,12 +171,12 @@ public class King extends Piece {
             }
             if (side.equals(CastlingSide.KING)
                     && square.coord.col <= 6
-                    && board.isAttacked(square)) {
+                    && logic.isAttacked(square)) {
                 return false;
             }
             if (side.equals(CastlingSide.QUEEN)
                     && square.coord.col >= 2
-                    && board.isAttacked(square)) {
+                    && logic.isAttacked(square)) {
                 return false;
             }
         }
