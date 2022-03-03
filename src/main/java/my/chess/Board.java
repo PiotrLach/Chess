@@ -35,41 +35,11 @@ public interface Board {
 
     void setGame(String[] layout);
 
-    Optional<Move> getLastMove();
-
-    void addMove(Move move);
-
-    void addMove(Square source, Square target);
-
-    void addMove(Square source, Square target, Piece piece);
-
-    Square getSquare(Coord coord);
-
-    Square getSquare(int row, int col);
-
     void setOptionalSourceEmpty();
-
-    void movePiece(int row1, int col1, int row2, int col2);
-
-    void setPiece(Coord coord, Piece piece);
-
-    boolean isCorrectMovement(int row1, int col1, int row2, int col2);
-
-    boolean isCorrectMovement(Coord from, Coord to);
-
-    void clearMoves();
-
-    boolean isValidMove(int row1, int col1, int row2, int col2);
-
-    boolean isValidMove(Square source, Square target);
 
     void changeCurrentColor();
 
-    boolean isAttacked(Square square);
-
     Deque<Move> getMoves();
-
-    List<Square> getSquares();
 
     void setDefaultGame();
 }

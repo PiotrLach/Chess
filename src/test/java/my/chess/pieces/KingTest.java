@@ -88,6 +88,7 @@ public class KingTest {
     @Test
     public void castlingTest() {
         var board = new MockBoard();
+        var logic = board.getLogic();
 
         String[] layout = {
             " ; "," ; "," ; "," ; "," ; "," ; ","R;B"," ; ",
@@ -100,10 +101,10 @@ public class KingTest {
             "R;W"," ; "," ; "," ; ","K;W"," ; "," ; ","R;W"
         };
 
-        board.setGame(layout);
+        logic.setLayout(layout);
 
-        Assertions.assertFalse(board.isCorrectMovement(0, 4, 0, 6));
-        Assertions.assertTrue(board.isCorrectMovement(0, 4, 0, 2));
+        Assertions.assertFalse(logic.isCorrectMovement(0, 4, 0, 6));
+        Assertions.assertTrue(logic.isCorrectMovement(0, 4, 0, 2));
 
     }
 

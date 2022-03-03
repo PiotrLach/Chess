@@ -19,6 +19,7 @@ package my.chess.pieces;
 import java.util.List;
 import my.chess.Board;
 import my.chess.Coord;
+import my.chess.Logic;
 import my.chess.MockBoard;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.Test;
 public class PawnTest {
 
     Board board = new MockBoard();
+    Logic logic = board.getLogic();
     Coord from = new Coord(2, 'C');
 
     @Test
@@ -45,7 +47,7 @@ public class PawnTest {
 
         for (var to : correctCases) {
 
-            var isCorrect = board.isCorrectMovement(from, to);
+            var isCorrect = logic.isCorrectMovement(from, to);
             Assertions.assertTrue(isCorrect);
         }
     }
@@ -66,7 +68,7 @@ public class PawnTest {
 
         for (var to : incorrectCases) {
 
-            var isIncorrect = !board.isCorrectMovement(from, to);
+            var isIncorrect = !logic.isCorrectMovement(from, to);
             Assertions.assertTrue(isIncorrect);
         }
     }
@@ -82,7 +84,7 @@ public class PawnTest {
                 " ; "," ; ","L;B"," ; "," ; "," ; "," ; "," ; ",
                 " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; "
         };
-        board.setGame(layout);
+        logic.setLayout(layout);
     }
 
     @Test
@@ -99,8 +101,8 @@ public class PawnTest {
     /* 1 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; ","K;W"  /* 1 */
            /* A     B     C     D     E     F     G     H  */
         };
-        board.setGame(layout);
-        Assertions.assertDoesNotThrow(() -> board.movePiece(6, 3, 4, 3));
-        Assertions.assertTrue(board.isValidMove(4, 2, 5, 3));
+        logic.setLayout(layout);
+        Assertions.assertDoesNotThrow(() -> logic.movePiece(6, 3, 4, 3));
+        Assertions.assertTrue(logic.isValidMove(4, 2, 5, 3));
     }
 }

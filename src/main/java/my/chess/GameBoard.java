@@ -31,7 +31,6 @@ import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import lombok.Getter;
-import my.chess.pieces.Piece;
 
 /**
  *
@@ -42,7 +41,6 @@ public class GameBoard extends JPanel implements Board {
     @Getter
     private final Deque<Move> moves = new LinkedList<>();
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("my/chess/Bundle");
-    @Getter
     private final List<Square> squares = new ArrayList<>();
     private final List<Drawable> drawables = new ArrayList<>();
     @Getter
@@ -307,77 +305,8 @@ public class GameBoard extends JPanel implements Board {
     }
 
     @Override
-    public Optional<Move> getLastMove() {
-        return logic.getLastMove();
-    }
-
-    @Override
-    public void addMove(Move move) {
-        logic.addMove(move);
-    }
-
-    @Override
-    public void addMove(Square source, Square target) {
-        logic.addMove(source, target);
-    }
-
-    @Override
-    public void addMove(Square source, Square target, Piece piece) {
-        logic.addMove(source, target, piece);
-    }
-
-    @Override
-    public Square getSquare(Coord coord) {
-        return logic.getSquare(coord);
-    }
-
-    @Override
-    public Square getSquare(int row, int col) {
-        return logic.getSquare(row, col);
-    }
-
-    @Override
-    public void movePiece(int row1, int col1, int row2, int col2) {
-        logic.movePiece(row1, col1, row2, col2);
-    }
-
-    @Override
-    public void setPiece(Coord coord, Piece piece) {
-        logic.setPiece(coord, piece);
-    }
-
-    @Override
-    public boolean isCorrectMovement(int row1, int col1, int row2, int col2) {
-        return logic.isCorrectMovement(row1, col1, row2, col2);
-    }
-
-    @Override
-    public boolean isCorrectMovement(Coord from, Coord to) {
-        return logic.isCorrectMovement(from, to);
-    }
-
-    @Override
-    public void clearMoves() {
-        logic.clearMoves();
-    }
-
-    @Override
-    public boolean isValidMove(int row1, int col1, int row2, int col2) {
-        return logic.isValidMove(row1, col1, row2, col2);
-    }
-
-    @Override
-    public boolean isValidMove(Square source, Square target) {
-        return logic.isValidMove(source, target);
-    }
-
-    @Override
     public void changeCurrentColor() {
         logic.changeCurrentColor();
     }
 
-    @Override
-    public boolean isAttacked(Square square) {
-        return logic.isAttacked(square);
-    }
 }
