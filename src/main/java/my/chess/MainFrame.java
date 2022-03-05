@@ -17,21 +17,15 @@
 package my.chess;
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
-import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import javax.swing.UIManager;
 import java.awt.EventQueue;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import javax.swing.JFrame;
 
 /**
@@ -75,7 +69,6 @@ public class MainFrame extends JFrame {
     }
 
     @SuppressWarnings("unchecked")
-
     private void initComponents() {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -92,15 +85,15 @@ public class MainFrame extends JFrame {
         gameMenu.setText(bundle.getString("MainFrame.gameMenu.text"));
 
         newGameOption.setText(bundle.getString("MainFrame.newGameOption.text"));
-        newGameOption.addActionListener(this::newGameOptionActionPerformed);
+        newGameOption.addActionListener(actionPerformer::newGame);
         gameMenu.add(newGameOption);
 
         loadGameOption.setText(bundle.getString("MainFrame.loadGameOption.text"));
-        loadGameOption.addActionListener(this::loadGameOptionActionPerformed);
+        loadGameOption.addActionListener(actionPerformer::loadGame);
         gameMenu.add(loadGameOption);
 
         saveGameOption.setText(bundle.getString("MainFrame.saveGameOption.text"));
-        saveGameOption.addActionListener(this::saveGameOptionActionPerformed);
+        saveGameOption.addActionListener(actionPerformer::saveGame);
         gameMenu.add(saveGameOption);
 
         menuBar.add(gameMenu);
@@ -108,79 +101,12 @@ public class MainFrame extends JFrame {
         aboutMenu.setText(bundle.getString("MainFrame.aboutMenu.text"));
 
         licenseOption.setText(bundle.getString("MainFrame.licenseOption.text"));
-        licenseOption.addActionListener(this::licenseOptionActionPerformed);
+        licenseOption.addActionListener(actionPerformer::displayLicense);
         aboutMenu.add(licenseOption);
 
         menuBar.add(aboutMenu);
 
         setJMenuBar(menuBar);
-    }
-
-    private void newGameOptionActionPerformed(ActionEvent evt) {
-        board.setDefaultGame();
-    }
-
-    private void loadGameOptionActionPerformed(ActionEvent evt) {
-        var fileChooser = new JFileChooser();
-        int result = fileChooser.showOpenDialog(this);
-
-        if (!(result == JFileChooser.APPROVE_OPTION)) {
-            return;
-        }
-
-        var file = fileChooser.getSelectedFile();
-        var fileName = file.getAbsolutePath();
-
-        board.loadGame(fileName);
-    }
-
-    private void saveGameOptionActionPerformed(ActionEvent evt) {
-
-        var fileChooser = new JFileChooser();
-        int saveOption = fileChooser.showSaveDialog(this);
-
-        if (!(saveOption == JFileChooser.APPROVE_OPTION)) {
-            return;
-        }
-
-        var file = fileChooser.getSelectedFile();
-        int confirmationOption = 0;
-
-        if (file.exists()) {
-            var message = bundle.getString("MainFrame.fileExists.text");
-            var formattedMessage = String.format(message, file.getName());
-            confirmationOption = JOptionPane.showConfirmDialog(fileChooser, formattedMessage);
-        }
-
-        if (confirmationOption != JOptionPane.OK_OPTION) {
-            return;
-        }
-
-        var fileName = file.getAbsolutePath();
-        board.saveGame(fileName);
-    }
-
-    private void licenseOptionActionPerformed(ActionEvent evt) {
-
-        var fileName = bundle.getString("MainFrame.licenseFile");
-
-        var classLoader = getClass().getClassLoader();
-        var inputStream = classLoader.getResourceAsStream(fileName);
-        var stringBuilder = new StringBuilder();
-
-        try {
-            var inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-            int char1 = 0;
-            while ((char1 = inputStreamReader.read()) > -1) {
-                stringBuilder.append((char) char1);
-            }
-        } catch (IOException exception) {
-            var errorMessage = bundle.getString("MainFrame.errorReadingLicense");
-            JOptionPane.showMessageDialog(this, errorMessage);
-            return;
-        }
-
-        JOptionPane.showMessageDialog(this, stringBuilder.toString());
     }
 
     private final JMenu aboutMenu = new JMenu();
@@ -192,5 +118,6 @@ public class MainFrame extends JFrame {
     private final JMenuItem newGameOption = new JMenuItem();
     private final JMenuItem saveGameOption = new JMenuItem();
     private final ResourceBundle bundle = ResourceBundle.getBundle("my/chess/Bundle");
+    private final ActionPerformer actionPerformer = new ActionPerformer(this, board);
 
 }
