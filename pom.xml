@@ -28,7 +28,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        my.chess.MainFrame
+                                        my.chess.Main
                                     </mainClass>
                                 </manifest>
                                 <manifestEntries>
@@ -47,7 +47,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
-                    <mainClass>my.chess.MainFrame</mainClass>
+                    <mainClass>my.chess.Main</mainClass>
                 </configuration>
             </plugin>
             <plugin>
