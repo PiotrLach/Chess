@@ -40,7 +40,7 @@ import javax.swing.JFrame;
  */
 public class MainFrame extends JFrame {
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         setNimbusLookAndFeel();
 
         EventQueue.invokeLater(() -> {
@@ -75,7 +75,7 @@ public class MainFrame extends JFrame {
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+
     private void initComponents() {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -86,7 +86,7 @@ public class MainFrame extends JFrame {
 	    add(board);
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
     private void setMenuOptions() {
         gameMenu.setText(bundle.getString("MainFrame.gameMenu.text"));
@@ -116,11 +116,11 @@ public class MainFrame extends JFrame {
         setJMenuBar(menuBar);
     }
 
-    private void newGameOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_newGameOptionActionPerformed
+    private void newGameOptionActionPerformed(ActionEvent evt) {
         board.setDefaultGame();
-    }//GEN-LAST:event_newGameOptionActionPerformed
+    }
 
-    private void loadGameOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_loadGameOptionActionPerformed
+    private void loadGameOptionActionPerformed(ActionEvent evt) {
         var fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(this);
 
@@ -132,9 +132,9 @@ public class MainFrame extends JFrame {
         var fileName = file.getAbsolutePath();
 
         board.loadGame(fileName);
-    }//GEN-LAST:event_loadGameOptionActionPerformed
+    }
 
-    private void saveGameOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_saveGameOptionActionPerformed
+    private void saveGameOptionActionPerformed(ActionEvent evt) {
 
         var fileChooser = new JFileChooser();
         int saveOption = fileChooser.showSaveDialog(this);
@@ -158,9 +158,9 @@ public class MainFrame extends JFrame {
 
         var fileName = file.getAbsolutePath();
         board.saveGame(fileName);
-    }//GEN-LAST:event_saveGameOptionActionPerformed
+    }
 
-    private void licenseOptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_licenseOptionActionPerformed
+    private void licenseOptionActionPerformed(ActionEvent evt) {
 
         var fileName = bundle.getString("MainFrame.licenseFile");
 
@@ -181,9 +181,8 @@ public class MainFrame extends JFrame {
         }
 
         JOptionPane.showMessageDialog(this, stringBuilder.toString());
-    }//GEN-LAST:event_licenseOptionActionPerformed
+    }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
     private final JMenu aboutMenu = new JMenu();
     private final GameBoard board = new GameBoard();
     private final JMenu gameMenu = new JMenu();
@@ -192,7 +191,6 @@ public class MainFrame extends JFrame {
     private final JMenuBar menuBar = new JMenuBar();
     private final JMenuItem newGameOption = new JMenuItem();
     private final JMenuItem saveGameOption = new JMenuItem();
-    // End of variables declaration//GEN-END:variables
     private final ResourceBundle bundle = ResourceBundle.getBundle("my/chess/Bundle");
 
 }
