@@ -58,31 +58,35 @@ public class MainFrame extends JFrame {
     }
 
     private void setMenuOptions() {
-        gameMenu.setText(bundle.getString("MainFrame.gameMenu.text"));
+        gameMenu.setText(getString(Text.gameMenu));
 
-        newGameOption.setText(bundle.getString("MainFrame.newGameOption.text"));
+        newGameOption.setText(getString(Text.newGameOption));
         newGameOption.addActionListener(actionPerformer::newGame);
         gameMenu.add(newGameOption);
 
-        loadGameOption.setText(bundle.getString("MainFrame.loadGameOption.text"));
+        loadGameOption.setText(getString(Text.loadGameOption));
         loadGameOption.addActionListener(actionPerformer::loadGame);
         gameMenu.add(loadGameOption);
 
-        saveGameOption.setText(bundle.getString("MainFrame.saveGameOption.text"));
+        saveGameOption.setText(getString(Text.saveGameOption));
         saveGameOption.addActionListener(actionPerformer::saveGame);
         gameMenu.add(saveGameOption);
 
         menuBar.add(gameMenu);
 
-        aboutMenu.setText(bundle.getString("MainFrame.aboutMenu.text"));
+        aboutMenu.setText(getString(Text.aboutMenu));
 
-        licenseOption.setText(bundle.getString("MainFrame.licenseOption.text"));
+        licenseOption.setText(getString(Text.licenseOption));
         licenseOption.addActionListener(actionPerformer::displayLicense);
         aboutMenu.add(licenseOption);
 
         menuBar.add(aboutMenu);
 
         setJMenuBar(menuBar);
+    }
+
+    private String getString(Text text) {
+        return bundle.getString(text.key);
     }
 
 }
