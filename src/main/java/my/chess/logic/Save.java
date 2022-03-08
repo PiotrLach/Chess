@@ -14,16 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-package my.chess;
+package my.chess.logic;
+
+import lombok.RequiredArgsConstructor;
+import my.chess.gui.Board;
+import my.chess.gui.Message;
+import my.chess.logic.pieces.Empty;
+import my.chess.logic.pieces.Piece;
 
 import java.io.*;
 import java.util.Deque;
-import lombok.RequiredArgsConstructor;
 import java.util.LinkedList;
 import java.util.List;
-
-import my.chess.pieces.Empty;
-import my.chess.pieces.Piece;
 
 /**
  *

@@ -18,10 +18,11 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import java.util.List;
-import my.chess.Board;
-import my.chess.Coord;
+import my.chess.gui.Board;
+import my.chess.logic.Coord;
 import my.chess.MockBoard;
-import my.chess.Square;
+import my.chess.logic.Square;
+import my.chess.logic.pieces.Knight;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

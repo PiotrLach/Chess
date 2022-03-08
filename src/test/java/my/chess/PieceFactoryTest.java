@@ -17,9 +17,12 @@
 package my.chess;
 
 import java.awt.Color;
-import my.chess.pieces.Empty;
-import my.chess.pieces.PieceFactory;
-import my.chess.pieces.Rook;
+
+import my.chess.gui.Board;
+import my.chess.logic.Logic;
+import my.chess.logic.pieces.Empty;
+import my.chess.logic.pieces.PieceFactory;
+import my.chess.logic.pieces.Rook;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

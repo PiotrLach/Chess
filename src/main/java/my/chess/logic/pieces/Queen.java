@@ -14,33 +14,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-package my.chess.pieces;
+package my.chess.logic.pieces;
 
-import java.awt.Color;
-import my.chess.Logic;
-import my.chess.Square;
+import my.chess.logic.Logic;
+import my.chess.logic.Square;
+
+import java.awt.*;
 
 /**
  *
  * @author Piotr Lach
  */
-public class Rook extends Piece {
+public class Queen extends Piece {
 
-    public Rook(Color color, Logic logic) {
-        super(Name.Rook, color, logic);
+    public Queen(Color color, Logic logic) {
+        super(Name.Queen, color, logic);
     }
 
     @Override
     public boolean isCorrectMovement(Square source, Square target) {
 
-        int vDiff, hDiff; // vertical and horizontal difference;
-        vDiff = Math.abs(source.coord.row - target.coord.row);
-        hDiff = Math.abs(source.coord.col - target.coord.col);
+        int verticalDiff, horizontalDiff;
 
-        var isVerticalMov = vDiff > 0;
-        var isHorizontalMov = hDiff > 0;
+        verticalDiff = Math.abs(source.coord.row - target.coord.row);
+        horizontalDiff = Math.abs(source.coord.col - target.coord.col);
 
-        return (isVerticalMov && !isHorizontalMov) || (isHorizontalMov && !isVerticalMov);
+        var isVerticalMove = verticalDiff > 0;
+        var isHorizontalMove = horizontalDiff > 0;
+        var isDiagonalMove = verticalDiff == horizontalDiff;
+
+        return isDiagonalMove || (isVerticalMove && !isHorizontalMove) || (isHorizontalMove && !isVerticalMove);
+
     }
 
 }

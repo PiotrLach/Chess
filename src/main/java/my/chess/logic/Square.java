@@ -14,18 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package my.chess;
+package my.chess.logic;
 
-import my.chess.pieces.Piece;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
-import my.chess.pieces.Empty;
+import lombok.*;
+import my.chess.gui.Drawable;
+import my.chess.logic.pieces.Empty;
+import my.chess.logic.pieces.Piece;
+
+import java.awt.*;
 
 /**
  *

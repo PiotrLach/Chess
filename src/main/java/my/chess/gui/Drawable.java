@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Piotr Lach
+ * Copyright (C) 2021 Piotr Lach
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,32 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package my.chess;
+package my.chess.gui;
 
-import my.chess.pieces.Piece;
+import java.awt.*;
 
-import java.util.Deque;
-import java.util.List;
-import java.util.Optional;
-import my.chess.Logic;
+/**
+ *
+ * @author Piotr Lach
+ */
+public interface Drawable {
 
-public interface Board {
+    void setDimension(int size);
 
-    Logic getLogic();
+    void setPosition(int x, int y);
 
-    void repaint();
-
-    int getPromotionChoice();
-
-    void displayMessage(Message message);
-
-    void setGame(String[] layout);
-
-    void setOptionalSourceEmpty();
-
-    void changeCurrentColor();
-
-    Deque<Move> getMoves();
-
-    void setDefaultGame();
+    void draw(Graphics graphics);
 }

@@ -14,31 +14,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package my.chess;
+package my.chess.logic.pieces;
 
-import java.io.Serial;
-import java.io.Serializable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import my.chess.pieces.Piece;
-import my.chess.pieces.Empty;
+import my.chess.logic.Square;
+
+import java.awt.*;
 
 /**
  *
  * @author Piotr Lach
  */
-@AllArgsConstructor
-@RequiredArgsConstructor
-@ToString
-public class Move implements Serializable {
+public class Empty extends Piece {
 
-    @Serial
-    private static final long serialVersionUID = -5610296767681737878L;
+    public static final Empty INSTANCE = new Empty();
 
-    public final Coord source;
-    public final Coord target;
-    @Getter
-    private Piece promotedPiece = Empty.INSTANCE;
+    private Empty() {
+        super(Name.Empty, Color.GRAY, null);
+    }
+
+    @Override
+    public void move(Square source, Square target) {}
+
+    @Override
+    public void drawImage(Graphics graphics, int x, int y, int size) {}
+
+    @Override
+    public void setImage() {}
+
+    @Override
+    public boolean isCorrectMovement(Square source, Square target) {
+        return false;
+    }
+
 }

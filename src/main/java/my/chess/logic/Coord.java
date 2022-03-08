@@ -14,33 +14,44 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-package my.chess.pieces;
+package my.chess.logic;
 
-import java.awt.Color;
-import my.chess.Logic;
-import my.chess.Square;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  *
  * @author Piotr Lach
  */
-public class Bishop extends Piece {
+@EqualsAndHashCode
+@ToString
+public class Coord implements Serializable {
 
-    public Bishop(Color color, Logic logic) {
-        super(Name.Bishop, color, logic);
+    @Serial
+    private static final long serialVersionUID = 5888462570748191830L;
+
+    public final int index;
+    public final int row;
+    public final int col;
+
+    public Coord(int rank, char file) {
+        this.row = rank - 1;
+        this.col = file - 65;
+        index = row * 8 + col;
     }
 
-    @Override
-    public boolean isCorrectMovement(Square source, Square target) {
-
-        int verticalDiff, horizontalDiff;
-
-        verticalDiff = Math.abs(source.coord.row - target.coord.row);
-        horizontalDiff = Math.abs(source.coord.col - target.coord.col);
-
-        var isDiagonalMove = verticalDiff == horizontalDiff;
-
-        return isDiagonalMove;
+    public Coord(int row, int col) {
+        this.row = row;
+        this.col = col;
+        index = row * 8 + col;
     }
 
+    public Coord(int index) {
+        this.index = index;
+        col = index % 8;
+        row = (index - col) / 8;
+    }
 }

@@ -20,6 +20,11 @@ import java.awt.Color;
 import java.util.List;
 
 import my.chess.*;
+import my.chess.gui.Board;
+import my.chess.logic.Coord;
+import my.chess.logic.Logic;
+import my.chess.logic.Square;
+import my.chess.logic.pieces.Bishop;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

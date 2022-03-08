@@ -14,36 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package my.chess.pieces;
+package my.chess.gui;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import my.chess.Square;
+import lombok.AllArgsConstructor;
 
 /**
  *
  * @author Piotr Lach
  */
-public class Empty extends Piece {
 
-    public static final Empty INSTANCE = new Empty();
-
-    private Empty() {
-        super(Name.Empty, Color.GRAY, null);
-    }
-
-    @Override
-    public void move(Square source, Square target) {}
-
-    @Override
-    public void drawImage(Graphics graphics, int x, int y, int size) {}
-
-    @Override
-    public void setImage() {}
-
-    @Override
-    public boolean isCorrectMovement(Square source, Square target) {
-        return false;
-    }
-
+@AllArgsConstructor
+public enum Message {
+    isMate("Board.isMate.text"),
+    pieceAlreadyChosen("Board.pieceAlreadyChosen.text"),
+    getOutOfCheck("Board.pieceGetOutOfCheck.text"),
+    noSelectedPiece("Board.noSelectedPiece.text"),
+    wrongMove("Board.wrongMove.text"),
+    pathBlocked("Board.pathBlocked.text"),
+    selfMadeCheck("Board.selfMadeCheck.text"),
+    loadError("Save.loadError"),
+    saveError("Save.saveError"),
+    wrongFormat("Save.wrongFormat");
+    public final String key;
 }

@@ -14,15 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package my.chess;
+package my.chess.gui;
 
-import java.awt.Dimension;
+import my.chess.Main;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.ResourceBundle;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.WindowConstants;
-import javax.swing.JFrame;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -88,5 +88,4 @@ public class MainFrame extends JFrame {
     private String getString(Text text) {
         return bundle.getString(text.key);
     }
-
 }

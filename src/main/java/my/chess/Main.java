@@ -16,6 +16,8 @@
  */
 package my.chess;
 
+import my.chess.gui.MainFrame;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.logging.Level;

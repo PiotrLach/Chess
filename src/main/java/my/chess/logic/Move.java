@@ -14,26 +14,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package my.chess;
+package my.chess.logic;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import my.chess.logic.pieces.Empty;
+import my.chess.logic.pieces.Piece;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  *
  * @author Piotr Lach
  */
-
 @AllArgsConstructor
-public enum Message {
-    isMate("Board.isMate.text"),
-    pieceAlreadyChosen("Board.pieceAlreadyChosen.text"),
-    getOutOfCheck("Board.pieceGetOutOfCheck.text"),
-    noSelectedPiece("Board.noSelectedPiece.text"),
-    wrongMove("Board.wrongMove.text"),
-    pathBlocked("Board.pathBlocked.text"),
-    selfMadeCheck("Board.selfMadeCheck.text"),
-    loadError("Save.loadError"),
-    saveError("Save.saveError"),
-    wrongFormat("Save.wrongFormat");
-    public final String key;
+@RequiredArgsConstructor
+@ToString
+public class Move implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -5610296767681737878L;
+
+    public final Coord source;
+    public final Coord target;
+    @Getter
+    private Piece promotedPiece = Empty.INSTANCE;
 }

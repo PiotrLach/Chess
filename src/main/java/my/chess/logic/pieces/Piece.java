@@ -14,22 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package my.chess.pieces;
+package my.chess.logic.pieces;
 
-import java.awt.Color;
+import lombok.*;
+import my.chess.logic.Logic;
+import my.chess.logic.Square;
 
-import my.chess.Square;
-
-import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.*;
 import java.io.Serial;
 import java.io.Serializable;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import lombok.Getter;
-import lombok.Setter;
-import my.chess.Logic;
 
 /**
  * @author Piotr Lach

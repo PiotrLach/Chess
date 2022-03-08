@@ -17,6 +17,12 @@
 package my.chess;
 
 import lombok.Getter;
+import my.chess.gui.Board;
+import my.chess.gui.Message;
+import my.chess.logic.Coord;
+import my.chess.logic.Logic;
+import my.chess.logic.Move;
+import my.chess.logic.Square;
 
 import java.util.*;
 

@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-package my.chess.pieces;
+package my.chess.logic.pieces;
 
-import java.awt.Color;
-import my.chess.Logic;
-import my.chess.Square;
+import my.chess.logic.Logic;
+import my.chess.logic.Square;
+
+import java.awt.*;
 
 /**
  *

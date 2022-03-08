@@ -14,23 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-package my.chess;
+package my.chess.gui;
 
-import java.awt.Graphics;
+import lombok.Getter;
+import my.chess.logic.*;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import javax.swing.Icon;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import lombok.Getter;
+import java.util.*;
 
 /**
  *

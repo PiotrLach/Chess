@@ -1,4 +1,4 @@
-package my.chess;
+package my.chess.gui;
 
 import lombok.AllArgsConstructor;
 
