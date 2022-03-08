@@ -80,7 +80,7 @@ public class Logic {
 
         for (var square : squares) {
             square.setPiece(Empty.INSTANCE);
-            square.setHighlighted(false);
+            square.setSelected(false);
         }
 
         clearMoves();

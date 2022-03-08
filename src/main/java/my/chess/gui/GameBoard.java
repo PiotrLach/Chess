@@ -170,7 +170,7 @@ public class GameBoard extends JPanel implements Board {
 
         if (isValidSource(selectedSquare)) {
 
-            selectedSquare.setHighlighted(true);
+            selectedSquare.setSelected(true);
             optionalSourceSquare = Optional.of(selectedSquare);
 
         } else if (isValidTarget(selectedSquare)) {
@@ -193,12 +193,12 @@ public class GameBoard extends JPanel implements Board {
             return false;
         }
 
-        if (square.isHighlighted()) {
+        if (square.isSelected()) {
             return false;
         }
 
         if (optionalSourceSquare.isPresent()) {
-            optionalSourceSquare.get().setHighlighted(false);
+            optionalSourceSquare.get().setSelected(false);
         }
 
         return true;
@@ -206,7 +206,7 @@ public class GameBoard extends JPanel implements Board {
 
     private boolean isValidTarget(Square square) {
 
-        if (square.isHighlighted()) {
+        if (square.isSelected()) {
             return false;
         }
 

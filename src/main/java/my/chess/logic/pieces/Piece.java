@@ -77,7 +77,7 @@ abstract public class Piece implements Serializable {
 
         target.setPiece(this);
         source.setPiece(Empty.INSTANCE);
-        source.setHighlighted(false);
+        source.setSelected(false);
         isOnStartPosition = false;
 
         logic.addMove(source, target);

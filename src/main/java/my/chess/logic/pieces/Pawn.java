@@ -72,7 +72,7 @@ public class Pawn extends Piece {
 
         target.setPiece(piece);
         source.setPiece(Empty.INSTANCE);
-        source.setHighlighted(false);
+        source.setSelected(false);
         isOnStartPosition = false;
     }
 

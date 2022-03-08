@@ -38,7 +38,7 @@ public class Square extends Rectangle implements Drawable {
     private Piece piece;
     @Getter
     @Setter
-    private boolean highlighted = false;
+    private boolean selected = false;
     @EqualsAndHashCode.Include
     @ToString.Include
     public final Coord coord;
@@ -77,7 +77,7 @@ public class Square extends Rectangle implements Drawable {
             graphics.setColor(MY_BROWN);
         }
 
-        if (isHighlighted()) {
+        if (isSelected()) {
             graphics.setColor(Color.RED);
         }
 
