@@ -16,7 +16,11 @@
  */
 package my.chess.logic;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 import my.chess.gui.Drawable;
 import my.chess.logic.pieces.Empty;
 import my.chess.logic.pieces.Piece;
@@ -29,7 +33,7 @@ import java.awt.*;
  */
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-public class Square extends Rectangle implements Drawable {
+public class Square implements Drawable {
 
     @Getter
     @Setter
@@ -42,30 +46,35 @@ public class Square extends Rectangle implements Drawable {
     @EqualsAndHashCode.Include
     @ToString.Include
     public final Coord coord;
+    private final Rectangle rectangle;
 
     private static final Color MY_WHITE = new Color(255, 255, 204);
     private static final Color MY_BROWN = new Color(153, 102, 0);
 
     public Square(int x, int y, int size, Coord coord) {
-        super(x, y, size, size);
+        rectangle = new Rectangle(x, y, size, size);
         this.coord = coord;
         this.piece = Empty.INSTANCE;
     }
 
     public Square(Coord coord) {
-        super(0, 0, 0, 0);
+        rectangle = new Rectangle(0, 0, 0, 0);
         this.coord = coord;
         this.piece = Empty.INSTANCE;
     }
 
     @Override
     public void setDimension(int size) {
-        setSize(size, size);
+        rectangle.setSize(size, size);
     }
 
     @Override
     public void setPosition(int x, int y) {
-        setLocation(x, y);
+        rectangle.setLocation(x, y);
+    }
+
+    public boolean contains(Point point) {
+        return rectangle.contains(point);
     }
 
     @Override
@@ -81,8 +90,8 @@ public class Square extends Rectangle implements Drawable {
             graphics.setColor(Color.RED);
         }
 
-        graphics.fillRect(x, y, width, height);
-        piece.drawImage(graphics, x, y, width);
+        graphics.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+        piece.drawImage(graphics, rectangle.x, rectangle.y, rectangle.width);
     }
 
     private boolean isWhite() {
