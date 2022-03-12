@@ -38,13 +38,12 @@ public class GameBoard extends JPanel implements Board {
     private final Deque<Move> moves = new LinkedList<>();
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("my/chess/Bundle");
     private final List<GameSquare> gameSquares = new ArrayList<>();
-    private final List<Square> squares = new ArrayList<>();
     private final List<Drawable> drawables = new ArrayList<>();
     @Getter
-    private final Logic logic = new Logic(this, squares, moves);
+    private final Logic logic = new Logic(this, gameSquares, moves);
     private Optional<Square> optionalSourceSquare = Optional.empty();
     private int squareSize = 100;
-    private final Save save = new Save(this, squares);
+    private final Save save = new Save(this, gameSquares);
 
     public GameBoard() {
         setListeners();
@@ -82,7 +81,6 @@ public class GameBoard extends JPanel implements Board {
                 } else {
                     var coord = new Coord(squareCounter);
                     var square = new GameSquare(x, y, squareSize, coord);
-                    squares.add(square);
                     gameSquares.add(square);
                     drawable = square;
                     squareCounter++;

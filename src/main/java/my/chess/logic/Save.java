@@ -35,7 +35,7 @@ import java.util.List;
 public class Save {
 
     private final Board board;
-    private final List<Square> squares;
+    private final List<? extends Square> squares;
 
     public void loadGame(String filename) {
         var moves = readObject(filename);

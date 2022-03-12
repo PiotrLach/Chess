@@ -34,14 +34,13 @@ public class Logic {
 
     private final Board board;
     @Getter
-    private final List<Square> squares;
+    private final List<? extends Square> squares;
     private final PieceFactory pieceFactory;
     private final Deque<Move> moves;
     @Getter
     private Color currentColor = Color.WHITE;
 
-
-    public Logic(Board board, List<Square> squares, Deque<Move> moves) {
+    public Logic(Board board, List<? extends Square> squares, Deque<Move> moves) {
         this.board = board;
         this.squares = squares;
         pieceFactory = new PieceFactory(this);
@@ -291,8 +290,7 @@ public class Logic {
         var path = getPath(source, target);
 
         return path.stream()
-            .filter(this::isNotEmptySquare)
-            .count() == 0;
+                .noneMatch(this::isNotEmptySquare);
     }
 
     private boolean isNotEmptySquare(Square square) {
