@@ -64,7 +64,7 @@ public class QueenTest {
                 new Coord(4, 'A'),
                 new Coord(2, 'A'),
                 new Coord(2, 'E'),
-                new Coord(0, 'B')
+                new Coord(1, 'B')
         );
 
         for (var to : incorrectCases) {

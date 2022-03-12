@@ -18,6 +18,7 @@ package my.chess.logic;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.val;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -37,21 +38,52 @@ public class Coord implements Serializable {
     public final int row;
     public final int col;
 
-    public Coord(int rank, char file) {
+    public Coord(final int rank, final char file) throws IllegalArgumentException {
+
+        if (!isValidInput(rank, file)) {
+            throw new IllegalArgumentException("Wrong input arguments passed!");
+        }
+
         this.row = rank - 1;
         this.col = file - 65;
         index = row * 8 + col;
     }
 
-    public Coord(int row, int col) {
+    public Coord(final int row, final int col) throws IllegalArgumentException {
+
+        if (!isValidInput(row, col)) {
+            throw new IllegalArgumentException("Wrong input arguments passed!");
+        }
+
         this.row = row;
         this.col = col;
         index = row * 8 + col;
     }
 
-    public Coord(int index) {
+    public Coord(final int index) throws IllegalArgumentException {
+
+        if (!isValidInput(index)) {
+            throw new IllegalArgumentException("Wrong input arguments passed!");
+        }
+
         this.index = index;
         col = index % 8;
         row = (index - col) / 8;
+    }
+
+    private boolean isValidInput(final int rank, final char file) {
+        val isValidRank = rank >= 1 && rank <= 8;
+        val isValidFile = file >= 65 && file <= 72;
+        return isValidRank && isValidFile;
+    }
+
+    private boolean isValidInput(final int row, final int col) {
+        val isValidRow = row >= 0 && row <= 7;
+        val isValidCol = col >= 0 && col <= 7;
+        return isValidRow && isValidCol;
+    }
+
+    private boolean isValidInput(final int index) {
+        return index >= 0 && index <= 63;
     }
 }
