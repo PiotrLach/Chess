@@ -355,15 +355,28 @@ public class Logic {
         currentColor = isWhite ? Color.BLACK : Color.WHITE;
     }
 
-    public void movePiece(int row1, int col1, int row2, int col2) {
-
-        var from = new Coord(row1, col1);
-        var to = new Coord(row2, col2);
+    public void movePiece(final Coord from, final Coord to) {
 
         var source = squares.get(from.index);
         var target = squares.get(to.index);
 
         source.movePiece(target);
+    }
+
+    public void movePiece(int row1, int col1, int row2, int col2) {
+
+        var from = new Coord(row1, col1);
+        var to = new Coord(row2, col2);
+
+        movePiece(from, to);
+    }
+
+    public void movePiece(int rank1, char file1, int rank2, char file2) {
+
+        var from = new Coord(rank1, file1);
+        var to = new Coord(rank2, file2);
+
+        movePiece(from, to);
     }
 
     public boolean isCorrectMovement(int row1, int col1, int row2, int col2) {
@@ -412,6 +425,12 @@ public class Logic {
     public void setPiece(Coord coord, Piece piece) {
         var square = squares.get(coord.index);
         square.setPiece(piece);
+    }
+
+    public Piece getPiece(int rank, char file) {
+        var coord = new Coord(rank, file);
+        var square = squares.get(coord.index);
+        return square.getPiece();
     }
 
     public void clearMoves() {

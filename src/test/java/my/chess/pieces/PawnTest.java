@@ -21,6 +21,7 @@ import my.chess.gui.Board;
 import my.chess.logic.Coord;
 import my.chess.logic.Logic;
 import my.chess.MockBoard;
+import my.chess.logic.pieces.Queen;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -104,5 +105,24 @@ public class PawnTest {
         logic.setLayout(layout);
         Assertions.assertDoesNotThrow(() -> logic.movePiece(6, 3, 4, 3));
         Assertions.assertTrue(logic.isValidMove(4, 2, 5, 3));
+    }
+
+    @Test
+    public void promotionTest() {
+        String[] layout = {
+           /* A     B     C     D     E     F     G     H  */
+    /* 8 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; ","K;B", /* 8 */
+    /* 7 */ " ; "," ; "," ; ","L;W"," ; "," ; "," ; "," ; ", /* 7 */
+    /* 6 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ", /* 6 */
+    /* 5 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ", /* 5 */
+    /* 4 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ", /* 4 */
+    /* 3 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ", /* 3 */
+    /* 2 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ", /* 2 */
+    /* 1 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; ","K;W"  /* 1 */
+           /* A     B     C     D     E     F     G     H  */
+        };
+        logic.setLayout(layout);
+        Assertions.assertDoesNotThrow(() -> logic.movePiece(7, 'D', 8, 'D'));
+        Assertions.assertTrue(logic.getPiece(8, 'D') instanceof Queen);
     }
 }
