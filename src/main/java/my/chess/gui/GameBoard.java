@@ -37,6 +37,7 @@ public class GameBoard extends JPanel implements Board {
     @Getter
     private final Deque<Move> moves = new LinkedList<>();
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("my/chess/Bundle");
+    private final List<GameSquare> gameSquares = new ArrayList<>();
     private final List<Square> squares = new ArrayList<>();
     private final List<Drawable> drawables = new ArrayList<>();
     @Getter
@@ -80,8 +81,9 @@ public class GameBoard extends JPanel implements Board {
                     indexCounter++;
                 } else {
                     var coord = new Coord(squareCounter);
-                    var square = new Square(x, y, squareSize, coord);
+                    var square = new GameSquare(x, y, squareSize, coord);
                     squares.add(square);
+                    gameSquares.add(square);
                     drawable = square;
                     squareCounter++;
                 }
@@ -159,7 +161,7 @@ public class GameBoard extends JPanel implements Board {
     private void chooseOrMove(MouseEvent mouseEvent) {
 
         var point = mouseEvent.getPoint();
-        var optional = squares.stream()
+        var optional = gameSquares.stream()
                 .filter(square -> square.contains(point))
                 .findAny();
         if (optional.isEmpty()) {
