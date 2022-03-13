@@ -40,8 +40,7 @@ public class MockBoard implements Board {
 
     public void createSquares() {
         for (int idx = 0; idx < 64; idx++) {
-            var coord = new Coord(idx);
-            var square = new Square(coord);
+            var square = new Square(idx);
             squares.add(square);
         }
     }

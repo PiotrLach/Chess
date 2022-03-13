@@ -36,8 +36,8 @@ public class GameSquare extends Square implements Drawable {
     private static final Color MY_WHITE = new Color(255, 255, 204);
     private static final Color MY_BROWN = new Color(153, 102, 0);
 
-    public GameSquare(int x, int y, int size, Coord coord) {
-        super(coord);
+    public GameSquare(int x, int y, int size, int index) {
+        super(index);
         rectangle = new Rectangle(x, y, size, size);
     }
 

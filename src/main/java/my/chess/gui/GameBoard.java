@@ -79,8 +79,7 @@ public class GameBoard extends JPanel implements Board {
                     drawable = new Index(x, y, squareSize, indexCounter);
                     indexCounter++;
                 } else {
-                    var coord = new Coord(squareCounter);
-                    var square = new GameSquare(x, y, squareSize, coord);
+                    var square = new GameSquare(x, y, squareSize, squareCounter);
                     gameSquares.add(square);
                     drawable = square;
                     squareCounter++;
