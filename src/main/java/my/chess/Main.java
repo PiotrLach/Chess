@@ -40,21 +40,27 @@ public class Main {
 
     private static void setNimbusLookAndFeel() {
 
-        var className = Main.class.getName();
-        var lookAndFeels = UIManager.getInstalledLookAndFeels();
-
         try {
+            var lookAndFeels = UIManager.getInstalledLookAndFeels();
+
             for (var lookAndFeel : lookAndFeels) {
                 var lookAndFeelName = lookAndFeel.getName();
+
                 if ("Nimbus".equals(lookAndFeelName)) {
                     UIManager.setLookAndFeel(lookAndFeel.getClassName());
                     return;
                 }
             }
         } catch (Exception exception) {
-            var logger = Logger.getLogger(className);
-            var message = exception.getMessage();
-            logger.log(Level.SEVERE, message, exception);
+            logException(exception);
         }
+    }
+
+    private static void logException(Exception exception) {
+        var className = Main.class.getName();
+        var logger = Logger.getLogger(className);
+        var message = exception.getMessage();
+
+        logger.log(Level.SEVERE, message, exception);
     }
 }
