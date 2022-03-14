@@ -14,10 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-package my.chess.gui;
+package my.chess.gui.board.boards;
 
 import lombok.Getter;
-import my.chess.logic.*;
+import my.chess.gui.Message;
+import my.chess.gui.board.Board;
+import my.chess.gui.drawable.Drawable;
+import my.chess.gui.drawable.drawables.GameSquare;
+import my.chess.gui.drawable.drawables.Index;
+import my.chess.logic.Logic;
+import my.chess.logic.Move;
+import my.chess.logic.Save;
+import my.chess.logic.Square;
 
 import javax.swing.*;
 import java.awt.*;

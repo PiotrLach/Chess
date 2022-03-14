@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package my.chess.gui;
+package my.chess.gui.drawable.drawables;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import my.chess.logic.Coord;
+import my.chess.gui.drawable.Drawable;
 import my.chess.logic.Square;
 
 import java.awt.*;

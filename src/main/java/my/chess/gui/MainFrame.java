@@ -16,13 +16,11 @@
  */
 package my.chess.gui;
 
-import my.chess.Main;
+import my.chess.gui.board.boards.GameBoard;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

@@ -18,9 +18,9 @@ package my.chess.pieces;
 
 import java.awt.Color;
 import java.util.List;
-import my.chess.gui.Board;
+import my.chess.gui.board.Board;
 import my.chess.logic.Coord;
-import my.chess.MockBoard;
+import my.chess.gui.board.boards.MockBoard;
 import my.chess.logic.Square;
 import my.chess.logic.pieces.Rook;
 import org.junit.jupiter.api.Assertions;

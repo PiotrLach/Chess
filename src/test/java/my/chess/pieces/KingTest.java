@@ -20,7 +20,7 @@ import java.awt.Color;
 import java.util.List;
 
 import my.chess.logic.Coord;
-import my.chess.MockBoard;
+import my.chess.gui.board.boards.MockBoard;
 import my.chess.logic.Square;
 import my.chess.logic.pieces.King;
 import org.junit.jupiter.api.Assertions;

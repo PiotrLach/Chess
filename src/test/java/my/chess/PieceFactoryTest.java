@@ -18,7 +18,8 @@ package my.chess;
 
 import java.awt.Color;
 
-import my.chess.gui.Board;
+import my.chess.gui.board.Board;
+import my.chess.gui.board.boards.MockBoard;
 import my.chess.logic.Logic;
 import my.chess.logic.pieces.Empty;
 import my.chess.logic.pieces.PieceFactory;

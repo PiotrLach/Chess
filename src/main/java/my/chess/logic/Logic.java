@@ -17,8 +17,8 @@
 package my.chess.logic;
 
 import lombok.Getter;
-import my.chess.gui.Board;
 import my.chess.gui.Message;
+import my.chess.gui.board.Board;
 import my.chess.logic.pieces.*;
 
 import java.awt.*;

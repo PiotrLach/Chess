@@ -17,6 +17,7 @@
 package my.chess.gui;
 
 import lombok.RequiredArgsConstructor;
+import my.chess.gui.board.boards.GameBoard;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

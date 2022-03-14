@@ -16,11 +16,7 @@
  */
 package my.chess.logic;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import my.chess.logic.pieces.Empty;
 import my.chess.logic.pieces.Piece;
 

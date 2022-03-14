@@ -17,10 +17,10 @@
 package my.chess.pieces;
 
 import java.util.List;
-import my.chess.gui.Board;
+import my.chess.gui.board.Board;
 import my.chess.logic.Coord;
 import my.chess.logic.Logic;
-import my.chess.MockBoard;
+import my.chess.gui.board.boards.MockBoard;
 import my.chess.logic.pieces.Queen;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

@@ -14,17 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package my.chess;
+package my.chess.gui.board.boards;
 
 import lombok.Getter;
-import my.chess.gui.Board;
 import my.chess.gui.Message;
-import my.chess.logic.Coord;
+import my.chess.gui.board.Board;
 import my.chess.logic.Logic;
 import my.chess.logic.Move;
 import my.chess.logic.Square;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MockBoard implements Board {
 
