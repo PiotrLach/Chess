@@ -41,31 +41,36 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(640, 640));
 
-        setMenuOptions();
-
+        setMenuBar();
         add(board);
 
         pack();
     }
 
-    private void setMenuOptions() {
+    private void setMenuBar() {
+        val menuBar = new JMenuBar();
+
+        menuBar.add(buildAboutMenu());
+        menuBar.add(buildGameMenu());
+
+        setJMenuBar(menuBar);
+    }
+
+    private JMenu buildAboutMenu() {
+        val aboutMenu = new JMenu();
+        aboutMenu.setText(getString(Text.aboutMenu));
+        aboutMenu.add(buildLicenseOption());
+        return aboutMenu;
+    }
+
+    private JMenu buildGameMenu() {
         val gameMenu = new JMenu();
         gameMenu.setText(getString(Text.gameMenu));
 
         gameMenu.add(buildNewGameOption());
         gameMenu.add(buildLoadGameOption());
         gameMenu.add(buildSaveGameOption());
-
-        val menuBar = new JMenuBar();
-        menuBar.add(gameMenu);
-
-        val aboutMenu = new JMenu();
-        aboutMenu.setText(getString(Text.aboutMenu));
-        aboutMenu.add(buildLicenseOption());
-
-        menuBar.add(aboutMenu);
-
-        setJMenuBar(menuBar);
+        return gameMenu;
     }
 
     private JMenuItem buildNewGameOption() {
