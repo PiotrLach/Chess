@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package my.chess.gui;
+package my.chess.gui.frame;
 
 import lombok.val;
 import my.chess.gui.board.boards.GameBoard;

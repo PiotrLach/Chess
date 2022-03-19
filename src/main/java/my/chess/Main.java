@@ -16,7 +16,7 @@
  */
 package my.chess;
 
-import my.chess.gui.MainFrame;
+import my.chess.gui.frame.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;

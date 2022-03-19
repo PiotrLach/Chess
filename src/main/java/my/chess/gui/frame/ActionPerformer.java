@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package my.chess.gui;
+package my.chess.gui.frame;
 
 import lombok.RequiredArgsConstructor;
 import my.chess.gui.board.boards.GameBoard;
@@ -31,17 +31,17 @@ import java.util.ResourceBundle;
  * @author Piotr Lach
  */
 @RequiredArgsConstructor
-public class ActionPerformer {
+class ActionPerformer {
 
     private final ResourceBundle bundle = ResourceBundle.getBundle("my/chess/Bundle");
     private final MainFrame mainFrame;
     private final GameBoard board;
 
-    public void newGame(ActionEvent evt) {
+    void newGame(ActionEvent evt) {
         board.setDefaultGame();
     }
 
-    public void loadGame(ActionEvent evt) {
+    void loadGame(ActionEvent evt) {
         var fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(mainFrame);
 
@@ -55,7 +55,7 @@ public class ActionPerformer {
         board.loadGame(fileName);
     }
 
-    public void saveGame(ActionEvent evt) {
+    void saveGame(ActionEvent evt) {
 
         var fileChooser = new JFileChooser();
         int saveOption = fileChooser.showSaveDialog(mainFrame);
@@ -81,7 +81,7 @@ public class ActionPerformer {
         board.saveGame(fileName);
     }
 
-    public void displayLicense(ActionEvent evt) {
+    void displayLicense(ActionEvent evt) {
 
         var fileName = bundle.getString("MainFrame.licenseFile");
 
