@@ -34,10 +34,6 @@ public class MainFrame extends JFrame {
     private final ActionPerformer actionPerformer = new ActionPerformer(this, board);
 
     public MainFrame() {
-        initComponents();
-    }
-
-    private void initComponents() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(640, 640));
 
@@ -50,8 +46,8 @@ public class MainFrame extends JFrame {
     private void setMenuBar() {
         val menuBar = new JMenuBar();
 
-        menuBar.add(buildAboutMenu());
         menuBar.add(buildGameMenu());
+        menuBar.add(buildAboutMenu());
 
         setJMenuBar(menuBar);
     }
