@@ -52,37 +52,21 @@ public class MainFrame extends JFrame {
         setJMenuBar(menuBar);
     }
 
-    private JMenu buildAboutMenu() {
-        val aboutMenu = new JMenu();
-        aboutMenu.setText(getString(Text.aboutMenu));
-        aboutMenu.add(buildLicenseOption());
-        return aboutMenu;
-    }
-
     private JMenu buildGameMenu() {
         val gameMenu = new JMenu();
         gameMenu.setText(getString(Text.gameMenu));
 
-        gameMenu.add(buildNewGameOption());
-        gameMenu.add(buildLoadGameOption());
-        gameMenu.add(buildSaveGameOption());
+        gameMenu.add(buildOption(Text.newGameOption, actionPerformer::newGame));
+        gameMenu.add(buildOption(Text.loadGameOption, actionPerformer::loadGame));
+        gameMenu.add(buildOption(Text.saveGameOption, actionPerformer::saveGame));
         return gameMenu;
     }
 
-    private JMenuItem buildNewGameOption() {
-        return buildOption(Text.newGameOption, actionPerformer::newGame);
-    }
-
-    private JMenuItem buildLoadGameOption() {
-        return buildOption(Text.loadGameOption, actionPerformer::loadGame);
-    }
-
-    private JMenuItem buildSaveGameOption() {
-        return buildOption(Text.saveGameOption, actionPerformer::saveGame);
-    }
-
-    private JMenuItem buildLicenseOption() {
-        return buildOption(Text.licenseOption, actionPerformer::displayLicense);
+    private JMenu buildAboutMenu() {
+        val aboutMenu = new JMenu();
+        aboutMenu.setText(getString(Text.aboutMenu));
+        aboutMenu.add(buildOption(Text.licenseOption, actionPerformer::displayLicense));
+        return aboutMenu;
     }
 
     private JMenuItem buildOption(final Text text, final ActionListener actionListener) {
