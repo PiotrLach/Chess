@@ -58,29 +58,45 @@ public class MainFrame extends JFrame {
     private void setMenuOptions() {
         gameMenu.setText(getString(Text.gameMenu));
 
-        newGameOption.setText(getString(Text.newGameOption));
-        newGameOption.addActionListener(actionPerformer::newGame);
+        buildNewGameOption();
         gameMenu.add(newGameOption);
 
-        loadGameOption.setText(getString(Text.loadGameOption));
-        loadGameOption.addActionListener(actionPerformer::loadGame);
+        buildLoadGameOption();
         gameMenu.add(loadGameOption);
 
-        saveGameOption.setText(getString(Text.saveGameOption));
-        saveGameOption.addActionListener(actionPerformer::saveGame);
+        buildSaveGameOption();
         gameMenu.add(saveGameOption);
 
         menuBar.add(gameMenu);
 
         aboutMenu.setText(getString(Text.aboutMenu));
 
-        licenseOption.setText(getString(Text.licenseOption));
-        licenseOption.addActionListener(actionPerformer::displayLicense);
+        buildLicenseOption();
         aboutMenu.add(licenseOption);
 
         menuBar.add(aboutMenu);
 
         setJMenuBar(menuBar);
+    }
+
+    private void buildNewGameOption() {
+        newGameOption.setText(getString(Text.newGameOption));
+        newGameOption.addActionListener(actionPerformer::newGame);
+    }
+
+    private void buildLoadGameOption() {
+        loadGameOption.setText(getString(Text.loadGameOption));
+        loadGameOption.addActionListener(actionPerformer::loadGame);
+    }
+
+    private void buildSaveGameOption() {
+        saveGameOption.setText(getString(Text.saveGameOption));
+        saveGameOption.addActionListener(actionPerformer::saveGame);
+    }
+
+    private void buildLicenseOption() {
+        licenseOption.setText(getString(Text.licenseOption));
+        licenseOption.addActionListener(actionPerformer::displayLicense);
     }
 
     private String getString(Text text) {
