@@ -29,9 +29,6 @@ import java.util.ResourceBundle;
  */
 public class MainFrame extends JFrame {
 
-    private final JMenuBar menuBar = new JMenuBar();
-    private final JMenu gameMenu = new JMenu();
-    private final JMenu aboutMenu = new JMenu();
     private final GameBoard board = new GameBoard();
     private final ResourceBundle bundle = ResourceBundle.getBundle("my/chess/Bundle");
     private final ActionPerformer actionPerformer = new ActionPerformer(this, board);
@@ -52,14 +49,17 @@ public class MainFrame extends JFrame {
     }
 
     private void setMenuOptions() {
+        val gameMenu = new JMenu();
         gameMenu.setText(getString(Text.gameMenu));
 
         gameMenu.add(buildNewGameOption());
         gameMenu.add(buildLoadGameOption());
         gameMenu.add(buildSaveGameOption());
 
+        val menuBar = new JMenuBar();
         menuBar.add(gameMenu);
 
+        val aboutMenu = new JMenu();
         aboutMenu.setText(getString(Text.aboutMenu));
         aboutMenu.add(buildLicenseOption());
 
