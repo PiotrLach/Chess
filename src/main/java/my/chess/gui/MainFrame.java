@@ -16,10 +16,12 @@
  */
 package my.chess.gui;
 
+import lombok.val;
 import my.chess.gui.board.boards.GameBoard;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
 
 /**
@@ -39,7 +41,6 @@ public class MainFrame extends JFrame {
     }
 
     private void initComponents() {
-
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(640, 640));
 
@@ -68,34 +69,29 @@ public class MainFrame extends JFrame {
     }
 
     private JMenuItem buildNewGameOption() {
-        JMenuItem newGameOption = new JMenuItem();
-        newGameOption.setText(getString(Text.newGameOption));
-        newGameOption.addActionListener(actionPerformer::newGame);
-        return newGameOption;
+        return buildOption(Text.newGameOption, actionPerformer::newGame);
     }
 
     private JMenuItem buildLoadGameOption() {
-        JMenuItem loadGameOption = new JMenuItem();
-        loadGameOption.setText(getString(Text.loadGameOption));
-        loadGameOption.addActionListener(actionPerformer::loadGame);
-        return loadGameOption;
+        return buildOption(Text.loadGameOption, actionPerformer::loadGame);
     }
 
     private JMenuItem buildSaveGameOption() {
-        JMenuItem saveGameOption = new JMenuItem();
-        saveGameOption.setText(getString(Text.saveGameOption));
-        saveGameOption.addActionListener(actionPerformer::saveGame);
-        return saveGameOption;
+        return buildOption(Text.saveGameOption, actionPerformer::saveGame);
     }
 
     private JMenuItem buildLicenseOption() {
-        JMenuItem licenseOption = new JMenuItem();
-        licenseOption.setText(getString(Text.licenseOption));
-        licenseOption.addActionListener(actionPerformer::displayLicense);
-        return licenseOption;
+        return buildOption(Text.licenseOption, actionPerformer::displayLicense);
     }
 
-    private String getString(Text text) {
+    private JMenuItem buildOption(final Text text, final ActionListener actionListener) {
+        val option = new JMenuItem();
+        option.setText(getString(text));
+        option.addActionListener(actionListener);
+        return option;
+    }
+
+    private String getString(final Text text) {
         return bundle.getString(text.key);
     }
 }
