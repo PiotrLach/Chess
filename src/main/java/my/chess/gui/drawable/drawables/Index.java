@@ -27,14 +27,15 @@ import java.util.List;
  * @author Piotr Lach
  */
 @ToString
-public class Index extends Rectangle implements Drawable {
+public class Index implements Drawable {
 
     private final int idx;
     private final String symbol;
     private static final Color FONT_COLOR = Color.LIGHT_GRAY;
+    private final Rectangle rectangle;
 
     public Index(int x, int y, int size, int idx) {
-        super(x, y, size, size);
+        rectangle = new Rectangle(x, y, size, size);
         this.idx = idx;
         this.symbol = chooseSymbol();
     }
@@ -82,13 +83,13 @@ public class Index extends Rectangle implements Drawable {
             return;
         }
 
-        var font = new Font("Liberation Mono", Font.BOLD, width * 3 / 4);
+        var font = new Font("Liberation Mono", Font.BOLD, rectangle.width * 3 / 4);
 
         graphics.setColor(FONT_COLOR);
         graphics.setFont(font);
 
-        int a = x + height * 2 / 7;
-        int b = y + height * 3 / 4;
+        int a = rectangle.x + rectangle.height * 2 / 7;
+        int b = rectangle.y + rectangle.height * 3 / 4;
         graphics.drawString(symbol, a, b);
     }
 
@@ -98,12 +99,11 @@ public class Index extends Rectangle implements Drawable {
 
     @Override
     public void setDimension(int size) {
-        setSize(size, size);
+        rectangle.setSize(size, size);
     }
 
     @Override
     public void setPosition(int x, int y) {
-        setLocation(x, y);
+        rectangle.setLocation(x, y);
     }
-
 }
