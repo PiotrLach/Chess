@@ -23,19 +23,14 @@ import java.awt.*;
 import java.util.ResourceBundle;
 
 /**
- *
  * @author Piotr Lach
  */
 public class MainFrame extends JFrame {
 
+    private final JMenuBar menuBar = new JMenuBar();
+    private final JMenu gameMenu = new JMenu();
     private final JMenu aboutMenu = new JMenu();
     private final GameBoard board = new GameBoard();
-    private final JMenu gameMenu = new JMenu();
-    private final JMenuItem licenseOption = new JMenuItem();
-    private final JMenuItem loadGameOption = new JMenuItem();
-    private final JMenuBar menuBar = new JMenuBar();
-    private final JMenuItem newGameOption = new JMenuItem();
-    private final JMenuItem saveGameOption = new JMenuItem();
     private final ResourceBundle bundle = ResourceBundle.getBundle("my/chess/Bundle");
     private final ActionPerformer actionPerformer = new ActionPerformer(this, board);
 
@@ -50,7 +45,7 @@ public class MainFrame extends JFrame {
 
         setMenuOptions();
 
-	    add(board);
+        add(board);
 
         pack();
     }
@@ -58,45 +53,46 @@ public class MainFrame extends JFrame {
     private void setMenuOptions() {
         gameMenu.setText(getString(Text.gameMenu));
 
-        buildNewGameOption();
-        gameMenu.add(newGameOption);
-
-        buildLoadGameOption();
-        gameMenu.add(loadGameOption);
-
-        buildSaveGameOption();
-        gameMenu.add(saveGameOption);
+        gameMenu.add(buildNewGameOption());
+        gameMenu.add(buildLoadGameOption());
+        gameMenu.add(buildSaveGameOption());
 
         menuBar.add(gameMenu);
 
         aboutMenu.setText(getString(Text.aboutMenu));
-
-        buildLicenseOption();
-        aboutMenu.add(licenseOption);
+        aboutMenu.add(buildLicenseOption());
 
         menuBar.add(aboutMenu);
 
         setJMenuBar(menuBar);
     }
 
-    private void buildNewGameOption() {
+    private JMenuItem buildNewGameOption() {
+        JMenuItem newGameOption = new JMenuItem();
         newGameOption.setText(getString(Text.newGameOption));
         newGameOption.addActionListener(actionPerformer::newGame);
+        return newGameOption;
     }
 
-    private void buildLoadGameOption() {
+    private JMenuItem buildLoadGameOption() {
+        JMenuItem loadGameOption = new JMenuItem();
         loadGameOption.setText(getString(Text.loadGameOption));
         loadGameOption.addActionListener(actionPerformer::loadGame);
+        return loadGameOption;
     }
 
-    private void buildSaveGameOption() {
+    private JMenuItem buildSaveGameOption() {
+        JMenuItem saveGameOption = new JMenuItem();
         saveGameOption.setText(getString(Text.saveGameOption));
         saveGameOption.addActionListener(actionPerformer::saveGame);
+        return saveGameOption;
     }
 
-    private void buildLicenseOption() {
+    private JMenuItem buildLicenseOption() {
+        JMenuItem licenseOption = new JMenuItem();
         licenseOption.setText(getString(Text.licenseOption));
         licenseOption.addActionListener(actionPerformer::displayLicense);
+        return licenseOption;
     }
 
     private String getString(Text text) {
