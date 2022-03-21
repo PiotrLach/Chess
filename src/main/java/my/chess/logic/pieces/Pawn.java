@@ -53,7 +53,7 @@ public class Pawn extends Piece {
 
         if (isEnPassant(source, target)) {
             var optional = logic.getLastMove();
-            var coord = optional.get().target;
+            var coord = optional.get().to;
 
             logic.setPiece(coord, Empty.INSTANCE);
         }
@@ -101,7 +101,7 @@ public class Pawn extends Piece {
         if (!isTwoSquaresAdvancedEnemyPawn(lastMove)) {
             return false;
         }
-        var coord = lastMove.target;
+        var coord = lastMove.to;
 
         var lastMoveTarget = logic.getSquare(coord);
 
@@ -124,8 +124,8 @@ public class Pawn extends Piece {
     private boolean isTwoSquaresAdvancedEnemyPawn(Move lastMove) {
 
         int vDiff; // vertical difference
-        vDiff = Math.abs(lastMove.source.row - lastMove.target.row);
-        var lastMoveTargetSquare = logic.getSquare(lastMove.target);
+        vDiff = Math.abs(lastMove.from.row - lastMove.to.row);
+        var lastMoveTargetSquare = logic.getSquare(lastMove.to);
         var piece = lastMoveTargetSquare.getPiece();
 
         return piece instanceof Pawn && vDiff == 2 && piece.isFoe(this.color);

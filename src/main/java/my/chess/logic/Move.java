@@ -38,8 +38,8 @@ public class Move implements Serializable {
     @Serial
     private static final long serialVersionUID = -5610296767681737878L;
 
-    public final Coord source;
-    public final Coord target;
+    public final Coord from;
+    public final Coord to;
     @Getter
     private Piece promotedPiece = Empty.INSTANCE;
 }
