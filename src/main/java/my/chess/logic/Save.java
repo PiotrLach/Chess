@@ -47,11 +47,9 @@ public class Save {
         board.setDefaultGame();
 
         for (var move : moves) {
-            Coord from = move.source;
-            Coord to = move.target;
 
-            Square source = squares.get(from.index);
-            Square target = squares.get(to.index);
+            Square source = squares.get(move.from.index);
+            Square target = squares.get(move.to.index);
 
             Piece piece;
             /* Necessary for promoted pawns */
