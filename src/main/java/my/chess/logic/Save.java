@@ -47,7 +47,6 @@ public class Save {
         board.setDefaultGame();
 
         for (var move : moves) {
-
             Square source = squares.get(move.from.index);
             Square target = squares.get(move.to.index);
 
