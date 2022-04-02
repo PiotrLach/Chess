@@ -19,7 +19,7 @@ package my.chess.gui.drawable.drawables;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import my.chess.gui.drawable.Drawable;
-import my.chess.logic.Square;
+import my.chess.logic.square.Square;
 
 import java.awt.*;
 

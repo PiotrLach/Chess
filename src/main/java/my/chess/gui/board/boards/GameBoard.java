@@ -25,7 +25,7 @@ import my.chess.gui.drawable.drawables.Index;
 import my.chess.logic.Logic;
 import my.chess.logic.Move;
 import my.chess.logic.Save;
-import my.chess.logic.Square;
+import my.chess.logic.square.Square;
 
 import javax.swing.*;
 import java.awt.*;

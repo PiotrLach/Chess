@@ -21,6 +21,8 @@ import my.chess.gui.Message;
 import my.chess.gui.board.Board;
 import my.chess.logic.pieces.Empty;
 import my.chess.logic.pieces.Piece;
+import my.chess.logic.square.Coord;
+import my.chess.logic.square.Square;
 
 import java.io.*;
 import java.util.Deque;

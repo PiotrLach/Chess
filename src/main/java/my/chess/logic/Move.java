@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import my.chess.logic.pieces.Empty;
 import my.chess.logic.pieces.Piece;
+import my.chess.logic.square.Coord;
 
 import java.io.Serial;
 import java.io.Serializable;

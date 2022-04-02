@@ -16,7 +16,7 @@
  */
 package my.chess;
 
-import my.chess.logic.Coord;
+import my.chess.logic.square.Coord;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

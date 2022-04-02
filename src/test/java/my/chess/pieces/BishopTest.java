@@ -21,9 +21,9 @@ import java.util.List;
 
 import my.chess.gui.board.Board;
 import my.chess.gui.board.boards.MockBoard;
-import my.chess.logic.Coord;
+import my.chess.logic.square.Coord;
 import my.chess.logic.Logic;
-import my.chess.logic.Square;
+import my.chess.logic.square.Square;
 import my.chess.logic.pieces.Bishop;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

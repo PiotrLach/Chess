@@ -18,7 +18,7 @@ package my.chess.pieces;
 
 import java.util.List;
 import my.chess.gui.board.Board;
-import my.chess.logic.Coord;
+import my.chess.logic.square.Coord;
 import my.chess.logic.Logic;
 import my.chess.gui.board.boards.MockBoard;
 import my.chess.logic.pieces.Queen;

@@ -17,7 +17,7 @@
 package my.chess.logic.pieces;
 
 import my.chess.logic.Logic;
-import my.chess.logic.Square;
+import my.chess.logic.square.Square;
 
 import java.awt.*;
 

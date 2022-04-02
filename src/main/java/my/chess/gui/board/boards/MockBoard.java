@@ -21,7 +21,7 @@ import my.chess.gui.Message;
 import my.chess.gui.board.Board;
 import my.chess.logic.Logic;
 import my.chess.logic.Move;
-import my.chess.logic.Square;
+import my.chess.logic.square.Square;
 
 import java.util.ArrayList;
 import java.util.Deque;
