@@ -16,12 +16,10 @@
  */
 package my.chess;
 
+import my.chess.gui.LookAndFeelSetter;
 import my.chess.gui.frame.MainFrame;
 
-import javax.swing.*;
 import java.awt.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -29,38 +27,15 @@ import java.util.logging.Logger;
  */
 public class Main {
 
+    private static final LookAndFeelSetter lookAndFeelSetter = new LookAndFeelSetter();
+
     public static void main(String[] args) {
-        setNimbusLookAndFeel();
+
+        lookAndFeelSetter.setNimbusLookAndFeel();
 
         EventQueue.invokeLater(() -> {
             var mainFrame = new MainFrame();
             mainFrame.setVisible(true);
         });
-    }
-
-    private static void setNimbusLookAndFeel() {
-
-        try {
-            var lookAndFeels = UIManager.getInstalledLookAndFeels();
-
-            for (var lookAndFeel : lookAndFeels) {
-                var lookAndFeelName = lookAndFeel.getName();
-
-                if ("Nimbus".equals(lookAndFeelName)) {
-                    UIManager.setLookAndFeel(lookAndFeel.getClassName());
-                    return;
-                }
-            }
-        } catch (Exception exception) {
-            logException(exception);
-        }
-    }
-
-    private static void logException(Exception exception) {
-        var className = Main.class.getName();
-        var logger = Logger.getLogger(className);
-        var message = exception.getMessage();
-
-        logger.log(Level.SEVERE, message, exception);
     }
 }
