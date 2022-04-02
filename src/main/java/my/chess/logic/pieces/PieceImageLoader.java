@@ -16,6 +16,9 @@
 */
 package my.chess.logic.pieces;
 
+import lombok.SneakyThrows;
+import lombok.val;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -31,16 +34,13 @@ class PieceImageLoader {
 
     static final PieceImageLoader INSTANCE = new PieceImageLoader();
 
-    private List<Image> whitePieces;
-    private List<Image> blackPieces;
+    private final List<Image> whitePieces;
+    private final List<Image> blackPieces;
 
+    @SneakyThrows
     private PieceImageLoader() {
-        try {
-            blackPieces = loadImageSet("black");
-            whitePieces = loadImageSet("white");
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
+        blackPieces = loadImageSet("black");
+        whitePieces = loadImageSet("white");
     }
 
     private List<Image> loadImageSet(final String color) throws Exception {
@@ -61,9 +61,8 @@ class PieceImageLoader {
 
     private InputStream getResource(final String fileName) throws Exception {
 
-        var classLoader = getClass().getClassLoader();
-
-        var inputStream = classLoader.getResourceAsStream(fileName);
+        val classLoader = getClass().getClassLoader();
+        val inputStream = classLoader.getResourceAsStream(fileName);
 
         if (inputStream == null) {
             throw new Exception("File not found! " + fileName);
@@ -73,7 +72,6 @@ class PieceImageLoader {
     }
 
     Image getImage(final Piece.Name name, final Color color) {
-
         if (color.equals(Color.BLACK)) {
             return blackPieces.get(name.imageId);
         } else {
