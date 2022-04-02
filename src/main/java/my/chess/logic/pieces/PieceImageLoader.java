@@ -19,6 +19,7 @@ package my.chess.logic.pieces;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
@@ -35,36 +36,30 @@ class PieceImageLoader {
 
     private PieceImageLoader() {
         try {
-            loadImages();
+            blackPieces = loadImageSet("black");
+            whitePieces = loadImageSet("white");
         } catch (Exception exception) {
             exception.printStackTrace();
         }
     }
 
-    private void loadImages() throws Exception {
-
-        blackPieces = List.of(
-            ImageIO.read(getResource("black/pawn.png")),
-            ImageIO.read(getResource("black/bishop.png")),
-            ImageIO.read(getResource("black/knight.png")),
-            ImageIO.read(getResource("black/rook.png")),
-            ImageIO.read(getResource("black/king.png")),
-            ImageIO.read(getResource("black/queen.png")),
-            new BufferedImage(1, 1, 1)
-        );
-
-        whitePieces = List.of(
-            ImageIO.read(getResource("white/pawn.png")),
-            ImageIO.read(getResource("white/bishop.png")),
-            ImageIO.read(getResource("white/knight.png")),
-            ImageIO.read(getResource("white/rook.png")),
-            ImageIO.read(getResource("white/king.png")),
-            ImageIO.read(getResource("white/queen.png")),
-            new BufferedImage(1, 1, 1)
+    private List<Image> loadImageSet(final String color) throws Exception {
+        return List.of(
+                loadImage(color, "pawn.png"),
+                loadImage(color, "bishop.png"),
+                loadImage(color, "knight.png"),
+                loadImage(color, "rook.png"),
+                loadImage(color, "king.png"),
+                loadImage(color, "queen.png"),
+                new BufferedImage(1, 1, 1)
         );
     }
 
-    private InputStream getResource(String fileName) throws Exception {
+    private BufferedImage loadImage(final String color, final String fileName) throws Exception {
+        return ImageIO.read(getResource(color + File.separator + fileName));
+    }
+
+    private InputStream getResource(final String fileName) throws Exception {
 
         var classLoader = getClass().getClassLoader();
 
@@ -77,7 +72,7 @@ class PieceImageLoader {
         }
     }
 
-    Image getImage(Piece.Name name, Color color) {
+    Image getImage(final Piece.Name name, final Color color) {
 
         if (color.equals(Color.BLACK)) {
             return blackPieces.get(name.imageId);
