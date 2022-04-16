@@ -94,14 +94,14 @@ public class Logic {
             return false;
         }
 
-        var sPiece = source.getPiece();
-        var tPiece = target.getPiece();
+        var attacker = source.getPiece();
+        var defender = target.getPiece();
 
-        if (!sPiece.isFoe(tPiece)) {
+        if (!attacker.isFoe(defender)) {
             return false;
         }
 
-        if (!sPiece.isCorrectMovement(source, target)) {
+        if (!attacker.isCorrectMovement(source, target)) {
             board.displayMessage(Message.wrongMove);
             return false;
         }
@@ -135,38 +135,29 @@ public class Logic {
     }
 
     public boolean isAttacked(Square square) {
-        return getAttackingSquares(square).size() > 0;
+        return getAttackingSquares(square)
+                .size() > 0;
     }
 
     private boolean isCheck() {
-        var kingSquare = getKing();
-        return getAttackingSquares(kingSquare).size() > 0;
+        return getAttackingSquares(getKingSquare())
+                .size() > 0;
     }
 
     private boolean isMate() {
-
         if (!isCheck()) {
             return false;
         }
 
-        var escapeSquares = getEscapeSquares();
-
-        return !isCheckBlockPossible() && escapeSquares.isEmpty();
+        return !isCheckBlockPossible() && getEscapeSquares().isEmpty();
     }
 
-    private Square getKing() throws IllegalStateException {
-
-        for (var square : squares) {
-
-            var piece = square.getPiece();
-
-            var isKing = piece instanceof King;
-
-            if (isKing && !piece.isFoe(currentColor)) {
-                return square;
-            }
-        }
-        throw new IllegalStateException("King has not been found.");
+    private Square getKingSquare() throws IllegalStateException {
+        return squares.stream()
+                .filter(Square::hasKing)
+                .filter(square -> !square.hasFoe(currentColor))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("King has not been found!"));
     }
 
     /**
@@ -206,7 +197,7 @@ public class Logic {
      */
     private List<Square> getEscapeSquares() {
 
-        var kingSquare = getKing();
+        var kingSquare = getKingSquare();
         var king = kingSquare.getPiece();
 
         return squares.stream()
@@ -218,7 +209,7 @@ public class Logic {
 
     private boolean isCheckBlockPossible() {
 
-        var kingSquare = getKing();
+        var kingSquare = getKingSquare();
         var allSquaresLists = getAttackingSquares(kingSquare);
 
         if (allSquaresLists.size() > 1) {
@@ -270,7 +261,7 @@ public class Logic {
     }
 
     private boolean isCheckBlock(Square source, Square target) {
-        var kingSquare = getKing();
+        var kingSquare = getKingSquare();
         var allSquaresLists = getAttackingSquares(kingSquare);
 
         if (allSquaresLists.size() > 1) {

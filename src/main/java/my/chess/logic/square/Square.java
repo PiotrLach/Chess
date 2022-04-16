@@ -18,7 +18,10 @@ package my.chess.logic.square;
 
 import lombok.*;
 import my.chess.logic.pieces.Empty;
+import my.chess.logic.pieces.King;
 import my.chess.logic.pieces.Piece;
+
+import java.awt.*;
 
 @EqualsAndHashCode
 public class Square {
@@ -66,5 +69,13 @@ public class Square {
 
     public boolean isCorrectMovement(Square target) {
         return piece.isCorrectMovement(this, target);
+    }
+
+    public boolean hasFoe(final Color color) {
+        return piece.isFoe(color);
+    }
+
+    public boolean hasKing() {
+        return piece instanceof King;
     }
 }
