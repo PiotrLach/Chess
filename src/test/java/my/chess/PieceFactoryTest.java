@@ -38,7 +38,7 @@ public class PieceFactoryTest {
 
     @Test
     public void testPieceFactory() {
-        var rook1 = new Rook(Color.WHITE, logic);
+        var rook1 = new Rook("W", logic);
         var rook2 = pieceFactory.getPiece("R;W");
         Assertions.assertEquals(rook1, rook2);
 

@@ -44,14 +44,12 @@ public class PieceFactory {
             return Empty.INSTANCE;
         }
 
-        var pieceSymbol = values[0];
-        var colorSymbol = values[1];
-
-        var color = getColor(colorSymbol);
+        var symbol = values[0];
+        var color = values[1];
 
         return getPieces(color)
                 .stream()
-                .filter(piece -> piece.symbol.equals(pieceSymbol))
+                .filter(piece -> piece.symbol.equals(symbol))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("Wrong piece symbol specified!"));
     }
@@ -64,15 +62,7 @@ public class PieceFactory {
         return values[0].isBlank() && values[1].isBlank();
     }
 
-    private Color getColor(String colorSymbol) {
-        return switch (colorSymbol) {
-            default -> throw new IllegalArgumentException("Wrong color symbol specified!");
-            case "W" -> Color.WHITE;
-            case "B" -> Color.BLACK;
-        };
-    }
-
-    private List<Piece> getPieces(Color color) {
+    private List<Piece> getPieces(final String color) {
         return List.of(
             new Pawn(color, "L", logic),
             new Pawn(color, "H", logic),

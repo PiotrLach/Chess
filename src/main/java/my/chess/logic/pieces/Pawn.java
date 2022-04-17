@@ -33,7 +33,7 @@ public class Pawn extends Piece {
 
     private final int startRow;
 
-    public Pawn(final Color color, final String symbol, final Logic logic) {
+    public Pawn(final String color, final String symbol, final Logic logic) {
         super(symbol, color, logic, 0);
 
         startRow = symbol.equals("L") ? 1 : 6;

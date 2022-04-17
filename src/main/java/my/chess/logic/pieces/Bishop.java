@@ -27,7 +27,7 @@ import java.awt.*;
  */
 public class Bishop extends Piece {
 
-    public Bishop(Color color, Logic logic) {
+    public Bishop(String color, Logic logic) {
         super("B", color, logic, 1);
     }
 

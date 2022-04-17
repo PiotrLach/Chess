@@ -37,7 +37,7 @@ public class King extends Piece {
         WRONG
     }
 
-    public King(Color color, Logic logic) {
+    public King(String color, Logic logic) {
         super("K", color, logic, 4);
     }
 

@@ -27,7 +27,7 @@ import java.awt.*;
  */
 public class Knight extends Piece {
 
-    public Knight(Color color, Logic logic) {
+    public Knight(String color, Logic logic) {
         super("N", color, logic, 2);
     }
 

@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 public class QueenTest {
 
     private final Board board = new MockBoard();
-    private final Queen queen = new Queen(Color.BLACK, board.getLogic());
+    private final Queen queen = new Queen("B", board.getLogic());
     private final Coord from = new Coord(3, 'C');
     private final Square source = new Square(from);
 

@@ -64,8 +64,8 @@ class PieceImageLoader {
         return classLoader.getResourceAsStream(fileName);
     }
 
-    Image getImage(final int id, final Color color) {
-        if (color.equals(Color.BLACK)) {
+    Image getImage(final int id, final String color) {
+        if (color.equals("B")) {
             return blackPieces.get(id);
         } else {
             return whitePieces.get(id);

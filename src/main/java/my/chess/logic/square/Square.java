@@ -71,7 +71,7 @@ public class Square {
         return piece.isCorrectMovement(this, target);
     }
 
-    public boolean hasFoe(final Color color) {
+    public boolean hasFoe(final String color) {
         return piece.isFoe(color);
     }
 

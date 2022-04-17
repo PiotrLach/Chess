@@ -40,7 +40,7 @@ public class Logic {
     private final PieceFactory pieceFactory;
     private final Deque<Move> moves;
     @Getter
-    private Color currentColor = Color.WHITE;
+    private String currentColor = "W";
 
     public Logic(Board board, List<? extends Square> squares, Deque<Move> moves) {
         this.board = board;
@@ -76,7 +76,7 @@ public class Logic {
     }
 
     private void clearBoard() {
-        currentColor = Color.WHITE;
+        currentColor = "W";
         board.setOptionalSourceEmpty();
 
         for (var square : squares) {
@@ -342,8 +342,8 @@ public class Logic {
     }
 
     public void changeCurrentColor() {
-        var isWhite = currentColor.equals(Color.WHITE);
-        currentColor = isWhite ? Color.BLACK : Color.WHITE;
+        var isWhite = currentColor.equals("W");
+        currentColor = isWhite ? "B" : "W";
     }
 
     public void movePiece(final Coord from, final Coord to) {

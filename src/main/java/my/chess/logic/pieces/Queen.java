@@ -27,7 +27,7 @@ import java.awt.*;
  */
 public class Queen extends Piece {
 
-    public Queen(Color color, Logic logic) {
+    public Queen(String color, Logic logic) {
         super("Q", color, logic, 5);
     }
 

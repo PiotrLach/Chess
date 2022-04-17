@@ -32,10 +32,9 @@ abstract public class Piece {
     protected final static String symbolFormat = "%s;%s";
     @Setter
     protected transient Logic logic;
-    public final Color color;
     public final int imageId;
     public final String symbol;
-    public final String colorSymbol;
+    public final String color;
     protected transient Image image;
     @Getter
     @ToString.Include
@@ -44,11 +43,10 @@ abstract public class Piece {
     static final PieceImageLoader imageLoader = PieceImageLoader.INSTANCE;
 
     public Piece(final String symbol,
-                 final Color color,
+                 final String color,
                  final Logic logic,
                  final int imageId) {
         this.symbol = symbol;
-        this.colorSymbol = color.equals(Color.WHITE) ? "W" : "B";
         this.imageId = imageId;
         this.color = color;
         this.logic = logic;
@@ -83,7 +81,7 @@ abstract public class Piece {
         return !piece.color.equals(this.color);
     }
 
-    public boolean isFoe(Color color) {
+    public boolean isFoe(String color) {
         return !this.color.equals(color);
     }
 

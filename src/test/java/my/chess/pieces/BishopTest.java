@@ -36,7 +36,7 @@ public class BishopTest {
 
     private final Board board = new MockBoard();
     private final Logic logic = board.getLogic();
-    private final Bishop bishop = new Bishop(Color.BLACK, logic );
+    private final Bishop bishop = new Bishop("B", logic );
     private final Coord from = new Coord(3, 'C');
     private final Square source = new Square(from);
 

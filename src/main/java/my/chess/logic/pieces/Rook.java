@@ -27,7 +27,7 @@ import java.awt.*;
  */
 public class Rook extends Piece {
 
-    public Rook(Color color, Logic logic) {
+    public Rook(String color, Logic logic) {
         super("R", color, logic, 3);
     }
 
