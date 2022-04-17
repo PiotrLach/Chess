@@ -59,16 +59,9 @@ class PieceImageLoader {
         return ImageIO.read(getResource(color + File.separator + fileName));
     }
 
-    private InputStream getResource(final String fileName) throws Exception {
-
+    private InputStream getResource(final String fileName) {
         val classLoader = getClass().getClassLoader();
-        val inputStream = classLoader.getResourceAsStream(fileName);
-
-        if (inputStream == null) {
-            throw new Exception("File not found! " + fileName);
-        } else {
-            return inputStream;
-        }
+        return classLoader.getResourceAsStream(fileName);
     }
 
     Image getImage(final Piece.Name name, final Color color) {
