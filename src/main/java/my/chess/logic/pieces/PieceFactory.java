@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import my.chess.logic.Logic;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -63,13 +64,11 @@ public class PieceFactory {
     }
 
     private int getPieceId(String pieceSymbol) {
-        var values = Piece.Name.values();
-        for (var name : values) {
-            if (name.symbol.equals(pieceSymbol)) {
-                return name.pieceId;
-            }
-        }
-        throw new IllegalArgumentException("Wrong piece symbol specified!");
+        return Arrays.stream(Piece.Name.values())
+                .filter(name -> name.symbol.equals(pieceSymbol))
+                .map(name -> name.pieceId)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("Wrong piece symbol specified!"));
     }
 
     private Color getColor(String colorSymbol) {
