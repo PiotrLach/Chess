@@ -34,10 +34,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @ToString
-public class Move implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = -5610296767681737878L;
+public class Move {
 
     public final Coord source;
     public final Coord target;

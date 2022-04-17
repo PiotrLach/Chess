@@ -20,19 +20,13 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.val;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 /**
  *
  * @author Piotr Lach
  */
 @EqualsAndHashCode
 @ToString
-public class Coord implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 5888462570748191830L;
+public class Coord {
 
     public final int index;
     public final int row;

@@ -38,7 +38,7 @@ public class King extends Piece {
     }
 
     public King(Color color, Logic logic) {
-        super(Name.King, color, logic);
+        super("K", color, logic, 4);
     }
 
     @Override

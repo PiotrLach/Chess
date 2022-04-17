@@ -29,7 +29,7 @@ public class Empty extends Piece {
     public static final Empty INSTANCE = new Empty();
 
     private Empty() {
-        super(Name.Empty, Color.GRAY, null);
+        super(" ", Color.GRAY, null, 6);
     }
 
     @Override

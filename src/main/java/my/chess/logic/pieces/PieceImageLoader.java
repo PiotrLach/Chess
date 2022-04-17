@@ -64,11 +64,11 @@ class PieceImageLoader {
         return classLoader.getResourceAsStream(fileName);
     }
 
-    Image getImage(final Piece.Name name, final Color color) {
+    Image getImage(final int id, final Color color) {
         if (color.equals(Color.BLACK)) {
-            return blackPieces.get(name.imageId);
+            return blackPieces.get(id);
         } else {
-            return whitePieces.get(name.imageId);
+            return whitePieces.get(id);
         }
     }
 }

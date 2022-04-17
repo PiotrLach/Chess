@@ -28,7 +28,7 @@ import java.awt.*;
 public class Queen extends Piece {
 
     public Queen(Color color, Logic logic) {
-        super(Name.Queen, color, logic);
+        super("Q", color, logic, 5);
     }
 
     @Override

@@ -47,12 +47,13 @@ public class PieceFactory {
         var pieceSymbol = values[0];
         var colorSymbol = values[1];
 
-        var pieceId = getPieceId(pieceSymbol);
         var color = getColor(colorSymbol);
 
-        var pieces = getPieces(color);
-
-        return pieces.get(pieceId);
+        return getPieces(color)
+                .stream()
+                .filter(piece -> piece.symbol.equals(pieceSymbol))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("Wrong piece symbol specified!"));
     }
 
     private boolean isValidString(String string) {
@@ -61,14 +62,6 @@ public class PieceFactory {
 
     private boolean isEmptySquare(String[] values) {
         return values[0].isBlank() && values[1].isBlank();
-    }
-
-    private int getPieceId(String pieceSymbol) {
-        return Arrays.stream(Piece.Name.values())
-                .filter(name -> name.symbol.equals(pieceSymbol))
-                .map(name -> name.pieceId)
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("Wrong piece symbol specified!"));
     }
 
     private Color getColor(String colorSymbol) {
@@ -81,8 +74,8 @@ public class PieceFactory {
 
     private List<Piece> getPieces(Color color) {
         return List.of(
-            new Pawn(color, Piece.Name.Pawn1, logic),
-            new Pawn(color, Piece.Name.Pawn6, logic),
+            new Pawn(color, "L", logic),
+            new Pawn(color, "H", logic),
             new Bishop(color, logic),
             new Knight(color, logic),
             new Rook(color, logic),

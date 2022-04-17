@@ -28,7 +28,7 @@ import java.awt.*;
 public class Bishop extends Piece {
 
     public Bishop(Color color, Logic logic) {
-        super(Name.Bishop, color, logic);
+        super("B", color, logic, 1);
     }
 
     @Override

@@ -33,10 +33,10 @@ public class Pawn extends Piece {
 
     private final int startRow;
 
-    public Pawn(Color color, Name name, Logic logic) {
-        super(name, color, logic);
+    public Pawn(final Color color, final String symbol, final Logic logic) {
+        super(symbol, color, logic, 0);
 
-        startRow = name == Name.Pawn1 ? 1 : 6;
+        startRow = symbol.equals("L") ? 1 : 6;
 
         isMovingDown = startRow == 1;
     }

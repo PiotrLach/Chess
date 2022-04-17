@@ -28,7 +28,7 @@ import java.awt.*;
 public class Rook extends Piece {
 
     public Rook(Color color, Logic logic) {
-        super(Name.Rook, color, logic);
+        super("R", color, logic, 3);
     }
 
     @Override

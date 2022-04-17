@@ -21,49 +21,38 @@ import my.chess.logic.Logic;
 import my.chess.logic.square.Square;
 
 import java.awt.*;
-import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * @author Piotr Lach
  */
 @EqualsAndHashCode
 @ToString(onlyExplicitlyIncluded = true)
-abstract public class Piece implements Serializable {
+abstract public class Piece {
 
-    @AllArgsConstructor
-    public enum Name {
-        Pawn1   (0, "L", 0),
-        Pawn6   (0, "H", 1),
-        Bishop  (1, "B", 2),
-        Knight  (2, "N", 3),
-        Rook    (3, "R", 4),
-        King    (4, "K", 5),
-        Queen   (5, "Q", 6),
-        Empty   (6, " ", 7) ;
-        public final int imageId;
-        public final String symbol;
-        public final int pieceId;
-    }
-
+    protected final static String symbolFormat = "%s;%s";
     @Setter
     protected transient Logic logic;
     public final Color color;
+    public final int imageId;
+    public final String symbol;
+    public final String colorSymbol;
     protected transient Image image;
-    protected Name name;
     @Getter
     @ToString.Include
     protected boolean isOnStartPosition = true;
 
     static final PieceImageLoader imageLoader = PieceImageLoader.INSTANCE;
-    @Serial
-    private static final long serialVersionUID = 4232331441720820159L;
 
-    public Piece(Name name, Color color, Logic logic) {
-        this.name = name;
+    public Piece(final String symbol,
+                 final Color color,
+                 final Logic logic,
+                 final int imageId) {
+        this.symbol = symbol;
+        this.colorSymbol = color.equals(Color.WHITE) ? "W" : "B";
+        this.imageId = imageId;
         this.color = color;
         this.logic = logic;
-        this.image = imageLoader.getImage(name, color);
+        this.image = imageLoader.getImage(imageId, color);
     }
 
     public void move(Square source, Square target) {
@@ -102,7 +91,7 @@ abstract public class Piece implements Serializable {
      * Must be called for any deserialized piece, since images are not serialized.
      */
     public void setImage() {
-        image = imageLoader.getImage(name, color);
+        image = imageLoader.getImage(imageId, color);
     }
 
     abstract public boolean isCorrectMovement(Square source, Square target);
