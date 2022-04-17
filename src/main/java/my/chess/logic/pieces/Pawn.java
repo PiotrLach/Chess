@@ -20,7 +20,6 @@ import my.chess.logic.Logic;
 import my.chess.logic.Move;
 import my.chess.logic.square.Square;
 
-import java.awt.*;
 import java.util.List;
 
 /**
@@ -34,7 +33,7 @@ public class Pawn extends Piece {
     private final int startRow;
 
     public Pawn(final String color, final String symbol, final Logic logic) {
-        super(symbol, color, logic, 0);
+        super(symbol, color, logic);
 
         startRow = symbol.equals("L") ? 1 : 6;
 

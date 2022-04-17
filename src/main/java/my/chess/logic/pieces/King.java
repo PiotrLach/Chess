@@ -19,7 +19,6 @@ package my.chess.logic.pieces;
 import my.chess.logic.Logic;
 import my.chess.logic.square.Square;
 
-import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +37,7 @@ public class King extends Piece {
     }
 
     public King(String color, Logic logic) {
-        super("K", color, logic, 4);
+        super("K", color, logic);
     }
 
     @Override

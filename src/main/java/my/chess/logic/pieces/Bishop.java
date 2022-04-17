@@ -19,8 +19,6 @@ package my.chess.logic.pieces;
 import my.chess.logic.Logic;
 import my.chess.logic.square.Square;
 
-import java.awt.*;
-
 /**
  *
  * @author Piotr Lach
@@ -28,7 +26,7 @@ import java.awt.*;
 public class Bishop extends Piece {
 
     public Bishop(String color, Logic logic) {
-        super("B", color, logic, 1);
+        super("B", color, logic);
     }
 
     @Override

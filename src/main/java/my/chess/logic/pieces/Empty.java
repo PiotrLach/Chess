@@ -29,7 +29,7 @@ public class Empty extends Piece {
     public static final Empty INSTANCE = new Empty();
 
     private Empty() {
-        super(" ", "G", null, 6);
+        super(" ", "G", null);
     }
 
     @Override

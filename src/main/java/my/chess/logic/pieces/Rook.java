@@ -19,8 +19,6 @@ package my.chess.logic.pieces;
 import my.chess.logic.Logic;
 import my.chess.logic.square.Square;
 
-import java.awt.*;
-
 /**
  *
  * @author Piotr Lach
@@ -28,7 +26,7 @@ import java.awt.*;
 public class Rook extends Piece {
 
     public Rook(String color, Logic logic) {
-        super("R", color, logic, 3);
+        super("R", color, logic);
     }
 
     @Override

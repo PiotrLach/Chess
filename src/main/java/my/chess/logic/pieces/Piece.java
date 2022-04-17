@@ -32,7 +32,6 @@ abstract public class Piece {
     protected final static String symbolFormat = "%s;%s";
     @Setter
     protected transient Logic logic;
-    public final int imageId;
     public final String symbol;
     public final String color;
     protected transient Image image;
@@ -42,15 +41,11 @@ abstract public class Piece {
 
     static final PieceImageLoader imageLoader = PieceImageLoader.INSTANCE;
 
-    public Piece(final String symbol,
-                 final String color,
-                 final Logic logic,
-                 final int imageId) {
+    public Piece(final String symbol, final String color, final Logic logic) {
         this.symbol = symbol;
-        this.imageId = imageId;
         this.color = color;
         this.logic = logic;
-        this.image = imageLoader.getImage(imageId, color);
+        this.image = imageLoader.getImage(symbol, color);
     }
 
     public void move(Square source, Square target) {
@@ -89,7 +84,7 @@ abstract public class Piece {
      * Must be called for any deserialized piece, since images are not serialized.
      */
     public void setImage() {
-        image = imageLoader.getImage(imageId, color);
+        image = imageLoader.getImage(symbol, color);
     }
 
     abstract public boolean isCorrectMovement(Square source, Square target);

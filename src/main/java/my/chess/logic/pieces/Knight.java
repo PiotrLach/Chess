@@ -19,8 +19,6 @@ package my.chess.logic.pieces;
 import my.chess.logic.Logic;
 import my.chess.logic.square.Square;
 
-import java.awt.*;
-
 /**
  *
  * @author Piotr Lach
@@ -28,7 +26,7 @@ import java.awt.*;
 public class Knight extends Piece {
 
     public Knight(String color, Logic logic) {
-        super("N", color, logic, 2);
+        super("N", color, logic);
     }
 
     @Override

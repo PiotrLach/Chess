@@ -24,7 +24,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
-import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -34,8 +34,8 @@ class PieceImageLoader {
 
     static final PieceImageLoader INSTANCE = new PieceImageLoader();
 
-    private final List<Image> whitePieces;
-    private final List<Image> blackPieces;
+    private final Map<String, Image> whitePieces;
+    private final Map<String, Image> blackPieces;
 
     @SneakyThrows
     private PieceImageLoader() {
@@ -43,15 +43,16 @@ class PieceImageLoader {
         whitePieces = loadImageSet("white");
     }
 
-    private List<Image> loadImageSet(final String color) throws Exception {
-        return List.of(
-                loadImage(color, "pawn.png"),
-                loadImage(color, "bishop.png"),
-                loadImage(color, "knight.png"),
-                loadImage(color, "rook.png"),
-                loadImage(color, "king.png"),
-                loadImage(color, "queen.png"),
-                new BufferedImage(1, 1, 1)
+    private Map<String, Image> loadImageSet(final String color) throws Exception {
+        return Map.ofEntries(
+                Map.entry("L", loadImage(color, "pawn.png")),
+                Map.entry("H", loadImage(color, "pawn.png")),
+                Map.entry("B", loadImage(color, "bishop.png")),
+                Map.entry("N", loadImage(color, "knight.png")),
+                Map.entry("R", loadImage(color, "rook.png")),
+                Map.entry("K", loadImage(color, "king.png")),
+                Map.entry("Q", loadImage(color, "queen.png")),
+                Map.entry("E", new BufferedImage(1, 1, 1))
         );
     }
 
@@ -64,11 +65,11 @@ class PieceImageLoader {
         return classLoader.getResourceAsStream(fileName);
     }
 
-    Image getImage(final int id, final String color) {
+    Image getImage(final String symbol, final String color) {
         if (color.equals("B")) {
-            return blackPieces.get(id);
+            return blackPieces.get(symbol);
         } else {
-            return whitePieces.get(id);
+            return whitePieces.get(symbol);
         }
     }
 }
