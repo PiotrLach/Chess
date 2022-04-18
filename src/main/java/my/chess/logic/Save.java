@@ -16,17 +16,17 @@
 */
 package my.chess.logic;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import my.chess.gui.Message;
 import my.chess.gui.board.Board;
 import my.chess.logic.pieces.Empty;
-import my.chess.logic.pieces.Piece;
-import my.chess.logic.square.Coord;
+import my.chess.logic.pieces.PieceFactory;
 import my.chess.logic.square.Square;
 
-import java.io.*;
-import java.util.Deque;
-import java.util.LinkedList;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -39,93 +39,52 @@ public class Save {
     private final Board board;
     private final List<? extends Square> squares;
 
-    public void loadGame(String filename) {
-        var moves = readObject(filename);
-
-        if (moves.isEmpty()) {
-            return;
-        }
+    public void loadGame(final String filename) {
+        val moves = readObject(filename);
 
         board.setDefaultGame();
 
-        for (var move : moves) {
-            Coord from = move.source;
-            Coord to = move.target;
+        for (val move : moves) {
+            val source = squares.get(move.from);
+            val target = squares.get(move.to);
 
-            Square source = squares.get(from.index);
-            Square target = squares.get(to.index);
-
-            Piece piece;
             /* Necessary for promoted pawns */
-            if (!((piece = move.getPromotedPiece()) instanceof Empty)) {
-                piece.setLogic(board.getLogic());
-                piece.setImage();
+            if (!move.getPromoted().equals(Empty.INSTANCE.string)) {
+                val pieceFactory = new PieceFactory(board.getLogic());
+                val piece = pieceFactory.getPiece(move.getPromoted());
 
                 source.setPiece(Empty.INSTANCE);
                 target.setPiece(piece);
 
                 board.changeCurrentColor();
             } else {
-                piece = source.getPiece();
+                val piece = source.getPiece();
                 piece.move(source, target);
             }
         }
-
         board.repaint();
     }
 
-    public void saveGame(String fileName) {
-
-        var moves = board.getMoves();
-
-        writeObject(moves, fileName);
-
+    public void saveGame(final String fileName) {
+        writeObject(board.getMoves(), fileName);
     }
 
-    @SuppressWarnings("unchecked")
-    private Deque<Move> readObject(String filename) {
+    private Move[] readObject(final String filename) {
         try {
-
-            var fileInputStream = new FileInputStream(filename);
-            var objectInputStream = new ObjectInputStream(fileInputStream);
-
-            var object = objectInputStream.readObject();
-
-            objectInputStream.close();
-            fileInputStream.close();
-
-            return (Deque<Move>) object;
-
-        } catch (IOException exception) {
-
+            val objectMapper = new ObjectMapper();
+            return objectMapper.readValue(new File(filename), Move[].class);
+        } catch (final IOException exception) {
             board.displayMessage(Message.loadError);
-
-        } catch (ClassNotFoundException exception) {
-
-            board.displayMessage(Message.wrongFormat);
-
         }
-        return new LinkedList<>();
+        return new Move[] {};
     }
 
-    private <T> void writeObject(T t, String filename) {
+    private <T> void writeObject(final T t, final String filename) {
         try {
-
-            var fileOutputStream = new FileOutputStream(filename);
-            var objectOutputStream = new ObjectOutputStream(fileOutputStream);
-
-            objectOutputStream.writeObject(t);
-            objectOutputStream.flush();
-            objectOutputStream.close();
-
-            fileOutputStream.flush();
-            fileOutputStream.close();
-
-        } catch (IOException exception) {
-
+            val objectMapper = new ObjectMapper();
+            objectMapper.writeValue(new File(filename), t);
+        } catch (final IOException exception) {
             board.displayMessage(Message.saveError);
-
         }
     }
-
 }

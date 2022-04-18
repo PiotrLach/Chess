@@ -16,8 +16,10 @@
 */
 package my.chess.logic.pieces;
 
+import lombok.val;
 import my.chess.logic.Logic;
 import my.chess.logic.Move;
+import my.chess.logic.square.Coord;
 import my.chess.logic.square.Square;
 
 import java.util.List;
@@ -52,7 +54,7 @@ public class Pawn extends Piece {
 
         if (isEnPassant(source, target)) {
             var optional = logic.getLastMove();
-            var coord = optional.get().target;
+            var coord = optional.get().to;
 
             logic.setPiece(coord, Empty.INSTANCE);
         }
@@ -100,9 +102,8 @@ public class Pawn extends Piece {
         if (!isTwoSquaresAdvancedEnemyPawn(lastMove)) {
             return false;
         }
-        var coord = lastMove.target;
 
-        var lastMoveTarget = logic.getSquare(coord);
+        var lastMoveTarget = logic.getSquare(lastMove.to);
 
         var isSourceOnSameRow = source.coord.row == lastMoveTarget.coord.row;
         var isLastMoveTargetLeft = lastMoveTarget.coord.col == source.coord.col - 1;
@@ -121,11 +122,11 @@ public class Pawn extends Piece {
     }
 
     private boolean isTwoSquaresAdvancedEnemyPawn(Move lastMove) {
-
-        int vDiff; // vertical difference
-        vDiff = Math.abs(lastMove.source.row - lastMove.target.row);
-        var lastMoveTargetSquare = logic.getSquare(lastMove.target);
-        var piece = lastMoveTargetSquare.getPiece();
+        val from = new Coord(lastMove.from);
+        val to = new Coord(lastMove.to);
+        val vDiff = Math.abs(from.row - to.row);
+        val lastMoveTargetSquare = logic.getSquare(to);
+        val piece = lastMoveTargetSquare.getPiece();
 
         return piece instanceof Pawn && vDiff == 2 && piece.isFoe(this.color);
     }

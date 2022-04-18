@@ -29,7 +29,7 @@ public class Empty extends Piece {
     public static final Empty INSTANCE = new Empty();
 
     private Empty() {
-        super(" ", "G", null);
+        super(" ", " ", null);
     }
 
     @Override
@@ -37,9 +37,6 @@ public class Empty extends Piece {
 
     @Override
     public void drawImage(Graphics graphics, int x, int y, int size) {}
-
-    @Override
-    public void setImage() {}
 
     @Override
     public boolean isCorrectMovement(Square source, Square target) {

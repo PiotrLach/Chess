@@ -30,10 +30,10 @@ import java.awt.*;
 abstract public class Piece {
 
     protected final static String symbolFormat = "%s;%s";
-    @Setter
-    protected transient Logic logic;
+    protected final Logic logic;
     public final String symbol;
     public final String color;
+    public final String string;
     protected transient Image image;
     @Getter
     @ToString.Include
@@ -46,6 +46,7 @@ abstract public class Piece {
         this.color = color;
         this.logic = logic;
         this.image = imageLoader.getImage(symbol, color);
+        this.string = String.format(symbolFormat, symbol, color);
     }
 
     public void move(Square source, Square target) {
@@ -78,13 +79,6 @@ abstract public class Piece {
 
     public boolean isFoe(String color) {
         return !this.color.equals(color);
-    }
-
-    /**
-     * Must be called for any deserialized piece, since images are not serialized.
-     */
-    public void setImage() {
-        image = imageLoader.getImage(symbol, color);
     }
 
     abstract public boolean isCorrectMovement(Square source, Square target);

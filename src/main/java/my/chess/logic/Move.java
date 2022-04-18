@@ -16,28 +16,29 @@
  */
 package my.chess.logic;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import my.chess.logic.pieces.Empty;
-import my.chess.logic.pieces.Piece;
-import my.chess.logic.square.Coord;
-
-import java.io.Serial;
-import java.io.Serializable;
 
 /**
  *
  * @author Piotr Lach
  */
-@AllArgsConstructor
 @RequiredArgsConstructor
-@ToString
 public class Move {
 
-    public final Coord source;
-    public final Coord target;
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public Move(@JsonProperty("from") final int from,
+                @JsonProperty("to") final int to,
+                @JsonProperty("promoted") final String promoted) {
+        this.from = from;
+        this.to = to;
+        this.promoted = promoted;
+    }
+
+    public final int from;
+    public final int to;
     @Getter
-    private Piece promotedPiece = Empty.INSTANCE;
+    private String promoted = " ; ";
 }

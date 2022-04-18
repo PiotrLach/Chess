@@ -23,7 +23,6 @@ import my.chess.logic.pieces.*;
 import my.chess.logic.square.Coord;
 import my.chess.logic.square.Square;
 
-import java.awt.*;
 import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -391,12 +390,12 @@ public class Logic {
     }
 
     public void addMove(Square source, Square target) {
-        var move = new Move(source.coord, target.coord);
+        var move = new Move(source.coord.index, target.coord.index);
         moves.add(move);
     }
 
     public void addMove(Square source, Square target, Piece piece) {
-        var move = new Move(source.coord, target.coord, piece);
+        var move = new Move(source.coord.index, target.coord.index, piece.string);
         moves.add(move);
     }
 
@@ -408,6 +407,10 @@ public class Logic {
         return squares.get(coord.index);
     }
 
+    public Square getSquare(final int index) {
+        return squares.get(index);
+    }
+
     public Square getSquare(int row, int col) {
         var coord = new Coord(row, col);
         return squares.get(coord.index);
@@ -415,6 +418,11 @@ public class Logic {
 
     public void setPiece(Coord coord, Piece piece) {
         var square = squares.get(coord.index);
+        square.setPiece(piece);
+    }
+
+    public void setPiece(final int index, final Piece piece) {
+        var square = squares.get(index);
         square.setPiece(piece);
     }
 
@@ -435,4 +443,19 @@ public class Logic {
     public void setOptionalSourceEmpty() {
         board.setOptionalSourceEmpty();
     }
+
+    public void setDefaultLayout() {
+        String[] layout = {
+                "R;B","N;B","B;B","Q;B","K;B","B;B","N;B","R;B",
+                "H;B","H;B","H;B","H;B","H;B","H;B","H;B","H;B",
+                " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+                " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+                " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+                " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
+                "L;W","L;W","L;W","L;W","L;W","L;W","L;W","L;W",
+                "R;W","N;W","B;W","Q;W","K;W","B;W","N;W","R;W"
+        };
+        setLayout(layout);
+    }
+
 }

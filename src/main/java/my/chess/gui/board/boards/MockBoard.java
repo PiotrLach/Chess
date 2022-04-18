@@ -21,6 +21,7 @@ import my.chess.gui.Message;
 import my.chess.gui.board.Board;
 import my.chess.logic.Logic;
 import my.chess.logic.Move;
+import my.chess.logic.Save;
 import my.chess.logic.square.Square;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class MockBoard implements Board {
     private final List<Square> squares = new ArrayList<>();
     @Getter
     private final Logic logic = new Logic(this, squares, moves);
+    private final Save save = new Save(this, squares);
 
     public MockBoard() {
         createSquares();
@@ -45,6 +47,10 @@ public class MockBoard implements Board {
             var square = new Square(idx);
             squares.add(square);
         }
+    }
+
+    public void loadGame(final String fileName) {
+        save.loadGame(fileName);
     }
 
     @Override
@@ -69,7 +75,7 @@ public class MockBoard implements Board {
 
     @Override
     public void setDefaultGame() {
-
+        logic.setDefaultLayout();
     }
 
     @Override

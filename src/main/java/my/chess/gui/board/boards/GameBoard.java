@@ -138,19 +138,7 @@ public class GameBoard extends JPanel implements Board {
 
     @Override
     public final void setDefaultGame() {
-
-        String[] layout = {
-            "R;B","N;B","B;B","Q;B","K;B","B;B","N;B","R;B",
-            "H;B","H;B","H;B","H;B","H;B","H;B","H;B","H;B",
-            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
-            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
-            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
-            " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ",
-            "L;W","L;W","L;W","L;W","L;W","L;W","L;W","L;W",
-            "R;W","N;W","B;W","Q;W","K;W","B;W","N;W","R;W"
-        };
-
-        setGame(layout);
+        logic.setDefaultLayout();
     }
 
 
