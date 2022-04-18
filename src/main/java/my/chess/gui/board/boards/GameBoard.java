@@ -17,6 +17,7 @@
 package my.chess.gui.board.boards;
 
 import lombok.Getter;
+import lombok.val;
 import my.chess.gui.Message;
 import my.chess.gui.board.Board;
 import my.chess.gui.drawable.Drawable;
@@ -151,32 +152,25 @@ public class GameBoard extends JPanel implements Board {
      * Finds the square clicked on with the LMB and sets it as either
      * source or target, depending on the piece it contains.
      */
-    private void chooseOrMove(MouseEvent mouseEvent) {
-
-        var point = mouseEvent.getPoint();
-        var optional = gameSquares.stream()
+    private void chooseOrMove(final MouseEvent mouseEvent) {
+        val point = mouseEvent.getPoint();
+        gameSquares.stream()
                 .filter(square -> square.contains(point))
-                .findAny();
-        if (optional.isEmpty()) {
-            return;
-        }
+                .findAny()
+                .ifPresent(this::chooseOrMove);
+    }
 
-        var selectedSquare = optional.get();
-
-        if (isValidSource(selectedSquare)) {
-
-            selectedSquare.setSelected(true);
-            optionalSourceSquare = Optional.of(selectedSquare);
-
-        } else if (isValidTarget(selectedSquare)) {
-
+    private void chooseOrMove(final Square selected) {
+        if (isValidSource(selected)) {
+            selected.setSelected(true);
+            optionalSourceSquare = Optional.of(selected);
+        } else if (isValidTarget(selected)) {
             var source = optionalSourceSquare.get();
-            var target = selectedSquare;
+            var target = selected;
 
             var selectedPiece = source.getPiece();
             selectedPiece.move(source, target);
         }
-
         repaint();
     }
 
