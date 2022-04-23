@@ -17,6 +17,7 @@
 
 package my.chess.gui;
 
+import lombok.val;
 import my.chess.Main;
 
 import javax.swing.*;
@@ -26,15 +27,15 @@ import java.util.logging.Logger;
 
 public class LookAndFeelSetter {
 
-    public void setNimbusLookAndFeel() {
+    public static void setNimbusLookAndFeel() {
         Arrays.stream(UIManager.getInstalledLookAndFeels())
                 .filter(feel -> "Nimbus".equals(feel.getName()))
                 .findAny()
                 .map(UIManager.LookAndFeelInfo::getClassName)
-                .ifPresent(this::setLookAndFeel);
+                .ifPresent(LookAndFeelSetter::setLookAndFeel);
     }
 
-    private void setLookAndFeel(final String className) {
+    private static void setLookAndFeel(final String className) {
         try {
             UIManager.setLookAndFeel(className);
         } catch (Exception exception) {
@@ -42,10 +43,10 @@ public class LookAndFeelSetter {
         }
     }
 
-    private void logException(final Exception exception) {
-        var className = Main.class.getName();
-        var logger = Logger.getLogger(className);
-        var message = exception.getMessage();
+    private static void logException(final Exception exception) {
+        val className = Main.class.getName();
+        val logger = Logger.getLogger(className);
+        val message = exception.getMessage();
 
         logger.log(Level.SEVERE, message, exception);
     }

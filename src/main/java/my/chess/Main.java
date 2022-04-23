@@ -27,11 +27,8 @@ import java.awt.*;
  */
 public class Main {
 
-    private static final LookAndFeelSetter lookAndFeelSetter = new LookAndFeelSetter();
-
     public static void main(String[] args) {
-
-        lookAndFeelSetter.setNimbusLookAndFeel();
+        LookAndFeelSetter.setNimbusLookAndFeel();
 
         EventQueue.invokeLater(() -> {
             var mainFrame = new MainFrame();
