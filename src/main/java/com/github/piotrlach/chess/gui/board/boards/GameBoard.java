@@ -166,6 +166,8 @@ public class GameBoard extends JPanel implements Board {
         if (isValidSource(selected)) {
             selected.setSelected(true);
             optionalSourceSquare = Optional.of(selected);
+            repaint();
+            return;
         } else if (!isValidTarget(selected)) {
             return;
         }
