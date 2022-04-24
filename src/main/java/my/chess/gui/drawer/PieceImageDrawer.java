@@ -15,18 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package my.chess.gui.drawable.drawables;
+package my.chess.gui.drawer;
 
 import lombok.val;
 import my.chess.logic.pieces.Piece;
 
 import java.awt.*;
 
-class PieceImageDrawer {
+public class PieceImageDrawer {
 
     private static final PieceImageLoader imageLoader = PieceImageLoader.INSTANCE;
 
-    static void drawImage(final Graphics graphics,
+    public static void drawImage(final Graphics graphics,
                           final int x,
                           final int y,
                           final int size,

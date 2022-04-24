@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package my.chess.gui.drawable.drawables;
+package my.chess.gui.drawer;
 
 import lombok.SneakyThrows;
 import lombok.val;
