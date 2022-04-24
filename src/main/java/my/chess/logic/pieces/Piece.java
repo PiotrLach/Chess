@@ -20,8 +20,6 @@ import lombok.*;
 import my.chess.logic.Logic;
 import my.chess.logic.square.Square;
 
-import java.awt.*;
-
 /**
  * @author Piotr Lach
  */
@@ -32,17 +30,13 @@ abstract public class Piece {
     protected final Logic logic;
     public final String symbol;
     public final String color;
-    protected transient Image image;
     @Getter
     protected boolean isOnStartPosition = true;
-
-    static final PieceImageLoader imageLoader = PieceImageLoader.INSTANCE;
 
     public Piece(final String symbol, final String color, final Logic logic) {
         this.symbol = symbol;
         this.color = color;
         this.logic = logic;
-        this.image = imageLoader.getImage(symbol, color);
     }
 
     public void move(Square source, Square target) {
@@ -63,10 +57,6 @@ abstract public class Piece {
 
         logic.changeCurrentColor();
         logic.setOptionalSourceEmpty();
-    }
-
-    public void drawImage(Graphics graphics, int x, int y, int size) {
-        graphics.drawImage(image, x, y, size, size, null);
     }
 
     public boolean isFoe(Piece piece) {

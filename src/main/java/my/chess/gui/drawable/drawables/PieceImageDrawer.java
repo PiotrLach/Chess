@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Piotr Lach
+ * Copyright (C) 2022 Piotr Lach
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,30 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package my.chess.logic.pieces;
 
-import my.chess.logic.square.Square;
+package my.chess.gui.drawable.drawables;
+
+import lombok.val;
+import my.chess.logic.pieces.Piece;
 
 import java.awt.*;
 
-/**
- *
- * @author Piotr Lach
- */
-public class Empty extends Piece {
+class PieceImageDrawer {
 
-    public static final Empty INSTANCE = new Empty();
+    private static final PieceImageLoader imageLoader = PieceImageLoader.INSTANCE;
 
-    private Empty() {
-        super(" ", " ", null);
+    static void drawImage(final Graphics graphics,
+                          final int x,
+                          final int y,
+                          final int size,
+                          final Piece piece) {
+        val image = imageLoader.getImage(piece.symbol, piece.color);
+        graphics.drawImage(image, x, y, size, size, null);
     }
-
-    @Override
-    public void move(Square source, Square target) {}
-
-    @Override
-    public boolean isCorrectMovement(Square source, Square target) {
-        return false;
-    }
-
 }

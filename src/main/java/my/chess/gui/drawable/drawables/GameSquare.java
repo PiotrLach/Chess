@@ -69,7 +69,7 @@ public class GameSquare extends Square implements Drawable {
         }
 
         graphics.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-        piece.drawImage(graphics, rectangle.x, rectangle.y, rectangle.width);
+        PieceImageDrawer.drawImage(graphics, rectangle.x, rectangle.y, rectangle.width, piece);
     }
 
     private boolean isWhite() {
