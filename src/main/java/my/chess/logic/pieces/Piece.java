@@ -26,17 +26,14 @@ import java.awt.*;
  * @author Piotr Lach
  */
 @EqualsAndHashCode
-@ToString(onlyExplicitlyIncluded = true)
 abstract public class Piece {
 
-    protected final static String symbolFormat = "%s;%s";
+    private static final String symbolFormat = "%s;%s";
     protected final Logic logic;
     public final String symbol;
     public final String color;
-    public final String string;
     protected transient Image image;
     @Getter
-    @ToString.Include
     protected boolean isOnStartPosition = true;
 
     static final PieceImageLoader imageLoader = PieceImageLoader.INSTANCE;
@@ -46,7 +43,6 @@ abstract public class Piece {
         this.color = color;
         this.logic = logic;
         this.image = imageLoader.getImage(symbol, color);
-        this.string = String.format(symbolFormat, symbol, color);
     }
 
     public void move(Square source, Square target) {
@@ -82,4 +78,9 @@ abstract public class Piece {
     }
 
     abstract public boolean isCorrectMovement(Square source, Square target);
+
+    @Override
+    public String toString() {
+        return String.format(symbolFormat, symbol, color);
+    }
 }

@@ -49,7 +49,7 @@ public class Save {
             val target = squares.get(move.to);
 
             /* Necessary for promoted pawns */
-            if (!move.getPromoted().equals(Empty.INSTANCE.string)) {
+            if (!move.getPromoted().equals(Empty.INSTANCE.toString())) {
                 val pieceFactory = new PieceFactory(board.getLogic());
                 val piece = pieceFactory.getPiece(move.getPromoted());
 

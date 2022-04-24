@@ -395,7 +395,7 @@ public class Logic {
     }
 
     public void addMove(Square source, Square target, Piece piece) {
-        var move = new Move(source.coord.index, target.coord.index, piece.string);
+        var move = new Move(source.coord.index, target.coord.index, piece.toString());
         moves.add(move);
     }
 
