@@ -75,7 +75,6 @@ public class Logic {
 
     private void clearBoard() {
         currentColor = "W";
-        board.setOptionalSourceEmpty();
 
         for (var square : squares) {
             square.setPiece(Empty.INSTANCE);
@@ -349,7 +348,7 @@ public class Logic {
         var source = squares.get(from.index);
         var target = squares.get(to.index);
 
-        source.movePiece(target);
+        source.movePieceTo(target);
     }
 
     public void movePiece(int row1, int col1, int row2, int col2) {
@@ -437,10 +436,6 @@ public class Logic {
 
     public int getPromotionChoice() {
         return board.getPromotionChoice();
-    }
-
-    public void setOptionalSourceEmpty() {
-        board.setOptionalSourceEmpty();
     }
 
     public void setDefaultLayout() {

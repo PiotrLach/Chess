@@ -140,12 +140,14 @@ public class GameBoard extends JPanel implements Board {
     @Override
     public final void setDefaultGame() {
         logic.setDefaultLayout();
+        setOptionalSourceEmpty();
     }
 
 
     @Override
     public void setGame(String[] layout) {
         logic.setLayout(layout);
+        setOptionalSourceEmpty();
     }
 
     /**
@@ -164,17 +166,17 @@ public class GameBoard extends JPanel implements Board {
         if (isValidSource(selected)) {
             selected.setSelected(true);
             optionalSourceSquare = Optional.of(selected);
-        } else if (isValidTarget(selected)) {
-            var source = optionalSourceSquare.get();
-            var target = selected;
-
-            var selectedPiece = source.getPiece();
-            selectedPiece.move(source, target);
+        } else if (!isValidTarget(selected)) {
+            return;
+        }
+        var source = optionalSourceSquare.get();
+        if (source.movePieceTo(selected)) {
+            setOptionalSourceEmpty();
         }
         repaint();
     }
 
-    private boolean isValidSource(Square square) {
+    private boolean isValidSource(final Square square) {
 
         var piece = square.getPiece();
 
@@ -284,8 +286,7 @@ public class GameBoard extends JPanel implements Board {
         save.saveGame(filename);
     }
 
-    @Override
-    public void setOptionalSourceEmpty() {
+    private void setOptionalSourceEmpty() {
         optionalSourceSquare = Optional.empty();
     }
 

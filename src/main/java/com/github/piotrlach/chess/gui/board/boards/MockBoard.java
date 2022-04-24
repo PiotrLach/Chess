@@ -69,11 +69,6 @@ public class MockBoard implements Board {
     }
 
     @Override
-    public void setOptionalSourceEmpty() {
-
-    }
-
-    @Override
     public void setDefaultGame() {
         logic.setDefaultLayout();
     }

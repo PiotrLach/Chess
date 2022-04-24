@@ -40,13 +40,13 @@ abstract public class Piece {
         this.logic = logic;
     }
 
-    public void move(Square source, Square target) {
+    public boolean move(Square source, Square target) {
         if (!(source.getPiece() == this)) {
-            return;
+            return false;
         }
 
         if (!logic.isValidMove(source, target)) {
-            return;
+            return false;
         }
 
         target.setPiece(this);
@@ -57,7 +57,7 @@ abstract public class Piece {
         logic.addMove(source, target);
 
         logic.changeCurrentColor();
-        logic.setOptionalSourceEmpty();
+        return true;
     }
 
     public boolean isFoe(Piece piece) {

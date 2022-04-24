@@ -43,13 +43,13 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public void move(Square source, Square target) {
+    public boolean move(Square source, Square target) {
         if (!(source.getPiece() == this)) {
-            return;
+            return false;
         }
 
         if (!logic.isValidMove(source, target)) {
-            return;
+            return false;
         }
 
         if (isEnPassant(source, target)) {
@@ -69,12 +69,12 @@ public class Pawn extends Piece {
         }
 
         logic.changeCurrentColor();
-        logic.setOptionalSourceEmpty();
 
         target.setPiece(piece);
         source.setPiece(Empty.INSTANCE);
         source.setSelected(false);
         isOnStartPosition = false;
+        return true;
     }
 
     private Piece promote(Piece piece) {

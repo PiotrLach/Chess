@@ -34,8 +34,6 @@ public interface Board {
 
     void setGame(String[] layout);
 
-    void setOptionalSourceEmpty();
-
     void changeCurrentColor();
 
     Deque<Move> getMoves();

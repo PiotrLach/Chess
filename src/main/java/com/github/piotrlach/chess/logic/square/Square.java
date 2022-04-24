@@ -61,8 +61,8 @@ public class Square {
         return coord.col > square.coord.col;
     }
 
-    public void movePiece(Square target) {
-        piece.move(this, target);
+    public boolean movePieceTo(Square target) {
+        return piece.move(this, target);
     }
 
     public boolean isCorrectMovement(Square target) {

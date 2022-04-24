@@ -31,7 +31,9 @@ public class Empty extends Piece {
     }
 
     @Override
-    public void move(Square source, Square target) {}
+    public boolean move(Square source, Square target) {
+        return false;
+    }
 
     @Override
     public boolean isCorrectMovement(Square source, Square target) {

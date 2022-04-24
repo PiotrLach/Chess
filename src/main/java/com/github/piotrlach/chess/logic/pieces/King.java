@@ -41,14 +41,14 @@ public class King extends Piece {
     }
 
     @Override
-    public void move(Square source, Square target) {
+    public boolean move(Square source, Square target) {
         var piece = source.getPiece();
         if (!(piece == this)) {
-            return;
+            return false;
         }
 
         if (!logic.isValidMove(source, target)) {
-            return;
+            return false;
         }
 
         if (isCastling(source, target)) {
@@ -63,7 +63,7 @@ public class King extends Piece {
         logic.addMove(source, target);
 
         logic.changeCurrentColor();
-        logic.setOptionalSourceEmpty();
+        return true;
     }
 
     private boolean isCastling(Square source, Square target) {
