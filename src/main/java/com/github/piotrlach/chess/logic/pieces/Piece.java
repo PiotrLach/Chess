@@ -51,12 +51,11 @@ abstract public class Piece {
 
         target.setPiece(this);
         source.setPiece(Empty.INSTANCE);
-        source.setSelected(false);
         isOnStartPosition = false;
 
         logic.addMove(source, target);
-
         logic.changeCurrentColor();
+
         return true;
     }
 

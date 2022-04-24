@@ -24,16 +24,11 @@ import lombok.*;
 @EqualsAndHashCode
 public class Square {
     @EqualsAndHashCode.Include
-    @ToString.Include
     public final Coord coord;
     @Getter
     @Setter
-    @ToString.Include
     @NonNull
     protected Piece piece;
-    @Getter
-    @Setter
-    private boolean selected = false;
 
     public Square(Coord coord) {
         this.coord = coord;

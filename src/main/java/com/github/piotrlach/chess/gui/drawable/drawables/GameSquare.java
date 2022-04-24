@@ -20,6 +20,8 @@ import com.github.piotrlach.chess.gui.drawable.Drawable;
 import com.github.piotrlach.chess.gui.drawer.PieceImageDrawer;
 import com.github.piotrlach.chess.logic.square.Square;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.awt.*;
@@ -28,11 +30,13 @@ import java.awt.*;
  *
  * @author Piotr Lach
  */
-@ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(callSuper = true)
 public class GameSquare extends Square implements Drawable {
 
     private final Rectangle rectangle;
+    @Getter
+    @Setter
+    private boolean selected = false;
 
     private static final Color MY_WHITE = new Color(255, 255, 204);
     private static final Color MY_BROWN = new Color(153, 102, 0);

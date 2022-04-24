@@ -24,7 +24,6 @@ import com.github.piotrlach.chess.gui.drawable.drawables.Index;
 import com.github.piotrlach.chess.logic.Logic;
 import com.github.piotrlach.chess.logic.Move;
 import com.github.piotrlach.chess.logic.Save;
-import com.github.piotrlach.chess.logic.square.Square;
 import lombok.Getter;
 import lombok.val;
 
@@ -50,7 +49,7 @@ public class GameBoard extends JPanel implements Board {
     private final List<Drawable> drawables = new ArrayList<>();
     @Getter
     private final Logic logic = new Logic(this, gameSquares, moves);
-    private Optional<Square> optionalSourceSquare = Optional.empty();
+    private Optional<GameSquare> optionalSourceSquare = Optional.empty();
     private int squareSize = 100;
     private final Save save = new Save(this, gameSquares);
 
@@ -162,7 +161,7 @@ public class GameBoard extends JPanel implements Board {
                 .ifPresent(this::chooseOrMove);
     }
 
-    private void chooseOrMove(final Square selected) {
+    private void chooseOrMove(final GameSquare selected) {
         if (isValidSource(selected)) {
             selected.setSelected(true);
             optionalSourceSquare = Optional.of(selected);
@@ -173,12 +172,13 @@ public class GameBoard extends JPanel implements Board {
         }
         var source = optionalSourceSquare.get();
         if (source.movePieceTo(selected)) {
+            source.setSelected(false);
             setOptionalSourceEmpty();
         }
         repaint();
     }
 
-    private boolean isValidSource(final Square square) {
+    private boolean isValidSource(final GameSquare square) {
 
         var piece = square.getPiece();
 
@@ -197,7 +197,7 @@ public class GameBoard extends JPanel implements Board {
         return true;
     }
 
-    private boolean isValidTarget(Square square) {
+    private boolean isValidTarget(final GameSquare square) {
 
         if (square.isSelected()) {
             return false;
@@ -289,6 +289,7 @@ public class GameBoard extends JPanel implements Board {
     }
 
     private void setOptionalSourceEmpty() {
+        optionalSourceSquare.ifPresent(square -> square.setSelected(false));
         optionalSourceSquare = Optional.empty();
     }
 
