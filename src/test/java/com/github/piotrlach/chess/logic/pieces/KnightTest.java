@@ -14,16 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.piotrlach.chess.pieces;
+package com.github.piotrlach.chess.logic.pieces;
 
 import java.util.List;
 
-import com.github.piotrlach.chess.gui.board.Board;
-import com.github.piotrlach.chess.gui.board.boards.MockBoard;
-import com.github.piotrlach.chess.logic.square.Coord;
-import com.github.piotrlach.chess.logic.Logic;
 import com.github.piotrlach.chess.logic.square.Square;
-import com.github.piotrlach.chess.logic.pieces.Bishop;
+import com.github.piotrlach.chess.logic.Board;
+import com.github.piotrlach.chess.logic.square.Coord;
+import com.github.piotrlach.chess.logic.MockBoard;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -31,26 +29,29 @@ import org.junit.jupiter.api.Test;
  *
  * @author Piotr Lach
  */
-public class BishopTest {
+public class KnightTest {
 
     private final Board board = new MockBoard();
-    private final Logic logic = board.getLogic();
-    private final Bishop bishop = new Bishop("B", logic );
+    private final Knight knight = new Knight("B", board.getLogic());
     private final Coord from = new Coord(3, 'C');
     private final Square source = new Square(from);
 
     @Test
     public void testIsCorrectMovement() {
         var correctCases = List.of(
-                new Coord(4, 'D'),
-                new Coord(2, 'B'),
-                new Coord(4, 'B'),
-                new Coord(2, 'D')
+                new Coord(4, 'E'),
+                new Coord(4, 'A'),
+                new Coord(2, 'A'),
+                new Coord(2, 'E'),
+                new Coord(1, 'B'),
+                new Coord(1, 'D'),
+                new Coord(5, 'B'),
+                new Coord(5, 'D')
         );
         for (var to : correctCases) {
             var target = new Square(to);
 
-            var isCorrect = bishop.isCorrectMovement(source, target);
+            var isCorrect = knight.isCorrectMovement(source, target);
             Assertions.assertTrue(isCorrect);
         }
     }
@@ -58,17 +59,23 @@ public class BishopTest {
     @Test
     public void testIsIncorrectMovement() {
         var incorrectCases = List.of(
-                new Coord(4, 'E'),
-                new Coord(3, 'E'),
+                new Coord(4, 'D'),
+                new Coord(2, 'B'),
+                new Coord(4, 'B'),
+                new Coord(2, 'D'),
                 new Coord(3, 'A'),
-                new Coord(4, 'C')
+                new Coord(1, 'C'),
+                new Coord(3, 'F'),
+                new Coord(6, 'C')
         );
 
         for (var to : incorrectCases) {
             var target = new Square(to);
 
-            var isIncorrect = !bishop.isCorrectMovement(source, target);
+            var isIncorrect = !knight.isCorrectMovement(source, target);
             Assertions.assertTrue(isIncorrect);
         }
     }
+
+
 }

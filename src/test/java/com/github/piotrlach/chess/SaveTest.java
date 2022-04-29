@@ -18,7 +18,7 @@
 package com.github.piotrlach.chess;
 
 import lombok.val;
-import com.github.piotrlach.chess.gui.board.boards.MockBoard;
+import com.github.piotrlach.chess.logic.MockBoard;
 import com.github.piotrlach.chess.logic.Save;
 import com.github.piotrlach.chess.logic.pieces.Knight;
 import org.junit.jupiter.api.Assertions;

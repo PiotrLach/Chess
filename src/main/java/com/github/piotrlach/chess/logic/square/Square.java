@@ -19,7 +19,10 @@ package com.github.piotrlach.chess.logic.square;
 import com.github.piotrlach.chess.logic.pieces.Empty;
 import com.github.piotrlach.chess.logic.pieces.King;
 import com.github.piotrlach.chess.logic.pieces.Piece;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 
 @EqualsAndHashCode
 public class Square {

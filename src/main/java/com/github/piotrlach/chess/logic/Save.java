@@ -17,8 +17,6 @@
 package com.github.piotrlach.chess.logic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.piotrlach.chess.gui.Message;
-import com.github.piotrlach.chess.gui.board.Board;
 import com.github.piotrlach.chess.logic.pieces.Empty;
 import com.github.piotrlach.chess.logic.pieces.PieceFactory;
 import com.github.piotrlach.chess.logic.square.Square;

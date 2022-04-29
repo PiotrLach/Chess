@@ -16,8 +16,6 @@
  */
 package com.github.piotrlach.chess.logic;
 
-import com.github.piotrlach.chess.gui.Message;
-import com.github.piotrlach.chess.gui.board.Board;
 import com.github.piotrlach.chess.logic.pieces.*;
 import com.github.piotrlach.chess.logic.square.Coord;
 import com.github.piotrlach.chess.logic.square.Square;

@@ -16,7 +16,6 @@
  */
 package com.github.piotrlach.chess.gui.frame;
 
-import com.github.piotrlach.chess.gui.board.boards.GameBoard;
 import lombok.val;
 
 import javax.swing.*;

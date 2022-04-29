@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.piotrlach.chess;
+package com.github.piotrlach.chess.logic.square;
 
 import com.github.piotrlach.chess.logic.square.Coord;
 import org.junit.jupiter.api.Assertions;

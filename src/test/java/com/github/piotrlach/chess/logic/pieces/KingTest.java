@@ -14,14 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.piotrlach.chess.pieces;
+package com.github.piotrlach.chess.logic.pieces;
 
 import java.util.List;
 
 import com.github.piotrlach.chess.logic.square.Square;
 import com.github.piotrlach.chess.logic.square.Coord;
-import com.github.piotrlach.chess.gui.board.boards.MockBoard;
-import com.github.piotrlach.chess.logic.pieces.King;
+import com.github.piotrlach.chess.logic.MockBoard;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

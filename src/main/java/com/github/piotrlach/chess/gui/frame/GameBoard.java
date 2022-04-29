@@ -14,16 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.piotrlach.chess.gui.board.boards;
+package com.github.piotrlach.chess.gui.frame;
 
-import com.github.piotrlach.chess.gui.Message;
-import com.github.piotrlach.chess.gui.board.Board;
 import com.github.piotrlach.chess.gui.drawable.Drawable;
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
 import com.github.piotrlach.chess.gui.drawable.drawables.Index;
-import com.github.piotrlach.chess.logic.Logic;
-import com.github.piotrlach.chess.logic.Move;
-import com.github.piotrlach.chess.logic.Save;
+import com.github.piotrlach.chess.logic.*;
 import lombok.Getter;
 import lombok.val;
 
