@@ -26,13 +26,9 @@ public interface Board {
 
     Logic getLogic();
 
-    void repaint();
-
     int getPromotionChoice();
 
     void displayMessage(Message message);
-
-    void setGame(String[] layout);
 
     void changeCurrentColor();
 

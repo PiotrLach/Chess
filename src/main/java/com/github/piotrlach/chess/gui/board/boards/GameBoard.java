@@ -118,7 +118,7 @@ public class GameBoard extends JPanel implements Board {
         };
         var initialValue = resourceBundle.getString("Board.QueenName");
 
-        int choice = JOptionPane.showOptionDialog(parentComponent,
+        return JOptionPane.showOptionDialog(parentComponent,
                 message,
                 title,
                 optionType,
@@ -127,7 +127,6 @@ public class GameBoard extends JPanel implements Board {
                 options,
                 initialValue
         );
-        return choice;
     }
 
     @Override
@@ -140,13 +139,7 @@ public class GameBoard extends JPanel implements Board {
     public final void setDefaultGame() {
         logic.setDefaultLayout();
         setOptionalSourceEmpty();
-    }
-
-
-    @Override
-    public void setGame(String[] layout) {
-        logic.setLayout(layout);
-        setOptionalSourceEmpty();
+        repaint();
     }
 
     /**
@@ -218,7 +211,6 @@ public class GameBoard extends JPanel implements Board {
         for (var drawable : drawables) {
             drawable.draw(graphics);
         }
-
     }
 
     /**
@@ -282,6 +274,7 @@ public class GameBoard extends JPanel implements Board {
 
     public void loadGame(String filename) {
         save.loadGame(filename);
+        repaint();
     }
 
     public void saveGame(String filename) {

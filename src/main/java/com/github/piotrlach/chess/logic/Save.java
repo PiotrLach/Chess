@@ -62,7 +62,6 @@ public class Save {
                 piece.move(source, target);
             }
         }
-        board.repaint();
     }
 
     public void saveGame(final String fileName) {

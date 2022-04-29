@@ -69,8 +69,6 @@ public class Logic {
                 square.setPiece(piece);
             }
         }
-
-        board.repaint();
     }
 
     private void clearBoard() {
@@ -275,7 +273,6 @@ public class Logic {
      * Checks if there are pieces on the path between source and target squares
      */
     private boolean isPathFree(Square source, Square target) {
-
         var path = getPath(source, target);
 
         return path.stream()
@@ -292,7 +289,6 @@ public class Logic {
      * straight line between source and target squares.
      */
     private List<Square> getPath(Square source, Square target) {
-
         var piece = source.getPiece();
 
         if (piece instanceof Knight) {
@@ -322,7 +318,6 @@ public class Logic {
     }
 
     private int calcVerticalDiff(Square source, Square target) {
-
         var isTargetSameRow = source.coord.row == target.coord.row;
         var isTargetRowLower = source.coord.row < target.coord.row;
 
@@ -330,7 +325,6 @@ public class Logic {
     }
 
     private int calcHorizontalDiff(Square source, Square target) {
-
         var isTargetSameCol = source.coord.col == target.coord.col;
         var isTargetColLower = source.coord.col < target.coord.col;
 
@@ -343,7 +337,6 @@ public class Logic {
     }
 
     public void movePiece(final Coord from, final Coord to) {
-
         var source = squares.get(from.index);
         var target = squares.get(to.index);
 
@@ -351,7 +344,6 @@ public class Logic {
     }
 
     public void movePiece(int row1, int col1, int row2, int col2) {
-
         var from = new Coord(row1, col1);
         var to = new Coord(row2, col2);
 
@@ -359,7 +351,6 @@ public class Logic {
     }
 
     public void movePiece(int rank1, char file1, int rank2, char file2) {
-
         var from = new Coord(rank1, file1);
         var to = new Coord(rank2, file2);
 
@@ -367,7 +358,6 @@ public class Logic {
     }
 
     public boolean isCorrectMovement(int row1, int col1, int row2, int col2) {
-
         var from = new Coord(row1, col1);
         var to = new Coord(row2, col2);
 
@@ -375,15 +365,10 @@ public class Logic {
     }
 
     public boolean isCorrectMovement(Coord from, Coord to) {
-
         var source = squares.get(from.index);
         var target = squares.get(to.index);
 
         return source.isCorrectMovement(target);
-    }
-
-    public void addMove(Move move) {
-        moves.add(move);
     }
 
     public void addMove(Square source, Square target) {
@@ -411,11 +396,6 @@ public class Logic {
     public Square getSquare(int row, int col) {
         var coord = new Coord(row, col);
         return squares.get(coord.index);
-    }
-
-    public void setPiece(Coord coord, Piece piece) {
-        var square = squares.get(coord.index);
-        square.setPiece(piece);
     }
 
     public void setPiece(final int index, final Piece piece) {

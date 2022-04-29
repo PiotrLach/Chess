@@ -59,11 +59,6 @@ public class MockBoard implements Board {
     }
 
     @Override
-    public void setGame(String[] layout) {
-        logic.setLayout(layout);
-    }
-
-    @Override
     public void changeCurrentColor() {
         logic.changeCurrentColor();
     }
@@ -71,11 +66,6 @@ public class MockBoard implements Board {
     @Override
     public void setDefaultGame() {
         logic.setDefaultLayout();
-    }
-
-    @Override
-    public void repaint() {
-
     }
 
     @Override
