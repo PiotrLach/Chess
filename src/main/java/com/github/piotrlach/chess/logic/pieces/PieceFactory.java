@@ -53,7 +53,7 @@ public class PieceFactory {
     }
 
     private boolean isValidString(String string) {
-        return string.matches("([A-Z]|\\s);([A-Z]|\\s)");
+        return string.matches("([LHBNRKQ]|\\s);([WB]|\\s)");
     }
 
     private boolean isEmptySquare(String[] values) {

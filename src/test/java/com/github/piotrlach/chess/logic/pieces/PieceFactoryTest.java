@@ -19,6 +19,7 @@ package com.github.piotrlach.chess.logic.pieces;
 import com.github.piotrlach.chess.logic.Board;
 import com.github.piotrlach.chess.logic.MockBoard;
 import com.github.piotrlach.chess.logic.Logic;
+import lombok.val;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -32,14 +33,55 @@ public class PieceFactoryTest {
     private final PieceFactory pieceFactory = new PieceFactory(logic);
 
     @Test
-    public void testPieceFactory() {
-        var rook1 = new Rook("W", logic);
-        var rook2 = pieceFactory.getPiece("R;W");
-        Assertions.assertEquals(rook1, rook2);
+    public void rook() {
+        val rook = pieceFactory.getPiece("R;W");
+        Assertions.assertEquals(Rook.class, rook.getClass());
+    }
 
-        var empty1 = Empty.INSTANCE;
-        var empty2 = pieceFactory.getPiece(" ; ");
+    @Test
+    public void empty() {
+        val empty = pieceFactory.getPiece(" ; ");
+        Assertions.assertEquals(Empty.class, empty.getClass());
+    }
 
-        Assertions.assertEquals(empty1, empty2);
+    @Test
+    public void king() {
+        val king = pieceFactory.getPiece("K;W");
+        Assertions.assertEquals(King.class, king.getClass());
+    }
+
+    @Test
+    public void knight() {
+        val knight = pieceFactory.getPiece("N;W");
+        Assertions.assertEquals(Knight.class, knight.getClass());
+    }
+
+    @Test
+    public void queen() {
+        val queen = pieceFactory.getPiece("Q;W");
+        Assertions.assertEquals(Queen.class, queen.getClass());
+    }
+
+    @Test
+    public void bishop() {
+        val bishop = pieceFactory.getPiece("B;W");
+        Assertions.assertEquals(Bishop.class, bishop.getClass());
+    }
+
+    @Test
+    public void pawn() {
+        val pawn1 = pieceFactory.getPiece("L;W");
+        Assertions.assertEquals(Pawn.class, pawn1.getClass());
+        val pawn2 = pieceFactory.getPiece("H;W");
+        Assertions.assertEquals(Pawn.class, pawn2.getClass());
+    }
+
+    @Test
+    public void invalidPiece() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> pieceFactory.getPiece("Z;W"));
+    }
+   @Test
+    public void invalidColor() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> pieceFactory.getPiece("B;Z"));
     }
 }
