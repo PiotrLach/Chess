@@ -282,6 +282,12 @@ public class GameBoard extends JPanel implements Board {
         selectedSource = Optional.of(square);
     }
 
+    void setSelectedSource(final int index) {
+        val square = squares.get(index);
+        square.setSelected(true);
+        selectedSource = Optional.of(square);
+    }
+
     Optional<GameSquare> getSelectedSource() {
         return selectedSource;
     }

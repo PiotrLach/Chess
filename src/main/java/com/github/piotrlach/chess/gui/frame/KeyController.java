@@ -21,18 +21,20 @@ import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
 import lombok.val;
 
 import java.awt.event.KeyEvent;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 public class KeyController {
 
     private final GameBoard board;
     private final List<GameSquare> squares;
 
-    private final List<Integer> keys = List.of(
-            KeyEvent.VK_W,
-            KeyEvent.VK_A,
-            KeyEvent.VK_S,
-            KeyEvent.VK_D
+    private final Map<Integer, Comparator<Integer>> comparators = Map.ofEntries(
+            Map.entry(KeyEvent.VK_W, Comparator.naturalOrder()),
+            Map.entry(KeyEvent.VK_A, Comparator.reverseOrder()),
+            Map.entry(KeyEvent.VK_S, Comparator.reverseOrder()),
+            Map.entry(KeyEvent.VK_D, Comparator.naturalOrder())
     );
 
     public KeyController(GameBoard board, List<GameSquare> squares) {
@@ -41,9 +43,9 @@ public class KeyController {
     }
 
     public void select(KeyEvent keyEvent) {
-        int key = keyEvent.getKeyCode();
+        int keyboardKey = keyEvent.getKeyCode();
 
-        if (!keys.contains(key)) {
+        if (!isValidKey(keyboardKey)) {
             return;
         }
 
@@ -59,16 +61,23 @@ public class KeyController {
 
             squares.stream()
                     .filter(board::isValidSource)
-                    .filter(target -> isNext(key, source, target))
-                    .findFirst()
+                    .filter(target -> isNext(keyboardKey, source, target))
+                    .map(target -> target.coord.index)
+                    .min(comparators.get(keyboardKey))
                     .ifPresent(board::setSelectedSource);
         }
 
         board.repaint();
     }
 
-    private boolean isNext(int key, GameSquare source, GameSquare target) {
-        return switch (key) {
+    private boolean isValidKey(int keyboardKey) {
+        return comparators.keySet()
+                .stream()
+                .anyMatch(setKey -> setKey.equals(keyboardKey));
+    }
+
+    private boolean isNext(int keyboardKey, GameSquare source, GameSquare target) {
+        return switch (keyboardKey) {
             case KeyEvent.VK_W -> isUp(source, target);
             case KeyEvent.VK_A -> isOnLeft(source, target);
             case KeyEvent.VK_S -> isDown(source, target);
