@@ -16,6 +16,7 @@
  */
 package com.github.piotrlach.chess.gui.drawer;
 
+import com.github.piotrlach.chess.logic.pieces.*;
 import lombok.SneakyThrows;
 import lombok.val;
 
@@ -34,25 +35,23 @@ class PieceImageLoader {
 
     static final PieceImageLoader INSTANCE = new PieceImageLoader();
 
-    private final Map<String, Image> whitePieces;
-    private final Map<String, Image> blackPieces;
+    private final Map<Class<? extends Piece>, Image> whiteImages;
+    private final Map<Class<? extends Piece>, Image> blackImages;
 
     @SneakyThrows
     private PieceImageLoader() {
-        blackPieces = loadImageSet("black");
-        whitePieces = loadImageSet("white");
+        blackImages = loadImageSet("black");
+        whiteImages = loadImageSet("white");
     }
 
-    private Map<String, Image> loadImageSet(final String color) throws Exception {
+    private Map<Class<? extends Piece>, Image> loadImageSet(final String color) throws Exception {
         return Map.ofEntries(
-                Map.entry("L", loadImage(color, "pawn.png")),
-                Map.entry("H", loadImage(color, "pawn.png")),
-                Map.entry("B", loadImage(color, "bishop.png")),
-                Map.entry("N", loadImage(color, "knight.png")),
-                Map.entry("R", loadImage(color, "rook.png")),
-                Map.entry("K", loadImage(color, "king.png")),
-                Map.entry("Q", loadImage(color, "queen.png")),
-                Map.entry("E", new BufferedImage(1, 1, 1))
+                Map.entry(Pawn.class, loadImage(color, "pawn.png")),
+                Map.entry(Bishop.class, loadImage(color, "bishop.png")),
+                Map.entry(Knight.class, loadImage(color, "knight.png")),
+                Map.entry(Rook.class, loadImage(color, "rook.png")),
+                Map.entry(King.class, loadImage(color, "king.png")),
+                Map.entry(Queen.class, loadImage(color, "queen.png"))
         );
     }
 
@@ -65,11 +64,13 @@ class PieceImageLoader {
         return classLoader.getResourceAsStream(fileName);
     }
 
-    Image getImage(final String symbol, final String color) {
+    Image getImage(final Class<? extends Piece> clazz, final String color) {
         if (color.equals("B")) {
-            return blackPieces.get(symbol);
+            return blackImages.get(clazz);
+        } else if(color.equals("W")) {
+            return whiteImages.get(clazz);
         } else {
-            return whitePieces.get(symbol);
+            return null;
         }
     }
 }

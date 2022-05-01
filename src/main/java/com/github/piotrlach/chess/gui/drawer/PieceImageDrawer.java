@@ -31,7 +31,7 @@ public class PieceImageDrawer {
                           final int y,
                           final int size,
                           final Piece piece) {
-        val image = imageLoader.getImage(piece.symbol, piece.color);
+        val image = imageLoader.getImage(piece.getClass(), piece.color);
         graphics.drawImage(image, x, y, size, size, null);
     }
 }
