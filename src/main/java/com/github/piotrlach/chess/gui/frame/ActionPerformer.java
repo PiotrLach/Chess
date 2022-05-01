@@ -32,7 +32,7 @@ import java.util.ResourceBundle;
 @RequiredArgsConstructor
 class ActionPerformer {
 
-    private final ResourceBundle bundle = ResourceBundle.getBundle("my/chess/Bundle");
+    private final ResourceBundle bundle = ResourceBundle.getBundle("com/github/piotrlach/chess/Bundle");
     private final MainFrame mainFrame;
     private final GameBoard board;
 

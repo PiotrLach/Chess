@@ -21,6 +21,8 @@ import lombok.val;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ResourceBundle;
 
 /**
@@ -29,7 +31,7 @@ import java.util.ResourceBundle;
 public class MainFrame extends JFrame {
 
     private final GameBoard board = new GameBoard();
-    private final ResourceBundle bundle = ResourceBundle.getBundle("my/chess/Bundle");
+    private final ResourceBundle bundle = ResourceBundle.getBundle("com/github/piotrlach/chess/Bundle");
     private final ActionPerformer actionPerformer = new ActionPerformer(this, board);
 
     public MainFrame() {
@@ -38,6 +40,13 @@ public class MainFrame extends JFrame {
 
         setMenuBar();
         add(board);
+
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent keyEvent) {
+                board.keyController.select(keyEvent);
+            }
+        });
 
         pack();
     }

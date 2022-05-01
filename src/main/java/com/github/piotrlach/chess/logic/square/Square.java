@@ -50,6 +50,9 @@ public class Square {
     public boolean isInSameRow(Square square) {
         return coord.row == square.coord.row;
     }
+   public boolean isInSameCol(Square square) {
+        return coord.col == square.coord.col;
+    }
 
     public boolean isOnLeft(Square square) {
         return coord.col < square.coord.col;

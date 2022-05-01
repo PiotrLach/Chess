@@ -25,10 +25,7 @@ import lombok.val;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.List;
 import java.util.*;
 
@@ -40,14 +37,15 @@ public class GameBoard extends JPanel implements Board {
 
     @Getter
     private final Deque<Move> moves = new LinkedList<>();
-    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("my/chess/Bundle");
-    private final List<GameSquare> gameSquares = new ArrayList<>();
+    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("com/github/piotrlach/chess/Bundle");
+    private final List<GameSquare> squares = new ArrayList<>();
     private final List<Drawable> drawables = new ArrayList<>();
     @Getter
-    private final Logic logic = new Logic(this, gameSquares, moves);
-    private Optional<GameSquare> optionalSourceSquare = Optional.empty();
+    private final Logic logic = new Logic(this, squares, moves);
+    private Optional<GameSquare> selectedSource = Optional.empty();
     private int squareSize = 100;
-    private final Save save = new Save(this, gameSquares);
+    private final Save save = new Save(this, squares);
+    final KeyController keyController = new KeyController(this, squares);
 
     public GameBoard() {
         setListeners();
@@ -84,7 +82,7 @@ public class GameBoard extends JPanel implements Board {
                     indexCounter++;
                 } else {
                     var square = new GameSquare(x, y, squareSize, squareCounter);
-                    gameSquares.add(square);
+                    squares.add(square);
                     drawable = square;
                     squareCounter++;
                 }
@@ -99,7 +97,6 @@ public class GameBoard extends JPanel implements Board {
 
     @Override
     public int getPromotionChoice() {
-
         var parentComponent = this;
         var message = resourceBundle.getString("Board.PromoteMessage");
         var title = resourceBundle.getString("Board.PromoteMessageTitle");
@@ -134,7 +131,7 @@ public class GameBoard extends JPanel implements Board {
     @Override
     public final void setDefaultGame() {
         logic.setDefaultLayout();
-        setOptionalSourceEmpty();
+        setSelectedSourceEmpty();
         repaint();
     }
 
@@ -144,7 +141,7 @@ public class GameBoard extends JPanel implements Board {
      */
     private void chooseOrMove(final MouseEvent mouseEvent) {
         val point = mouseEvent.getPoint();
-        gameSquares.stream()
+        squares.stream()
                 .filter(square -> square.contains(point))
                 .findAny()
                 .ifPresent(this::chooseOrMove);
@@ -153,21 +150,21 @@ public class GameBoard extends JPanel implements Board {
     private void chooseOrMove(final GameSquare selected) {
         if (isValidSource(selected)) {
             selected.setSelected(true);
-            optionalSourceSquare = Optional.of(selected);
+            selectedSource = Optional.of(selected);
             repaint();
             return;
         } else if (!isValidTarget(selected)) {
             return;
         }
-        var source = optionalSourceSquare.get();
+        var source = selectedSource.get();
         if (source.movePieceTo(selected)) {
             source.setSelected(false);
-            setOptionalSourceEmpty();
+            setSelectedSourceEmpty();
         }
         repaint();
     }
 
-    private boolean isValidSource(final GameSquare square) {
+    boolean isValidSource(final GameSquare square) {
 
         var piece = square.getPiece();
 
@@ -179,20 +176,18 @@ public class GameBoard extends JPanel implements Board {
             return false;
         }
 
-        if (optionalSourceSquare.isPresent()) {
-            optionalSourceSquare.get().setSelected(false);
-        }
+        selectedSource.ifPresent(gameSquare -> gameSquare.setSelected(false));
 
         return true;
     }
 
-    private boolean isValidTarget(final GameSquare square) {
+    boolean isValidTarget(final GameSquare square) {
 
         if (square.isSelected()) {
             return false;
         }
 
-        if (optionalSourceSquare.isEmpty()) {
+        if (selectedSource.isEmpty()) {
             displayMessage(Message.noSelectedPiece);
             return false;
         }
@@ -277,9 +272,22 @@ public class GameBoard extends JPanel implements Board {
         save.saveGame(filename);
     }
 
-    private void setOptionalSourceEmpty() {
-        optionalSourceSquare.ifPresent(square -> square.setSelected(false));
-        optionalSourceSquare = Optional.empty();
+    void setSelectedSourceEmpty() {
+        selectedSource.ifPresent(square -> square.setSelected(false));
+        selectedSource = Optional.empty();
+    }
+
+    void setSelectedSource(final GameSquare square) {
+        square.setSelected(true);
+        selectedSource = Optional.of(square);
+    }
+
+    Optional<GameSquare> getSelectedSource() {
+        return selectedSource;
+    }
+
+    boolean isSourceSelected() {
+        return selectedSource.isEmpty();
     }
 
     @Override
