@@ -165,7 +165,6 @@ public class GameBoard extends JPanel implements Board {
     }
 
     boolean isValidSource(final GameSquare square) {
-
         var piece = square.getPiece();
 
         if (piece.isFoe(logic.getCurrentColor())) {
@@ -182,7 +181,6 @@ public class GameBoard extends JPanel implements Board {
     }
 
     boolean isValidTarget(final GameSquare square) {
-
         if (square.isSelected()) {
             return false;
         }
@@ -209,7 +207,6 @@ public class GameBoard extends JPanel implements Board {
      * scales with window.
      */
     private void resizeBoard() {
-
         var dimensions = recalculateDimensions();
 
         int minHeight = dimensions.get(0) - squareSize;
@@ -239,7 +236,6 @@ public class GameBoard extends JPanel implements Board {
      * @return list of dimensions
      */
     private List<Integer> recalculateDimensions() {
-
         int width = getWidth(), height = getHeight();
 
         int dim1 = Math.min(width, height);
@@ -293,7 +289,7 @@ public class GameBoard extends JPanel implements Board {
     }
 
     boolean isSourceSelected() {
-        return selectedSource.isEmpty();
+        return selectedSource.isPresent();
     }
 
     @Override

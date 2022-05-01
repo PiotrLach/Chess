@@ -49,7 +49,7 @@ public class KeyController {
             return;
         }
 
-        if (board.isSourceSelected()) {
+        if (!board.isSourceSelected()) {
             squares.stream()
                     .filter(board::isValidSource)
                     .findAny()
@@ -86,7 +86,7 @@ public class KeyController {
         };
     }
 
-    public boolean isUp(GameSquare source, GameSquare target) {
+    private boolean isUp(GameSquare source, GameSquare target) {
         if (!source.isInSameCol(target))  {
             return false;
         }
@@ -103,7 +103,7 @@ public class KeyController {
         }
     }
 
-    public boolean isDown(GameSquare source, GameSquare target) {
+    private boolean isDown(GameSquare source, GameSquare target) {
         if (!source.isInSameCol(target))  {
             return false;
         }
@@ -120,7 +120,7 @@ public class KeyController {
         }
     }
 
-    public boolean isOnRight(GameSquare source, GameSquare target) {
+    private boolean isOnRight(GameSquare source, GameSquare target) {
         if (!source.isInSameRow(target))  {
             return false;
         }
@@ -137,7 +137,7 @@ public class KeyController {
         }
     }
 
-    public boolean isOnLeft(GameSquare source, GameSquare target) {
+    private boolean isOnLeft(GameSquare source, GameSquare target) {
         if (!source.isInSameRow(target))  {
             return false;
         }
