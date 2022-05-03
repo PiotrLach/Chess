@@ -149,6 +149,7 @@ public class GameBoard extends JPanel implements Board {
 
     private void chooseOrMove(final GameSquare selected) {
         if (isValidSource(selected)) {
+            selectedSource.ifPresent(gameSquare -> gameSquare.setSelected(false));
             selected.setSelected(true);
             selectedSource = Optional.of(selected);
             repaint();
@@ -166,31 +167,11 @@ public class GameBoard extends JPanel implements Board {
 
     boolean isValidSource(final GameSquare square) {
         var piece = square.getPiece();
-
-        if (piece.isFoe(logic.getCurrentColor())) {
-            return false;
-        }
-
-        if (square.isSelected()) {
-            return false;
-        }
-
-        selectedSource.ifPresent(gameSquare -> gameSquare.setSelected(false));
-
-        return true;
+        return !piece.isFoe(logic.getCurrentColor()) && !square.isSelected();
     }
 
     boolean isValidTarget(final GameSquare square) {
-        if (square.isSelected()) {
-            return false;
-        }
-
-        if (selectedSource.isEmpty()) {
-            displayMessage(Message.noSelectedPiece);
-            return false;
-        }
-
-        return true;
+        return !square.isSelected() && selectedSource.isPresent();
     }
 
     @Override

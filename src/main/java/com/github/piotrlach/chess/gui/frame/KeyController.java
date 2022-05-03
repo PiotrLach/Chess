@@ -42,7 +42,7 @@ public class KeyController {
         this.squares = squares;
     }
 
-    public void select(KeyEvent keyEvent) {
+    public void handleKeyPress(KeyEvent keyEvent) {
         int keyboardKey = keyEvent.getKeyCode();
 
         if (!isValidKey(keyboardKey)) {
@@ -66,8 +66,6 @@ public class KeyController {
                     .min(comparators.get(keyboardKey))
                     .ifPresent(board::setSelectedSource);
         }
-
-        board.repaint();
     }
 
     private boolean isValidKey(int keyboardKey) {
