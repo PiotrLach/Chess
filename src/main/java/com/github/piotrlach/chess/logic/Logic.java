@@ -334,11 +334,11 @@ public class Logic {
         currentColor = isWhite ? "B" : "W";
     }
 
-    public void movePiece(final Coord from, final Coord to) {
+    public boolean movePiece(final Coord from, final Coord to) {
         var source = squares.get(from.index);
         var target = squares.get(to.index);
 
-        source.movePieceTo(target);
+        return source.movePieceTo(target);
     }
 
     public void movePiece(int row1, int col1, int row2, int col2) {

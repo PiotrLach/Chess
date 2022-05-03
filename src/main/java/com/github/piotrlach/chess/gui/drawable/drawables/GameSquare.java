@@ -35,7 +35,10 @@ public class GameSquare extends Square implements Drawable {
     private final Rectangle rectangle;
     @Getter
     @Setter
-    private boolean selected = false;
+    private boolean selectedSource = false;
+    @Getter
+    @Setter
+    private boolean selectedTarget = false;
 
     private static final Color MY_WHITE = new Color(255, 255, 204);
     private static final Color MY_BROWN = new Color(153, 102, 0);
@@ -61,15 +64,16 @@ public class GameSquare extends Square implements Drawable {
 
     @Override
     public void draw(Graphics graphics) {
-
         if (isWhite()) {
             graphics.setColor(MY_WHITE);
         } else {
             graphics.setColor(MY_BROWN);
         }
 
-        if (isSelected()) {
+        if (isSelectedSource()) {
             graphics.setColor(Color.RED);
+        } else if (isSelectedTarget()) {
+            graphics.setColor(Color.BLUE);
         }
 
         graphics.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
@@ -77,7 +81,6 @@ public class GameSquare extends Square implements Drawable {
     }
 
     private boolean isWhite() {
-
         var isRowOdd = coord.row % 2 == 1;
         var isColOdd = coord.col % 2 == 1;
 

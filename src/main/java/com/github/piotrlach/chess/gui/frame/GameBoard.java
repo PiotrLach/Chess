@@ -16,6 +16,7 @@
  */
 package com.github.piotrlach.chess.gui.frame;
 
+import com.github.piotrlach.chess.gui.NoSelectedSourceException;
 import com.github.piotrlach.chess.gui.drawable.Drawable;
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
 import com.github.piotrlach.chess.gui.drawable.drawables.Index;
@@ -43,6 +44,7 @@ public class GameBoard extends JPanel implements Board {
     @Getter
     private final Logic logic = new Logic(this, squares, moves);
     private Optional<GameSquare> selectedSource = Optional.empty();
+    private Optional<GameSquare> selectedTarget = Optional.empty();
     private int squareSize = 100;
     private final Save save = new Save(this, squares);
     final KeyController keyController = new KeyController(this, squares);
@@ -132,6 +134,7 @@ public class GameBoard extends JPanel implements Board {
     public final void setDefaultGame() {
         logic.setDefaultLayout();
         setSelectedSourceEmpty();
+        setSelectedTargetEmpty();
         repaint();
     }
 
@@ -149,17 +152,17 @@ public class GameBoard extends JPanel implements Board {
 
     private void chooseOrMove(final GameSquare selected) {
         if (isValidSource(selected)) {
-            selectedSource.ifPresent(gameSquare -> gameSquare.setSelected(false));
-            selected.setSelected(true);
+            selectedSource.ifPresent(gameSquare -> gameSquare.setSelectedSource(false));
+            selected.setSelectedSource(true);
             selectedSource = Optional.of(selected);
             repaint();
             return;
         } else if (!isValidTarget(selected)) {
             return;
         }
-        var source = selectedSource.get();
+        var source = selectedSource.orElseThrow(NoSelectedSourceException::new);
         if (source.movePieceTo(selected)) {
-            source.setSelected(false);
+            source.setSelectedSource(false);
             setSelectedSourceEmpty();
         }
         repaint();
@@ -167,11 +170,11 @@ public class GameBoard extends JPanel implements Board {
 
     boolean isValidSource(final GameSquare square) {
         var piece = square.getPiece();
-        return !piece.isFoe(logic.getCurrentColor()) && !square.isSelected();
+        return !piece.isFoe(logic.getCurrentColor()) && !square.isSelectedSource();
     }
 
     boolean isValidTarget(final GameSquare square) {
-        return !square.isSelected() && selectedSource.isPresent();
+        return !square.isSelectedSource() && selectedSource.isPresent() && square.hasFoe(logic.getCurrentColor());
     }
 
     @Override
@@ -250,18 +253,18 @@ public class GameBoard extends JPanel implements Board {
     }
 
     void setSelectedSourceEmpty() {
-        selectedSource.ifPresent(square -> square.setSelected(false));
+        selectedSource.ifPresent(square -> square.setSelectedSource(false));
         selectedSource = Optional.empty();
     }
 
     void setSelectedSource(final GameSquare square) {
-        square.setSelected(true);
+        square.setSelectedSource(true);
         selectedSource = Optional.of(square);
     }
 
     void setSelectedSource(final int index) {
         val square = squares.get(index);
-        square.setSelected(true);
+        square.setSelectedSource(true);
         selectedSource = Optional.of(square);
     }
 
@@ -271,6 +274,29 @@ public class GameBoard extends JPanel implements Board {
 
     boolean isSourceSelected() {
         return selectedSource.isPresent();
+    }
+
+    void setSelectedTargetEmpty() {
+        selectedTarget.ifPresent(square -> square.setSelectedTarget(false));
+        selectedTarget = Optional.empty();
+    }
+
+    void setSelectedTarget(final GameSquare square) {
+        square.setSelectedTarget(true);
+        selectedTarget = Optional.of(square);
+    }
+
+    void setSelectedTarget(final int index) {
+        val square = squares.get(index);
+        square.setSelectedTarget(true);
+        selectedTarget = Optional.of(square);
+    }
+
+    Optional<GameSquare> getSelectedTarget() {
+        return selectedTarget;
+    }
+    boolean isTargetSelected() {
+        return selectedTarget.isPresent();
     }
 
     @Override
