@@ -17,7 +17,6 @@
 
 package com.github.piotrlach.chess.gui.frame;
 
-import com.github.piotrlach.chess.gui.NoSelectedSourceException;
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
 import lombok.val;
 
@@ -48,9 +47,6 @@ public class MouseController implements Serializable {
 
     private void chooseOrMove(final GameSquare selected) {
         if (gameBoard.isValidSource(selected)) {
-            gameBoard.getSelectedSource()
-                    .ifPresent(gameSquare -> gameSquare.setSelectedSource(false));
-            selected.setSelectedSource(true);
             gameBoard.setSelectedSource(selected);
             gameBoard.repaint();
             return;
@@ -60,11 +56,9 @@ public class MouseController implements Serializable {
             return;
         }
 
-        val source = gameBoard.getSelectedSource()
-                .orElseThrow(NoSelectedSourceException::new);
+        val source = gameBoard.getSelectedSource();
 
         if (source.movePieceTo(selected)) {
-            source.setSelectedSource(false);
             gameBoard.setSelectedSourceEmpty();
             gameBoard.setSelectedTargetEmpty();
             gameBoard.keyController

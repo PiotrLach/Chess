@@ -21,11 +21,14 @@ import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
 import com.github.piotrlach.chess.gui.drawable.drawables.Index;
 import com.github.piotrlach.chess.logic.*;
 import lombok.Getter;
-import lombok.val;
+import lombok.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.*;
 
@@ -41,8 +44,12 @@ public class GameBoard extends JPanel implements Board {
     @Getter
     private final Logic logic = new Logic(this, squares, moves);
     private final MouseController mouseController = new MouseController(this, squares);
-    private Optional<GameSquare> selectedSource = Optional.empty();
-    private Optional<GameSquare> selectedTarget = Optional.empty();
+    @Getter
+    @NonNull
+    private GameSquare selectedSource;
+    @Getter
+    @NonNull
+    private GameSquare selectedTarget;
     private int squareSize = 100;
     private final Save save = new Save(this, squares);
     final KeyController keyController = new KeyController(this, squares);
@@ -50,6 +57,8 @@ public class GameBoard extends JPanel implements Board {
     public GameBoard() {
         setListeners();
         createSquares();
+        selectedSource = squares.get(1);
+        selectedTarget = squares.get(16);
         setDefaultGame();
     }
 
@@ -131,8 +140,8 @@ public class GameBoard extends JPanel implements Board {
     @Override
     public final void setDefaultGame() {
         logic.setDefaultLayout();
-        setSelectedSourceEmpty();
-        setSelectedTargetEmpty();
+        selectedSource.setSelectedSource(false);
+        selectedTarget.setSelectedTarget(false);
         repaint();
     }
 
@@ -141,7 +150,7 @@ public class GameBoard extends JPanel implements Board {
     }
 
     boolean isValidTarget(final GameSquare square) {
-        return !square.isSelectedSource() && selectedSource.isPresent() && square.hasFoe(logic.getCurrentColor());
+        return !square.isSelectedSource() && selectedSource.isSelectedSource() && square.hasFoe(logic.getCurrentColor());
     }
 
     @Override
@@ -219,57 +228,48 @@ public class GameBoard extends JPanel implements Board {
         save.saveGame(filename);
     }
 
-    void setSelectedSourceEmpty() {
-        selectedSource.ifPresent(square -> square.setSelectedSource(false));
-        selectedSource = Optional.empty();
-    }
-
-    void setSelectedSource(final GameSquare square) {
-        square.setSelectedSource(true);
-        selectedSource = Optional.of(square);
-    }
-
-    void setSelectedSource(final int index) {
-        val square = squares.get(index);
-        square.setSelectedSource(true);
-        selectedSource = Optional.of(square);
-    }
-
-    Optional<GameSquare> getSelectedSource() {
-        return selectedSource;
-    }
-
-    boolean isSourceSelected() {
-        return selectedSource.isPresent();
-    }
-
-    void setSelectedTargetEmpty() {
-        selectedTarget.ifPresent(square -> square.setSelectedTarget(false));
-        selectedTarget = Optional.empty();
-    }
-
-    void setSelectedTarget(final GameSquare square) {
-        square.setSelectedTarget(true);
-        selectedTarget = Optional.of(square);
-    }
-
-    void setSelectedTarget(final int index) {
-        val square = squares.get(index);
-        square.setSelectedTarget(true);
-        selectedTarget = Optional.of(square);
-    }
-
-    Optional<GameSquare> getSelectedTarget() {
-        return selectedTarget;
-    }
-
-    boolean isTargetSelected() {
-        return selectedTarget.isPresent();
-    }
-
     @Override
     public void changeCurrentColor() {
         logic.changeCurrentColor();
     }
 
+    public boolean isTargetSelected() {
+        return selectedTarget.isSelectedTarget();
+    }
+
+    public boolean isSourceSelected() {
+        return selectedSource.isSelectedSource();
+    }
+
+    public void setSelectedSourceEmpty() {
+        selectedSource.setSelectedSource(false);
+    }
+
+    public void setSelectedTargetEmpty() {
+        selectedTarget.setSelectedTarget(false);
+    }
+
+    public void setSelectedSource(int index) {
+        selectedSource.setSelectedSource(false);
+        selectedSource = squares.get(index);
+        selectedSource.setSelectedSource(true);
+    }
+
+    public void setSelectedSource(GameSquare square) {
+        selectedSource.setSelectedSource(false);
+        selectedSource = square;
+        selectedSource.setSelectedSource(true);
+    }
+
+    public void setSelectedTarget(int index) {
+        selectedTarget.setSelectedTarget(false);
+        selectedTarget = squares.get(index);
+        selectedTarget.setSelectedTarget(true);
+    }
+
+    public void setSelectedTarget(GameSquare square) {
+        selectedTarget.setSelectedTarget(false);
+        selectedTarget = square;
+        selectedTarget.setSelectedTarget(true);
+    }
 }

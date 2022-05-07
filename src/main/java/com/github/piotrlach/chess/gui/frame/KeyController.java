@@ -17,7 +17,6 @@
 
 package com.github.piotrlach.chess.gui.frame;
 
-import com.github.piotrlach.chess.gui.NoSelectedSourceException;
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
 import com.github.piotrlach.chess.logic.Logic;
 import lombok.Setter;
@@ -56,10 +55,8 @@ public class KeyController {
         }
 
         if (isMovementAttempt(keyboardKey)) {
-            val source = board.getSelectedSource()
-                    .orElseThrow(IllegalStateException::new);
-            val target = board.getSelectedTarget()
-                    .orElseThrow(IllegalStateException::new);
+            val source = board.getSelectedSource();
+            val target = board.getSelectedTarget();
             tryToMovePiece(source, target);
             return;
         }
@@ -74,6 +71,7 @@ public class KeyController {
             selectSource(keyboardKey);
         }
     }
+
 
     private boolean isSelectionTypeChange(int keyboardKey) {
         return board.isSourceSelected() && keyboardKey == KeyEvent.VK_SPACE;
@@ -102,8 +100,7 @@ public class KeyController {
                     .findAny()
                     .ifPresent(board::setSelectedSource);
         } else {
-            val previous = board.getSelectedSource()
-                    .orElseThrow(NoSelectedSourceException::new);
+            val previous = board.getSelectedSource();
             board.setSelectedSourceEmpty();
 
             squares.stream()
@@ -122,8 +119,7 @@ public class KeyController {
                     .findAny()
                     .ifPresent(board::setSelectedTarget);
         } else {
-            val previous = board.getSelectedTarget()
-                    .orElseThrow(NoSelectedSourceException::new);
+            val previous = board.getSelectedTarget();
             board.setSelectedTargetEmpty();
 
             squares.stream()
