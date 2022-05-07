@@ -16,7 +16,6 @@
  */
 package com.github.piotrlach.chess.gui.frame;
 
-import com.github.piotrlach.chess.gui.NoSelectedSourceException;
 import com.github.piotrlach.chess.gui.drawable.Drawable;
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
 import com.github.piotrlach.chess.gui.drawable.drawables.Index;
@@ -31,11 +30,9 @@ import java.util.List;
 import java.util.*;
 
 /**
- *
  * @author Piotr Lach
  */
 public class GameBoard extends JPanel implements Board {
-
     @Getter
     private final Deque<Move> moves = new LinkedList<>();
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("com/github/piotrlach/chess/Bundle");
@@ -43,6 +40,7 @@ public class GameBoard extends JPanel implements Board {
     private final List<Drawable> drawables = new ArrayList<>();
     @Getter
     private final Logic logic = new Logic(this, squares, moves);
+    private final MouseController mouseController = new MouseController(this, squares);
     private Optional<GameSquare> selectedSource = Optional.empty();
     private Optional<GameSquare> selectedTarget = Optional.empty();
     private int squareSize = 100;
@@ -65,7 +63,7 @@ public class GameBoard extends JPanel implements Board {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
-                chooseOrMove(evt);
+                mouseController.chooseOrMove(evt);
             }
         });
     }
@@ -138,42 +136,6 @@ public class GameBoard extends JPanel implements Board {
         repaint();
     }
 
-    /**
-     * Finds the square clicked on with the LMB and sets it as either
-     * source or target, depending on the piece it contains.
-     */
-    private void chooseOrMove(final MouseEvent mouseEvent) {
-        val point = mouseEvent.getPoint();
-        squares.stream()
-                .filter(square -> square.contains(point))
-                .findAny()
-                .ifPresent(this::chooseOrMove);
-    }
-
-    private void chooseOrMove(final GameSquare selected) {
-        if (isValidSource(selected)) {
-            selectedSource.ifPresent(gameSquare -> gameSquare.setSelectedSource(false));
-            selected.setSelectedSource(true);
-            selectedSource = Optional.of(selected);
-            repaint();
-            return;
-        }
-
-        if (!isValidTarget(selected)) {
-            return;
-        }
-
-        var source = selectedSource.orElseThrow(NoSelectedSourceException::new);
-
-        if (source.movePieceTo(selected)) {
-            source.setSelectedSource(false);
-            setSelectedSourceEmpty();
-            setSelectedTargetEmpty();
-            keyController.setSelectTarget(false);
-        }
-        repaint();
-    }
-
     boolean isValidSource(final GameSquare square) {
         return !square.hasFoe(logic.getCurrentColor()) && !square.isSelectedSource();
     }
@@ -200,8 +162,8 @@ public class GameBoard extends JPanel implements Board {
 
         int minHeight = dimensions.get(0) - squareSize;
         int maxHeight = dimensions.get(1) - squareSize;
-        int minWidth  = dimensions.get(2);
-        int maxWidth  = dimensions.get(3);
+        int minWidth = dimensions.get(2);
+        int maxWidth = dimensions.get(3);
 
         int index = 0;
 
@@ -221,6 +183,7 @@ public class GameBoard extends JPanel implements Board {
     /**
      * Calculates minimal and maximal height and width (start point and end point)
      * for the board, such that when applied, it remains a square, centered in the window.
+     *
      * @return list of dimensions
      */
     private List<Integer> recalculateDimensions() {
