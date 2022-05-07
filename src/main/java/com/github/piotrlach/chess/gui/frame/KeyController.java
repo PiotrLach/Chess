@@ -20,6 +20,7 @@ package com.github.piotrlach.chess.gui.frame;
 import com.github.piotrlach.chess.gui.NoSelectedSourceException;
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
 import com.github.piotrlach.chess.logic.Logic;
+import lombok.Setter;
 import lombok.val;
 
 import java.awt.event.KeyEvent;
@@ -30,6 +31,7 @@ public class KeyController {
     private final GameBoard board;
     private final List<GameSquare> squares;
     private final Logic logic;
+    @Setter
     private boolean selectTarget = false;
     private final Map<Integer, Comparator<Integer>> comparators = Map.ofEntries(
             Map.entry(KeyEvent.VK_W, Comparator.naturalOrder()),
@@ -47,11 +49,11 @@ public class KeyController {
     public void handleKeyPress(KeyEvent keyEvent) {
         int keyboardKey = keyEvent.getKeyCode();
 
-        if (board.isSourceSelected() && keyboardKey == KeyEvent.VK_SPACE) {
-            selectTarget = true;
+        if (isSelectionTypeChange(keyboardKey)) {
+            selectTarget = !selectTarget;
         }
 
-        if (board.isSourceSelected() && board.isTargetSelected() && keyboardKey == KeyEvent.VK_SPACE) {
+        if (isMovementAttempt(keyboardKey)) {
             val source = board.getSelectedSource()
                     .orElseThrow(IllegalStateException::new);
             val target = board.getSelectedTarget()
@@ -69,6 +71,14 @@ public class KeyController {
         } else {
             selectSource(keyboardKey);
         }
+    }
+
+    private boolean isSelectionTypeChange(int keyboardKey) {
+        return board.isSourceSelected() && keyboardKey == KeyEvent.VK_SPACE;
+    }
+
+    private boolean isMovementAttempt(int keyboardKey) {
+        return board.isSourceSelected() && board.isTargetSelected() && keyboardKey == KeyEvent.VK_SPACE;
     }
 
     private void tryToMovePiece(GameSquare source, GameSquare target) {

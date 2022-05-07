@@ -157,13 +157,19 @@ public class GameBoard extends JPanel implements Board {
             selectedSource = Optional.of(selected);
             repaint();
             return;
-        } else if (!isValidTarget(selected)) {
+        }
+
+        if (!isValidTarget(selected)) {
             return;
         }
+
         var source = selectedSource.orElseThrow(NoSelectedSourceException::new);
+
         if (source.movePieceTo(selected)) {
             source.setSelectedSource(false);
             setSelectedSourceEmpty();
+            setSelectedTargetEmpty();
+            keyController.setSelectTarget(false);
         }
         repaint();
     }
@@ -202,7 +208,6 @@ public class GameBoard extends JPanel implements Board {
 
         for (int y = maxHeight; y > minHeight; y -= squareSize) {
             for (int x = minWidth; x < maxWidth; x += squareSize) {
-
                 var drawable = drawables.get(index);
 
                 drawable.setPosition(x, y);
@@ -295,6 +300,7 @@ public class GameBoard extends JPanel implements Board {
     Optional<GameSquare> getSelectedTarget() {
         return selectedTarget;
     }
+
     boolean isTargetSelected() {
         return selectedTarget.isPresent();
     }
