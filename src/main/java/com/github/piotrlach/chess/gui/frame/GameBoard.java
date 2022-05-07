@@ -175,8 +175,7 @@ public class GameBoard extends JPanel implements Board {
     }
 
     boolean isValidSource(final GameSquare square) {
-        var piece = square.getPiece();
-        return !piece.isFoe(logic.getCurrentColor()) && !square.isSelectedSource();
+        return !square.hasFoe(logic.getCurrentColor()) && !square.isSelectedSource();
     }
 
     boolean isValidTarget(final GameSquare square) {

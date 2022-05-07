@@ -24,7 +24,9 @@ import lombok.Setter;
 import lombok.val;
 
 import java.awt.event.KeyEvent;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class KeyController {
 
@@ -134,23 +136,52 @@ public class KeyController {
     }
 
     private boolean isNext(int keyboardKey, GameSquare source, GameSquare target) {
-        return switch (keyboardKey) {
-            case KeyEvent.VK_W -> isUp(source, target);
-            case KeyEvent.VK_A -> isOnLeft(source, target);
-            case KeyEvent.VK_S -> isDown(source, target);
-            case KeyEvent.VK_D -> isOnRight(source, target);
+       return switch (keyboardKey) {
+            case KeyEvent.VK_W, KeyEvent.VK_S -> isVerticalMove(keyboardKey, source, target);
+            case KeyEvent.VK_A, KeyEvent.VK_D -> isHorizontalMove(keyboardKey, source, target);
             default -> false;
         };
     }
 
-    private boolean isUp(GameSquare source, GameSquare target) {
+    private boolean isVerticalMove(int keyboardKey, GameSquare source, GameSquare target) {
         if (!source.isInSameCol(target))  {
             return false;
         }
 
-        int from = source.coord.row;
-        int to = target.coord.row;
+        val from = source.coord.row;
+        val to = target.coord.row;
 
+        return switch (keyboardKey) {
+            case KeyEvent.VK_W -> isUp(from, to);
+            case KeyEvent.VK_S -> isDown(from, to);
+            default -> false;
+        };
+    }
+
+    private boolean isHorizontalMove(int keyboardKey, GameSquare source, GameSquare target) {
+        if (!source.isInSameRow(target))  {
+            return false;
+        }
+
+        val from = source.coord.col;
+        val to = target.coord.col;
+
+        return switch (keyboardKey) {
+            case KeyEvent.VK_A -> isOnLeft(from, to);
+            case KeyEvent.VK_D -> isOnRight(from, to);
+            default -> false;
+        };
+    }
+
+    private boolean isUp(int from, int to) {
+        return isFromSmaller(from, to);
+    }
+
+    private boolean isOnRight(int from, int to) {
+        return isFromSmaller(from, to);
+    }
+
+    private boolean isFromSmaller(int from, int to) {
         if (from < 7) {
             return to > from;
         } else if (from == 7) {
@@ -160,48 +191,15 @@ public class KeyController {
         }
     }
 
-    private boolean isDown(GameSquare source, GameSquare target) {
-        if (!source.isInSameCol(target))  {
-            return false;
-        }
-
-        int from = source.coord.row;
-        int to = target.coord.row;
-
-        if (from > 0) {
-            return to < from;
-        } else if (from == 0) {
-            return to == 7;
-        } else {
-            return false;
-        }
+    private boolean isDown(int from, int to) {
+        return isFromGreater(from, to);
     }
 
-    private boolean isOnRight(GameSquare source, GameSquare target) {
-        if (!source.isInSameRow(target))  {
-            return false;
-        }
-
-        int from = source.coord.col;
-        int to = target.coord.col;
-
-        if (from < 7) {
-            return to > from;
-        } else if (from == 7) {
-            return to == 0;
-        } else {
-            return false;
-        }
+    private boolean isOnLeft(int from, int to) {
+        return isFromGreater(from, to);
     }
 
-    private boolean isOnLeft(GameSquare source, GameSquare target) {
-        if (!source.isInSameRow(target))  {
-            return false;
-        }
-
-        int from = source.coord.col;
-        int to = target.coord.col;
-
+    private boolean isFromGreater(int from, int to) {
         if (from > 0) {
             return to < from;
         } else if (from == 0) {
