@@ -44,7 +44,8 @@ public class MainFrame extends JFrame {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent keyEvent) {
-                board.keyController.handleKeyPress(keyEvent);
+                board.getKeyController()
+                        .handleKeyPress(keyEvent);
                 board.repaint();
             }
         });

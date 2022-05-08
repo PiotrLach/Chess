@@ -31,7 +31,7 @@ public class SelectableTarget implements SelectableSquare {
     private final SelectableSquare selectedSource;
 
     public SelectableTarget(GameBoard board, List<GameSquare> squares) {
-        this.squares = board.getSquares();
+        this.squares = squares;
         this.logic = board.getLogic();
         this.selectedTarget = squares.get(0);
         this.selectedSource = board.getSelectedSource();

@@ -32,7 +32,7 @@ public class SelectableSource implements SelectableSquare {
     private final Logic logic;
 
     public SelectableSource(GameBoard board, List<GameSquare> squares) {
-        this.squares = board.getSquares();
+        this.squares = squares;
         this.logic = board.getLogic();
         this.selectedSource = squares.get(0);
     }

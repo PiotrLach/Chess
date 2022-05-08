@@ -19,6 +19,8 @@ package com.github.piotrlach.chess.gui.frame;
 import com.github.piotrlach.chess.gui.drawable.Drawable;
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
 import com.github.piotrlach.chess.gui.drawable.drawables.Index;
+import com.github.piotrlach.chess.gui.frame.controllers.KeyController;
+import com.github.piotrlach.chess.gui.frame.controllers.MouseController;
 import com.github.piotrlach.chess.gui.frame.selectable.SelectableSquare;
 import com.github.piotrlach.chess.gui.frame.selectable.selectables.SelectableSource;
 import com.github.piotrlach.chess.gui.frame.selectable.selectables.SelectableTarget;
@@ -41,7 +43,6 @@ public class GameBoard extends JPanel implements Board {
     @Getter
     private final Deque<Move> moves = new LinkedList<>();
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("com/github/piotrlach/chess/Bundle");
-    @Getter
     private final List<GameSquare> squares = new ArrayList<>();
     private final List<Drawable> drawables = new ArrayList<>();
     @Getter
@@ -53,7 +54,8 @@ public class GameBoard extends JPanel implements Board {
     private final SelectableSquare selectedTarget;
     private int squareSize = 100;
     private final Save save = new Save(this, squares);
-    final KeyController keyController;
+    @Getter
+    private final KeyController keyController;
 
     public GameBoard() {
         setListeners();

@@ -15,9 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.piotrlach.chess.gui.frame;
+package com.github.piotrlach.chess.gui.frame.controllers;
 
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
+import com.github.piotrlach.chess.gui.frame.GameBoard;
 import com.github.piotrlach.chess.gui.frame.selectable.SelectableSquare;
 import com.github.piotrlach.chess.logic.Logic;
 import lombok.Setter;

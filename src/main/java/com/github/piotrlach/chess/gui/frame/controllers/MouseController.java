@@ -15,9 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.piotrlach.chess.gui.frame;
+package com.github.piotrlach.chess.gui.frame.controllers;
 
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
+import com.github.piotrlach.chess.gui.frame.GameBoard;
 import com.github.piotrlach.chess.gui.frame.selectable.SelectableSquare;
 import lombok.val;
 
@@ -42,7 +43,7 @@ public class MouseController implements Serializable {
      * Finds the square clicked on with the LMB and sets it as either
      * source or target, depending on the piece it contains.
      */
-    void chooseOrMove(final MouseEvent mouseEvent) {
+    public void chooseOrMove(final MouseEvent mouseEvent) {
         val point = mouseEvent.getPoint();
         squares.stream()
                 .filter(square -> square.contains(point))
@@ -66,7 +67,7 @@ public class MouseController implements Serializable {
         if (source.movePieceTo(selected)) {
             selectableSource.unselect();
             selectableTarget.unselect();
-            gameBoard.keyController
+            gameBoard.getKeyController()
                     .setSelectTarget(false);
         }
         gameBoard.repaint();
