@@ -19,9 +19,11 @@ package com.github.piotrlach.chess.gui.frame;
 import com.github.piotrlach.chess.gui.drawable.Drawable;
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
 import com.github.piotrlach.chess.gui.drawable.drawables.Index;
+import com.github.piotrlach.chess.gui.frame.selectable.SelectableSquare;
+import com.github.piotrlach.chess.gui.frame.selectable.selectables.SelectableSource;
+import com.github.piotrlach.chess.gui.frame.selectable.selectables.SelectableTarget;
 import com.github.piotrlach.chess.logic.*;
 import lombok.Getter;
-import lombok.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,26 +41,27 @@ public class GameBoard extends JPanel implements Board {
     @Getter
     private final Deque<Move> moves = new LinkedList<>();
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("com/github/piotrlach/chess/Bundle");
+    @Getter
     private final List<GameSquare> squares = new ArrayList<>();
     private final List<Drawable> drawables = new ArrayList<>();
     @Getter
     private final Logic logic = new Logic(this, squares, moves);
-    private final MouseController mouseController = new MouseController(this, squares);
+    private final MouseController mouseController;
     @Getter
-    @NonNull
-    private GameSquare selectedSource;
+    private final SelectableSquare selectedSource;
     @Getter
-    @NonNull
-    private GameSquare selectedTarget;
+    private final SelectableSquare selectedTarget;
     private int squareSize = 100;
     private final Save save = new Save(this, squares);
-    final KeyController keyController = new KeyController(this, squares);
+    final KeyController keyController;
 
     public GameBoard() {
         setListeners();
         createSquares();
-        selectedSource = squares.get(1);
-        selectedTarget = squares.get(16);
+        selectedSource = new SelectableSource(this, squares);
+        selectedTarget = new SelectableTarget(this, squares);
+        keyController = new KeyController(this, squares);
+        mouseController = new MouseController(this, squares);
         setDefaultGame();
     }
 
@@ -140,17 +143,9 @@ public class GameBoard extends JPanel implements Board {
     @Override
     public final void setDefaultGame() {
         logic.setDefaultLayout();
-        selectedSource.setSelectedSource(false);
-        selectedTarget.setSelectedTarget(false);
+        selectedSource.unselect();
+        selectedTarget.unselect();
         repaint();
-    }
-
-    boolean isValidSource(final GameSquare square) {
-        return !square.hasFoe(logic.getCurrentColor()) && !square.isSelectedSource();
-    }
-
-    boolean isValidTarget(final GameSquare square) {
-        return !square.isSelectedSource() && selectedSource.isSelectedSource() && square.hasFoe(logic.getCurrentColor());
     }
 
     @Override
@@ -231,45 +226,5 @@ public class GameBoard extends JPanel implements Board {
     @Override
     public void changeCurrentColor() {
         logic.changeCurrentColor();
-    }
-
-    public boolean isTargetSelected() {
-        return selectedTarget.isSelectedTarget();
-    }
-
-    public boolean isSourceSelected() {
-        return selectedSource.isSelectedSource();
-    }
-
-    public void setSelectedSourceEmpty() {
-        selectedSource.setSelectedSource(false);
-    }
-
-    public void setSelectedTargetEmpty() {
-        selectedTarget.setSelectedTarget(false);
-    }
-
-    public void setSelectedSource(int index) {
-        selectedSource.setSelectedSource(false);
-        selectedSource = squares.get(index);
-        selectedSource.setSelectedSource(true);
-    }
-
-    public void setSelectedSource(GameSquare square) {
-        selectedSource.setSelectedSource(false);
-        selectedSource = square;
-        selectedSource.setSelectedSource(true);
-    }
-
-    public void setSelectedTarget(int index) {
-        selectedTarget.setSelectedTarget(false);
-        selectedTarget = squares.get(index);
-        selectedTarget.setSelectedTarget(true);
-    }
-
-    public void setSelectedTarget(GameSquare square) {
-        selectedTarget.setSelectedTarget(false);
-        selectedTarget = square;
-        selectedTarget.setSelectedTarget(true);
     }
 }

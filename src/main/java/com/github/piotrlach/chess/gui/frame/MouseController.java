@@ -18,6 +18,7 @@
 package com.github.piotrlach.chess.gui.frame;
 
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
+import com.github.piotrlach.chess.gui.frame.selectable.SelectableSquare;
 import lombok.val;
 
 import java.awt.event.MouseEvent;
@@ -27,10 +28,14 @@ import java.util.List;
 public class MouseController implements Serializable {
     private final GameBoard gameBoard;
     private final List<GameSquare> squares;
+    private final SelectableSquare selectableSource;
+    private final SelectableSquare selectableTarget;
 
     public MouseController(GameBoard gameBoard, List<GameSquare> squares) {
         this.gameBoard = gameBoard;
         this.squares = squares;
+        this.selectableSource = gameBoard.getSelectedSource();
+        this.selectableTarget = gameBoard.getSelectedTarget();
     }
 
     /**
@@ -46,21 +51,21 @@ public class MouseController implements Serializable {
     }
 
     private void chooseOrMove(final GameSquare selected) {
-        if (gameBoard.isValidSource(selected)) {
-            gameBoard.setSelectedSource(selected);
+        if (selectableSource.isValid(selected)) {
+            selectableSource.set(selected);
             gameBoard.repaint();
             return;
         }
 
-        if (!gameBoard.isValidTarget(selected)) {
+        if (!selectableTarget.isValid(selected)) {
             return;
         }
 
-        val source = gameBoard.getSelectedSource();
+        val source = selectableSource.get();
 
         if (source.movePieceTo(selected)) {
-            gameBoard.setSelectedSourceEmpty();
-            gameBoard.setSelectedTargetEmpty();
+            selectableSource.unselect();
+            selectableTarget.unselect();
             gameBoard.keyController
                     .setSelectTarget(false);
         }

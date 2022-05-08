@@ -18,6 +18,7 @@
 package com.github.piotrlach.chess.gui.frame;
 
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
+import com.github.piotrlach.chess.gui.frame.selectable.SelectableSquare;
 import com.github.piotrlach.chess.logic.Logic;
 import lombok.Setter;
 import lombok.val;
@@ -29,9 +30,10 @@ import java.util.Map;
 
 public class KeyController {
 
-    private final GameBoard board;
     private final List<GameSquare> squares;
     private final Logic logic;
+    private final SelectableSquare selectedSource;
+    private final SelectableSquare selectedTarget;
     @Setter
     private boolean selectTarget = false;
     private final Map<Integer, Comparator<Integer>> comparators = Map.ofEntries(
@@ -42,9 +44,10 @@ public class KeyController {
     );
 
     public KeyController(GameBoard board, List<GameSquare> squares) {
-        this.board = board;
         this.squares = squares;
         this.logic = board.getLogic();
+        this.selectedSource = board.getSelectedSource();
+        this.selectedTarget = board.getSelectedTarget();
     }
 
     public void handleKeyPress(KeyEvent keyEvent) {
@@ -55,8 +58,8 @@ public class KeyController {
         }
 
         if (isMovementAttempt(keyboardKey)) {
-            val source = board.getSelectedSource();
-            val target = board.getSelectedTarget();
+            val source = selectedSource.get();
+            val target = selectedTarget.get();
             tryToMovePiece(source, target);
             return;
         }
@@ -66,26 +69,26 @@ public class KeyController {
         }
 
         if (selectTarget) {
-            selectTarget(keyboardKey);
+            select(keyboardKey, selectedTarget);
         } else {
-            selectSource(keyboardKey);
+            select(keyboardKey, selectedSource);
         }
     }
 
 
     private boolean isSelectionTypeChange(int keyboardKey) {
-        return board.isSourceSelected() && keyboardKey == KeyEvent.VK_SPACE;
+        return selectedSource.isSelected() && keyboardKey == KeyEvent.VK_SPACE;
     }
 
     private boolean isMovementAttempt(int keyboardKey) {
-        return board.isSourceSelected() && board.isTargetSelected() && keyboardKey == KeyEvent.VK_SPACE;
+        return selectedSource.isSelected() && selectedTarget.isSelected() && keyboardKey == KeyEvent.VK_SPACE;
     }
 
     private void tryToMovePiece(GameSquare source, GameSquare target) {
         if (logic.movePiece(source.coord, target.coord)) {
             selectTarget = false;
-            board.setSelectedSourceEmpty();
-            board.setSelectedTargetEmpty();
+            selectedSource.unselect();
+            selectedTarget.unselect();
         }
     }
 
@@ -93,41 +96,21 @@ public class KeyController {
         return comparators.containsKey(keyboardKey);
     }
 
-    private void selectSource(int keyboardKey) {
-        if (!board.isSourceSelected()) {
+    private void select(int keyboardKey, SelectableSquare selectableSquare) {
+        if (!selectableSquare.isSelected()) {
             squares.stream()
-                    .filter(board::isValidSource)
+                    .filter(selectableSquare::isValid)
                     .findAny()
-                    .ifPresent(board::setSelectedSource);
+                    .ifPresent(selectableSquare::set);
         } else {
-            val previous = board.getSelectedSource();
-            board.setSelectedSourceEmpty();
+            selectableSquare.unselect();
 
             squares.stream()
-                    .filter(board::isValidSource)
-                    .filter(square -> isNext(keyboardKey, previous, square))
+                    .filter(selectableSquare::isValid)
+                    .filter(square -> isNext(keyboardKey, selectableSquare.get(), square))
                     .map(next -> next.coord.index)
                     .min(comparators.get(keyboardKey))
-                    .ifPresent(board::setSelectedSource);
-        }
-    }
-
-    private void selectTarget(int keyboardKey) {
-        if (!board.isTargetSelected()) {
-            squares.stream()
-                    .filter(board::isValidTarget)
-                    .findAny()
-                    .ifPresent(board::setSelectedTarget);
-        } else {
-            val previous = board.getSelectedTarget();
-            board.setSelectedTargetEmpty();
-
-            squares.stream()
-                    .filter(board::isValidTarget)
-                    .filter(square -> isNext(keyboardKey, previous, square))
-                    .map(next -> next.coord.index)
-                    .min(comparators.get(keyboardKey))
-                    .ifPresent(board::setSelectedTarget);
+                    .ifPresent(selectableSquare::set);
         }
     }
 
