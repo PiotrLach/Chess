@@ -85,11 +85,10 @@ public class KeyController {
     }
 
     private void tryToMovePiece(GameSquare source, GameSquare target) {
-        if (logic.movePiece(source.coord, target.coord)) {
-            selectTarget = false;
-            selectedSource.unselect();
-            selectedTarget.unselect();
-        }
+        logic.movePiece(source.coord, target.coord);
+        selectTarget = false;
+        selectedSource.unselect();
+        selectedTarget.unselect();
     }
 
     private boolean isValidKey(int keyboardKey) {
