@@ -25,6 +25,7 @@ import lombok.val;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Deque;
 import java.util.List;
 
 /**
@@ -36,6 +37,7 @@ public class Save {
 
     private final Board board;
     private final List<? extends Square> squares;
+    private final Deque<Move> moves;
 
     public void loadGame(final String filename) {
         val moves = readObject(filename);
@@ -63,7 +65,7 @@ public class Save {
     }
 
     public void saveGame(final String fileName) {
-        writeObject(board.getMoves(), fileName);
+        writeObject(moves, fileName);
     }
 
     private Move[] readObject(final String filename) {

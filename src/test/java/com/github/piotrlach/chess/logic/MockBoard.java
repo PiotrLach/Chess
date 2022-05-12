@@ -31,7 +31,7 @@ public class MockBoard implements Board {
     private final List<Square> squares = new ArrayList<>();
     @Getter
     private final Logic logic = new Logic(this, squares, moves);
-    private final Save save = new Save(this, squares);
+    private final Save save = new Save(this, squares, moves);
 
     public MockBoard() {
         createSquares();

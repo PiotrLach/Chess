@@ -303,7 +303,6 @@ public class Logic {
         List<Square> path = new ArrayList<>();
 
         while (!coord.equals(target.coord)) {
-
             path.add(squares.get(coord.index));
 
             row += verticalDiff;

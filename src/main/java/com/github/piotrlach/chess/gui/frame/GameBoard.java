@@ -40,7 +40,7 @@ import java.util.*;
  * @author Piotr Lach
  */
 public class GameBoard extends JPanel implements Board {
-    @Getter
+
     private final Deque<Move> moves = new LinkedList<>();
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("com/github/piotrlach/chess/Bundle");
     private final List<GameSquare> squares = new ArrayList<>();
@@ -53,7 +53,7 @@ public class GameBoard extends JPanel implements Board {
     @Getter
     private final SelectableSquare selectedTarget;
     private int squareSize = 100;
-    private final Save save = new Save(this, squares);
+    private final Save save = new Save(this, squares, moves);
     @Getter
     private final KeyController keyController;
 

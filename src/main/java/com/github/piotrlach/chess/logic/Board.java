@@ -28,7 +28,5 @@ public interface Board {
 
     void changeCurrentColor();
 
-    Deque<Move> getMoves();
-
     void setDefaultGame();
 }
