@@ -20,9 +20,11 @@ import com.github.piotrlach.chess.logic.pieces.*;
 import com.github.piotrlach.chess.logic.square.Coord;
 import com.github.piotrlach.chess.logic.square.Square;
 import lombok.Getter;
+import lombok.val;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -46,7 +48,6 @@ public class Logic {
     }
 
     public void setLayout(String[] layout) {
-
         clearBoard();
 
         if (layout.length != 64) {
@@ -80,7 +81,6 @@ public class Logic {
     }
 
     public boolean isValidMove(Square source, Square target) {
-
         if (isMate()) {
             board.displayMessage(Message.isMate);
             return false;
@@ -161,7 +161,6 @@ public class Logic {
         var allSquaresLists = new ArrayList<List<Square>>();
 
         for (var source : squares) {
-
             if (isAttack(source, target)) {
                 var singleSquaresList = new ArrayList<Square>();
                 var path = getPath(source, target);
@@ -200,7 +199,6 @@ public class Logic {
     }
 
     private boolean isCheckBlockPossible() {
-
         var kingSquare = getKingSquare();
         var allSquaresLists = getAttackingSquares(kingSquare);
 
@@ -232,7 +230,6 @@ public class Logic {
     }
 
     private boolean isSelfMadeCheck(Square source, Square target) {
-
         var sourcePiece = source.getPiece();
 
         source.setPiece(Empty.INSTANCE);
@@ -247,9 +244,7 @@ public class Logic {
     }
 
     private boolean isKingEscape(Square source, Square target) {
-        var escapeSquares = getEscapeSquares();
-
-        return source.getPiece() instanceof King && escapeSquares.contains(target);
+        return source.hasKing() && getEscapeSquares().contains(target);
     }
 
     private boolean isCheckBlock(Square source, Square target) {
@@ -262,9 +257,7 @@ public class Logic {
 
         var singleSquaresList = allSquaresLists.get(0);
 
-        var isKing = source.getPiece() instanceof King;
-
-        return !isKing && singleSquaresList.contains(target);
+        return !source.hasKing() && singleSquaresList.contains(target);
     }
 
     /**
@@ -286,46 +279,28 @@ public class Logic {
      * between source and target squares. Retrieves a list of squares in
      * straight line between source and target squares.
      */
-    private List<Square> getPath(Square source, Square target) {
+    private List<? extends Square> getPath(Square source, Square target) {
         var piece = source.getPiece();
 
         if (piece instanceof Knight) {
             return Collections.emptyList();
         }
 
-        int verticalDiff = calcVerticalDiff(source, target);
-        int horizontalDiff = calcHorizontalDiff(source, target);
+        int verticalDiff = calcDiff(source.coord.row, target.coord.row);
+        int horizontalDiff = calcDiff(source.coord.col, target.coord.col);
+        val seed = source.coord.increment(verticalDiff, horizontalDiff);
 
-        int row = source.coord.row + verticalDiff;
-        int col = source.coord.col + horizontalDiff;
-        var coord = new Coord(row, col);
-
-        List<Square> path = new ArrayList<>();
-
-        while (!coord.equals(target.coord)) {
-            path.add(squares.get(coord.index));
-
-            row += verticalDiff;
-            col += horizontalDiff;
-
-            coord = new Coord(row, col);
-        }
-
-        return path;
+        return Stream.iterate(seed, coord -> coord.increment(verticalDiff, horizontalDiff))
+                .limit(seed.euclideanDistance(target.coord))
+                .map(coord -> squares.get(coord.index))
+                .toList();
     }
 
-    private int calcVerticalDiff(Square source, Square target) {
-        var isTargetSameRow = source.coord.row == target.coord.row;
-        var isTargetRowLower = source.coord.row < target.coord.row;
+    private int calcDiff(final int source, final int target) {
+        var isTargetSame = source == target;
+        var isTargetLower = source < target;
 
-        return isTargetSameRow ? 0 : (isTargetRowLower ? 1 : -1);
-    }
-
-    private int calcHorizontalDiff(Square source, Square target) {
-        var isTargetSameCol = source.coord.col == target.coord.col;
-        var isTargetColLower = source.coord.col < target.coord.col;
-
-        return isTargetSameCol ? 0 : (isTargetColLower ? 1 : -1);
+        return isTargetSame ? 0 : (isTargetLower ? 1 : -1);
     }
 
     public void changeCurrentColor() {
@@ -347,16 +322,23 @@ public class Logic {
         movePiece(from, to);
     }
 
-    public void movePiece(int rank1, char file1, int rank2, char file2) {
+    public boolean movePiece(int rank1, char file1, int rank2, char file2) {
         var from = new Coord(rank1, file1);
         var to = new Coord(rank2, file2);
 
-        movePiece(from, to);
+        return movePiece(from, to);
     }
 
     public boolean isCorrectMovement(int row1, int col1, int row2, int col2) {
         var from = new Coord(row1, col1);
         var to = new Coord(row2, col2);
+
+        return isCorrectMovement(from, to);
+    }
+
+    public boolean isCorrectMovement(int rank1, char file1, int rank2, char file2) {
+        val from = new Coord(rank1, file1);
+        val to = new Coord(rank2, file2);
 
         return isCorrectMovement(from, to);
     }

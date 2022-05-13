@@ -21,6 +21,7 @@ import java.util.List;
 import com.github.piotrlach.chess.logic.square.Square;
 import com.github.piotrlach.chess.logic.square.Coord;
 import com.github.piotrlach.chess.logic.MockBoard;
+import lombok.val;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -105,6 +106,33 @@ public class KingTest {
         Assertions.assertFalse(logic.isCorrectMovement(0, 4, 0, 6));
         Assertions.assertTrue(logic.isCorrectMovement(0, 4, 0, 2));
 
+    }
+
+    @Test
+    public void mateTest() {
+        val board = new MockBoard();
+        val logic = board.getLogic();
+
+        String[] layout = {
+                /* A     B     C     D     E     F     G     H  */
+        /* 8 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; ","K;B", /* 8 */
+        /* 7 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ", /* 7 */
+        /* 6 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ", /* 6 */
+        /* 5 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ", /* 5 */
+        /* 4 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ", /* 4 */
+        /* 3 */ " ; "," ; "," ; "," ; "," ; "," ; "," ; "," ; ", /* 3 */
+        /* 2 */ "R;B"," ; "," ; "," ; "," ; "," ; "," ; "," ; ", /* 2 */
+        /* 1 */ "R;B"," ; "," ; ","K;W"," ; "," ; "," ; "," ; "  /* 1 */
+                /* A     B     C     D     E     F     G     H  */
+        };
+
+        logic.setLayout(layout);
+
+        Assertions.assertFalse(logic.movePiece(1, 'D', 2, 'D'));
+        Assertions.assertFalse(logic.movePiece(1, 'D', 2, 'C'));
+        Assertions.assertFalse(logic.movePiece(1, 'D', 2, 'E'));
+        Assertions.assertFalse(logic.movePiece(1, 'D', 1, 'C'));
+        Assertions.assertFalse(logic.movePiece(1, 'D', 1, 'E'));
     }
 
 }

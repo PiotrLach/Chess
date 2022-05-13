@@ -33,7 +33,6 @@ public class Coord {
     public final int col;
 
     public Coord(final int rank, final char file) throws IllegalArgumentException {
-
         if (!isValidInput(rank, file)) {
             throw new IllegalArgumentException("Wrong input arguments passed!");
         }
@@ -44,7 +43,6 @@ public class Coord {
     }
 
     public Coord(final int row, final int col) throws IllegalArgumentException {
-
         if (!isValidInput(row, col)) {
             throw new IllegalArgumentException("Wrong input arguments passed!");
         }
@@ -55,7 +53,6 @@ public class Coord {
     }
 
     public Coord(final int index) throws IllegalArgumentException {
-
         if (!isValidInput(index)) {
             throw new IllegalArgumentException("Wrong input arguments passed!");
         }
@@ -63,6 +60,18 @@ public class Coord {
         this.index = index;
         col = index % 8;
         row = (index - col) / 8;
+    }
+
+    public Coord increment(final int row, final int col) {
+        return new Coord(this.row + row, this.col + col);
+    }
+
+    public long euclideanDistance(final Coord other) {
+        val exponent = 2.0d;
+        val a = other.col - this.col;
+        val b = other.row - this.row;
+        val sum = Math.pow(a, exponent) + Math.pow(b, exponent);
+        return (long) Math.sqrt(sum);
     }
 
     private boolean isValidInput(final int rank, final char file) {

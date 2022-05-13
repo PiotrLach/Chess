@@ -16,13 +16,12 @@
  */
 package com.github.piotrlach.chess.logic.square;
 
-import com.github.piotrlach.chess.logic.square.Coord;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class CoordTest {
     @Test
-    public void constructorParamsTest() {
+    public void constructorParams() {
         Assertions.assertDoesNotThrow(() -> new Coord(1, 'C'));
         Assertions.assertDoesNotThrow(() -> new Coord(0, 7));
         Assertions.assertDoesNotThrow(() -> new Coord(53));

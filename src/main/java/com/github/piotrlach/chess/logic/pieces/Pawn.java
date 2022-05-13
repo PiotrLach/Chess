@@ -53,10 +53,8 @@ public class Pawn extends Piece {
         }
 
         if (isEnPassant(source, target)) {
-            var optional = logic.getLastMove();
-            var coord = optional.get().to;
-
-            logic.setPiece(coord, Empty.INSTANCE);
+            logic.getLastMove()
+                    .ifPresent(move -> logic.setPiece(move.to, Empty.INSTANCE));
         }
 
         Piece piece = this;
