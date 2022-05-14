@@ -66,7 +66,7 @@ public class Coord {
         return new Coord(this.row + row, this.col + col);
     }
 
-    public long euclideanDistance(final Coord other) {
+    public long distance(final Coord other) {
         val exponent = 2.0d;
         val a = other.col - this.col;
         val b = other.row - this.row;

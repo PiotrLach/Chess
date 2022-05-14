@@ -264,9 +264,8 @@ public class Logic {
      * Checks if there are pieces on the path between source and target squares
      */
     private boolean isPathFree(Square source, Square target) {
-        var path = getPath(source, target);
-
-        return path.stream()
+        return getPath(source, target)
+                .stream()
                 .noneMatch(this::isNotEmptySquare);
     }
 
@@ -291,7 +290,7 @@ public class Logic {
         val seed = source.coord.increment(verticalDiff, horizontalDiff);
 
         return Stream.iterate(seed, coord -> coord.increment(verticalDiff, horizontalDiff))
-                .limit(seed.euclideanDistance(target.coord))
+                .limit(seed.distance(target.coord))
                 .map(coord -> squares.get(coord.index))
                 .toList();
     }
