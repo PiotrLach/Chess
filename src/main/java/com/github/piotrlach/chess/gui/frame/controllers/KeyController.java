@@ -28,6 +28,7 @@ import java.awt.event.KeyEvent;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class KeyController {
 
@@ -98,23 +99,73 @@ public class KeyController {
 
     private void select(int keyboardKey, SelectableSquare selectableSquare) {
         if (!selectableSquare.isSelected()) {
-            squares.stream()
-                    .filter(selectableSquare::isValid)
-                    .findAny()
-                    .ifPresent(selectableSquare::set);
-        } else {
-            selectableSquare.unselect();
-
-            squares.stream()
-                    .filter(selectableSquare::isValid)
-                    .filter(square -> isNext(keyboardKey, selectableSquare.get(), square))
-                    .map(next -> next.coord.index)
-                    .min(comparators.get(keyboardKey))
-                    .ifPresent(selectableSquare::set);
+            setAny(selectableSquare);
+            return;
         }
+
+        selectableSquare.unselect();
+
+        val index = findClosestInDimension(keyboardKey, selectableSquare);
+        if (index.isPresent()) {
+            selectableSquare.set(index.get());
+            return;
+        }
+
+        setAnyClosest(keyboardKey, selectableSquare);
     }
 
-    private boolean isNext(int keyboardKey, GameSquare source, GameSquare target) {
+    private void setAny(SelectableSquare selectableSquare) {
+        squares.stream()
+                .filter(selectableSquare::isValid)
+                .findAny()
+                .ifPresent(selectableSquare::set);
+    }
+
+    private Optional<Integer> findClosestInDimension(int keyboardKey, SelectableSquare selectableSquare) {
+        return squares.stream()
+                .filter(selectableSquare::isValid)
+                .filter(square -> isNextInLine(keyboardKey, selectableSquare.get(), square))
+                .map(next -> next.coord.index)
+                .min(comparators.get(keyboardKey));
+    }
+
+    private void setAnyClosest(int keyboardKey, SelectableSquare selectableSquare) {
+        squares.stream()
+                .filter(selectableSquare::isValid)
+                .filter(square -> isNextOutside(keyboardKey, selectableSquare.get(), square))
+                .map(next -> mapToDimension(keyboardKey, next))
+                .min(comparators.get(keyboardKey))
+                .ifPresent(index -> setAnyInDimension(keyboardKey, selectableSquare, index));
+    }
+
+    private void setAnyInDimension(int keyboardKey, SelectableSquare selectableSquare, int dimIndex) {
+        squares.stream()
+                .filter(selectableSquare::isValid)
+                .filter(square -> mapToDimension(keyboardKey, square) == dimIndex)
+                .findAny()
+                .ifPresent(selectableSquare::set);
+    }
+
+    private int mapToDimension(int key, GameSquare next) {
+        return switch (key) {
+            case KeyEvent.VK_W, KeyEvent.VK_S -> next.coord.row;
+            case KeyEvent.VK_D, KeyEvent.VK_A -> next.coord.col;
+            default -> throw new IllegalStateException("Illegal key passed!");
+        };
+    }
+
+
+    private boolean isNextOutside(int keyboardKey, GameSquare source, GameSquare target) {
+        return switch (keyboardKey) {
+            case KeyEvent.VK_W -> source.coord.row < target.coord.row;
+            case KeyEvent.VK_S -> target.coord.row < source.coord.row;
+            case KeyEvent.VK_D -> source.coord.col < target.coord.col;
+            case KeyEvent.VK_A -> target.coord.col < source.coord.col;
+            default -> false;
+        };
+    }
+
+    private boolean isNextInLine(int keyboardKey, GameSquare source, GameSquare target) {
        return switch (keyboardKey) {
             case KeyEvent.VK_W, KeyEvent.VK_S -> isVerticalMove(keyboardKey, source, target);
             case KeyEvent.VK_A, KeyEvent.VK_D -> isHorizontalMove(keyboardKey, source, target);
