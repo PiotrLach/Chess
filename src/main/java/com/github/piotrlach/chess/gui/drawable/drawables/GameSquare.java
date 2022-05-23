@@ -30,7 +30,7 @@ import java.awt.*;
  * @author Piotr Lach
  */
 @EqualsAndHashCode(callSuper = true)
-public class GameSquare extends Square implements Drawable {
+public class GameSquare extends Square implements Drawable, Comparable<GameSquare> {
 
     private final Rectangle rectangle;
     @Getter
@@ -87,4 +87,8 @@ public class GameSquare extends Square implements Drawable {
         return (isRowOdd && !isColOdd) || (!isRowOdd && isColOdd);
     }
 
+    @Override
+    public int compareTo(GameSquare other) {
+        return Integer.compare(this.coord.index, other.coord.index);
+    }
 }

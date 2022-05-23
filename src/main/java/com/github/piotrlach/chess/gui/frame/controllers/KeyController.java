@@ -142,7 +142,7 @@ public class KeyController {
         squares.stream()
                 .filter(selectableSquare::isValid)
                 .filter(square -> mapToDimension(keyboardKey, square) == dimIndex)
-                .findAny()
+                .min(Comparator.naturalOrder())
                 .ifPresent(selectableSquare::set);
     }
 
