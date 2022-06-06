@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.piotrlach.chess.gui.drawer;
+package com.github.piotrlach.chess.gui;
 
 import com.github.piotrlach.chess.logic.pieces.*;
 import lombok.SneakyThrows;
@@ -31,9 +31,9 @@ import java.util.Map;
  *
  * @author Piotr Lach
  */
-class PieceImageLoader {
+public class PieceImageLoader {
 
-    static final PieceImageLoader INSTANCE = new PieceImageLoader();
+    public static final PieceImageLoader INSTANCE = new PieceImageLoader();
 
     private final Map<Class<? extends Piece>, Image> whiteImages;
     private final Map<Class<? extends Piece>, Image> blackImages;
@@ -64,7 +64,7 @@ class PieceImageLoader {
         return classLoader.getResourceAsStream(fileName);
     }
 
-    Image getImage(final Class<? extends Piece> clazz, final String color) {
+    public Image getImage(final Class<? extends Piece> clazz, final String color) {
         if (color.equals("B")) {
             return blackImages.get(clazz);
         } else if(color.equals("W")) {
