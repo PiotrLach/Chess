@@ -111,7 +111,7 @@ public class KeyController {
             return;
         }
 
-        setAnyClosest(keyboardKey, selectableSquare);
+        setAnyClosestInKeyDirection(keyboardKey, selectableSquare);
     }
 
     private void setAny(SelectableSquare selectableSquare) {
@@ -124,15 +124,15 @@ public class KeyController {
     private Optional<Integer> findClosestInDimension(int keyboardKey, SelectableSquare selectableSquare) {
         return squares.stream()
                 .filter(selectableSquare::isValid)
-                .filter(square -> isNextInLine(keyboardKey, selectableSquare.get(), square))
+                .filter(square -> isNextInDimension(keyboardKey, selectableSquare.get(), square))
                 .map(next -> next.coord.index)
                 .min(comparators.get(keyboardKey));
     }
 
-    private void setAnyClosest(int keyboardKey, SelectableSquare selectableSquare) {
+    private void setAnyClosestInKeyDirection(int keyboardKey, SelectableSquare selectableSquare) {
         squares.stream()
                 .filter(selectableSquare::isValid)
-                .filter(square -> isNextOutside(keyboardKey, selectableSquare.get(), square))
+                .filter(square -> isNextOutsideDimension(keyboardKey, selectableSquare.get(), square))
                 .map(next -> mapToDimension(keyboardKey, next))
                 .min(comparators.get(keyboardKey))
                 .ifPresent(index -> setAnyInDimension(keyboardKey, selectableSquare, index));
@@ -155,7 +155,7 @@ public class KeyController {
     }
 
 
-    private boolean isNextOutside(int keyboardKey, GameSquare source, GameSquare target) {
+    private boolean isNextOutsideDimension(int keyboardKey, GameSquare source, GameSquare target) {
         return switch (keyboardKey) {
             case KeyEvent.VK_W -> source.coord.row < target.coord.row;
             case KeyEvent.VK_S -> target.coord.row < source.coord.row;
@@ -165,7 +165,7 @@ public class KeyController {
         };
     }
 
-    private boolean isNextInLine(int keyboardKey, GameSquare source, GameSquare target) {
+    private boolean isNextInDimension(int keyboardKey, GameSquare source, GameSquare target) {
        return switch (keyboardKey) {
             case KeyEvent.VK_W, KeyEvent.VK_S -> isVerticalMove(keyboardKey, source, target);
             case KeyEvent.VK_A, KeyEvent.VK_D -> isHorizontalMove(keyboardKey, source, target);
