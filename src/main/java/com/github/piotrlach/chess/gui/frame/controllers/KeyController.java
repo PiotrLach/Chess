@@ -100,13 +100,7 @@ public class KeyController {
 
         selectableSquare.unselect();
 
-        val index = findClosestInDimension(key, selectableSquare);
-        if (index.isPresent()) {
-            selectableSquare.set(index.get());
-            return;
-        }
-
-        setAnyClosestInKeyDirection(key, selectableSquare);
+        findClosestInDimension(key, selectableSquare);
     }
 
     private void setAny(SelectableSquare selectableSquare) {
@@ -116,12 +110,13 @@ public class KeyController {
                 .ifPresent(selectableSquare::set);
     }
 
-    private Optional<Integer> findClosestInDimension(KeyboardKey key, SelectableSquare selectableSquare) {
-        return squares.stream()
+    private void findClosestInDimension(KeyboardKey key, SelectableSquare selectableSquare) {
+        squares.stream()
                 .filter(selectableSquare::isValid)
                 .filter(square -> key.isNextInDimension(selectableSquare.get(), square))
                 .map(next -> next.coord.index)
-                .min(key.getComparator());
+                .min(key.getComparator())
+                .ifPresentOrElse(selectableSquare::set, () -> setAnyClosestInKeyDirection(key, selectableSquare));
     }
 
     private void setAnyClosestInKeyDirection(KeyboardKey key, SelectableSquare selectableSquare) {
