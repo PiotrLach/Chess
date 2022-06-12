@@ -14,24 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.piotrlach.chess;
 
-import com.github.piotrlach.chess.gui.LookAndFeelSetter;
-import com.github.piotrlach.chess.gui.frame.MainFrame;
+package com.github.piotrlach.chess.gui.drawable.drawables.location.locations;
 
-import java.awt.*;
+import com.github.piotrlach.chess.gui.drawable.drawables.location.Location;
 
-/**
- *
- * @author Piotr Lach
- */
-public class Main {
-    public static void main(final String[] args) {
-        LookAndFeelSetter.setNimbusLookAndFeel();
+public class LeftColumn implements Location {
+    @Override
+    public boolean includes(int index) {
+        return index >= 10 && index <= 25 && index % 2 == 0;
+    }
 
-        EventQueue.invokeLater(() -> {
-            var mainFrame = new MainFrame();
-            mainFrame.setVisible(true);
-        });
+    @Override
+    public char getSymbol(int index) {
+        return (char) (index / 2 + 44); /* 1, 2, 3, ... */
     }
 }

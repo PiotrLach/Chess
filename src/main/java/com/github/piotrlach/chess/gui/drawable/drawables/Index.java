@@ -17,11 +17,16 @@
 package com.github.piotrlach.chess.gui.drawable.drawables;
 
 import com.github.piotrlach.chess.gui.drawable.Drawable;
+import com.github.piotrlach.chess.gui.drawable.drawables.location.Location;
+import com.github.piotrlach.chess.gui.drawable.drawables.location.locations.BottomRow;
+import com.github.piotrlach.chess.gui.drawable.drawables.location.locations.LeftColumn;
+import com.github.piotrlach.chess.gui.drawable.drawables.location.locations.RightColumn;
+import com.github.piotrlach.chess.gui.drawable.drawables.location.locations.TopRow;
 import lombok.ToString;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -37,66 +42,26 @@ public class Index implements Drawable {
     private static final String FONT_NAME = "Liberation Mono";
     private static final Color FONT_COLOR = Color.LIGHT_GRAY;
 
-    private enum Location {
-        TOP_ROW,
-        BOTTOM_ROW,
-        LEFT_COLUMN,
-        RIGHT_COLUMN,
-        INVALID
-    }
+    private static final Location[] LOCATIONS = {
+        new BottomRow(),
+        new LeftColumn(),
+        new RightColumn(),
+        new TopRow()
+    };
 
     public Index(int x, int y, int size, int index) {
         rectangle = new Rectangle(x, y, size, size);
         this.index = index;
-        this.symbol = chooseSymbol();
+        this.symbol = chooseSymbol(index);
     }
 
-    private String chooseSymbol() {
-        var characters = Map.ofEntries(
-                Map.entry(Location.BOTTOM_ROW, (char) (index + 64)), /* A, B, C, ... */
-                Map.entry(Location.TOP_ROW, (char) (index + 38)), /* A, B, C, ... */
-                Map.entry(Location.LEFT_COLUMN, (char) (index / 2 + 44)), /* 1, 2, 3, ... */
-                Map.entry(Location.RIGHT_COLUMN, (char) ((index - 1) / 2 + 44)), /* 1, 2, 3, ... */
-                Map.entry(Location.INVALID, (char) (0))
-        );
-
-        return characters.entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().equals(inferLocation()))
+    private String chooseSymbol(int index) {
+        return Arrays.stream(LOCATIONS)
+                .filter(location -> location.includes(index))
                 .findAny()
-                .map(Map.Entry::getValue)
+                .map(location -> location.getSymbol(index))
                 .map(Object::toString)
-                .orElseThrow(() -> new IllegalStateException("No matching symbol found for Index!"));
-    }
-
-    private Location inferLocation() {
-        if (isInBottomRow()) {
-            return Location.BOTTOM_ROW;
-        } else if (isInTopRow()) {
-            return Location.TOP_ROW;
-        } else if (isInLeftColumn()) {
-            return Location.LEFT_COLUMN;
-        } else if (isInRightColumn()) {
-            return Location.RIGHT_COLUMN;
-        } else {
-            return Location.INVALID;
-        }
-    }
-
-    private boolean isInBottomRow() {
-        return index >= 0 && index <= 9;
-    }
-
-    private boolean isInTopRow() {
-        return index >= 26 && index <= 35;
-    }
-
-    private boolean isInLeftColumn() {
-        return index >= 10 && index <= 25 && index % 2 == 0;
-    }
-
-    private boolean isInRightColumn() {
-        return index >= 10 && index <= 25 && index % 2 == 1;
+                .orElseThrow(() -> new IllegalStateException("No matching symbol found for index!"));
     }
 
     @Override
