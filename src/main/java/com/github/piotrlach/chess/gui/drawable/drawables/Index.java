@@ -21,6 +21,7 @@ import lombok.ToString;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -29,61 +30,82 @@ import java.util.List;
 @ToString
 public class Index implements Drawable {
 
-    private final int idx;
+    private final int index;
     private final String symbol;
-    private static final Color FONT_COLOR = Color.LIGHT_GRAY;
     private final Rectangle rectangle;
 
-    public Index(int x, int y, int size, int idx) {
+    private static final String FONT_NAME = "Liberation Mono";
+    private static final Color FONT_COLOR = Color.LIGHT_GRAY;
+
+    private enum Location {
+        TOP_ROW,
+        BOTTOM_ROW,
+        LEFT_COLUMN,
+        RIGHT_COLUMN,
+        INVALID
+    }
+
+    public Index(int x, int y, int size, int index) {
         rectangle = new Rectangle(x, y, size, size);
-        this.idx = idx;
+        this.index = index;
         this.symbol = chooseSymbol();
     }
 
     private String chooseSymbol() {
-        var values = List.of(
-                isInBottomRow(),
-                isInTopRow(),
-                isInLeftColumn(),
-                isInRightColumn()
+        var characters = Map.ofEntries(
+                Map.entry(Location.BOTTOM_ROW, (char) (index + 64)), /* A, B, C, ... */
+                Map.entry(Location.TOP_ROW, (char) (index + 38)), /* A, B, C, ... */
+                Map.entry(Location.LEFT_COLUMN, (char) (index / 2 + 44)), /* 1, 2, 3, ... */
+                Map.entry(Location.RIGHT_COLUMN, (char) ((index - 1) / 2 + 44)), /* 1, 2, 3, ... */
+                Map.entry(Location.INVALID, (char) (0))
         );
 
-        var value = values.indexOf(true);
+        return characters.entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().equals(inferLocation()))
+                .findAny()
+                .map(Map.Entry::getValue)
+                .map(Object::toString)
+                .orElseThrow(() -> new IllegalStateException("No matching symbol found for Index!"));
+    }
 
-        var chars = List.of(
-                (char) (idx + 64), /* A, B, C, ... */
-                (char) (idx + 38),
-                (char) (idx / 2 + 44), /* 1, 2, 3, ... */
-                (char) ((idx - 1) / 2 + 44)
-        );
-
-        return chars.get(value).toString();
+    private Location inferLocation() {
+        if (isInBottomRow()) {
+            return Location.BOTTOM_ROW;
+        } else if (isInTopRow()) {
+            return Location.TOP_ROW;
+        } else if (isInLeftColumn()) {
+            return Location.LEFT_COLUMN;
+        } else if (isInRightColumn()) {
+            return Location.RIGHT_COLUMN;
+        } else {
+            return Location.INVALID;
+        }
     }
 
     private boolean isInBottomRow() {
-        return idx >= 0 && idx <= 9;
+        return index >= 0 && index <= 9;
     }
 
     private boolean isInTopRow() {
-        return idx >= 26 && idx <= 35;
+        return index >= 26 && index <= 35;
     }
 
     private boolean isInLeftColumn() {
-        return idx >= 10 && idx <= 25 && idx % 2 == 0;
+        return index >= 10 && index <= 25 && index % 2 == 0;
     }
 
     private boolean isInRightColumn() {
-        return idx >= 10 && idx <= 25 && idx % 2 == 1;
+        return index >= 10 && index <= 25 && index % 2 == 1;
     }
 
     @Override
     public void draw(Graphics graphics) {
-
         if (isInCorner()) {
             return;
         }
 
-        var font = new Font("Liberation Mono", Font.BOLD, rectangle.width * 3 / 4);
+        var font = new Font(FONT_NAME, Font.BOLD, rectangle.width * 3 / 4);
 
         graphics.setColor(FONT_COLOR);
         graphics.setFont(font);
@@ -94,7 +116,7 @@ public class Index implements Drawable {
     }
 
     private boolean isInCorner() {
-        return List.of(0, 9, 26, 35).contains(idx);
+        return List.of(0, 9, 26, 35).contains(index);
     }
 
     @Override
