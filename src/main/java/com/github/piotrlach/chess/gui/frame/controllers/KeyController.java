@@ -36,7 +36,7 @@ public class KeyController {
     private final SelectableSquare selectedTarget;
     @Setter
     private boolean selectTarget = false;
-    private final KeyboardKey[] keys = {
+    private static final KeyboardKey[] KEYS = {
             new Up(),
             new Left(),
             new Down(),
@@ -64,7 +64,7 @@ public class KeyController {
             return;
         }
 
-        Arrays.stream(keys)
+        Arrays.stream(KEYS)
             .filter(key -> key.getKeyCode() == keyCode)
             .findAny()
             .ifPresent(key -> {
