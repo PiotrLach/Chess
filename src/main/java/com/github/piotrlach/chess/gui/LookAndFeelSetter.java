@@ -27,9 +27,11 @@ import java.util.logging.Logger;
 
 public class LookAndFeelSetter {
 
+    private static final String NIMBUS_FEEL = "Nimbus";
+
     public static void setNimbusLookAndFeel() {
         Arrays.stream(UIManager.getInstalledLookAndFeels())
-                .filter(feel -> "Nimbus".equals(feel.getName()))
+                .filter(feel -> NIMBUS_FEEL.equals(feel.getName()))
                 .findAny()
                 .map(UIManager.LookAndFeelInfo::getClassName)
                 .ifPresent(LookAndFeelSetter::setLookAndFeel);
