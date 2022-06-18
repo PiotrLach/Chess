@@ -21,7 +21,7 @@ import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
 
 import java.util.Comparator;
 
-public interface KeyboardKey {
+public interface Direction {
     int mapToDimension(GameSquare next);
     boolean isNextOutsideDimension(GameSquare source, GameSquare target);
     boolean isNextInDimension(GameSquare source, GameSquare target);

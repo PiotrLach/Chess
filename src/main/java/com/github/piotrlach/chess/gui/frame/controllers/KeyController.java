@@ -36,7 +36,7 @@ public class KeyController {
     private final SelectableSquare selectedTarget;
     @Setter
     private boolean selectTarget = false;
-    private static final KeyboardKey[] KEYS = {
+    private static final Direction[] DIRECTIONS = {
             new Up(),
             new Left(),
             new Down(),
@@ -64,14 +64,14 @@ public class KeyController {
             return;
         }
 
-        Arrays.stream(KEYS)
-            .filter(key -> key.getKeyCode() == keyCode)
+        Arrays.stream(DIRECTIONS)
+            .filter(direction -> direction.getKeyCode() == keyCode)
             .findAny()
-            .ifPresent(key -> {
+            .ifPresent(direction -> {
                 if (selectTarget) {
-                    select(key, selectedTarget);
+                    select(direction, selectedTarget);
                 } else {
-                    select(key, selectedSource);
+                    select(direction, selectedSource);
                 }
             });
     }
@@ -92,7 +92,7 @@ public class KeyController {
         selectedTarget.unselect();
     }
 
-    private void select(KeyboardKey key, SelectableSquare selectableSquare) {
+    private void select(Direction key, SelectableSquare selectableSquare) {
         if (!selectableSquare.isSelected()) {
             setAny(selectableSquare);
             return;
@@ -110,28 +110,28 @@ public class KeyController {
                 .ifPresent(selectableSquare::set);
     }
 
-    private void findClosestInDimension(KeyboardKey key, SelectableSquare selectableSquare) {
+    private void findClosestInDimension(Direction direction, SelectableSquare selectableSquare) {
         squares.stream()
                 .filter(selectableSquare::isValid)
-                .filter(square -> key.isNextInDimension(selectableSquare.get(), square))
+                .filter(square -> direction.isNextInDimension(selectableSquare.get(), square))
                 .map(next -> next.coord.index)
-                .min(key.getComparator())
-                .ifPresentOrElse(selectableSquare::set, () -> setAnyClosestInKeyDirection(key, selectableSquare));
+                .min(direction.getComparator())
+                .ifPresentOrElse(selectableSquare::set, () -> setAnyClosestInDirection(direction, selectableSquare));
     }
 
-    private void setAnyClosestInKeyDirection(KeyboardKey key, SelectableSquare selectableSquare) {
+    private void setAnyClosestInDirection(Direction direction, SelectableSquare selectableSquare) {
         squares.stream()
                 .filter(selectableSquare::isValid)
-                .filter(square -> key.isNextOutsideDimension(selectableSquare.get(), square))
-                .map(key::mapToDimension)
-                .min(key.getComparator())
-                .ifPresent(index -> setAnyInDimension(key, selectableSquare, index));
+                .filter(square -> direction.isNextOutsideDimension(selectableSquare.get(), square))
+                .map(direction::mapToDimension)
+                .min(direction.getComparator())
+                .ifPresent(index -> setAnyInDimension(direction, selectableSquare, index));
     }
 
-    private void setAnyInDimension(KeyboardKey key, SelectableSquare selectableSquare, int dimIndex) {
+    private void setAnyInDimension(Direction direction, SelectableSquare selectableSquare, int dimIndex) {
         squares.stream()
                 .filter(selectableSquare::isValid)
-                .filter(square -> key.mapToDimension(square) == dimIndex)
+                .filter(square -> direction.mapToDimension(square) == dimIndex)
                 .min(Comparator.naturalOrder())
                 .ifPresent(selectableSquare::set);
     }

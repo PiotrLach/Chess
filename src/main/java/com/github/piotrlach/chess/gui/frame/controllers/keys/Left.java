@@ -24,7 +24,7 @@ import lombok.val;
 import java.awt.event.KeyEvent;
 import java.util.Comparator;
 
-public class Left implements KeyboardKey {
+public class Left implements Direction {
     @Getter
     private final int keyCode = KeyEvent.VK_A;
     @Getter
