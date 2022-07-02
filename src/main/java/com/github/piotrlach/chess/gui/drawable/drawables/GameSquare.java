@@ -79,8 +79,8 @@ public class GameSquare extends Square implements Drawable, Comparable<GameSquar
         }
 
         graphics.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-        val image = imageLoader.getImage(piece.getClass(), piece.color);
-        graphics.drawImage(image, rectangle.x, rectangle.y, rectangle.width, rectangle.height, null);
+        imageLoader.getImage(piece.getClass(), piece.color)
+            .ifPresent(image -> graphics.drawImage(image, rectangle.x, rectangle.y, rectangle.width, rectangle.height, null));
     }
 
     private boolean isWhite() {

@@ -26,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  *
@@ -64,13 +65,13 @@ public class PieceImageLoader {
         return classLoader.getResourceAsStream(fileName);
     }
 
-    public Image getImage(final Class<? extends Piece> clazz, final String color) {
+    public Optional<Image> getImage(final Class<? extends Piece> clazz, final String color) {
         if (color.equals("B")) {
-            return blackImages.get(clazz);
+            return Optional.ofNullable(blackImages.get(clazz));
         } else if(color.equals("W")) {
-            return whiteImages.get(clazz);
+            return Optional.ofNullable(whiteImages.get(clazz));
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 }
