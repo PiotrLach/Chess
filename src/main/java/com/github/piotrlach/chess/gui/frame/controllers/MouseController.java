@@ -50,13 +50,14 @@ public class MouseController implements Serializable {
     }
 
     private void chooseOrMove(final GameSquare selected) {
-        if (squareSelector.isValid(selected, GameSquare.Type.SOURCE)) {
+        if (squareSelector.isOfValidType(selected, GameSquare.Type.SOURCE)) {
+            squareSelector.unselect(GameSquare.Type.SOURCE);
             squareSelector.setSelected(selected, GameSquare.Type.SOURCE);
             board.repaint();
             return;
         }
 
-        if (!squareSelector.isValid(selected, GameSquare.Type.TARGET)) {
+        if (!squareSelector.isOfValidType(selected, GameSquare.Type.TARGET)) {
             return;
         }
 

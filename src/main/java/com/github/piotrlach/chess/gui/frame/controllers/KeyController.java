@@ -102,14 +102,14 @@ public class KeyController {
 
     private void setAny(GameSquare.Type type) {
         squares.stream()
-                .filter(square -> squareSelector.isValid(square, type))
+                .filter(square -> squareSelector.isOfValidType(square, type))
                 .findAny()
                 .ifPresent(square -> squareSelector.setSelected(square, type));
     }
 
     private void findClosestInDimension(Direction direction, GameSquare.Type type) {
         squares.stream()
-                .filter(square -> squareSelector.isValid(square, type))
+                .filter(square -> squareSelector.isOfValidType(square, type))
                 .filter(square -> direction.isNextInDimension(squareSelector.getSelected(type), square))
                 .map(next -> next.coord.index)
                 .min(direction.getComparator())
@@ -118,7 +118,7 @@ public class KeyController {
 
     private void setAnyClosestInDirection(Direction direction, GameSquare.Type type) {
         squares.stream()
-                .filter(square -> squareSelector.isValid(square, type))
+                .filter(square -> squareSelector.isOfValidType(square, type))
                 .filter(square -> direction.isNextOutsideDimension(squareSelector.getSelected(type), square))
                 .map(direction::mapToDimension)
                 .min(direction.getComparator())
@@ -127,7 +127,7 @@ public class KeyController {
 
     private void setAnyInDimension(Direction direction, GameSquare.Type type, int dimIndex) {
         squares.stream()
-                .filter(square -> squareSelector.isValid(square, type))
+                .filter(square -> squareSelector.isOfValidType(square, type))
                 .filter(square -> direction.mapToDimension(square) == dimIndex)
                 .min(Comparator.naturalOrder())
                 .ifPresent(square -> squareSelector.setSelected(square, type));

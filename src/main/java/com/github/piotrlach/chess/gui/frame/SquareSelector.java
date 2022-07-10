@@ -19,7 +19,6 @@ package com.github.piotrlach.chess.gui.frame;
 
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
 import com.github.piotrlach.chess.logic.Logic;
-import lombok.NonNull;
 
 import java.io.Serializable;
 import java.util.List;
@@ -27,18 +26,16 @@ import java.util.List;
 public class SquareSelector implements Serializable {
     private final List<GameSquare> squares;
     private final Logic logic;
-    @NonNull
-    private GameSquare selectedSource;
-    @NonNull
-    private GameSquare selectedTarget;
+    private final GameSquare[] selected;
 
     public SquareSelector(List<GameSquare> squares, Logic logic) {
         this.squares = squares;
         this.logic = logic;
-        selectedSource = retrieveAnySquare();
-        selectedTarget = retrieveAnySquare();
+        selected = new GameSquare[] {
+            retrieveAnySquare(),
+            retrieveAnySquare()
+        };
     }
-
 
     private GameSquare retrieveAnySquare() {
         return squares.stream()
@@ -46,62 +43,29 @@ public class SquareSelector implements Serializable {
                 .orElseThrow(IllegalStateException::new);
     }
 
-
     public void setSelected(GameSquare gameSquare, GameSquare.Type type) {
-        if (type.equals(GameSquare.Type.SOURCE)) {
-            selectedSource = gameSquare;
-            selectedSource.setType(type);
-        } else if (type.equals(GameSquare.Type.TARGET)) {
-            selectedTarget = gameSquare;
-            selectedTarget.setType(type);
-        } else {
-            throw new IllegalArgumentException("Invalid square type has been specified!");
-        }
+        selected[type.id] = gameSquare;
+        selected[type.id].setType(type);
     }
 
     public void setSelected(int index, GameSquare.Type type) {
-        if (type.equals(GameSquare.Type.SOURCE)) {
-            selectedSource = squares.get(index);
-            selectedSource.setType(type);
-        } else if (type.equals(GameSquare.Type.TARGET)) {
-            selectedTarget = squares.get(index);
-            selectedTarget.setType(type);
-        } else {
-            throw new IllegalArgumentException("Invalid square type has been specified!");
-        }
+        selected[type.id] = squares.get(index);
+        selected[type.id].setType(type);
     }
 
     public GameSquare getSelected(GameSquare.Type type) {
-        if (type.equals(GameSquare.Type.SOURCE)) {
-            return selectedSource;
-        } else if (type.equals(GameSquare.Type.TARGET)) {
-            return selectedTarget;
-        } else {
-            throw new IllegalArgumentException("Invalid square type has been specified!");
-        }
+        return selected[type.id];
     }
 
-    public boolean isValid(GameSquare gameSquare, GameSquare.Type type) {
+    public boolean isOfValidType(GameSquare gameSquare, GameSquare.Type type) {
         return gameSquare.isValid(type, logic.getCurrentColor());
     }
 
     public void unselect(GameSquare.Type type) {
-        if (type.equals(GameSquare.Type.SOURCE)) {
-            selectedSource.unselect();
-        } else if (type.equals(GameSquare.Type.TARGET)) {
-            selectedTarget.unselect();
-        } else {
-            throw new IllegalArgumentException("Invalid square type has been specified!");
-        }
+        selected[type.id].unselect();
     }
 
     public boolean isSelected(GameSquare.Type type) {
-        if (type.equals(GameSquare.Type.SOURCE)) {
-            return selectedSource.getType().equals(GameSquare.Type.SOURCE);
-        } else if (type.equals(GameSquare.Type.TARGET)) {
-            return selectedTarget.getType().equals(GameSquare.Type.TARGET);
-        } else {
-            throw new IllegalArgumentException("Invalid square type has been specified!");
-        }
+        return selected[type.id].getType().equals(type);
     }
 }

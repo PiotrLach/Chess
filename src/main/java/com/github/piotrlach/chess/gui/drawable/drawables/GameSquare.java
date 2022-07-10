@@ -19,10 +19,7 @@ package com.github.piotrlach.chess.gui.drawable.drawables;
 import com.github.piotrlach.chess.gui.drawable.Drawable;
 import com.github.piotrlach.chess.gui.PieceImageLoader;
 import com.github.piotrlach.chess.logic.square.Square;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 
 import java.awt.*;
 
@@ -43,10 +40,12 @@ public class GameSquare extends Square implements Drawable, Comparable<GameSquar
     private static final Color MY_WHITE = new Color(255, 255, 204);
     private static final Color MY_BROWN = new Color(153, 102, 0);
 
+    @AllArgsConstructor
     public enum Type {
-        SOURCE,
-        TARGET,
-        NONE
+        SOURCE(0),
+        TARGET(1),
+        NONE(-1);
+        public final int id;
     }
 
     public GameSquare(int x, int y, int size, int index) {
