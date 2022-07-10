@@ -21,8 +21,8 @@ import com.github.piotrlach.chess.gui.PieceImageLoader;
 import com.github.piotrlach.chess.logic.square.Square;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
-import lombok.val;
 
 import java.awt.*;
 
@@ -33,17 +33,21 @@ import java.awt.*;
 @EqualsAndHashCode(callSuper = true)
 public class GameSquare extends Square implements Drawable, Comparable<GameSquare> {
 
-    private static final PieceImageLoader imageLoader = PieceImageLoader.INSTANCE;
     private final Rectangle rectangle;
     @Getter
     @Setter
-    private boolean selectedSource = false;
-    @Getter
-    @Setter
-    private boolean selectedTarget = false;
+    @NonNull
+    private GameSquare.Type type = Type.NONE;
 
+    private static final PieceImageLoader imageLoader = PieceImageLoader.INSTANCE;
     private static final Color MY_WHITE = new Color(255, 255, 204);
     private static final Color MY_BROWN = new Color(153, 102, 0);
+
+    public enum Type {
+        SOURCE,
+        TARGET,
+        NONE
+    }
 
     public GameSquare(int x, int y, int size, int index) {
         super(index);
@@ -72,9 +76,9 @@ public class GameSquare extends Square implements Drawable, Comparable<GameSquar
             graphics.setColor(MY_BROWN);
         }
 
-        if (isSelectedSource()) {
+        if (type.equals(Type.SOURCE)) {
             graphics.setColor(Color.RED);
-        } else if (isSelectedTarget()) {
+        } else if (type.equals(Type.TARGET)) {
             graphics.setColor(Color.BLUE);
         }
 
@@ -88,6 +92,20 @@ public class GameSquare extends Square implements Drawable, Comparable<GameSquar
         var isColOdd = coord.col % 2 == 1;
 
         return (isRowOdd && !isColOdd) || (!isRowOdd && isColOdd);
+    }
+
+    public boolean isValid(GameSquare.Type type, String currentColor) {
+        if (type.equals(Type.SOURCE)) {
+            return !piece.isFoe(currentColor);
+        } else if (type.equals(Type.TARGET)){
+            return piece.isFoe(currentColor);
+        } else {
+            return false;
+        }
+    }
+
+    public void unselect() {
+        type = Type.NONE;
     }
 
     @Override

@@ -19,7 +19,6 @@ package com.github.piotrlach.chess.gui.frame.controllers;
 
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
 import com.github.piotrlach.chess.gui.frame.GameBoard;
-import com.github.piotrlach.chess.gui.frame.selectable.SelectableSquare;
 import lombok.val;
 
 import java.awt.event.MouseEvent;
@@ -27,16 +26,12 @@ import java.io.Serializable;
 import java.util.List;
 
 public class MouseController implements Serializable {
-    private final GameBoard gameBoard;
+    private final GameBoard board;
     private final List<GameSquare> squares;
-    private final SelectableSquare selectableSource;
-    private final SelectableSquare selectableTarget;
 
-    public MouseController(GameBoard gameBoard, List<GameSquare> squares) {
-        this.gameBoard = gameBoard;
+    public MouseController(GameBoard board, List<GameSquare> squares) {
+        this.board = board;
         this.squares = squares;
-        this.selectableSource = gameBoard.getSelectedSource();
-        this.selectableTarget = gameBoard.getSelectedTarget();
     }
 
     /**
@@ -52,24 +47,24 @@ public class MouseController implements Serializable {
     }
 
     private void chooseOrMove(final GameSquare selected) {
-        if (selectableSource.isValid(selected)) {
-            selectableSource.set(selected);
-            gameBoard.repaint();
+        if (board.isValid(selected, GameSquare.Type.SOURCE)) {
+            board.setSelected(selected, GameSquare.Type.SOURCE);
+            board.repaint();
             return;
         }
 
-        if (!selectableTarget.isValid(selected)) {
+        if (!board.isValid(selected, GameSquare.Type.TARGET)) {
             return;
         }
 
-        val source = selectableSource.get();
+        val source = board.getSelected(GameSquare.Type.SOURCE);
 
         if (source.movePieceTo(selected)) {
-            selectableSource.unselect();
-            selectableTarget.unselect();
-            gameBoard.getKeyController()
+            board.unselect(GameSquare.Type.SOURCE);
+            board.unselect(GameSquare.Type.TARGET);
+            board.getKeyController()
                     .setSelectTarget(false);
         }
-        gameBoard.repaint();
+        board.repaint();
     }
 }

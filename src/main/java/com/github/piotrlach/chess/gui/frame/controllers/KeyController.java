@@ -20,7 +20,6 @@ package com.github.piotrlach.chess.gui.frame.controllers;
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
 import com.github.piotrlach.chess.gui.frame.GameBoard;
 import com.github.piotrlach.chess.gui.frame.controllers.keys.*;
-import com.github.piotrlach.chess.gui.frame.selectable.SelectableSquare;
 import com.github.piotrlach.chess.logic.Logic;
 import lombok.Setter;
 import lombok.val;
@@ -32,8 +31,7 @@ public class KeyController {
 
     private final List<GameSquare> squares;
     private final Logic logic;
-    private final SelectableSquare selectedSource;
-    private final SelectableSquare selectedTarget;
+    private final GameBoard board;
     @Setter
     private boolean selectTarget = false;
     private static final Direction[] DIRECTIONS = {
@@ -45,9 +43,8 @@ public class KeyController {
 
     public KeyController(GameBoard board, List<GameSquare> squares) {
         this.squares = squares;
+        this.board = board;
         this.logic = board.getLogic();
-        this.selectedSource = board.getSelectedSource();
-        this.selectedTarget = board.getSelectedTarget();
     }
 
     public void handleKeyPress(KeyEvent keyEvent) {
@@ -58,8 +55,8 @@ public class KeyController {
         }
 
         if (isMovementAttempt(keyCode)) {
-            val source = selectedSource.get();
-            val target = selectedTarget.get();
+            val source = board.getSelected(GameSquare.Type.SOURCE);
+            val target = board.getSelected(GameSquare.Type.TARGET);
             tryToMovePiece(source, target);
             return;
         }
@@ -69,70 +66,70 @@ public class KeyController {
             .findAny()
             .ifPresent(direction -> {
                 if (selectTarget) {
-                    select(direction, selectedTarget);
+                    select(direction, GameSquare.Type.TARGET);
                 } else {
-                    select(direction, selectedSource);
+                    select(direction, GameSquare.Type.SOURCE);
                 }
             });
     }
 
 
     private boolean isSelectionTypeChange(int keyboardKey) {
-        return selectedSource.isSelected() && keyboardKey == KeyEvent.VK_SPACE;
+        return board.isSelected(GameSquare.Type.SOURCE) && keyboardKey == KeyEvent.VK_SPACE;
     }
 
     private boolean isMovementAttempt(int keyboardKey) {
-        return selectedSource.isSelected() && selectedTarget.isSelected() && keyboardKey == KeyEvent.VK_SPACE;
+        return board.isSelected(GameSquare.Type.SOURCE) && board.isSelected(GameSquare.Type.TARGET) && keyboardKey == KeyEvent.VK_SPACE;
     }
 
     private void tryToMovePiece(GameSquare source, GameSquare target) {
         logic.movePiece(source.coord, target.coord);
         selectTarget = false;
-        selectedSource.unselect();
-        selectedTarget.unselect();
+        board.unselect(GameSquare.Type.SOURCE);
+        board.unselect(GameSquare.Type.TARGET);
     }
 
-    private void select(Direction key, SelectableSquare selectableSquare) {
-        if (!selectableSquare.isSelected()) {
-            setAny(selectableSquare);
+    private void select(Direction key, GameSquare.Type type) {
+        if (!board.isSelected(type)) {
+            setAny(type);
             return;
         }
 
-        selectableSquare.unselect();
+        board.unselect(type);
 
-        findClosestInDimension(key, selectableSquare);
+        findClosestInDimension(key, type);
     }
 
-    private void setAny(SelectableSquare selectableSquare) {
+    private void setAny(GameSquare.Type type) {
         squares.stream()
-                .filter(selectableSquare::isValid)
+                .filter(square -> board.isValid(square, type))
                 .findAny()
-                .ifPresent(selectableSquare::set);
+                .ifPresent(square -> board.setSelected(square, type));
     }
 
-    private void findClosestInDimension(Direction direction, SelectableSquare selectableSquare) {
+    private void findClosestInDimension(Direction direction, GameSquare.Type type) {
         squares.stream()
-                .filter(selectableSquare::isValid)
-                .filter(square -> direction.isNextInDimension(selectableSquare.get(), square))
+                .filter(square -> board.isValid(square, type))
+                .filter(square -> direction.isNextInDimension(board.getSelected(type), square))
                 .map(next -> next.coord.index)
                 .min(direction.getComparator())
-                .ifPresentOrElse(selectableSquare::set, () -> setAnyClosestInDirection(direction, selectableSquare));
+                .ifPresentOrElse(index -> board.setSelected(index, type), () -> setAnyClosestInDirection(direction, type));
     }
 
-    private void setAnyClosestInDirection(Direction direction, SelectableSquare selectableSquare) {
+    private void setAnyClosestInDirection(Direction direction, GameSquare.Type type) {
         squares.stream()
-                .filter(selectableSquare::isValid)
-                .filter(square -> direction.isNextOutsideDimension(selectableSquare.get(), square))
+                .filter(square -> board.isValid(square, type))
+                .filter(square -> direction.isNextOutsideDimension(board.getSelected(type), square))
                 .map(direction::mapToDimension)
                 .min(direction.getComparator())
-                .ifPresent(index -> setAnyInDimension(direction, selectableSquare, index));
+                .ifPresent(index -> setAnyInDimension(direction, type, index));
     }
 
-    private void setAnyInDimension(Direction direction, SelectableSquare selectableSquare, int dimIndex) {
+    private void setAnyInDimension(Direction direction, GameSquare.Type type, int dimIndex) {
         squares.stream()
-                .filter(selectableSquare::isValid)
+                .filter(square -> board.isValid(square, type))
                 .filter(square -> direction.mapToDimension(square) == dimIndex)
                 .min(Comparator.naturalOrder())
-                .ifPresent(selectableSquare::set);
+                .ifPresent(square -> board.setSelected(square, type));
     }
 }
