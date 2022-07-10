@@ -23,7 +23,6 @@ import com.github.piotrlach.chess.gui.frame.controllers.KeyController;
 import com.github.piotrlach.chess.gui.frame.controllers.MouseController;
 import com.github.piotrlach.chess.logic.*;
 import lombok.Getter;
-import lombok.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,10 +45,7 @@ public class GameBoard extends JPanel implements Board {
     @Getter
     private final Logic logic = new Logic(this, squares, moves);
     private final MouseController mouseController;
-    @NonNull
-    private GameSquare selectedSource;
-    @NonNull
-    private GameSquare selectedTarget;
+    private final SquareSelector squareSelector;
     private int squareSize = 100;
     private final Save save = new Save(this, squares, moves);
     @Getter
@@ -58,17 +54,10 @@ public class GameBoard extends JPanel implements Board {
     public GameBoard() {
         setListeners();
         createSquares();
-        selectedSource = retrieveAnySquare();
-        selectedTarget = retrieveAnySquare();
-        keyController = new KeyController(this, squares);
-        mouseController = new MouseController(this, squares);
+        squareSelector = new SquareSelector(squares, logic);
+        keyController = new KeyController(squareSelector, squares, logic);
+        mouseController = new MouseController(squareSelector, squares, this);
         setDefaultGame();
-    }
-
-    private GameSquare retrieveAnySquare() {
-        return squares.stream()
-                .findAny()
-                .orElseThrow(IllegalStateException::new);
     }
 
     private void setListeners() {
@@ -149,8 +138,8 @@ public class GameBoard extends JPanel implements Board {
     @Override
     public final void setDefaultGame() {
         logic.setDefaultLayout();
-        selectedSource.unselect();
-        selectedTarget.unselect();
+        squareSelector.unselect(GameSquare.Type.SOURCE);
+        squareSelector.unselect(GameSquare.Type.TARGET);
         repaint();
     }
 
@@ -232,63 +221,5 @@ public class GameBoard extends JPanel implements Board {
     @Override
     public void changeCurrentColor() {
         logic.changeCurrentColor();
-    }
-
-    public void setSelected(GameSquare gameSquare, GameSquare.Type type) {
-        if (type.equals(GameSquare.Type.SOURCE)) {
-            selectedSource = gameSquare;
-            selectedSource.setType(type);
-        } else if (type.equals(GameSquare.Type.TARGET)) {
-            selectedTarget = gameSquare;
-            selectedTarget.setType(type);
-        } else {
-            throw new IllegalArgumentException("Invalid square type has been specified!");
-        }
-    }
-
-    public void setSelected(int index, GameSquare.Type type) {
-        if (type.equals(GameSquare.Type.SOURCE)) {
-            selectedSource = squares.get(index);
-            selectedSource.setType(type);
-        } else if (type.equals(GameSquare.Type.TARGET)) {
-            selectedTarget = squares.get(index);
-            selectedTarget.setType(type);
-        } else {
-            throw new IllegalArgumentException("Invalid square type has been specified!");
-        }
-    }
-
-    public GameSquare getSelected(GameSquare.Type type) {
-        if (type.equals(GameSquare.Type.SOURCE)) {
-            return selectedSource;
-        } else if (type.equals(GameSquare.Type.TARGET)) {
-            return selectedTarget;
-        } else {
-            throw new IllegalArgumentException("Invalid square type has been specified!");
-        }
-    }
-
-    public boolean isValid(GameSquare gameSquare, GameSquare.Type type) {
-        return gameSquare.isValid(type, logic.getCurrentColor());
-    }
-
-    public void unselect(GameSquare.Type type) {
-        if (type.equals(GameSquare.Type.SOURCE)) {
-            selectedSource.unselect();
-        } else if (type.equals(GameSquare.Type.TARGET)) {
-            selectedTarget.unselect();
-        } else {
-            throw new IllegalArgumentException("Invalid square type has been specified!");
-        }
-    }
-
-    public boolean isSelected(GameSquare.Type type) {
-        if (type.equals(GameSquare.Type.SOURCE)) {
-            return selectedSource.getType().equals(GameSquare.Type.SOURCE);
-        } else if (type.equals(GameSquare.Type.TARGET)) {
-            return selectedTarget.getType().equals(GameSquare.Type.TARGET);
-        } else {
-            throw new IllegalArgumentException("Invalid square type has been specified!");
-        }
     }
 }

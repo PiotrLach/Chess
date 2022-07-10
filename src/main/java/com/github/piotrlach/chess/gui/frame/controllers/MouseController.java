@@ -19,6 +19,7 @@ package com.github.piotrlach.chess.gui.frame.controllers;
 
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
 import com.github.piotrlach.chess.gui.frame.GameBoard;
+import com.github.piotrlach.chess.gui.frame.SquareSelector;
 import lombok.val;
 
 import java.awt.event.MouseEvent;
@@ -26,12 +27,14 @@ import java.io.Serializable;
 import java.util.List;
 
 public class MouseController implements Serializable {
-    private final GameBoard board;
+    private final SquareSelector squareSelector;
     private final List<GameSquare> squares;
+    private final GameBoard board;
 
-    public MouseController(GameBoard board, List<GameSquare> squares) {
-        this.board = board;
+    public MouseController(SquareSelector squareSelector, List<GameSquare> squares, GameBoard board) {
+        this.squareSelector = squareSelector;
         this.squares = squares;
+        this.board = board;
     }
 
     /**
@@ -47,21 +50,21 @@ public class MouseController implements Serializable {
     }
 
     private void chooseOrMove(final GameSquare selected) {
-        if (board.isValid(selected, GameSquare.Type.SOURCE)) {
-            board.setSelected(selected, GameSquare.Type.SOURCE);
+        if (squareSelector.isValid(selected, GameSquare.Type.SOURCE)) {
+            squareSelector.setSelected(selected, GameSquare.Type.SOURCE);
             board.repaint();
             return;
         }
 
-        if (!board.isValid(selected, GameSquare.Type.TARGET)) {
+        if (!squareSelector.isValid(selected, GameSquare.Type.TARGET)) {
             return;
         }
 
-        val source = board.getSelected(GameSquare.Type.SOURCE);
+        val source = squareSelector.getSelected(GameSquare.Type.SOURCE);
 
         if (source.movePieceTo(selected)) {
-            board.unselect(GameSquare.Type.SOURCE);
-            board.unselect(GameSquare.Type.TARGET);
+            squareSelector.unselect(GameSquare.Type.SOURCE);
+            squareSelector.unselect(GameSquare.Type.TARGET);
             board.getKeyController()
                     .setSelectTarget(false);
         }

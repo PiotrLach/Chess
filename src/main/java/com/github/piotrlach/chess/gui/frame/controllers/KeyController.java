@@ -18,7 +18,7 @@
 package com.github.piotrlach.chess.gui.frame.controllers;
 
 import com.github.piotrlach.chess.gui.drawable.drawables.GameSquare;
-import com.github.piotrlach.chess.gui.frame.GameBoard;
+import com.github.piotrlach.chess.gui.frame.SquareSelector;
 import com.github.piotrlach.chess.gui.frame.controllers.keys.*;
 import com.github.piotrlach.chess.logic.Logic;
 import lombok.Setter;
@@ -30,8 +30,8 @@ import java.util.*;
 public class KeyController {
 
     private final List<GameSquare> squares;
+    private final SquareSelector squareSelector;
     private final Logic logic;
-    private final GameBoard board;
     @Setter
     private boolean selectTarget = false;
     private static final Direction[] DIRECTIONS = {
@@ -41,10 +41,10 @@ public class KeyController {
             new Right()
     };
 
-    public KeyController(GameBoard board, List<GameSquare> squares) {
+    public KeyController(SquareSelector squareSelector, List<GameSquare> squares, Logic logic) {
         this.squares = squares;
-        this.board = board;
-        this.logic = board.getLogic();
+        this.squareSelector = squareSelector;
+        this.logic = logic;
     }
 
     public void handleKeyPress(KeyEvent keyEvent) {
@@ -55,8 +55,8 @@ public class KeyController {
         }
 
         if (isMovementAttempt(keyCode)) {
-            val source = board.getSelected(GameSquare.Type.SOURCE);
-            val target = board.getSelected(GameSquare.Type.TARGET);
+            val source = squareSelector.getSelected(GameSquare.Type.SOURCE);
+            val target = squareSelector.getSelected(GameSquare.Type.TARGET);
             tryToMovePiece(source, target);
             return;
         }
@@ -75,51 +75,51 @@ public class KeyController {
 
 
     private boolean isSelectionTypeChange(int keyboardKey) {
-        return board.isSelected(GameSquare.Type.SOURCE) && keyboardKey == KeyEvent.VK_SPACE;
+        return squareSelector.isSelected(GameSquare.Type.SOURCE) && keyboardKey == KeyEvent.VK_SPACE;
     }
 
     private boolean isMovementAttempt(int keyboardKey) {
-        return board.isSelected(GameSquare.Type.SOURCE) && board.isSelected(GameSquare.Type.TARGET) && keyboardKey == KeyEvent.VK_SPACE;
+        return squareSelector.isSelected(GameSquare.Type.SOURCE) && squareSelector.isSelected(GameSquare.Type.TARGET) && keyboardKey == KeyEvent.VK_SPACE;
     }
 
     private void tryToMovePiece(GameSquare source, GameSquare target) {
         logic.movePiece(source.coord, target.coord);
         selectTarget = false;
-        board.unselect(GameSquare.Type.SOURCE);
-        board.unselect(GameSquare.Type.TARGET);
+        squareSelector.unselect(GameSquare.Type.SOURCE);
+        squareSelector.unselect(GameSquare.Type.TARGET);
     }
 
     private void select(Direction key, GameSquare.Type type) {
-        if (!board.isSelected(type)) {
+        if (!squareSelector.isSelected(type)) {
             setAny(type);
             return;
         }
 
-        board.unselect(type);
+        squareSelector.unselect(type);
 
         findClosestInDimension(key, type);
     }
 
     private void setAny(GameSquare.Type type) {
         squares.stream()
-                .filter(square -> board.isValid(square, type))
+                .filter(square -> squareSelector.isValid(square, type))
                 .findAny()
-                .ifPresent(square -> board.setSelected(square, type));
+                .ifPresent(square -> squareSelector.setSelected(square, type));
     }
 
     private void findClosestInDimension(Direction direction, GameSquare.Type type) {
         squares.stream()
-                .filter(square -> board.isValid(square, type))
-                .filter(square -> direction.isNextInDimension(board.getSelected(type), square))
+                .filter(square -> squareSelector.isValid(square, type))
+                .filter(square -> direction.isNextInDimension(squareSelector.getSelected(type), square))
                 .map(next -> next.coord.index)
                 .min(direction.getComparator())
-                .ifPresentOrElse(index -> board.setSelected(index, type), () -> setAnyClosestInDirection(direction, type));
+                .ifPresentOrElse(index -> squareSelector.setSelected(index, type), () -> setAnyClosestInDirection(direction, type));
     }
 
     private void setAnyClosestInDirection(Direction direction, GameSquare.Type type) {
         squares.stream()
-                .filter(square -> board.isValid(square, type))
-                .filter(square -> direction.isNextOutsideDimension(board.getSelected(type), square))
+                .filter(square -> squareSelector.isValid(square, type))
+                .filter(square -> direction.isNextOutsideDimension(squareSelector.getSelected(type), square))
                 .map(direction::mapToDimension)
                 .min(direction.getComparator())
                 .ifPresent(index -> setAnyInDimension(direction, type, index));
@@ -127,9 +127,9 @@ public class KeyController {
 
     private void setAnyInDimension(Direction direction, GameSquare.Type type, int dimIndex) {
         squares.stream()
-                .filter(square -> board.isValid(square, type))
+                .filter(square -> squareSelector.isValid(square, type))
                 .filter(square -> direction.mapToDimension(square) == dimIndex)
                 .min(Comparator.naturalOrder())
-                .ifPresent(square -> board.setSelected(square, type));
+                .ifPresent(square -> squareSelector.setSelected(square, type));
     }
 }
